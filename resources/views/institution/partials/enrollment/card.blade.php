@@ -16,6 +16,8 @@
                 <!--<a href="{{route('student.create')}}" class="btn btn-primary btn-sm pull-right">Crear Insctipción</a>-->
                 </div>
 
+                
+
                 <div class="panel-body">
                     @if(isset($grades))
                         {!! Form::open(['route' => 'enrollment.card.generate', 'method' => 'post', 'files' => true]) !!}
