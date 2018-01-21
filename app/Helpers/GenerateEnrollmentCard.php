@@ -56,9 +56,9 @@ class GenerateEnrollmentCard extends Fpdi
 
             # Sesion formato de matricula de estudiante
             $this->Cell(119.5, 8, '', $lineas, 0, 'C');
-            if (1 == 0) {
+            if (0 == 0) {
                 //Nuevo
-                $this->Cell(39.5, 8, "", $lineas, 0, 'C');
+                $this->Cell(39.5, 8, "X", $lineas, 0, 'C');
                 $this->Cell(39.5, 8, "", $lineas, 1, 'C');
             } else {
                 //Continuidad
@@ -204,7 +204,7 @@ class GenerateEnrollmentCard extends Fpdi
 
             ## Información Académica
             $result_id = $enrollment->enrollment_result_id;
-            $this->Cell(9.9, 3.6, strtoupper(utf8_decode('--')), $lineas, 0, 'C');
+            $this->Cell(9.9, 3.6, strtoupper(utf8_decode('')), $lineas, 0, 'C');
             $this->Cell(9.9, 3.6, '', $lineas, 0, 'C');
             $this->Cell(49.7, 3.6, '', $lineas, 0, 'C');
 
@@ -408,7 +408,7 @@ class GenerateEnrollmentCard extends Fpdi
             $family = $student->family[0];
             $identification_family = $student->family[0]->identification;
             $tipo_doc_familiar = $student->family[0]->identification->identification_type_id;
-            $name_family = strtoupper(utf8_decode($student->family[0]->name." ".$student->family[0]->last_name));
+            $name_family = strtoupper(utf8_decode($student->family[0]->name)." ".utf8_decode($student->family[0]->last_name));
             $family_city_expedition = $student->family[0]->identification->city_expedition;
             $family_province_expedition = $student->family[0]->identification->city_expedition->province;
             $family_address = $student->family[0]->address;
@@ -422,7 +422,7 @@ class GenerateEnrollmentCard extends Fpdi
             $this->Cell(19.9,3.6,$student->family[0]->identification->identification_number,$lineas,0,'C'); # documento
             $this->Cell(19.9,3.6,strtoupper(utf8_decode($family_province_expedition->name)),$lineas,0,'C'); # departamento Exped
             $this->Cell(19.9,3.6,strtoupper(utf8_decode($family_city_expedition->name)),$lineas,0,'C');
-            $this->Cell(119.3,3.6,strtoupper(utf8_decode($name_family)),$lineas,0,'C');
+            $this->Cell(119.3,3.6,$name_family,$lineas,0,'C');
 
             $this->ln(8);
 
@@ -455,7 +455,7 @@ class GenerateEnrollmentCard extends Fpdi
             $this->Cell(14.9,3.6,($acudiente=="N"?"X":""),$lineas,0,'C');
 
             $this->ln(48);
-            $message = "En mi calidad de Rector de la Institución Educativa ".$institution->name." certifico que se anexa al presente";
+            $message = "En mi calidad de Rector de la ".$institution->name." certifico que se anexa al presente";
             $message2 = "fotocopia delos certificados de estudio de los años anterior y del documento de identidad";
             $this->Cell(196,4,strtoupper(utf8_decode($message)),0,0,'C');
             $this->ln(4);

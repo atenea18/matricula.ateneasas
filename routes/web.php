@@ -64,8 +64,11 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	Route::resource('enrollment', 'EnrollmentController');
 	Route::get('enrollment/create/{id}', 'EnrollmentController@createById')->name('enrollment.create');
 	Route::get('enrollment/lists/{state}', 'EnrollmentController@lists')->name('enrollment.lists');
-	Route::get('enrollment-card', 'EnrollmentController@card')->name('enrollment.card');
+	Route::get('enrollment-card/grade', 'EnrollmentController@cardGrade')->name('enrollment.card.grade');
+    Route::get('enrollment-card/group', 'EnrollmentController@cardGroup')->name('enrollment.card.group');
+    Route::get('enrollment-card/student', 'EnrollmentController@cardStudent')->name('enrollment.card.student');
     Route::post('enrollment-card/generate', 'EnrollmentController@generateCard')->name('enrollment.card.generate');
+    Route::post("enrollment/autocomplete", array('as'=>'enrollment.autocomplete','uses'=> 'EnrollmentController@enrollmentAutocomplete'));
 
 	// Ruta para estudiante
 	Route::resource('student', 'StudentController');

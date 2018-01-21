@@ -280,6 +280,9 @@ class EnrollmentController extends Controller
         // STUDEN
         $student = Student::findOrFail($request->student_id);
 
+        $student->fill($request->all());
+        $student->update();
+
         // ACADEMIC INFORMATION
         $academic_information = AcademicInformation::findOrFail($request->academic_information_id);
         $academic_information->fill($request->all());
@@ -362,7 +365,7 @@ class EnrollmentController extends Controller
             ->with('enrollments', $enrollments);
     }
 
-    public function card()
+    public function cardGrade()
     {
 
         $grades = Grade::all();
@@ -372,16 +375,70 @@ class EnrollmentController extends Controller
             compact('grades'));
     }
 
+    public function cardGroup()
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+
+        $groups = Group::getAllByInstitution($institution_id);
+
+        $institution_id = Auth::guard('web_institution')->user()->id;
+        return view('institution.partials.enrollment.card',
+            compact('groups'));
+    }
+
+    public function cardStudent()
+    {
+        $student = true;
+
+
+        $institution_id = Auth::guard('web_institution')->user()->id;
+        return view('institution.partials.enrollment.card',
+            compact('student'));
+    }
+
     public function generateCard(Request $request)
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
-        $grade_id = $request->grade_id;
-        $students_enrollment_card = Enrollment::getEnrollmentCard($grade_id, $institution_id);
+        $typecard = $request->typecard;
+        $students_enrollment_card = [];
+
+        switch ($typecard){
+            case 'byGrade':
+                $grade_id = $request->grade_id;
+                $students_enrollment_card = Enrollment::getEnrollmentCardGrade($grade_id, $institution_id);
+                break;
+            case 'byGroup':
+                $group_id = $request->group_id;
+                $students_enrollment_card = Enrollment::getEnrollmentCardGroup($group_id, $institution_id);
+                break;
+            case 'byStudent':
+                break;
+        }
+
+
+
+        $this->printCard($students_enrollment_card, $institution_id);
+    }
+
+    private function printCard($students, $institution_id){
+
+        $students_enrollment_card = $students;
         $print = new GenerateEnrollmentCard();
         $print->generateEnrollmentCard($students_enrollment_card, $institution_id);
         $print->Output('D', 'fichaMatricula.pdf');
-        //return $students_enrollment_card;
+    }
 
+    public function enrollmentAutocomplete(Request $request)
+    {
+        $term = $request->text;
+        $data = Student::where('name', 'LIKE', '%' . $term . '%')
+            ->take(10)
+            ->get();
+        $result = array();
+        foreach ($data as $key => $value) {
+            $result[] = ['value' => $value->name];
+        }
+        return response()->json($result);
     }
 
 

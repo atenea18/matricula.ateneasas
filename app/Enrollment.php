@@ -54,7 +54,7 @@ class Enrollment extends Model
             ->get();
     }
 
-    public static function getEnrollmentCard($grade_id, $institution_id)
+    public static function getEnrollmentCardGrade($grade_id, $institution_id)
     {
         $enrollments = self::
         join('headquarter', 'enrollment.headquarter_id', '=', 'headquarter.id')
@@ -69,5 +69,19 @@ class Enrollment extends Model
         return $enrollments->all();
     }
 
+    public static function getEnrollmentCardGroup($group_id, $institution_id)
+    {
+        $enrollments = self::
+        join('headquarter', 'enrollment.headquarter_id', '=', 'headquarter.id')
+            ->join('institution', 'headquarter.institution_id', '=', 'institution.id')
+            ->join('student', 'student.id', '=', 'enrollment.student_id')
+            ->join('group', 'group.id', '=', 'enrollment.group_id')
+            ->join('grade', 'grade.id', '=', 'group.grade_id')
+            ->where('institution.id', $institution_id)
+            ->where('group.id', '=', $group_id)
+            ->get();
+
+        return $enrollments->all();
+    }
 
 }

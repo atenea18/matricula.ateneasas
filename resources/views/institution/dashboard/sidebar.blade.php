@@ -32,7 +32,7 @@
             <ul id="collapse-inscription" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
                 <li><a href="{{route('student.create')}}">Crear</a></li>
                 <li><a href="{{route('enrollment.lists', 1)}}">Ver</a></li>
-                <li><a href="{{route('enrollment.card')}}">Ficha Académica</a></li>
+                <li><a href="{{route('enrollment.card.grade')}}">Ficha Académica</a></li>
             </ul>
         </li>
         <!-- Grupo -->

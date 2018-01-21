@@ -49,13 +49,13 @@
 							    			<div class="col-md-3">
 							    				<div class="form-group">
 						  							{!! Form::label('name', 'Nombres') !!}
-						  							{!! Form::text('name_dis', $enrollment->student->name, ['class'=>'form-control', 'disabled']) !!}
+						  							{!! Form::text('name', $enrollment->student->name, ['class'=>'form-control']) !!}
 				  								</div>
 							    			</div>
 							    			<div class="col-md-3">
 							    				<div class="form-group">
 						  							{!! Form::label('last_name', 'Apellidos') !!}
-						  							{!! Form::text('last_name_dis', $enrollment->student->last_name, ['class'=>'form-control', 'disabled']) !!}
+						  							{!! Form::text('last_name', $enrollment->student->last_name, ['class'=>'form-control']) !!}
 				  								</div>
 							    			</div>
 							    			<div class="col-md-3">
@@ -67,7 +67,7 @@
 							    			<div class="col-md-3">
 							    				<div class="form-group">
 						  							{!! Form::label('identification_number_dis', 'Número de identificación') !!}
-						  							{!! Form::text('identification_number', $enrollment->student->identification->identification_number, ['class'=>'form-control', 'disabled']) !!}
+						  							{!! Form::text('identification_number', $enrollment->student->identification->identification_number, ['class'=>'form-control']) !!}
 				  								</div>
 							    			</div>
 							    		</div>
@@ -158,7 +158,7 @@
 						    <div role="tabpanel" class="tab-pane" id="academic_info">
 						    	<div id="identification" class="section_inscription">
 									<div class="section_inscription__tittle">
-										<h4>Información Acdémica</h4>
+										<h4>Información Académica</h4>
 									</div>
 							    	<div class="row">
 							    		<div class="col-md-3">
