@@ -10,7 +10,6 @@
 
 namespace setasign\Fpdi;
 
-
 /**
  * Class FpdfTpl
  *
