@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit51ecc799475e137aa70c5bf55c8ac422
+class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
 {
     public static $files = array (
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
@@ -29,10 +29,6 @@ class ComposerStaticInit51ecc799475e137aa70c5bf55c8ac422
         'p' => 
         array (
             'phpDocumentor\\Reflection\\' => 25,
-        ),
-        'f' => 
-        array (
-            'fpdi\\' => 5,
         ),
         'X' => 
         array (
@@ -137,12 +133,8 @@ class ComposerStaticInit51ecc799475e137aa70c5bf55c8ac422
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
-        ),
-        'fpdi\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/itbz/fpdi/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
         'XdgBaseDir\\' => 
         array (
@@ -339,13 +331,6 @@ class ComposerStaticInit51ecc799475e137aa70c5bf55c8ac422
     );
 
     public static $prefixesPsr0 = array (
-        'f' => 
-        array (
-            'fpdf' => 
-            array (
-                0 => __DIR__ . '/..' . '/itbz/fpdf/src',
-            ),
-        ),
         'S' => 
         array (
             'Svg\\' => 
@@ -4320,17 +4305,6 @@ class ComposerStaticInit51ecc799475e137aa70c5bf55c8ac422
         'Whoops\\Util\\SystemFacade' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/SystemFacade.php',
         'Whoops\\Util\\TemplateHelper' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/TemplateHelper.php',
         'XdgBaseDir\\Xdg' => __DIR__ . '/..' . '/dnoegel/php-xdg-base-dir/src/Xdg.php',
-        'fpdf\\FPDF' => __DIR__ . '/..' . '/itbz/fpdf/src/fpdf/FPDF.php',
-        'fpdf\\FPDF_EXTENDED' => __DIR__ . '/..' . '/itbz/fpdf/src/fpdf/FPDF/EXTENDED.php',
-        'fpdi\\FPDF_TPL' => __DIR__ . '/..' . '/itbz/fpdi/src/FPDF_TPL.php',
-        'fpdi\\FPDI' => __DIR__ . '/..' . '/itbz/fpdi/src/FPDI.php',
-        'fpdi\\FilterASCII85' => __DIR__ . '/..' . '/itbz/fpdi/src/FilterASCII85.php',
-        'fpdi\\FilterASCIIHexDecode' => __DIR__ . '/..' . '/itbz/fpdi/src/FilterASCIIHexDecode.php',
-        'fpdi\\FilterLZW' => __DIR__ . '/..' . '/itbz/fpdi/src/FilterLZW.php',
-        'fpdi\\fpdi_bridge' => __DIR__ . '/..' . '/itbz/fpdi/src/fpdi_bridge.php',
-        'fpdi\\fpdi_pdf_parser' => __DIR__ . '/..' . '/itbz/fpdi/src/fpdi_pdf_parser.php',
-        'fpdi\\pdf_context' => __DIR__ . '/..' . '/itbz/fpdi/src/pdf_context.php',
-        'fpdi\\pdf_parser' => __DIR__ . '/..' . '/itbz/fpdi/src/pdf_parser.php',
         'phpDocumentor\\Reflection\\DocBlock' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock.php',
         'phpDocumentor\\Reflection\\DocBlockFactory' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlockFactory.php',
         'phpDocumentor\\Reflection\\DocBlockFactoryInterface' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlockFactoryInterface.php',
@@ -4447,10 +4421,10 @@ class ComposerStaticInit51ecc799475e137aa70c5bf55c8ac422
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit51ecc799475e137aa70c5bf55c8ac422::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit51ecc799475e137aa70c5bf55c8ac422::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit51ecc799475e137aa70c5bf55c8ac422::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit51ecc799475e137aa70c5bf55c8ac422::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43::$classMap;
 
         }, null, ClassLoader::class);
     }
