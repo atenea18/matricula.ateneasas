@@ -182,6 +182,7 @@ return [
          */
         Collective\Html\HtmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
         Codedge\Fpdf\FpdfServiceProvider::class,
 
     ],
