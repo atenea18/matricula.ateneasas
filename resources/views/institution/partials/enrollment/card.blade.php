@@ -17,7 +17,6 @@
                 </div>
 
 
-
                 <div class="panel-body">
                     @if(isset($grades))
                         {!! Form::open(['route' => 'enrollment.card.generate', 'method' => 'post', 'files' => true]) !!}
@@ -115,9 +114,7 @@
     <script src="{{asset('js/jquery.min.js')}}"></script>
     <script type="text/javascript">
 
-
-
-        $('#name_id').keypress(function () {
+        $('#name_id').keydown(function () {
 
             var text = $('#name_id').val();
             $.ajaxSetup({
@@ -134,12 +131,12 @@
                 success: function (data) {
 
                     txt = "";
-                    for(var i=0; i < data.length ; i++){
-                        txt += "<li>"+data[i].value+"</li>";
+                    for (var i = 0; i < data.length; i++) {
+                        txt += "<li>" + data[i].name + "</li>";
 
                     }
 
-                    $('#list')[0].innerHTML = txt;
+                    $('#list')[0].innerHTML = data;
                 }
             });
 
@@ -234,22 +231,25 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <p>
-                                    Buscar por nombres de estudiantes
+                                    Buscar por nombres de estudiantes llllllllllllllllllllllll
                                 </p>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('grade_id', 'Nombre Estudiante')!!}
                                     <input type="text" id="name_id" class="form-control">
-                                    <ul id="list">
-
-                                    </ul>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group" style="padding-top: 25px;">
                                     <input type="hidden" name="typecard" value="byStudent">
                                     {!! Form::submit('Generar Fichas', ['class'=>'btn btn-primary']) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+
+                                <div class="container" id="container-student">
+
                                 </div>
                             </div>
                         </div>
@@ -262,41 +262,7 @@
 @endsection
 
 @section('js')
-    <script src="{{asset('js/bootstrap-datepicker.js')}}"></script>
-    <script src="{{asset('js/jquery.min.js')}}"></script>
-    <script type="text/javascript">
 
-
-
-        $('#name_id').keypress(function () {
-
-            var text = $('#name_id').val();
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $.ajax({
-
-                type: "POST",
-                url: '{!!URL::route('enrollment.autocomplete')!!}',
-                data: {text: $('#name_id').val()},
-                success: function (data) {
-
-                    txt = "";
-                    for(var i=0; i < data.length ; i++){
-                        txt += "<li>"+data[i].value+"</li>";
-
-                    }
-
-                    $('#list')[0].innerHTML = txt;
-                }
-            });
-
-        })
-
-    </script>
 @endsection
 
 

@@ -412,11 +412,9 @@ class EnrollmentController extends Controller
                 $students_enrollment_card = Enrollment::getEnrollmentCardGroup($group_id, $institution_id);
                 break;
             case 'byStudent':
+
                 break;
         }
-
-
-
         $this->printCard($students_enrollment_card, $institution_id);
     }
 
@@ -436,9 +434,9 @@ class EnrollmentController extends Controller
             ->get();
         $result = array();
         foreach ($data as $key => $value) {
-            $result[] = ['value' => $value->name];
+            $result[] = ['student_id' => $value->id, 'name' => $value->name, 'last_name' => $value->last_name];
         }
-        return response()->json($result);
+        //return view('institution.partials.enrollment.tableStudentsSearch', compact('result'));
     }
 
 
