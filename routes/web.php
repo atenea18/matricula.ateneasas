@@ -31,11 +31,29 @@ Route::group(['prefix'=>'ajax'], function(){
 	
 });
 
+Route::group(['middleware'=>'admin_guest'], function(){
+	Route::post('admin_logout', 'AdministratorAuth\LoginController@logout');
+	Route::get('admin_login', 'AdministratorAuth\LoginController@showLoginForm');
+	Route::post('admin_login', 'AdministratorAuth\LoginController@login');
+});
+
+Route::group(['prefix'=>'admin','middleware'=>'admin_auth'], function(){
+
+	Route::get('/', function(){
+		return View('admin.dashboard.index');
+	})->name('admin.home');
+
+	Route::post('/logout', 'AdministratorAuth\LoginController@logout');
+	Route::resource('institution', 'InstitutionController');
+	Route::put('institution/{id}/changePassword', 'InstitutionController@changePassword')->name('institution.changePassword');
+});
+
 //Logged in users/seller cannot access or send requests these pages
 Route::group(['middleware' => 'institution_guest'], function() {
 
-	Route::get('institution_register', 'InstitutionAuth\RegisterController@showRegistrationForm');
-	Route::post('institution_register', 'InstitutionAuth\RegisterController@register');
+	// Route::get('institution_register', 'InstitutionAuth\RegisterController@showRegistrationForm');
+	// Route::post('institution_register', 'InstitutionAuth\RegisterController@register');
+
 	Route::post('institution_logout', 'InstitutionAuth\LoginController@logout');
 	Route::get('institution_login', 'InstitutionAuth\LoginController@showLoginForm')->name('institution.login');
 	Route::post('institution_login', 'InstitutionAuth\LoginController@login');
@@ -54,7 +72,7 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	
 	Route::get('/', function(){
 		return view('institution.dashboard.index');
-	});
+	})->name('institution.home');
 
 	Route::get('/home', function(){
 		return view('institution.dashboard.index');

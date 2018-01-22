@@ -2,7 +2,7 @@
 	<ul class="sidebar-nav nav-pills nav-stacked" id="menu">
 		<!-- Inicio -->
 		<li>
-            <a href="/institution"> 
+            <a href="{{route('institution.home')}}"> 
             	<span class="fa-stack fa-lg pull-left">
             		<i class="fa fa-home fa-stack-1x "></i>
             	</span>

@@ -60,5 +60,9 @@ class Kernel extends HttpKernel
         //add custom middlewares here as key and value pair.
         'institution_auth' => \App\Http\Middleware\AuthenticateInstitution::class,
         'institution_guest' => \App\Http\Middleware\RedirectIfInstitutionAuthenticated::class,
+
+        // 
+        'admin_auth' => \App\Http\Middleware\AuthenticateAdmin::class,
+        'admin_guest' => \App\Http\Middleware\RedirectIfAdminAuthenticated::class,
     ];
 }
