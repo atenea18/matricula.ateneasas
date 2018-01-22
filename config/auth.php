@@ -41,6 +41,11 @@ return [
             'provider' => 'users',
         ],
 
+        'admin_guard' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+
         //Our new custom driver.
         'web_institution' => [
             'driver' => 'session',
@@ -74,6 +79,12 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
+        ],
+
+        //Institution user provider
+        'admins' => [
+            'driver' => 'eloquent',  //We are using eloquent model
+            'model' => App\Administrator::class,
         ],
 
         //Institution user provider

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-default no-margin" id="nav">
 	<div class="image">
-      {{-- <img src="{{asset('img/institution/picture').'/'.Auth::guard('web_institution')->user()->id.'.jpg'}}" alt="" class="img-responsive" width="35"> --}}
+      <img src="{{asset('storage')."/".Auth::guard('web_institution')->user()->picture}}" alt="" class="img-responsive" width="30" style="margin-right: 3rem;">
    	</div>
 	<!-- <div class="container"> -->
 		<div class="navbar-header fixed-brand">
@@ -13,7 +13,7 @@
 	          <span class="icon-bar"></span>
 	          <span class="icon-bar"></span>
 	        </button>
-        	<a class="navbar-brand" href="#">{{ Auth::guard('web_institution')->user()->name }}</a>
+        	{{-- <a class="navbar-brand" href="#">{{ Auth::guard('web_institution')->user()->name }}</a> --}}
      	</div><!-- navbar-header-->
 
 		<div class="collapse navbar-collapse" id="app-navbar-collapse">

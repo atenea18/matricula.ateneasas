@@ -20,7 +20,7 @@ class Institution extends Authenticatable
 
     //Mass assignable attributes
 	protected $fillable = [
-	    'name', 'email', 'password',
+	    'name', 'dane_code', 'picture', 'email', 'password',
 	];
 
 	//hidden attributes
