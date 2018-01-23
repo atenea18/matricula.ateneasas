@@ -412,9 +412,11 @@ class EnrollmentController extends Controller
                 $students_enrollment_card = Enrollment::getEnrollmentCardGroup($group_id, $institution_id);
                 break;
             case 'byStudent':
-
+                $student_id = $request->student_id;
+                $students_enrollment_card = Enrollment::getEnrollmentCardStudent($student_id, $institution_id);
                 break;
         }
+
         $this->printCard($students_enrollment_card, $institution_id);
     }
 
@@ -430,13 +432,10 @@ class EnrollmentController extends Controller
     {
         $term = $request->text;
         $data = Student::where('name', 'LIKE', '%' . $term . '%')
+            ->join('enrollment', 'student.id', '=', 'enrollment.student_id')
             ->take(10)
             ->get();
-        $result = array();
-        foreach ($data as $key => $value) {
-            $result[] = ['student_id' => $value->id, 'name' => $value->name, 'last_name' => $value->last_name];
-        }
-        //return view('institution.partials.enrollment.tableStudentsSearch', compact('result'));
+        return view('institution.partials.enrollment.tableStudentsSearch', compact('data'));
     }
 
 
