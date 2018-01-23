@@ -172,6 +172,7 @@ class Student extends Model
 
     }
 
+
     public static function getGroup($group_id)
     {
         return Student::join('enrollment', 'student.id','=','enrollment.student_id')
