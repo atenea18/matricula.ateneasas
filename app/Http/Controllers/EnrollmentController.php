@@ -424,6 +424,7 @@ class EnrollmentController extends Controller
 
         $students_enrollment_card = $students;
         $print = new GenerateEnrollmentCard();
+
         $print->generateEnrollmentCard($students_enrollment_card, $institution_id);
         $print->Output('D', 'fichaMatricula.pdf');
     }
@@ -431,9 +432,9 @@ class EnrollmentController extends Controller
     public function enrollmentAutocomplete(Request $request)
     {
         $term = $request->text;
-        $data = Student::where('name', 'LIKE', '%' . $term . '%')
+        $data = Student::where('username', 'LIKE', '%' . $term  .'%')
             ->join('enrollment', 'student.id', '=', 'enrollment.student_id')
-            ->take(10)
+            ->take(50)
             ->get();
         return view('institution.partials.enrollment.tableStudentsSearch', compact('data'));
     }
