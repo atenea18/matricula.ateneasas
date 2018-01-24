@@ -11,7 +11,7 @@ class Family extends Model
     protected $fillable =[
     	'name',
     	'last_name',
-    	'student_id',
+    	// 'student_id',
     	'identification_id',
     	'address_id',
     ];
@@ -47,6 +47,6 @@ class Family extends Model
      */
     public function identification()
     {
-        return $this->belongsTo('App\Identification', 'identification_id');
+        return $this->belongsTo(Identification::class, 'identification_id');
     }
 }

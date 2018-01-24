@@ -371,6 +371,8 @@
 								<div class="row">
 									<div class="form-group text-center">
 										<button type="button" class="btn btn-primary" id="addFamily">Agregar familiar</button>
+
+										<button type="button" class="btn btn-primary" id="searchFamily">Consultar Acudiente</button>
 									</div>
 								</div>
 								<div class="row">
@@ -420,6 +422,8 @@
 @include('institution.partials.enrollment.modalCreateFamily')
 @include('institution.partials.enrollment.modalEditFamily')
 @include('institution.partials.enrollment.modalDeleteFamily')
+@include('institution.partials.enrollment.modalDetachFamily')
+@include('institution.partials.enrollment..family.modalSearchFamily')
 {{--  --}}
 @endsection
 
