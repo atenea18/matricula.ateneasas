@@ -8,16 +8,16 @@ class Student extends Model
 {
     protected $table = 'student';
 
-    protected $fillable = 
-    [
-    	'name',
-    	'last_name',
-    	'identification_id',
-    	'address_id',
-    	'username',
-    	'password',
-    	'picture',
-    ];
+    protected $fillable =
+        [
+            'name',
+            'last_name',
+            'identification_id',
+            'address_id',
+            'username',
+            'password',
+            'picture',
+        ];
 
     // 
     public function getFullNameAttribute()
@@ -102,8 +102,8 @@ class Student extends Model
      */
     public function family()
     {
-        return  $this->belongsToMany('App\Family', 'family_relationship_student')
-                ->withPivot('relationship_id');
+        return $this->belongsToMany('App\Family', 'family_relationship_student')
+            ->withPivot('relationship_id');
     }
 
     /**
@@ -111,8 +111,8 @@ class Student extends Model
      */
     public function relationship()
     {
-        return  $this->belongsToMany('App\RelationShipFamily', 'family_relationship_student')
-                ->withPivot('family_id');
+        return $this->belongsToMany('App\RelationShipFamily', 'family_relationship_student')
+            ->withPivot('family_id');
     }
 
 
@@ -124,7 +124,8 @@ class Student extends Model
         return $this->hasMany('App\Enrollment', 'student_id');
     }
 
-    public  static function getParents($student_id, $family_student){
+    public static function getParents($student_id, $family_student)
+    {
         return Student::join('family_relationship_student', 'student.id', '=', 'family_relationship_student.student_id')
             ->select('family_relationship_student.relationship_id')
             ->where('student.id', $student_id)
@@ -136,48 +137,39 @@ class Student extends Model
     /**
      * Obtiene todas las relaciones existentes de students
      */
-    public static function getInformationsAll($student_id){
-        $student = self::findOrfail($student_id);
 
-        $student->identification->identification_type;
-        $student->identification->gender;
-        $student->identification->city_expedition;
-        $student->identification->city_birth;
+    public static function existStudent()
+    {
 
-        $student->address;
-        $student->address->zone;
+        if (old('identification_number')) {
+            if (isset(\App\Identification::where('identification_number', '=', old('identification_number'))->get()[0])) {
+                $identification_id = Identification::where('identification_number', '=', old('identification_number'))->get()[0]->id;
+                $student_id = Student::where('identification_id', '=', $identification_id)->get()[0]->id;
 
-        $student->academicInformation;
-        $student->academicInformation->academicCharacter;
-        $student->academicInformation->academicSpecialty;
+                if (isset(Enrollment::where('student_id', '=', $student_id)->get()[0])) {
 
-        $student->medicalInformation;
-        $student->medicalInformation->eps;
-        $student->medicalInformation->blood_type;
+                    $enrollment = Enrollment::where('student_id', '=', $student_id)->get()[0];
 
-        $student->displacement;
-        $student->displacement->victimOfConflict;
-
-        $student->socioeconomicInformation;
-        $student->socioeconomicInformation->stratum;
-
-        $student->territorialty;
-
-        $student->capacities;
-        $student->discapacities;
-
-        $student->family;
-
-        return $student;
+                    return '<h4 style="text-align: center"> El estudiante con número de identificación 
+                        <b>' . old('identification_number') . '</b> ya está matriculado en ' . $enrollment->group->name . '
+                        <a href="' . route('enrollment.create', $student_id) . '"> ver estudiante</a></h4>';
+                }
+                return '
+                <h4 style="text-align: center"> El estudiante con número de identificación <b>' . old('identification_number')
+                    . '</b> ya existe, pero <b>NO ESTA MATRICULADO.</b>
+                <a href="' . route('enrollment.create', $student_id) . '">Completar Matrícula</a></h4>';
+            }
+        }
+        return '';
 
     }
 
 
     public static function getGroup($group_id)
     {
-        return Student::join('enrollment', 'student.id','=','enrollment.student_id')
-        ->where('enrollment.group_id','=',$group_id)
-        ->orderBy('student.last_name', 'ASC')
-        ->get();
+        return Student::join('enrollment', 'student.id', '=', 'enrollment.student_id')
+            ->where('enrollment.group_id', '=', $group_id)
+            ->orderBy('student.last_name', 'ASC')
+            ->get();
     }
 }

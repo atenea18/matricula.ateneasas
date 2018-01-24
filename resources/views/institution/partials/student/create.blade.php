@@ -21,8 +21,11 @@
 				    	<h3 class="panel-title">Crear estudiante</h3>
 				  	</div>
 				  	<div class="panel-body">
-				  		
+
+						{!! \App\Student::existStudent() !!}
 				  		@include('complements.error')
+
+
 
 				  		<div class="container-fluid">
 				  			{{-- PERSONAL IDENTIFICATION --}}
