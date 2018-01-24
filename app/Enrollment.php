@@ -64,6 +64,7 @@ class Enrollment extends Model
             ->join('grade', 'grade.id', '=', 'group.grade_id')
             ->where('institution.id', $institution_id)
             ->where('grade.id', '=', $grade_id)
+            ->orderBy('student.last_name', 'ASC')
             ->get();
 
         return $enrollments->all();
@@ -79,8 +80,19 @@ class Enrollment extends Model
             ->join('grade', 'grade.id', '=', 'group.grade_id')
             ->where('institution.id', $institution_id)
             ->where('group.id', '=', $group_id)
+            ->orderBy('student.last_name', 'ASC')
             ->get();
 
+        return $enrollments->all();
+    }
+
+    public static function getEnrollmentCardStudent($student_id, $institution_id)
+    {
+        $enrollments = self::
+        join('headquarter', 'enrollment.headquarter_id', '=', 'headquarter.id')
+            ->join('institution', 'headquarter.institution_id', '=', 'institution.id')
+            ->where('enrollment.student_id', $student_id)
+            ->get();
         return $enrollments->all();
     }
 

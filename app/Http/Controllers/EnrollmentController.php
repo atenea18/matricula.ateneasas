@@ -412,10 +412,10 @@ class EnrollmentController extends Controller
                 $students_enrollment_card = Enrollment::getEnrollmentCardGroup($group_id, $institution_id);
                 break;
             case 'byStudent':
+                $student_id = $request->student_id;
+                $students_enrollment_card = Enrollment::getEnrollmentCardStudent($student_id, $institution_id);
                 break;
         }
-
-
 
         $this->printCard($students_enrollment_card, $institution_id);
     }
@@ -424,6 +424,7 @@ class EnrollmentController extends Controller
 
         $students_enrollment_card = $students;
         $print = new GenerateEnrollmentCard();
+
         $print->generateEnrollmentCard($students_enrollment_card, $institution_id);
         $print->Output('D', 'fichaMatricula.pdf');
     }
@@ -431,14 +432,11 @@ class EnrollmentController extends Controller
     public function enrollmentAutocomplete(Request $request)
     {
         $term = $request->text;
-        $data = Student::where('name', 'LIKE', '%' . $term . '%')
-            ->take(10)
+        $data = Student::where('username', 'LIKE', '%' . $term  .'%')
+            ->join('enrollment', 'student.id', '=', 'enrollment.student_id')
+            ->take(50)
             ->get();
-        $result = array();
-        foreach ($data as $key => $value) {
-            $result[] = ['value' => $value->name];
-        }
-        return response()->json($result);
+        return view('institution.partials.enrollment.tableStudentsSearch', compact('data'));
     }
 
 
