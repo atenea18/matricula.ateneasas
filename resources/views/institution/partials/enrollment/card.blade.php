@@ -82,13 +82,13 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <p>
-                                    Buscar por nombres de estudiantes
+                                    Buscar por documento de estudiantes
                                 </p>
                             </div>
                             <div class="col-md-6">
                                 {!! Form::open(['route' => 'enrollment.card.student', 'method' => 'get', 'files' => true]) !!}
                                 <div class="form-group">
-                                    {!! Form::label('grade_id', 'Nombre Estudiante')!!}
+                                    {!! Form::label('grade_id', 'Documento Estudiante')!!}
                                     <input type="text" id="name_id" class="form-control">
                                 </div>
                                 {!! Form::close() !!}
