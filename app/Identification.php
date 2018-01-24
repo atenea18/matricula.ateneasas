@@ -32,7 +32,7 @@ class Identification extends Model
      */
     public function family()
     {
-        return $this->hasOne('App\Family', 'identification_id');
+        return $this->hasOne(Family::class, 'identification_id');
     }
 
     /**

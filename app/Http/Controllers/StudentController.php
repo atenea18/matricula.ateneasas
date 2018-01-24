@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use \Carbon\Carbon;
 // MODELS
 use App\Student;
 use App\Identification_type;
@@ -135,26 +136,21 @@ class StudentController extends Controller
 
         if($request->ajax()):
 
-            $address = new Address();
-            $family = new Family();
-            $identification = new Identification();
+            $address = new Address($request->all());
+            $family = new Family($request->all());
+            $identification = new Identification($request->all());
 
             // STUDENT
             $student = Student::findOrFail($request->student_id);
-
-            $address->fill($request->all());
-            $identification->fill($request->all());
             
             $identification->save();
             $address->save();
 
-            $family->fill($request->all());
-            $family->student_id = $student->id;
             $family->identification_id = $identification->id;
             $family->address_id = $address->id;
             $family->save();
 
-            $student->family()->attach($family->id, ['relationship_id'=> $request->relationship_id]);
+            $student->family()->attach($family->id, ['relationship_id'=> $request->relationship_id, 'created_at'=> Carbon::now()]);
 
             return response()->json([
                 'state'     =>  true,
@@ -166,6 +162,34 @@ class StudentController extends Controller
         endif;
     }
 
+    /**
+    */
+    public function attachFamily(Request $request)
+    {
+        if($request->ajax())
+        {
+            $student = Student::findOrFail($request->student_id);
+            $student->family()->attach($request->family_id, ['relationship_id'=> $request->relationship_id, 'created_at'=> Carbon::now()]);
+
+            return response()->json($student->family);
+
+        }
+    }
+
+    public function dettachFamily(Request $request)
+    {
+        if($request->ajax())
+        {
+
+            $student = Student::findOrFail($request->student_id);
+            $student->family()->detach($request->family_id);
+
+            return response()->json([
+                'state'=>true,
+                'family'=>$student->family
+            ]);
+        }
+    }
 
     /**
      *
@@ -210,12 +234,12 @@ class StudentController extends Controller
      */
     public function getFamily(Request $request, $id)
     {
-        $family = Family::join('family_relationship_student', 'family.id','=','family_relationship_student.family_id')
+        $family = Family::select('family.*', 'relationship.type', 'address.phone', 'address.mobil', 'address.address', 'address.email', 'identification.identification_number')
+                    ->join('family_relationship_student', 'family.id','=','family_relationship_student.family_id')
                      ->join('relationship', 'family_relationship_student.relationship_id', '=', 'relationship.id')
                      ->join('address', 'family.address_id', '=', 'address.id')
                      ->join('identification', 'family.identification_id', '=', 'identification.id')
-                     ->select('family.*', 'relationship.type', 'address.phone', 'address.mobil', 'address.address', 'address.email', 'identification.identification_number')
-                     ->where('family.student_id','=', $id)
+                     ->where('family_relationship_student.student_id','=', $id)
                      ->get();
 
         return response()->json([
@@ -235,9 +259,7 @@ class StudentController extends Controller
         $family->students;
 
 
-        return response()->json([
-            $family
-        ]);
+        return response()->json($family);
     }
 
     /**
@@ -267,5 +289,14 @@ class StudentController extends Controller
             'address' => $address,
             'identification'=> $identification,
         ]);
+    }
+
+    public function searchFamily(Request $request)
+    {
+
+        if($request->ajax())
+        {
+            return response()->json($request->all());
+        }
     }
 }

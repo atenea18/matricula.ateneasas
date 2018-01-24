@@ -95,6 +95,9 @@ class InstitutionController extends Controller
     {
         $institution = Institution::findOrFail($id);
 
+
+        echo "<img src='".Storage::disk('public')->url($institution->picture)."' />";
+        exit();
         return View('admin.partials.institution.edit')
                 ->with('institution',$institution);
     }
