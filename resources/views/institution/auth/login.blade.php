@@ -50,15 +50,6 @@
                                 </button>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <div class="col-md-12 text-center">
-                                <hr>
-                                <h4>Año lectivo 2017</h4>
-                                <a href="http://2017.ateneasas.com/app_Login/" class="btn btn-lg btn-primary" target="_blank">Acceso Secretarias</a>
-                                <a href="" class="btn btn-lg btn-primary" target="_blank">Acceso Docentes</a>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </div>
