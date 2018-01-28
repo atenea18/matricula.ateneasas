@@ -184,6 +184,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Codedge\Fpdf\FpdfServiceProvider::class,
+        Laraveles\Spanish\SpanishServiceProvider::class,
 
     ],
 
