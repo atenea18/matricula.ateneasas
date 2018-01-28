@@ -201,7 +201,9 @@
 							<div role="tabpanel" class="tab-pane" id="family">
 								<div class="row">
 									<div class="form-group text-center">
-										<button type="button" class="btn btn-primary" id="addFamily">Agregar familiar</button>
+										<button type="button" class="btn btn-primary" id="addFamily">Agregar Acudiente</button>
+
+										<button type="button" class="btn btn-primary" id="searchFamily">Consultar Acudiente</button>
 									</div>
 								</div>
 								<div class="row">
@@ -215,7 +217,7 @@
 												<th>Dirección</th>
 												<th>Celular</th>
 												<th>Telefono</th>
-												<th>Email</th>
+												{{-- <th>Email</th> --}}
 												<th></th>
 											</tr>
 										</thead>
@@ -245,6 +247,8 @@
 @include('institution.partials.enrollment.modalCreateFamily')
 @include('institution.partials.enrollment.modalEditFamily')
 @include('institution.partials.enrollment.modalDeleteFamily')
+@include('institution.partials.enrollment.modalDetachFamily')
+@include('institution.partials.enrollment..family.modalSearchFamily')
 @endsection
 
 @section('js')

@@ -47,6 +47,7 @@
                         </li>
                     </ul>
 
+
                     <div class="tab-content">
                         {{-- PERSONAL INFORMATION --}}
                         <div role="tabpanel" class="tab-pane active" id="personal_info">
@@ -404,6 +405,8 @@
                             <div class="row">
                                 <div class="form-group text-center">
                                     <button type="button" class="btn btn-primary" id="addFamily">Agregar familiar</button>
+
+                                    <button type="button" class="btn btn-primary" id="searchFamily">Consultar Acudiente</button>
                                 </div>
                             </div>
                             <div class="row">
@@ -440,7 +443,7 @@
                         {!! Form::hidden('territorialty_id', $enrollment->student->territorialty->id) !!}
                         {!! Form::hidden('student_id', $enrollment->student->id, ['id'=>'student_id']) !!}
                         {!! Form::hidden('AppUrl', env('APP_URL'), ['id'=>'AppUrl']) !!}
-                        {!! Form::submit('Actualizar', ['class'=>'btn btn-primary']) !!}
+                        {!! Form::submit('Actualizar Inscripción', ['class'=>'btn btn-primary']) !!}
                     </div>
                 </div>
             </div>
@@ -453,7 +456,10 @@
     @include('institution.partials.enrollment.modalCreateFamily')
     @include('institution.partials.enrollment.modalEditFamily')
     @include('institution.partials.enrollment.modalDeleteFamily')
+    @include('institution.partials.enrollment.modalDetachFamily')
+    @include('institution.partials.enrollment..family.modalSearchFamily')
     {{--  --}}
+
 @endsection
 
 @section('js')

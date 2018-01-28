@@ -28,6 +28,7 @@ Route::group(['prefix'=>'ajax'], function(){
 	Route::get('/group/getByWorkingday', 'GroupController@getByWorkingDay');
 	Route::get('/student/getFamily/{id}', 'StudentController@getFamily')->name('student.getFamily');
 	Route::get('/student/getFamilyById/{id}', 'StudentController@getFamilyById');
+	Route::get('/family/search', 'FamilyController@search')->name('family.search');
 	
 });
 
@@ -92,8 +93,11 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	// Ruta para estudiante
 	Route::resource('student', 'StudentController');
 	Route::post('student/addFamily', 'StudentController@addFamily')->name('student.addFamily');
+	Route::post('student/attachFamily', 'StudentController@attachFamily')->name('student.attachFamily');
+	Route::post('student/dettachFamily', 'StudentController@dettachFamily')->name('student.dettachFamily');
 	Route::put('student/updateFamily/{id}', 'StudentController@updateFamily')->name('student.updateFamily');
 	Route::delete('student/deleteFamily/{id}', 'StudentController@deleteFamily')->name('student.deleteFamily');
+	Route::get('student/searchFamily', 'StudentController@searchFamily')->name('student.searchFamily');
 
 	// Ruta para los salones de clase
 	Route::resource('group', 'GroupController');
