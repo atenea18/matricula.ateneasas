@@ -17,16 +17,14 @@
 			
 			{!! Form::open(['route'=>'group.store', 'method'=>'post'])!!}
 				<div class="panel panel-default">
-				  	<div class="panel-heading">
-				    	<h3 class="panel-title">Crear grupo</h3>
-				  	</div>
+
 				  	<div class="panel-body">
 
 				  		@include('complements.error')
 
 				  		<div class="container-fluid">
 				  			<div class="row">
-				  				<div class="col-md-4">
+				  				<div class="col-md-3">
 				  					<div class="form-group">
 				  						{!! Form::label('headquarter_id', 'Sede') !!}
 				  						{!! Form::select('headquarter_id', $headquarters, null, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciones una sede']) !!}
@@ -38,38 +36,22 @@
 				  						{!! Form::select('grade_id', $grades, null, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciones un grado']) !!}
 				  					</div>
 				  				</div>
-				  				<div class="col-md-1">
-				  					<div class="form-group">
-				  						{!! Form::label('quota', 'Cupos') !!}
-				  						{!! Form::text('quota', null, ['class'=>'form-control']) !!}
-				  					</div>
-				  				</div>
-				  				<div class="col-md-2">
-				  					<div class="form-group">
-				  						{!! Form::label('type', 'Tipo') !!}
-				  						{!! Form::select('type', ['group'=>'Grupo', 'sub_group'=>'Subgrupo'], 'group', ['class'=>'form-control chosen-select', 'placeholder'=>'Tipo']) !!}
-				  					</div>
-				  				</div>
-				  				<div class="col-md-2">
-				  					<div class="form-group">
-				  						{!! Form::label('modality', 'Modalidad') !!}
-				  						{!! Form::select('modality', ['t'=>'ténica', 'a'=>'académica'], 'a', ['class'=>'form-control chosen-select', 'placeholder'=>'Modalidad']) !!}
-				  					</div>
-				  				</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										{!! Form::label('name', 'Nombre del grupo') !!}
+										{!! Form::text('name', null, ['class'=>'form-control']) !!}
+									</div>
+								</div>
+								<div class="col-md-3">
+									<div class="form-group">
+										{!! Form::label('working_day_id', 'Jornada') !!}
+										{!! Form::select('working_day_id', $journeys, null, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciones una jornada']) !!}
+									</div>
+								</div>
+
 				  			</div>
 				  			<div class="row">
-				  				<div class="col-md-3">
-				  					<div class="form-group">
-				  						{!! Form::label('working_day_id', 'Jornada') !!}
-				  						{!! Form::select('working_day_id', $journeys, null, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciones una jornada']) !!}
-				  					</div>
-				  				</div>
-				  				<div class="col-md-3">
-				  					<div class="form-group">
-				  						{!! Form::label('name', 'Nombre del grupo') !!}
-				  						{!! Form::text('name', null, ['class'=>'form-control']) !!}
-				  					</div>
-				  				</div>
+
 				  			</div>
 				  		</div>
 				  	</div>
