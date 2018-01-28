@@ -28,11 +28,9 @@ class CreateGroupRequest extends FormRequest
 
             'headquarter_id.required'    =>  'La sede es requerida',
             'grade_id.required'          =>  'El grado es requerido',
-            'type.required'              =>  'El tipo de grupo es requerido',
-            'modality.required'          =>  'La modalidad es requerida',
             'working_day_id.required'    =>  'La jornada es requerida',
             'name.required'              =>  'El nombre del grupo es requerido',
-            'quota.numeric'              =>  'El cupo debe ser númerico',
+
         ];
     }
 
@@ -47,11 +45,8 @@ class CreateGroupRequest extends FormRequest
             
             'headquarter_id'    =>  'required',
             'grade_id'          =>  'required',
-            'type'              =>  'required',
-            'modality'           =>  'required',
             'working_day_id'    =>  'required',
             'name'              =>  'required',
-            'quota'             =>  'numeric',
         ];
     }
 }

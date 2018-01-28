@@ -29,8 +29,9 @@
 			<!-- Right Side Of Navbar -->
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-						{{ Auth::guard('web_institution')->user()->name }} <span class="caret"></span>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"
+					   style="font-size: 16px;">
+						<strong>{{ Auth::guard('web_institution')->user()->name }}</strong> <span class="caret"></span>
 					</a>
 
 					<ul class="dropdown-menu" role="menu">

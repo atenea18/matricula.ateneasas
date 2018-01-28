@@ -88,7 +88,7 @@
     	<div class="col-md-12">
     		<div class="panel panel-default">
     			<div class="panel-heading clearfix">
-    				<h4 class="pull-left">Alumnos</h4>
+    				<h4 class="pull-left">Listado de Estudiante</h4>
     				<div class="pull-right">
     					<a href="{{route('inscription.group.pdf', [$group->id, '2018'])}}" class="btn btn-danger" target="_blank">
     						<i class="fa fa-file-pdf"></i>
@@ -136,11 +136,16 @@
 			"language": {
 				"url": "{{asset('plugin/DataTables/languaje/Spanish.json')}}"
 			},
-			// "info":     false,
+			"info":     true,
 			"autoWidth": false,
 			"order": [
 				[ 1, "asc" ]
 			],
+            "aLengthMenu": false,
+            "lengthChange": false,
+            "pageLength": 100
+
+
 		});
 	});
 </script>
