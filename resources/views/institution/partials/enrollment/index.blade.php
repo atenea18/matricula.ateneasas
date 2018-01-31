@@ -13,17 +13,19 @@
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <h3 class="panel-title pull-left">Consulta de Estudiantes</h3>
-                    <a href="{{route('enrollment.card.grade')}}" class="btn btn-primary btn-sm pull-right">Ficha Académica</a>
-                    <a href="{{route('student.create')}}" class="btn btn-primary btn-sm
-                    pull-right">Crear
-                        Estudiante</a>
+                    <div class="pull-right">
+                        <a href="{{route('enrollment.card.grade')}}" class="btn btn-primary btn-sm">Ficha Académica</a>
+
+                        <a href="{{route('student.create')}}" class="btn btn-primary btn-sm">Crear
+                            Estudiante</a>
+                    </div>
                 </div>
                 <div class="panel-body">
 
                     <table class="table" id="table">
                         <thead>
                         <tr>
-
+                            <th>#</th>
                             <th>Apellidos y Nombres</th>
                             <th>Sede</th>
                             <th>Grupo</th>
@@ -32,8 +34,9 @@
                         </thead>
                         <tbody>
 
-                        @foreach($enrollments as $enrollment)
+                        @foreach($enrollments as $key => $enrollment)
                             <tr>
+                                <td>{{ ($key+1) }}</td>
                                 <td>{{ $enrollment->student->last_name.' '.$enrollment->student->name}}</td>
                                 <td>{{ $enrollment->headquarter->name}}</td>
                                 <td>{{ ($enrollment->group != null) ? $enrollment->group->name : ''}}</td>
