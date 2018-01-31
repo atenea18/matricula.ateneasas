@@ -30,7 +30,7 @@ class Headquarter extends Model
      */
     public function groups()
     {
-        return $this->hasMany('App\Group', 'headquarter_id');
+        return $this->hasMany(Group::class, 'headquarter_id');
     }
 
     /**

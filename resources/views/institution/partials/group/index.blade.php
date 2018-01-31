@@ -20,17 +20,21 @@
 			  		<table class="table">
 			  			<thead>
 			  				<tr>
-								<th>Sede</th>
+			  					<th>#</th>
 			  					<th>Grupo</th>
+								<th>Grado</th>
+								<th>Sede</th>
 			  					<th>Jornada</th>
 			  					<th></th>
 			  				</tr>
 			  			</thead>
 			  			<tbody>
-			  				@foreach($groups as $group)
+			  				@foreach($groups->sortBy('name') as $key => $group)
 								<tr>
-									<td>{{ $group->headquarter->name }}</td>
+									<td> {{ ($key+1) }}</td>
 									<td>{{ $group->name }}</td>
+									<td>{{ $group->grade->id}}</td>
+									<td>{{ $group->headquarter->name }}</td>
 
 									<td>{{ $group->workingday->name }}</td>
 
@@ -56,6 +60,7 @@
 				    "url": "{{asset('plugin/DataTables/languaje/Spanish.json')}}"
 				},
 				// "info":     false,
+				// "order": [2],
 				"autoWidth": false,
 		    });
 		});

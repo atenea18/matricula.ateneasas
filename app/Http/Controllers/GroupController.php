@@ -12,6 +12,7 @@ use App\Headquarter;
 use App\Grade;
 use App\Workingday;
 use App\Group;
+use App\Institution;
 
 class GroupController extends Controller
 {
@@ -24,15 +25,19 @@ class GroupController extends Controller
     public function index()
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
+        $institution = Institution::findOrFail($institution_id);
+
         $groups = Group::getAllByInstitution($institution_id);
+        $groups = $institution->headquarters()
+        ->with('groups')
+        ->with('groups.grade')
+        ->with('groups.workingday')
+        ->with('groups.headquarter')
+        ->get()
+        ->pluck('groups')
+        ->collapse();
 
-        $groups->each(function($groups){
-            $groups->workingday;
-            $groups->headquarter;
-        });
-
-        // dd($institution_id);
-
+        // dd($groups);
         return view('institution.partials.group.index')
                 ->with('groups', $groups);
     }

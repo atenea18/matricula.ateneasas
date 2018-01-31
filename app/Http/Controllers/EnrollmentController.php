@@ -349,17 +349,15 @@ class EnrollmentController extends Controller
     public function lists($state)
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
+        $institution = Institution::findOrFail($institution_id);
 
-        // dd($institution_id);
-
-        $enrollments = Enrollment::getByState($state, $institution_id);
-
-        $enrollments->each(function ($enrollments) {
-            $enrollments->student->identification->identification_type;
-            $enrollments->headquarter;
-        });
-
-        // dd($enrollments);
+        $enrollments = $institution->headquarters()
+        ->with('enrollments.student')
+        ->with('enrollments.group')
+        ->with('enrollments.headquarter')
+        ->get()
+        ->pluck('enrollments')
+        ->collapse();
 
         return view('institution.partials.enrollment.index')
             ->with('enrollments', $enrollments);
