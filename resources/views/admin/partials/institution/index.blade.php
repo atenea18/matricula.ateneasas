@@ -34,7 +34,7 @@
 			  				@foreach($institutions as $institution)
 								<tr>
 									<td>
-										<img src="{{Storage::disk('public')->url($institution->picture)}}" width="40" alt="">
+										<img src="{{Storage::disk('uploads')->url($institution->picture)}}" width="40" alt="">
 									</td>
 									<td>{{ $institution->name }}</td>
 									<td>{{ $institution->dane_code }}</td>
