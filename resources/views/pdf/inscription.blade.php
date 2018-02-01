@@ -40,16 +40,14 @@
 	<table class="table">
 		<tbody>
 			<tr>
+				<td width="1%" rowspan="2">
+					<img src="{{ ($institution->picture === '') ? '' : Storage::disk('uploads')->url($institution->picture)}}" alt="" width="50">
+				</td>
 				<td class="text-center">
 					<h4>{{$group->headquarter->institution->name}}</h4>
 					<h5>{{$group->headquarter->name}}</h5>
 				</td>
 			</tr>
-			{{-- <tr>
-				<td>
-					<img src="{{asset('img/mac.png')}}" alt="" width="50">
-				</td>
-			</tr> --}}
 		</tbody>
 	</table>
 	{{--  --}}

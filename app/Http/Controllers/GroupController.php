@@ -27,15 +27,15 @@ class GroupController extends Controller
         $institution_id = Auth::guard('web_institution')->user()->id;
         $institution = Institution::findOrFail($institution_id);
 
-        $groups = Group::getAllByInstitution($institution_id);
         $groups = $institution->headquarters()
         ->with('groups')
-        ->with('groups.grade')
+        // ->with('groups.grade')
         ->with('groups.workingday')
         ->with('groups.headquarter')
         ->get()
         ->pluck('groups')
-        ->collapse();
+        ->collapse()
+        ->sortBy('grade_id');
 
         // dd($groups);
         return view('institution.partials.group.index')

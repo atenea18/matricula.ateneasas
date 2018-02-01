@@ -25,7 +25,7 @@
                     <table class="table" id="table">
                         <thead>
                         <tr>
-                            <th>#</th>
+                            {{-- <th>#</th> --}}
                             <th>Apellidos y Nombres</th>
                             <th>Sede</th>
                             <th>Grupo</th>
@@ -36,7 +36,7 @@
 
                         @foreach($enrollments as $key => $enrollment)
                             <tr>
-                                <td>{{ ($key+1) }}</td>
+                                {{-- <td>{{ ($key+1) }}</td> --}}
                                 <td>{{ $enrollment->student->last_name.' '.$enrollment->student->name}}</td>
                                 <td>{{ $enrollment->headquarter->name}}</td>
                                 <td>{{ ($enrollment->group != null) ? $enrollment->group->name : ''}}</td>
@@ -60,11 +60,12 @@
         $(document).ready(function () {
 
             $(".table").DataTable({
-                "order": [[ 0, "asc" ]],
+                // "order": [1, "asc" ],
                 "language": {
                     "url": "{{asset('plugin/DataTables/languaje/Spanish.json')}}"
                 },
                 "info": true,
+                // "order": [1],
                 "autoWidth": false,
             });
         });
