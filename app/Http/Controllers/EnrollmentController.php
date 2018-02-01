@@ -358,6 +358,7 @@ class EnrollmentController extends Controller
         ->get()
         ->pluck('enrollments')
         ->collapse();
+        // ->sortBy('enrollments.student.last_name');
 
         return view('institution.partials.enrollment.index')
             ->with('enrollments', $enrollments);
