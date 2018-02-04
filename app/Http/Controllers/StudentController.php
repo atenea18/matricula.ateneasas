@@ -76,6 +76,7 @@ class StudentController extends Controller
         $student->address_id = $address->id;
         $student->username = $request->identification_number;
         $student->password = bcrypt($request->identification_number);
+        $student->state_id = 1;
 
         $student->save();
 

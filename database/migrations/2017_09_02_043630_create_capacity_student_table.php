@@ -14,16 +14,16 @@ class CreateCapacityStudentTable extends Migration
     public function up()
     {
         Schema::create('capacity_student', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
 
             // Relacion Estudiante
-            $table->integer('student_id')->unsigned();
+            $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')
                   ->references('id')->on('student')
                   ->onDelete('cascade');
 
             // Relacion Capacidades excepcionales
-            $table->integer('capacity_id')->unsigned();
+            $table->unsignedInteger('capacity_id');
             $table->foreign('capacity_id')
                   ->references('id')->on('capacity')
                   ->onDelete('cascade');

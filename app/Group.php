@@ -10,6 +10,7 @@ class Group extends Model
  	protected $table = 'group';
 
  	protected $fillable = [
+        'id',
  		'name',
  		'quota',
  		'headquarter_id',
@@ -24,7 +25,7 @@ class Group extends Model
      */
     public function enrollments()
     {
-        return $this->hasMany(Enrollment::class, 'group_id');
+        return $this->belongsToMany(Enrollment::class, 'group_assignment', 'group_id', 'enrollment_id');
     }
 
  	/**

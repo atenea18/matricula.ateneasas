@@ -13,11 +13,11 @@ class CreateEnrollmentResultTable extends Migration
      */
     public function up()
     {
-        Schema::create('enrollment_result', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('result');
-            $table->timestamps();
-        });
+        // Schema::create('enrollment_result', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->string('result');
+        //     $table->timestamps();
+        // });
     }
 
     /**

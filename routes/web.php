@@ -41,12 +41,16 @@ Route::group(['middleware'=>'admin_guest'], function(){
 Route::group(['prefix'=>'admin','middleware'=>'admin_auth'], function(){
 
 	Route::get('/', function(){
-		return View('admin.dashboard.index');
+		return View('admin.partials.home');
 	})->name('admin.home');
 
 	Route::post('/logout', 'AdministratorAuth\LoginController@logout');
 	Route::resource('institution', 'InstitutionController');
 	Route::put('institution/{id}/changePassword', 'InstitutionController@changePassword')->name('institution.changePassword');
+
+
+	// Excel's
+	Route::get('exportInstitutions', 'ExcelController@exportInstitutions')->name('institutions.excel');
 });
 
 //Logged in users/seller cannot access or send requests these pages
@@ -107,4 +111,22 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 
 	// PDF's
 	Route::get('pdf/inscription/{group_id}/{year}', 'PdfController@inscription')->name('inscription.group.pdf');
+});
+
+Route::group(['prefix' => 'excel'], function() {
+   
+   	Route::post('upload/identification', 'ExcelController@importIdentification')->name('import.identification');
+   	Route::post('upload/address', 'ExcelController@importAddress')->name('import.address');
+   	Route::post('upload/students', 'ExcelController@importStudents')->name('import.students');
+	Route::post('upload/institutions', 'ExcelController@importInstitutions')->name('import.institutions');
+   	Route::post('upload/headquarters', 'ExcelController@importHeadquarters')->name('import.headquarters');
+   	Route::post('upload/groups', 'ExcelController@importGroups')->name('import.groups');
+   	Route::post('upload/academicInformation', 'ExcelController@importAcademicInformation')->name('import.academicInformation');
+   	Route::post('upload/medicalInformation', 'ExcelController@importMedicalInformation')->name('import.medicalInformation');
+   	Route::post('upload/displacements', 'ExcelController@importDisplacements')->name('import.displacements');
+   	Route::post('upload/socioEconomic', 'ExcelController@importSocioEconomic')->name('import.socioEconomic');
+   	Route::post('upload/teritorrialty', 'ExcelController@importTeritorrialty')->name('import.teritorrialty');
+   	Route::post('upload/family', 'ExcelController@importFamily')->name('import.family');
+   	Route::post('upload/familyRelation', 'ExcelController@importFamilyRelation')->name('import.familyRelation');
+   	Route::post('upload/enrollment', 'ExcelController@importEnrollment')->name('import.enrollment');
 });

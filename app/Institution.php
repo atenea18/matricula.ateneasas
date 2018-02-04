@@ -20,7 +20,7 @@ class Institution extends Authenticatable
 
     //Mass assignable attributes
 	protected $fillable = [
-	    'name', 'dane_code', 'picture', 'email', 'password',
+	    'id', 'name', 'dane_code', 'picture', 'email', 'password',
 	];
 
 	//hidden attributes
@@ -34,6 +34,14 @@ class Institution extends Authenticatable
     public function headquarters()
     {
         return $this->hasMany(Headquarter::class, 'institution_id');
+    }
+
+    /**
+     * Obtiene la relacion que hay entre la matricula y la institución
+     */
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'institution_id');
     }
 
 	//Send password reset notification

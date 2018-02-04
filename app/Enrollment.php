@@ -9,11 +9,13 @@ class Enrollment extends Model
     protected $table = 'enrollment';
 
     protected $fillable = [
+        'code',
+        'folio',
+        'school_year_id',
         'student_id',
-        'group_id',
+        'grade_id',
         'enrollment_state_id',
-        'enrollment_result_id',
-        'headquarter_id',
+        'institution_id',
     ];
 
 
@@ -22,7 +24,15 @@ class Enrollment extends Model
      */
     public function group()
     {
-        return $this->belongsTo(Group::class, 'group_id');
+        return $this->belongsToMany(Group::class, 'group_assignment', 'enrollment_id', 'group_id');
+    }
+
+    /**
+     * Obtiene la relacion que hay entre el grado y la matricula
+     */
+    public function grade()
+    {
+        return $this->belongsTo(Grade::class, 'grade_id');
     }
 
     /**
@@ -30,15 +40,31 @@ class Enrollment extends Model
      */
     public function student()
     {
-        return $this->belongsTo('App\Student', 'student_id');
+        return $this->belongsTo(Student::class, 'student_id');
     }
 
     /**
-     * Obtiene la relacion que hay entre la matricula y la sede
+     * Obtiene la relacion que hay entre la matricula y la institución
      */
-    public function headquarter()
+    public function institution()
     {
-        return $this->belongsTo('App\Headquarter', 'headquarter_id');
+        return $this->belongsTo(Institution::class, 'institution_id');
+    }
+
+    /**
+     * Obtiene la relacion que hay entre la matricula y el año lectivo
+     */
+    public function schoolYear()
+    {
+        return $this->belongsTo(schoolYear::class, 'school_year_id');
+    }
+
+    /**
+    *
+    */
+    public function attachGroupEnrollment($group_id)
+    {
+        return $this->group()->attach($group_id);   
     }
 
     /**

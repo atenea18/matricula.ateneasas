@@ -107,13 +107,22 @@ class GroupController extends Controller
         $journeys = Workingday::orderBy('id', 'ASC')->pluck('name', 'id');
 
         $group = Group::findOrFail($id);
-        
+        $students = $group->enrollments()
+        ->with('student')
+        ->with('student.identification')
+        ->with('student.identification.identification_type')
+        ->where('school_year_id', '=', 1)
+        ->get()
+        ->pluck('student');
+
+        // dd($students);
 
         return view('institution.partials.group.edit')
                 ->with('headquarters', $headquarters)
                 ->with('grades', $grades)
                 ->with('journeys', $journeys)
-                ->with('group', $group);
+                ->with('group', $group)
+                ->with('students',$students);
     }
 
     /**

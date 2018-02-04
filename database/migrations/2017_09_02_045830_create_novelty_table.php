@@ -13,12 +13,12 @@ class CreateNoveltyTable extends Migration
      */
     public function up()
     {
-        Schema::create('novelty', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('abbreviation');
-            $table->timestamps();
-        });
+        // Schema::create('novelty', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->string('name');
+        //     $table->string('abbreviation');
+        //     $table->timestamps();
+        // });
     }
 
     /**

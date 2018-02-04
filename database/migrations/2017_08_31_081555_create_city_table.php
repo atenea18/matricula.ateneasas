@@ -19,7 +19,7 @@ class CreateCityTable extends Migration
             $table->integer('state')->nullable();
 
             // Relacion
-            $table->integer('province_id')->unsigned();
+            $table->unsignedInteger('province_id');
             $table->foreign('province_id')
                   ->references('id')->on('province')
                   ->onDelete('cascade');

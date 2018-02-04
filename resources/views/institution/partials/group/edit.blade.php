@@ -99,19 +99,20 @@
     				<table class="table">
     					<thead>
     						<tr>
-    							<th>Nomobres</th>
-    							<th>Apellidos</th>
+    							<th>#</th>
+    							<th>Apellidos y Nombres</th>
     							<th>Tipo Doc.</th>
     							<th>Num. Documento</th>
     						</tr>
     					</thead>
     					<tbody>
-    						@foreach($group->enrollments as $enrollment)
+    						<?php $cont=0;?>
+    						@foreach($students as $key => $student)
 								<tr>
-									<td>{{$enrollment->student->name}}</td>
-									<td>{{$enrollment->student->last_name}}</td>
-									<td>{{$enrollment->student->identification->identification_type->name}}</td>
-									<td>{{$enrollment->student->identification->identification_number}}</td>
+									<td>{{ (++$cont) }}</td>
+									<td>{{$student->FullnameInverse}}</td>
+									<td>{{$student->identification->identification_type->name}}</td>
+									<td>{{$student->identification->identification_number}}</td>
 								</tr>
     						@endforeach
     					</tbody>
@@ -138,9 +139,9 @@
 			},
 			"info":     true,
 			"autoWidth": false,
-			"order": [
-				[ 1, "asc" ]
-			],
+			// "order": [
+			// 	[ 1, "asc" ]
+			// ],
             "aLengthMenu": false,
             "lengthChange": false,
             "pageLength": 100
