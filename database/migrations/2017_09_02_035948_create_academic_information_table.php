@@ -14,23 +14,23 @@ class CreateAcademicInformationTable extends Migration
     public function up()
     {
         Schema::create('academic_information', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->boolean('has_subsidy');
 
             // Relacion Estudiante
-            $table->integer('student_id')->unsigned();
+            $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')
                   ->references('id')->on('student')
                   ->onDelete('cascade');
 
             // Relacion caracter
-            $table->integer('academic_character_id')->unsigned();
+            $table->unsignedInteger('academic_character_id');
             $table->foreign('academic_character_id')
                   ->references('id')->on('academic_character')
                   ->onDelete('cascade');
 
             // Relacion especialidad
-            $table->integer('academic_specialty_id')->unsigned();
+            $table->unsignedInteger('academic_specialty_id');
             $table->foreign('academic_specialty_id')
                   ->references('id')->on('academic_specialty')
                   ->onDelete('cascade');

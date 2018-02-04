@@ -14,18 +14,18 @@ class CreateDisplacementTable extends Migration
     public function up()
     {
         Schema::create('displacement', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->date('expulsion_date')->nullable();
             $table->string('certificate', 100)->nullable();
 
             // Relacion Estudiante
-            $table->integer('student_id')->unsigned();
+            $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')
                   ->references('id')->on('student')
                   ->onDelete('cascade');
 
             // Relacion Victima de conflicto
-            $table->integer('victim_of_conflict_id')->unsigned();
+            $table->unsignedInteger('victim_of_conflict_id');
             $table->foreign('victim_of_conflict_id')
                   ->references('id')->on('victim_of_conflict')
                   ->onDelete('cascade');

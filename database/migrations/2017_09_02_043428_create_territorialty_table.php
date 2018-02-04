@@ -14,12 +14,12 @@ class CreateTerritorialtyTable extends Migration
     public function up()
     {
         Schema::create('territorialty', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('guard', 100)->nullable();
             $table->string('ethnicity', 100)->nullable();
             
             // Relacion Estudiante
-            $table->integer('student_id')->unsigned();
+            $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')
                   ->references('id')->on('student')
                   ->onDelete('cascade');

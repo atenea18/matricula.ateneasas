@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEnrollmentSchollYearTable extends Migration
+class CreateStudentStatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class CreateEnrollmentSchollYearTable extends Migration
      */
     public function up()
     {
-        // Schema::table('enrollment', function (Blueprint $table) {
-        //     $table->year('scholl_year');
-        // });
+        Schema::create('student_states', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('state');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -25,8 +27,6 @@ class CreateEnrollmentSchollYearTable extends Migration
      */
     public function down()
     {
-        Schema::table('enrollment', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('student_states');
     }
 }

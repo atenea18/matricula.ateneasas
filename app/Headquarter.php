@@ -10,6 +10,7 @@ class Headquarter extends Model
     protected $table = 'headquarter';
 
     protected $fillable = [
+        'id',
     	'name',
     	'nit',
     	'institution_id',

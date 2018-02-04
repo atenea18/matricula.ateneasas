@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Zone extends Model
 {
-    protected $table = 'zone';
+    // protected $table = 'zone';
 
     protected $fillable = 
     [

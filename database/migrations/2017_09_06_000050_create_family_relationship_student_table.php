@@ -14,23 +14,22 @@ class CreateFamilyRelationshipStudentTable extends Migration
     public function up()
     {
         Schema::create('family_relationship_student', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
 
-            // Relacion Estudiante
-            $table->integer('student_id')->unsigned();
+            // Relacion con el alumno
+            $table->unsignedBigInteger('student_id')->after('id');
             $table->foreign('student_id')
                   ->references('id')->on('student')
                   ->onDelete('cascade');
-            
 
             // Relacion Familia
-            $table->integer('family_id')->unsigned();
+            $table->unsignedBigInteger('family_id');
             $table->foreign('family_id')
                   ->references('id')->on('family')
                   ->onDelete('cascade');
 
             // Relacion Parentesco
-            $table->integer('relationship_id')->unsigned();
+            $table->unsignedInteger('relationship_id');
             $table->foreign('relationship_id')
                   ->references('id')->on('relationship')
                   ->onDelete('cascade');

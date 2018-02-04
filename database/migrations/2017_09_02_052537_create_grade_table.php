@@ -18,7 +18,7 @@ class CreateGradeTable extends Migration
             $table->string('name');
 
             // Relacion Nivel academico
-            $table->integer('academic_level_id')->unsigned();
+            $table->unsignedInteger('academic_level_id');
             $table->foreign('academic_level_id')
                   ->references('id')->on('academic_level')
                   ->onDelete('cascade');

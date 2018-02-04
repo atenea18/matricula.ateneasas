@@ -14,16 +14,16 @@ class CreateDiscapacityStudentTable extends Migration
     public function up()
     {
         Schema::create('discapacity_student', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
 
             // Relacion Estudiante
-            $table->integer('student_id')->unsigned();
+            $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')
                   ->references('id')->on('student')
                   ->onDelete('cascade');
 
             // Relacion Discapacidad
-            $table->integer('discapacity_id')->unsigned();
+            $table->unsignedInteger('discapacity_id');
             $table->foreign('discapacity_id')
                   ->references('id')->on('discapacity')
                   ->onDelete('cascade');

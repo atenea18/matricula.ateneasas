@@ -224,25 +224,31 @@
                                     <div class="col-md-3">
                                         <div class="form-group{{ $errors->has('headquarter_id') ? ' has-error' : '' }}">
                                             {!! Form::label('headquarter_id', 'Sede') !!}
-                                            {!! Form::select('headquarter_id', $headquarters, $enrollment->headquarter_id, ['placeholder'=>'Seleccione una sede', 'class'=>'form-control chosen-select']) !!}
+                                            {!! Form::select('headquarter_id', $headquarters, (isset($enrollment->group[0])) ? $enrollment->group[0]->headquarter_id : null, ['placeholder'=>'Seleccione una sede', 'class'=>'form-control chosen-select']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group{{ $errors->has('workingday_id') ? ' has-error' : '' }}">
                                             {!! Form::label('workingday_id', 'Jornada') !!}
-                                            {!! Form::select('workingday_id', $journeys, ($enrollment->group != null) ? $enrollment->group->working_day_id : null, ['placeholder'=>'Seleccione una jornada', 'class'=>'form-control chosen-select', 'id'=>'workingday_id']) !!}
+                                            {!! Form::select('workingday_id', $journeys, (isset($enrollment->group[0])) ? $enrollment->group[0]->working_day_id : null, ['placeholder'=>'Seleccione una jornada', 'class'=>'form-control chosen-select', 'id'=>'workingday_id']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             {!! Form::label('group_id', 'Grupo') !!}
-                                            {!! Form::select('group_id', $groups, ($enrollment->group == null) ? null : $enrollment->group_id, ['class'=>'form-control chosen-group', 'id'=>'group_id', 'data-placeholder'=>'Seleccione un grupo']) !!}
+                                            {!! Form::select('group_id', $groups, (!isset($enrollment->group[0])) ? null : $enrollment->group[0]->id, ['class'=>'form-control chosen-group', 'id'=>'group_id', 'data-placeholder'=>'Seleccione un grupo']) !!}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            {!! Form::label('school_year_id', 'Año lectivo') !!}
+                                            {!! Form::select('school_year_id', $schoolyears, $enrollment->school_year_id, ['class'=>'form-control chosen-group', 'id'=>'school_year_id', 'placeholder'=>'Seleccione un año lectivo']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             {!! Form::label('grade_id', 'Grado') !!}
-                                            {!! Form::text('grade_id', ($enrollment->group_id == null) ? '' : $enrollment->group->grade->name, ['class'=>'form-control', 'id'=>'grade_id', 'disabled'=>true]) !!}
+                                            {!! Form::text('grade_id', (!isset($enrollment->group[0])) ? '' : $enrollment->group[0]->grade->name, ['class'=>'form-control', 'id'=>'grade_id', 'disabled'=>true]) !!}
                                         </div>
                                     </div>
                                 </div>

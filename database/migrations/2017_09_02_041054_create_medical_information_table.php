@@ -14,24 +14,24 @@ class CreateMedicalInformationTable extends Migration
     public function up()
     {
         Schema::create('medical_information', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('ips', 100)->nullable();
             $table->string('ars', 100)->nullable();
 
             // Relacion Estudiante
-            $table->integer('student_id')->unsigned();
+            $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')
                   ->references('id')->on('student')
                   ->onDelete('cascade');
 
             // Relacion Eps
-            $table->integer('eps_id')->unsigned();
+            $table->unsignedInteger('eps_id');
             $table->foreign('eps_id')
                   ->references('id')->on('eps')
                   ->onDelete('cascade');
 
             // Relacion Tipo de sangre
-            $table->integer('blood_type_id')->nullable()->unsigned();
+            $table->unsignedInteger('blood_type_id')->nullable();
             $table->foreign('blood_type_id')
                   ->references('id')->on('blood_type')
                   ->onDelete('cascade');

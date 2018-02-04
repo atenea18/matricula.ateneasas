@@ -14,7 +14,7 @@ class CreateSocioeconomicInformationTable extends Migration
     public function up()
     {
         Schema::create('socioeconomic_information', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('sisben_number')->nullable();
             $table->integer('sisben_level')->nullable();
             $table->boolean('amcf')->nullable()->default(false); // Alumno Madre Cabeza de Familia
@@ -23,13 +23,13 @@ class CreateSocioeconomicInformationTable extends Migration
             $table->boolean('bhn')->nullable()->default(false); // Beneficiario Héroe Nación
 
             // Relacion Estudiante
-            $table->integer('student_id')->unsigned();
+            $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')
                   ->references('id')->on('student')
                   ->onDelete('cascade');
 
             // Relacion Estrato
-            $table->integer('stratum_id')->nullable()->unsigned();
+            $table->unsignedInteger('stratum_id')->nullable();
             $table->foreign('stratum_id')
                   ->references('id')->on('stratum')
                   ->onDelete('cascade');

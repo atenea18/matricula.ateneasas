@@ -61,10 +61,11 @@
 			</tr>
 		</thead>
 		<tbody>
-			@foreach($students as $key => $student)
+			<?php $cont= 0; ?>
+			@foreach($students->sortBy('last_name') as $key => $student)
 			<tr>
-				<td width="5">{{ ($key+1) }}</td>
-				<td style="height:5px; min-height:5px;">{{$student->fullName}}</td>
+				<td width="5">{{ (++$cont) }}</td>
+				<td style="height:5px; min-height:5px;">{{$student->fullNameInverse}}</td>
 				<td></td>
 				<td></td>
 			</tr>

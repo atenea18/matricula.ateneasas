@@ -25,7 +25,7 @@
                     <table class="table" id="table">
                         <thead>
                         <tr>
-                            {{-- <th>#</th> --}}
+                            <th>#</th>
                             <th>Apellidos y Nombres</th>
                             <th>Sede</th>
                             <th>Grupo</th>
@@ -33,13 +33,13 @@
                         </tr>
                         </thead>
                         <tbody>
-
+                        <?php $cont=0;?>
                         @foreach($enrollments as $key => $enrollment)
                             <tr>
-                                {{-- <td>{{ ($key+1) }}</td> --}}
-                                <td>{{ $enrollment->student->last_name.' '.$enrollment->student->name}}</td>
-                                <td>{{ $enrollment->headquarter->name}}</td>
-                                <td>{{ ($enrollment->group != null) ? $enrollment->group->name : ''}}</td>
+                                <td>{{ (++$cont) }}</td>
+                                <td>{{ $enrollment->student->fullNameInverse}}</td>
+                                <td>{{ $enrollment->group[0]->headquarter->name}}</td>
+                                <td>{{ ($enrollment->group[0] != null) ? $enrollment->group[0]->name : ''}}</td>
 
                                 <td>
                                     <a href="{{ route('enrollment.edit', $enrollment->id) }}" class="btn btn-primary btn-sm"><i

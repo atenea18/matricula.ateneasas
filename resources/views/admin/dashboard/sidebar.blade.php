@@ -22,6 +22,14 @@
                 <li><a href="{{route('institution.index')}}">Ver</a></li>
             </ul>
         </li>
+        <li>
+            <a href="{{route('admin.home')}}"> 
+                <span class="fa-stack fa-lg pull-left">
+                    <i class="fa fa-home fa-stack-1x "></i>
+                </span>
+                Importacion
+            </a>
+        </li>
 		<!-- Inscripción -->
 {{--        <li class="">
             <a data-toggle="collapse" data-parent="#menu" href="#collapse-inscription" aria-expanded="true" aria-controls="collapse-inscription">

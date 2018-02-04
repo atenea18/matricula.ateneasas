@@ -14,21 +14,28 @@ class CreateStudentTable extends Migration
     public function up()
     {
         Schema::create('student', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('last_name');
-            $table->string('username');
-            $table->string('password', 60);
+            $table->string('username')->nullable();
+            $table->string('password', 60)->nullable();
+            $table->string('remember_token', 100)->unique();
             $table->string('picture', 60)->nullable();
 
+            // Relacion con el estado del estudiante
+            $table->unsignedInteger('state_id');
+            $table->foreign('state_id')
+                  ->references('id')->on('student_states')
+                  ->onDelete('cascade');
+
             // Relacion identificación
-            $table->integer('identification_id')->unsigned();
+            $table->unsignedBigInteger('identification_id');
             $table->foreign('identification_id')
                   ->references('id')->on('identification')
                   ->onDelete('cascade');
 
             // Relacion Direccion
-            $table->integer('address_id')->unsigned();
+            $table->unsignedBigInteger('address_id');
             $table->foreign('address_id')
                   ->references('id')->on('address')
                   ->onDelete('cascade');

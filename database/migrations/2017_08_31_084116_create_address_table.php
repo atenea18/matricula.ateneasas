@@ -14,7 +14,7 @@ class CreateAddressTable extends Migration
     public function up()
     {
         Schema::create('address', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('address')->nullable();
             $table->string('neighborhood')->nullable();
             $table->string('phone')->nullable();
@@ -22,15 +22,15 @@ class CreateAddressTable extends Migration
             $table->string('email')->nullable();
 
             // Relacion Ciudad
-            $table->integer('id_city_address')->unsigned();
+            $table->unsignedInteger('id_city_address')->nllable();
             $table->foreign('id_city_address')
                   ->references('id')->on('city')
                   ->onDelete('cascade');
 
             // Relacion Zona rural
-            $table->integer('zone_id')->unsigned();
+            $table->unsignedInteger('zone_id');
             $table->foreign('zone_id')
-                  ->references('id')->on('zone')
+                  ->references('id')->on('zones')
                   ->onDelete('cascade');
 
             $table->timestamps();
