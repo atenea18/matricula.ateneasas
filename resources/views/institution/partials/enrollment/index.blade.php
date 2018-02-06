@@ -29,6 +29,7 @@
                             <th>Apellidos y Nombres</th>
                             <th>Sede</th>
                             <th>Grupo</th>
+                            <th>Año</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -38,8 +39,11 @@
                             <tr>
                                 <td>{{ (++$cont) }}</td>
                                 <td>{{ $enrollment->student->fullNameInverse}}</td>
-                                <td>{{ $enrollment->group[0]->headquarter->name}}</td>
-                                <td>{{ ($enrollment->group[0] != null) ? $enrollment->group[0]->name : ''}}</td>
+                                <td>{{ (isset($enrollment->group[0])) ? $enrollment->group[0]->headquarter->name : ''}}</td>
+                                <td>{{ (isset($enrollment->group[0])) ? $enrollment->group[0]->name : ''}}</td>
+                                <td>
+                                    {{ $enrollment->schoolYear->year}}
+                                </td>
 
                                 <td>
                                     <a href="{{ route('enrollment.edit', $enrollment->id) }}" class="btn btn-primary btn-sm"><i
