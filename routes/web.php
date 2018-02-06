@@ -11,6 +11,8 @@
 |
 */
 
+use App\Institution;
+
 Route::get('/', function () {
 
 	return view('home.index');
@@ -50,7 +52,14 @@ Route::group(['prefix'=>'admin','middleware'=>'admin_auth'], function(){
 
 
 	// Excel's
-	Route::get('exportInstitutions', 'ExcelController@exportInstitutions')->name('institutions.excel');
+	Route::get('excel', 'ExcelController@exportInstitutions')->name('institutions.excel');
+	Route::get('import/students', function(){
+		
+		$institutions = Institution::orderBy('name', 'DESC')->pluck('name', 'id');
+		
+		return View('admin.partials.import.student.old_students')
+		->with('institutions',$institutions);
+	})->name('import.old_students.form');
 });
 
 //Logged in users/seller cannot access or send requests these pages
@@ -129,4 +138,6 @@ Route::group(['prefix' => 'excel'], function() {
    	Route::post('upload/family', 'ExcelController@importFamily')->name('import.family');
    	Route::post('upload/familyRelation', 'ExcelController@importFamilyRelation')->name('import.familyRelation');
    	Route::post('upload/enrollment', 'ExcelController@importEnrollment')->name('import.enrollment');
+
+   	Route::post('upload/old_students', 'ExcelController@oldStudent')->name('import.old_students');
 });

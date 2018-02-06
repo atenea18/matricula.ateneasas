@@ -23,7 +23,7 @@
             </ul>
         </li>
         <li>
-            <a href="{{route('admin.home')}}"> 
+            <a href="{{route('import.old_students.form')}}"> 
                 <span class="fa-stack fa-lg pull-left">
                     <i class="fa fa-home fa-stack-1x "></i>
                 </span>
