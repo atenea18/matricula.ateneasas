@@ -56,7 +56,7 @@ class Enrollment extends Model
      */
     public function schoolYear()
     {
-        return $this->belongsTo(SchoolYear::class, 'school_year_id');
+        return $this->belongsTo(Schoolyear::class, 'school_year_id');
     }
 
     /**
