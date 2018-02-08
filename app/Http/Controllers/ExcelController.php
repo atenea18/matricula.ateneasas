@@ -66,9 +66,10 @@ class ExcelController extends Controller
             // iteracción
             $reader->each(function($row) {
 
+                // dd($row);
                 $iden_pre = Identification::where('identification_number','=',$row->identification_number)->first();
 
-                if($iden_pre != null):
+                if($iden_pre == null):
                     $identification = new Identification();
                     $identification->id = $row->id;
                     $identification->identification_number = $row->identification_number;
@@ -231,16 +232,18 @@ class ExcelController extends Controller
             $reader->each(function($row) {
 
                 $ai = new AcademicInformation();
-                $ai->id = $row->id;
-                $ai->has_subsidy = $row->has_subsidy;
-                $ai->student_id = $row->student_id;
-                $ai->academic_character_id = $row->academic_character_id;
-                $ai->academic_specialty_id = $row->academic_specialty_id;
-                $ai->created_at = $row->created_at;
-                $ai->updated_at = $row->updated_at;
+                $student = Student::find($row->student_id);
 
-                if($ai->student_id != null)
+                if($student != null):
+                    $ai->id = $row->id;
+                    $ai->has_subsidy = $row->has_subsidy;
+                    $ai->student_id = $row->student_id;
+                    $ai->academic_character_id = $row->academic_character_id;
+                    $ai->academic_specialty_id = $row->academic_specialty_id;
+                    $ai->created_at = $row->created_at;
+                    $ai->updated_at = $row->updated_at;
                     $ai->save();
+                endif;
             });
         
         });
@@ -420,13 +423,13 @@ class ExcelController extends Controller
 
                 $institution = $headquarter->institution;
 
-                if($headquarter != null && $student != null){
+                if($headquarter != null && $student != null) {
                     $enrollment->id = $row->id;
-                    $enrollment->code =  "2018".time()."-".$student->id;
+                    $enrollment->code = ($group != null) ? "2018".$headquarter->institudion_id.$group->grade_id.$student->id : "2018".$headquarter->institudion_id."17".$student->id; //year.institudion_id.grade_id.student_id
                     // $enrollment->folio =
                     $enrollment->school_year_id = 1;
                     $enrollment->student_id = $row->student_id;
-                    $enrollment->garde_id = ($group != null) ? $group->grade->id : null ;
+                    $enrollment->garde_id = ($group != null) ? $group->grade->id : 17 ;
                     $enrollment->enrollment_state_id = ($group != null) ? 3 : 2 ;
                     $enrollment->institution_id = $institution->id;
                     $enrollment->created_at = $row->created_at;
@@ -436,101 +439,99 @@ class ExcelController extends Controller
                         $enrollment->attachGroupEnrollment($group->id);
                     }
 
-                    // dd($enrollment);
-
                 }
             });
         
         });
     }
 
-    public function oldStudent(Request $request)
-    {
+    // public function oldStudent(Request $request)
+    // {
 
-        // dd($request->all());
-        \Excel::load($request->excel, function($reader) use($request) {
+    //     // dd($request->all());
+    //     \Excel::load($request->excel, function($reader) use($request) {
  
-            $excel = $reader->get();
+    //         $excel = $reader->get();
      
-            // iteracción
-            $reader->each(function($row) use($request){
+    //         // iteracción
+    //         $reader->each(function($row) use($request){
 
-                $identification = Identification::where('identification_number','=',$row->numero_documento)->first();
-                $identification_type =Identification_type::where('abbreviation', '=', $row->tipo_identificacion)->first();
-                $gender = Gender::where('prefix', '=', $row->genero)->first();
-                $bloodType = BloodType::where('blood_type', '=', $row->tipo_sangre)->first();
+    //             $identification = Identification::where('identification_number','=',$row->numero_documento)->first();
+    //             $identification_type =Identification_type::where('abbreviation', '=', $row->tipo_identificacion)->first();
+    //             $gender = Gender::where('prefix', '=', $row->genero)->first();
+    //             $bloodType = BloodType::where('blood_type', '=', $row->tipo_sangre)->first();
 
-                if($identification == null):
-                    $identification = new Identification();
-                    $identification->identification_number = $row->numero_documento;
-                    $identification->birthdate = $row->fecha_nacimiento;
-                    $identification->identification_type_id = $identification_type->id;
-                    $identification->gender_id = $gender->id;
-                    $identification->save();
+    //             if($identification == null):
+    //                 $identification = new Identification();
+    //                 $identification->identification_number = $row->numero_documento;
+    //                 $identification->birthdate = $row->fecha_nacimiento;
+    //                 $identification->identification_type_id = $identification_type->id;
+    //                 $identification->gender_id = $gender->id;
+    //                 $identification->save();
 
-                    $address = new Address();
-                    $address->address = $row->address;
-                    $address->neighborhood = $row->barrio;
-                    $address->phone = $row->telefono;
-                    $address->mobil = $row->telefono;
-                    $address->zone_id = 2;
-                    $address->save();
+    //                 $address = new Address();
+    //                 $address->address = $row->address;
+    //                 $address->neighborhood = $row->barrio;
+    //                 $address->phone = $row->telefono;
+    //                 $address->mobil = $row->telefono;
+    //                 $address->zone_id = 2;
+    //                 $address->save();
 
-                    $student = new Student();
-                    $student->name = $row->primer_nombre." ".$row->segundo_nombre;
-                    $student->last_name = $row->primer_apellido." ".$row->segundo_apellido;
-                    $student->username = $row->numero_documento;
-                    $student->password = $row->numero_documento;
-                    $student->state_id = 2;
-                    $student->identification_id = $identification->id;   
-                    $student->address_id = $address->id;
-                    $student->save();
+    //                 $student = new Student();
+    //                 $student->name = $row->primer_nombre." ".$row->segundo_nombre;
+    //                 $student->last_name = $row->primer_apellido." ".$row->segundo_apellido;
+    //                 $student->username = $row->numero_documento;
+    //                 $student->password = $row->numero_documento;
+    //                 $student->state_id = 2;
+    //                 $student->identification_id = $identification->id;   
+    //                 $student->address_id = $address->id;
+    //                 $student->save();
 
-                    $ai = new AcademicInformation();
-                    $ai->has_subsidy = 0;
-                    $ai->student_id = $student->id;
-                    $ai->academic_character_id = 3;
-                    $ai->academic_specialty_id = 6;
-                    $ai->save();
+    //                 $ai = new AcademicInformation();
+    //                 $ai->has_subsidy = 0;
+    //                 $ai->student_id = $student->id;
+    //                 $ai->academic_character_id = 3;
+    //                 $ai->academic_specialty_id = 6;
+    //                 $ai->save();
 
-                    $mi = new MedicalInformation();
-                    $mi->ips = $row->ips;
-                    $mi->student_id = $student->id;
-                    $mi->eps_id = ($row->eps == 0) ? 49 : $row->eps_id;
-                    $mi->blood_type_id = ($bloodType == null) ? null : $bloodType->id;
-                    $mi->save();
+    //                 $mi = new MedicalInformation();
+    //                 $mi->ips = $row->ips;
+    //                 $mi->student_id = $student->id;
+    //                 $mi->eps_id = ($row->eps == 0) ? 49 : $row->eps_id;
+    //                 $mi->blood_type_id = ($bloodType == null) ? null : $bloodType->id;
+    //                 $mi->save();
 
-                    $di = new Displacement();
-                    $di->student_id = $student->id;
-                    $di->victim_of_conflict_id = 5;
-                    $di->save();
+    //                 $di = new Displacement();
+    //                 $di->student_id = $student->id;
+    //                 $di->victim_of_conflict_id = 5;
+    //                 $di->save();
 
-                    $soc = new SocioeconomicInformation();
-                    $soc->sisben_number = $row->numero_carne_sisben;
-                    $soc->sisben_level = $row->nivel_sisben;
-                    $soc->student_id = $student->id;
-                    $soc->stratum_id = $row->estrato;
-                    $soc->save();
+    //                 $soc = new SocioeconomicInformation();
+    //                 $soc->sisben_number = $row->numero_carne_sisben;
+    //                 $soc->sisben_level = $row->nivel_sisben;
+    //                 $soc->student_id = $student->id;
+    //                 $soc->stratum_id = $row->estrato;
+    //                 $soc->save();
 
-                    $ter = new Territorialty();
-                    $ter->guard = $row->resguardo;
-                    $ter->ethnicity = $row->etnia;
-                    $ter->student_id = $student->id;
-                    $ter->save();
+    //                 $ter = new Territorialty();
+    //                 $ter->guard = $row->resguardo;
+    //                 $ter->ethnicity = $row->etnia;
+    //                 $ter->student_id = $student->id;
+    //                 $ter->save();
 
-                    $enrollment = new Enrollment();
-                    $enrollment->code =  "2017".time()."-".$student->id;
-                    $enrollment->school_year_id = 2;
-                    $enrollment->student_id = $student->id;
-                    $enrollment->garde_id = ($row->grado_igreso == null) ? null : $row->grado_igreso;
-                    $enrollment->enrollment_state_id = 3;
-                    $enrollment->institution_id = 6;
-                    $enrollment->save();
+    //                 $enrollment = new Enrollment();
+    //                 $enrollment->code = ($gra) ? "2017".$request->institution_id."17".$student->id; //2018".$headquarter->institudion_id.$group->grade_id.$student->id
+    //                 $enrollment->school_year_id = 2;
+    //                 $enrollment->student_id = $student->id;
+    //                 $enrollment->garde_id = ($row->grado_igreso == null) ? 17 : $row->grado_igreso;
+    //                 $enrollment->enrollment_state_id = 3;
+    //                 $enrollment->institution_id = $request->institution_id;
+    //                 $enrollment->save();
 
-                endif;
-            });
+    //             endif;
+    //         });
             
-            echo "Terminado.....";
-        });
-    }
+    //         echo "Terminado.....";
+    //     });
+    // }
 }

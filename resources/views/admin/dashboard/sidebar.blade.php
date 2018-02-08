@@ -29,6 +29,7 @@
                 Carga de archivos
             </a>
             <ul id="import_files" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
+                <li><a href="{{route('import.old_students.form')}}">Temporal</a></li>
                 <li><a href="{{route('import.old_students.form')}}">Estudiantes antigüos</a></li>
             </ul>
         </li>
