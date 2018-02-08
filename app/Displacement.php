@@ -10,6 +10,7 @@ class Displacement extends Model
 
     protected $fillable=
     [
+        'id',
     	'expulsion_date',
     	'certificate',
     	'student_id',

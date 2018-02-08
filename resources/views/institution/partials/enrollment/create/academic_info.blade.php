@@ -47,5 +47,11 @@
 				{!! Form::select('group_id', [], old('group_id'), ['class'=>'form-control chosen-group', 'id'=>'group_id', 'data-placeholder'=>'Seleccione un grupo']) !!}
 			</div>
 		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				{!! Form::label('school_year_id', 'Año lectivo') !!}
+				{!! Form::select('school_year_id', $schoolyears, old('school_year_id'), ['class'=>'form-control chosen-group', 'id'=>'school_year_id', 'placeholder'=>'Seleccione un año lectivo']) !!}
+			</div>
+		</div>
 	</div>
 </div>

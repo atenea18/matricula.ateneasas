@@ -12,9 +12,12 @@
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
-                    <a class="btn btn-primary btn-sm pull-right" href="{{route('enrollment.lists', 1)}}">Ver Estudiantes</a>
-                    <a href="{{route('student.create')}}" class="btn btn-primary btn-sm
-                    pull-right">Crear Estudiante</a>
+                    <div class="pull-right">
+                        <a class="btn btn-primary btn-sm" href="{{route('enrollment.lists', 1)}}">
+                        Ver Estudiantes</a>
+                    <a href="{{route('student.create')}}" class="btn btn-primary btn-sm">
+                    Crear Estudiante</a>
+                    </div>
                 @include('institution.partials.enrollment.optionsEnrollmentCard')
 
                 </div>

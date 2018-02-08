@@ -10,6 +10,7 @@ class MedicalInformation extends Model
 
     protected $fillable =
     [
+        'id',
     	'ips',
     	'ars',
     	'student_id',

@@ -13,13 +13,13 @@ class CreateEnrollmentChangeTable extends Migration
      */
     public function up()
     {
-        Schema::table('enrollment', function (Blueprint $table) {
-            // Relación Sede
-            $table->integer('headquarter_id')->nullable()->unsigned()->after('student_id');
-            $table->foreign('headquarter_id')
-                  ->references('id')->on('headquarter')
-                  ->onDelete('cascade');
-        });
+        // Schema::table('enrollment', function (Blueprint $table) {
+        //     // Relación Sede
+        //     $table->integer('headquarter_id')->nullable()->unsigned()->after('student_id');
+        //     $table->foreign('headquarter_id')
+        //           ->references('id')->on('headquarter')
+        //           ->onDelete('cascade');
+        // });
     }
 
     /**

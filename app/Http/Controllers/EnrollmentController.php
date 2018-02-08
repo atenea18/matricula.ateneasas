@@ -37,6 +37,7 @@ use App\Displacement;
 use App\SocioeconomicInformation;
 use App\Territorialty;
 use App\Enrollment;
+use App\Schoolyear;
 
 class EnrollmentController extends Controller
 {
@@ -88,6 +89,7 @@ class EnrollmentController extends Controller
         $specialties = AcademicSpecialty::orderBy('name', 'ASC')->pluck('name', 'id');
         $headquarters = Headquarter::where('institution_id', '=', $institution_id)->orderBy('name', 'ASC')->pluck('name', 'id');
         $journeys = Workingday::orderBy('id', 'ASC')->pluck('name', 'id');
+        $schoolyears = Schoolyear::orderBy('id', 'ASC')->pluck('year', 'id');
 
         // MEDICAL INFORMATION
         $eps = Eps::orderBy('name', 'ASC')->pluck('name', 'id');
@@ -129,7 +131,9 @@ class EnrollmentController extends Controller
             ->with('zones', $zones)
             ->with('relationship_types', $relationship_types)
             ->with('headquarters', $headquarters)
-            ->with('journeys', $journeys);
+            ->with('journeys', $journeys)
+            ->with('schoolyears',$schoolyears)
+            ->with('institution_id',$institution_id);
     }
 
     /**
@@ -144,14 +148,23 @@ class EnrollmentController extends Controller
 
         // STUDENT
         $student = Student::findOrFail($request->student_id);
+        $schoolYear = Schoolyear::findOrFail($request->school_year_id);
+        $group = Group::find($request->group_id);
 
-        // dd($enrollment);
+        // dd($request->all());
         
         // ACADEMIC INFORMATION
         $enrollment = new Enrollment($request->all());
+        $enrollment->code = $schoolYear->year.time()."-".$request->student_id;
+        $enrollment->garde_id = ($group != null) ? $group->grade->id : null ;
+        
+        $enrollment->save();
+
+        if($group != null)
+            $enrollment->attachGroupEnrollment($group->id);
+
         $academic_information = new AcademicInformation($request->all());
         $academic_information->save();
-        $enrollment->save();
 
         // MEDICAL INFORMATION
         $medical_information = new MedicalInformation($request->all());
@@ -199,30 +212,29 @@ class EnrollmentController extends Controller
     public function edit($id)
     {
         $enrollment = Enrollment::findOrFail($id);
-        // $enrollment->headquarter;
-        // $enrollment->student->academicInformation;
-        // $enrollment->student->medicalInformation;
-        // $enrollment->student->displacement;
-        // $enrollment->student->socioeconomicInformation;
-        // $enrollment->student->territorialty;
-        // $enrollment->student->capacities;
-        // $enrollment->student->discapacities;
+
 
         $institution_id = Auth::guard('web_institution')->user()->id;
 
-        // dd($enrollment);
+        // dd($enrollment->group);
         // ACADEMIC INFORMATION
         $groups = array();
         $characters = AcademicCharacter::orderBy('name', 'ASC')->pluck('name', 'id');
         $specialties = AcademicSpecialty::orderBy('name', 'ASC')->pluck('name', 'id');
         $headquarters = Headquarter::where('institution_id', '=', $institution_id)->orderBy('name', 'ASC')->pluck('name', 'id');
         $journeys = Workingday::orderBy('id', 'ASC')->pluck('name', 'id');
+        $schoolyears = Schoolyear::orderBy('id', 'ASC')->pluck('year', 'id');
 
-        if($enrollment->group != null)
+        $group = $enrollment->group()->first();
+
+        // dd($group);
+
+        if($group != null)
             $groups = Group::where([
-                ['working_day_id', '=', $enrollment->group->workingday->id],
-                ['headquarter_id','=',$enrollment->headquarter_id]
+                ['working_day_id', '=', $group->working_day_id],
+                ['headquarter_id','=',$group->headquarter_id]
             ])->orderBy('grade_id','ASC')->pluck('name', 'id');
+
 
         // MEDICAL INFORMATION
         $eps = Eps::orderBy('name', 'ASC')->pluck('name', 'id');
@@ -246,7 +258,7 @@ class EnrollmentController extends Controller
         $zones = Zone::orderBy('name', 'ASC')->pluck('name', 'id');
         $relationship_types = RelationShipFamily::orderBy('type', 'ASC')->pluck('type', 'id');
 
-        // dd($enrollment);
+        // dd($enrollment->group[0]);
         return view('institution.partials.enrollment.edit')
             ->with('enrollment', $enrollment)
             ->with('characters', $characters)
@@ -265,6 +277,7 @@ class EnrollmentController extends Controller
             ->with('relationship_types', $relationship_types)
             ->with('headquarters', $headquarters)
             ->with('journeys', $journeys)
+            ->with('schoolyears',$schoolyears)
             ->with('student', $enrollment->student);
     }
 
@@ -279,6 +292,7 @@ class EnrollmentController extends Controller
     {
         // STUDEN
         $student = Student::findOrFail($request->student_id);
+        $group = Group::find($request->group_id);
 
         $student->fill($request->all());
         $student->update();
@@ -292,6 +306,9 @@ class EnrollmentController extends Controller
         $enrollment = Enrollment::findOrFail($request->enrollment_id);
         $enrollment->fill($request->all());
         $enrollment->save();
+
+        if($group != null)
+            $enrollment->group()->sync($group->id);
 
 
         // MEDICAL INFORMATION
@@ -349,17 +366,13 @@ class EnrollmentController extends Controller
     public function lists($state)
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
+        $institution = Institution::findOrFail($institution_id);
 
-        // dd($institution_id);
-
-        $enrollments = Enrollment::getByState($state, $institution_id);
-
-        $enrollments->each(function ($enrollments) {
-            $enrollments->student->identification->identification_type;
-            $enrollments->headquarter;
-        });
-
-        // dd($enrollments);
+        $enrollments = $institution->enrollments()
+        ->with('student')
+        ->with('group.headquarter')
+        ->with('schoolYear')
+        ->get();
 
         return view('institution.partials.enrollment.index')
             ->with('enrollments', $enrollments);
@@ -434,6 +447,7 @@ class EnrollmentController extends Controller
         $term = $request->text;
         $data = Student::where('username', 'LIKE', '%' . $term  .'%')
             ->join('enrollment', 'student.id', '=', 'enrollment.student_id')
+            ->join('group_assignment', 'enrollment_id', '=', 'enrollment.id')
             ->take(50)
             ->get();
         return view('institution.partials.enrollment.tableStudentsSearch', compact('data'));

@@ -22,6 +22,17 @@
                 <li><a href="{{route('institution.index')}}">Ver</a></li>
             </ul>
         </li>
+        <li class="">
+            <a data-toggle="collapse" data-parent="#menu" href="#import_files" aria-expanded="true" aria-controls="import_files">
+                <span class="fa-stack fa-lg pull-left"><i class="fa fa-upload fa-stack-1x "></i>
+                </span> 
+                Carga de archivos
+            </a>
+            <ul id="import_files" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
+                <li><a href="{{route('import.old_students.form')}}">Temporal</a></li>
+                <li><a href="{{route('import.old_students.form')}}">Estudiantes antigüos</a></li>
+            </ul>
+        </li>
 		<!-- Inscripción -->
 {{--        <li class="">
             <a data-toggle="collapse" data-parent="#menu" href="#collapse-inscription" aria-expanded="true" aria-controls="collapse-inscription">

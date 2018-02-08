@@ -233,6 +233,7 @@
 							{!! Form::hidden('enrollment_state_id', 1) !!}
 							{!! Form::hidden('enrollment_result_id', 1) !!}
 							{!! Form::hidden('student_id', $student->id, ['id'=>'student_id']) !!}
+							{!! Form::hidden('institution_id', $institution_id, ['id'=>'institution_id']) !!}
 							{!! Form::hidden('AppUrl', env('APP_URL'), ['id'=>'AppUrl']) !!}
 				  			{!! Form::submit('Guardar Inscripción', ['class'=>'btn btn-primary']) !!}
 						</div>

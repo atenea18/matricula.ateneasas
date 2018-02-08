@@ -64,7 +64,7 @@ class InstitutionController extends Controller
 
         if($request->hasFile('picture')):
             $fileName = time().'_img_.'.$request->picture->getClientOriginalExtension();
-            $path = $request->file('picture')->storeAs('images/institution/picture', $fileName, 'public');
+            $path = $request->file('picture')->storeAs('images/institution/picture', $fileName, 'uploads');
 
             $institution->picture = $path;
         endif;
@@ -95,9 +95,6 @@ class InstitutionController extends Controller
     {
         $institution = Institution::findOrFail($id);
 
-
-        echo "<img src='".Storage::disk('public')->url($institution->picture)."' />";
-        exit();
         return View('admin.partials.institution.edit')
                 ->with('institution',$institution);
     }
@@ -134,11 +131,11 @@ class InstitutionController extends Controller
         if($request->hasFile('picture')):
 
             // 
-            Storage::disk('public')->delete($old_image);
+            Storage::disk('uploads')->delete($old_image);
 
             // 
             $fileName = time().'_img_.'.$request->picture->getClientOriginalExtension();
-            $path = $request->file('picture')->storeAs('images/institution/picture', $fileName, 'public');
+            $path = $request->file('picture')->storeAs('images/institution/picture', $fileName, 'uploads');
             $institution->picture = $path;
         endif;
 

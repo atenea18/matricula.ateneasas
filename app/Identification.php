@@ -10,7 +10,7 @@ class Identification extends Model
 
     protected $fillable = 
     [
-    	'state', 
+    	// 'id', 
     	'identification_type_id', 
     	'identification_number',
     	'id_city_expedition',

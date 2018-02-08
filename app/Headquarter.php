@@ -10,6 +10,7 @@ class Headquarter extends Model
     protected $table = 'headquarter';
 
     protected $fillable = [
+        'id',
     	'name',
     	'nit',
     	'institution_id',
@@ -30,7 +31,7 @@ class Headquarter extends Model
      */
     public function groups()
     {
-        return $this->hasMany('App\Group', 'headquarter_id');
+        return $this->hasMany(Group::class, 'headquarter_id');
     }
 
     /**

@@ -13,30 +13,37 @@
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <h3 class="panel-title pull-left">Consulta de Estudiantes</h3>
-                    <a href="{{route('enrollment.card.grade')}}" class="btn btn-primary btn-sm pull-right">Ficha Académica</a>
-                    <a href="{{route('student.create')}}" class="btn btn-primary btn-sm
-                    pull-right">Crear
-                        Estudiante</a>
+                    <div class="pull-right">
+                        <a href="{{route('enrollment.card.grade')}}" class="btn btn-primary btn-sm">Ficha Académica</a>
+
+                        <a href="{{route('student.create')}}" class="btn btn-primary btn-sm">Crear
+                            Estudiante</a>
+                    </div>
                 </div>
                 <div class="panel-body">
 
                     <table class="table" id="table">
                         <thead>
                         <tr>
-
+                            <th>#</th>
                             <th>Apellidos y Nombres</th>
                             <th>Sede</th>
                             <th>Grupo</th>
+                            <th>Año</th>
                             <th></th>
                         </tr>
                         </thead>
                         <tbody>
-
-                        @foreach($enrollments as $enrollment)
+                        <?php $cont=0;?>
+                        @foreach($enrollments as $key => $enrollment)
                             <tr>
-                                <td>{{ $enrollment->student->last_name.' '.$enrollment->student->name}}</td>
-                                <td>{{ $enrollment->headquarter->name}}</td>
-                                <td>{{ ($enrollment->group != null) ? $enrollment->group->name : ''}}</td>
+                                <td>{{ (++$cont) }}</td>
+                                <td>{{ $enrollment->student->fullNameInverse}}</td>
+                                <td>{{ (isset($enrollment->group[0])) ? $enrollment->group[0]->headquarter->name : ''}}</td>
+                                <td>{{ (isset($enrollment->group[0])) ? $enrollment->group[0]->name : ''}}</td>
+                                <td>
+                                    {{ $enrollment->schoolYear->year}}
+                                </td>
 
                                 <td>
                                     <a href="{{ route('enrollment.edit', $enrollment->id) }}" class="btn btn-primary btn-sm"><i
@@ -57,11 +64,12 @@
         $(document).ready(function () {
 
             $(".table").DataTable({
-                "order": [[ 0, "asc" ]],
+                // "order": [1, "asc" ],
                 "language": {
                     "url": "{{asset('plugin/DataTables/languaje/Spanish.json')}}"
                 },
                 "info": true,
+                // "order": [1],
                 "autoWidth": false,
             });
         });

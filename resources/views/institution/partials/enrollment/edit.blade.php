@@ -85,7 +85,7 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         {!! Form::label('identification_type_dis', 'Tipo de Identificación') !!}
-                                                        {!! Form::text('identification_type', $enrollment->student->identification->identification_type->name, ['class'=>'form-control', 'disabled']) !!}
+                                                        {!! Form::text('identification_type', $enrollment->student->identification->identification_type->name, ['class'=>'form-control']) !!}
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
@@ -98,7 +98,7 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         {!! Form::label('city_expedition_dis', 'Ciudad de Expedición') !!}
-                                                        {!! Form::text('city_expedition', $enrollment->student->identification->city_expedition->name, ['class'=>'form-control', 'disabled']) !!}
+                                                        {!! Form::select('city_expedition',$cities,  ($enrollment->student->identification->id_city_expedition != null) ? $enrollment->student->identification->city_expedition : null, ['class'=>'form-control']) !!}
                                                     </div>
                                                 </div>
                                             </div>
@@ -107,19 +107,19 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         {!! Form::label('city_birth_dis', 'Ciudad de Nacimiento') !!}
-                                                        {!! Form::text('city_birth', $enrollment->student->identification->city_birth->name, ['class'=>'form-control', 'disabled']) !!}
+                                                        {!! Form::text('city_birth', ($enrollment->student->identification->id_city_of_birth != null) ? $enrollment->student->identification->id_city_of_birth : null, ['class'=>'form-control']) !!}
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         {!! Form::label('birthdate_dis', 'Fecha de Nacimiento') !!}
-                                                        {!! Form::text('birthdate_dis', $enrollment->student->identification->birthdate, ['class'=>'form-control', 'disabled']) !!}
+                                                        {!! Form::text('birthdate_dis', ($enrollment->student->identification->birthdate != null) ? $enrollment->student->identification->birthdate : '', ['class'=>'form-control']) !!}
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         {!! Form::label('gender_dis', 'Genero') !!}
-                                                        {!! Form::text('gender', $enrollment->student->identification->gender->gender, ['class'=>'form-control', 'disabled']) !!}
+                                                        {!! Form::text('gender', $enrollment->student->identification->gender->gender, ['class'=>'form-control']) !!}
                                                     </div>
                                                 </div>
                                             </div>
@@ -141,25 +141,25 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 {!! Form::label('address', 'Dirección') !!}
-                                                {!! Form::text('adress_dis', $enrollment->student->address->address, ['class' => 'form-control', 'disabled']) !!}
+                                                {!! Form::text('adress_dis', $enrollment->student->address->address, ['class' => 'form-control']) !!}
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 {!! Form::label('neighborhood', 'Barrio') !!}
-                                                {!! Form::text('neighborhood_dis', $enrollment->student->address->neighborhood, ['class' => 'form-control', 'disabled']) !!}
+                                                {!! Form::text('neighborhood_dis', $enrollment->student->address->neighborhood, ['class' => 'form-control']) !!}
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 {!! Form::label('city', 'Ciudad') !!}
-                                                {!! Form::text('city_dis', $enrollment->student->address->city->name, ['class' => 'form-control', 'disabled']) !!}
+                                                {!! Form::select('city_dis', $cities,($enrollment->student->address->id_city_address != null) ? $enrollment->student->address->id_city_address : null, ['class' => 'form-control']) !!}
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 {!! Form::label('zone', 'Zona (Urbana/Rural)') !!}
-                                                {!! Form::text('zone_dis', $enrollment->student->address->zone->name, ['class' => 'form-control', 'disabled']) !!}
+                                                {!! Form::text('zone_dis', $enrollment->student->address->zone->name, ['class' => 'form-control']) !!}
                                             </div>
                                         </div>
 
@@ -169,19 +169,19 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 {!! Form::label('phone', 'Telefono') !!}
-                                                {!! Form::text('phone_dis', $enrollment->student->address->phone, ['class' => 'form-control', 'disabled']) !!}
+                                                {!! Form::text('phone_dis', $enrollment->student->address->phone, ['class' => 'form-control']) !!}
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 {!! Form::label('mobil', 'Celular') !!}
-                                                {!! Form::text('mobil_dis', $enrollment->student->address->mobil, ['class' => 'form-control', 'disabled']) !!}
+                                                {!! Form::text('mobil_dis', $enrollment->student->address->mobil, ['class' => 'form-control']) !!}
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 {!! Form::label('email', 'Email') !!}
-                                                {!! Form::text('email_dis', $enrollment->student->address->email, ['class' => 'form-control', 'disabled']) !!}
+                                                {!! Form::text('email_dis', $enrollment->student->address->email, ['class' => 'form-control']) !!}
                                             </div>
                                         </div>
                                     </div>
@@ -224,25 +224,31 @@
                                     <div class="col-md-3">
                                         <div class="form-group{{ $errors->has('headquarter_id') ? ' has-error' : '' }}">
                                             {!! Form::label('headquarter_id', 'Sede') !!}
-                                            {!! Form::select('headquarter_id', $headquarters, $enrollment->headquarter_id, ['placeholder'=>'Seleccione una sede', 'class'=>'form-control chosen-select']) !!}
+                                            {!! Form::select('headquarter_id', $headquarters, (isset($enrollment->group[0])) ? $enrollment->group[0]->headquarter_id : null, ['placeholder'=>'Seleccione una sede', 'class'=>'form-control chosen-select']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group{{ $errors->has('workingday_id') ? ' has-error' : '' }}">
                                             {!! Form::label('workingday_id', 'Jornada') !!}
-                                            {!! Form::select('workingday_id', $journeys, ($enrollment->group != null) ? $enrollment->group->working_day_id : null, ['placeholder'=>'Seleccione una jornada', 'class'=>'form-control chosen-select', 'id'=>'workingday_id']) !!}
+                                            {!! Form::select('workingday_id', $journeys, (isset($enrollment->group[0])) ? $enrollment->group[0]->working_day_id : null, ['placeholder'=>'Seleccione una jornada', 'class'=>'form-control chosen-select', 'id'=>'workingday_id']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             {!! Form::label('group_id', 'Grupo') !!}
-                                            {!! Form::select('group_id', $groups, ($enrollment->group == null) ? null : $enrollment->group_id, ['class'=>'form-control chosen-group', 'id'=>'group_id', 'data-placeholder'=>'Seleccione un grupo']) !!}
+                                            {!! Form::select('group_id', $groups, (!isset($enrollment->group[0])) ? null : $enrollment->group[0]->id, ['class'=>'form-control chosen-group', 'id'=>'group_id', 'placeholder'=>'Seleccione un grupo']) !!}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            {!! Form::label('school_year_id', 'Año lectivo') !!}
+                                            {!! Form::select('school_year_id', $schoolyears, $enrollment->school_year_id, ['class'=>'form-control chosen-group', 'id'=>'school_year_id', 'placeholder'=>'Seleccione un año lectivo']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             {!! Form::label('grade_id', 'Grado') !!}
-                                            {!! Form::text('grade_id', ($enrollment->group_id == null) ? '' : $enrollment->group->grade->name, ['class'=>'form-control', 'id'=>'grade_id', 'disabled'=>true]) !!}
+                                            {!! Form::text('grade_id', (!isset($enrollment->group[0])) ? '' : $enrollment->group[0]->grade->name, ['class'=>'form-control', 'id'=>'grade_id', 'disabled'=>true]) !!}
                                         </div>
                                     </div>
                                 </div>

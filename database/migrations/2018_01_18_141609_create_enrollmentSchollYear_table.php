@@ -13,9 +13,9 @@ class CreateEnrollmentSchollYearTable extends Migration
      */
     public function up()
     {
-        Schema::table('enrollment', function (Blueprint $table) {
-            $table->year('scholl_year');
-        });
+        // Schema::table('enrollment', function (Blueprint $table) {
+        //     $table->year('scholl_year');
+        // });
     }
 
     /**

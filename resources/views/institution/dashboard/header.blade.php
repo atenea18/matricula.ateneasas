@@ -1,6 +1,6 @@
 <nav class="navbar navbar-default no-margin" id="nav">
 	<div class="image">
-      <img src="{{asset('storage')."/".Auth::guard('web_institution')->user()->picture}}" alt="" class="img-responsive" width="30" style="margin-right: 3rem;">
+      <img src="{{Storage::disk('uploads')->url(Auth::guard('web_institution')->user()->picture)}}" alt="" class="img-responsive" width="30" style="margin-right: 3rem;">
    	</div>
 	<!-- <div class="container"> -->
 		<div class="navbar-header fixed-brand">

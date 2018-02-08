@@ -16,7 +16,10 @@
     		<div class="panel panel-default">
 			  	<div class="panel-heading clearfix">
 			    	<h3 class="panel-title pull-left">Ver Institución</h3>
-			    	<a href="{{route('institution.create')}}" class="btn btn-primary btn-sm pull-right">Crear Sede</a>
+			    	<div class="pull-right">
+			    		<a href="{{route('institutions.excel')}}" class="btn btn-success btn-sm" target="_blank"><i class="fa fa-file-excel"></i></a>
+			    		<a href="{{route('institution.create')}}" class="btn btn-primary btn-sm">Crear Sede</a>
+			    	</div>
 			  	</div>
 			  	<div class="panel-body">
 
@@ -34,7 +37,7 @@
 			  				@foreach($institutions as $institution)
 								<tr>
 									<td>
-										<img src="{{Storage::disk('public')->url($institution->picture)}}" width="40" alt="">
+										<img src="{{Storage::disk('uploads')->url($institution->picture)}}" width="40" alt="">
 									</td>
 									<td>{{ $institution->name }}</td>
 									<td>{{ $institution->dane_code }}</td>

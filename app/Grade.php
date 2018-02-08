@@ -9,7 +9,6 @@ class Grade extends Model
     protected $table = 'grade';
 
  	protected $fillable = [
-
  		'name',
  		'academic_level',
  	];	
@@ -20,5 +19,13 @@ class Grade extends Model
     public function group()
     {
         return $this->belongsTo(Group::class, 'grade_id');
+    }
+
+    /**
+     * Obtiene la relacion que hay entre el grado y la matricula
+     */
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'grade_id');
     }
 }

@@ -25,7 +25,7 @@ class CreateStudentEnrollmentRequest extends FormRequest
     {
         return [
             'eps_id.required'                   =>  'La Eps es requerida, en caso de no tener seleccione No posee | Sección Inf. Médica',
-            // 'blood_type_id.required'            =>  'El tipo de sangre es requerido | Sección Inf. Médica',
+            'school_year_id.required'            =>  'El año lectivo es requerido | Sección Inf. Académica',
             'has_subsidy.required'              =>  'El tipo de subsidio es requerido | Sección Inf. Académica',
             'academic_character_id.required'    =>  'El caracter academico es requerido, en caso de no tener seleccione No aplica | Sección Inf. Académica',
             'academic_specialty_id.required'    =>  'La especialidad academica es requerida, en caso de no tener seleccione No aplica | Sección Inf. Académica',
@@ -47,12 +47,12 @@ class CreateStudentEnrollmentRequest extends FormRequest
         return [
             'academic_character_id'         =>  'required',
             'academic_specialty_id'         =>  'required',
+            'school_year_id'                 =>  'required',
             'has_subsidy'                   =>  'required',
             'headquarter_id'                =>  'required',
             // 'workingday_id'                 =>  'required',
             // 'group_id'                      =>  'required',
             'eps_id'                        =>  'required',
-            // 'blood_type_id'                 =>  'required',
             'victim_of_conflict_id'         =>  'required',
             // 'stratum_id'                    =>  'required',
         ];

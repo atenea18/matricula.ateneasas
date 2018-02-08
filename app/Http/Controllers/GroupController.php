@@ -12,6 +12,7 @@ use App\Headquarter;
 use App\Grade;
 use App\Workingday;
 use App\Group;
+use App\Institution;
 
 class GroupController extends Controller
 {
@@ -24,15 +25,19 @@ class GroupController extends Controller
     public function index()
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
-        $groups = Group::getAllByInstitution($institution_id);
+        $institution = Institution::findOrFail($institution_id);
 
-        $groups->each(function($groups){
-            $groups->workingday;
-            $groups->headquarter;
-        });
+        $groups = $institution->headquarters()
+        ->with('groups')
+        // ->with('groups.grade')
+        ->with('groups.workingday')
+        ->with('groups.headquarter')
+        ->get()
+        ->pluck('groups')
+        ->collapse()
+        ->sortBy('grade_id');
 
-        // dd($institution_id);
-
+        // dd($groups);
         return view('institution.partials.group.index')
                 ->with('groups', $groups);
     }
@@ -102,13 +107,22 @@ class GroupController extends Controller
         $journeys = Workingday::orderBy('id', 'ASC')->pluck('name', 'id');
 
         $group = Group::findOrFail($id);
-        
+        $students = $group->enrollments()
+        ->with('student')
+        ->with('student.identification')
+        ->with('student.identification.identification_type')
+        ->where('school_year_id', '=', 1)
+        ->get()
+        ->pluck('student');
+
+        // dd($students);
 
         return view('institution.partials.group.edit')
                 ->with('headquarters', $headquarters)
                 ->with('grades', $grades)
                 ->with('journeys', $journeys)
-                ->with('group', $group);
+                ->with('group', $group)
+                ->with('students',$students);
     }
 
     /**

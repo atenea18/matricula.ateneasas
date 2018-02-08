@@ -13,23 +13,23 @@ class CreateEnrollmentNoveltyTable extends Migration
      */
     public function up()
     {
-        Schema::create('enrollment_novelty', function (Blueprint $table) {
-            $table->increments('id');
+        // Schema::create('enrollment_novelty', function (Blueprint $table) {
+        //     $table->increments('id');
 
-            // Relacion Novedad
-            $table->integer('novelty_id')->unsigned();
-            $table->foreign('novelty_id')
-                  ->references('id')->on('novelty')
-                  ->onDelete('cascade');
+        //     // Relacion Novedad
+        //     $table->integer('novelty_id')->unsigned();
+        //     $table->foreign('novelty_id')
+        //           ->references('id')->on('novelty')
+        //           ->onDelete('cascade');
 
-            // Relacion Matricula
-            $table->integer('enrollment_id')->unsigned();
-            $table->foreign('enrollment_id')
-                  ->references('id')->on('enrollment')
-                  ->onDelete('cascade');
+        //     // Relacion Matricula
+        //     $table->integer('enrollment_id')->unsigned();
+        //     $table->foreign('enrollment_id')
+        //           ->references('id')->on('enrollment')
+        //           ->onDelete('cascade');
 
-            $table->timestamps();
-        });
+        //     $table->timestamps();
+        // });
     }
 
     /**
