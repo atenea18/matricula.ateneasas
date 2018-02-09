@@ -98,7 +98,7 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         {!! Form::label('city_expedition_dis', 'Ciudad de Expedición') !!}
-                                                        {!! Form::select('city_expedition',$cities,  ($enrollment->student->identification->id_city_expedition != null) ? $enrollment->student->identification->city_expedition : null, ['class'=>'form-control']) !!}
+                                                        {!! Form::select('city_expedition_dis',$cities,  ($enrollment->student->identification->id_city_expedition != null) ? $enrollment->student->identification->city_expedition : null, ['class'=>'form-control', 'name'=>'id_city_expedition']) !!}
                                                     </div>
                                                 </div>
                                             </div>

@@ -15,8 +15,8 @@ use App\Institution;
 
 Route::get('/', function () {
 
-	return view('home.index');
-	// return redirect()->route('institution.login');
+	//return view('home.index');
+	return redirect()->route('institution.login');
     // return view('welcome');
 });
 
