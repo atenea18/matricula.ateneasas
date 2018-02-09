@@ -154,31 +154,38 @@ class Student extends Model
      * Obtiene todas las relaciones existentes de students
      */
 
-    // public static function existStudent()
-    // {
+    public static function existStudent()
+    {
 
-    //     if (old('identification_number')) {
-    //         if (isset(\App\Identification::where('identification_number', '=', old('identification_number'))->get()[0])) {
-    //             $identification_id = Identification::where('identification_number', '=', old('identification_number'))->get()[0]->id;
-    //             $student_id = Student::where('identification_id', '=', $identification_id)->get()[0]->id;
+         if (old('identification_number')) {
+             if (isset(\App\Identification::where('identification_number', '=', old('identification_number'))->get()[0])) {
+                 $identification_id = Identification::where('identification_number', '=', old('identification_number'))->get()[0]->id;
 
-    //             if (isset(Enrollment::where('student_id', '=', $student_id)->get()[0])) {
+                 $student_id = Student::where('identification_id', '=', $identification_id)->get()[0]->id;
 
-    //                 $enrollment = Enrollment::where('student_id', '=', $student_id)->get()[0];
 
-    //                 return '<h4 style="text-align: center"> El estudiante con número de identificación 
-    //                     <b>' . old('identification_number') . '</b> ya está matriculado en ' . $enrollment->group->name . '
-    //                     <a href="' . route('enrollment.create', $student_id) . '"> ver estudiante</a></h4>';
-    //             }
-    //             return '
-    //             <h4 style="text-align: center"> El estudiante con número de identificación <b>' . old('identification_number')
-    //                 . '</b> ya existe, pero <b>NO ESTA MATRICULADO.</b>
-    //             <a href="' . route('enrollment.create', $student_id) . '">Completar Matrícula</a></h4>';
-    //         }
-    //     }
-    //     return '';
+                 if (isset(Enrollment::where('student_id', '=', $student_id)->get()[0])) {
 
-    // }
+                     return '<h4 style="text-align: center"> El estudiante con número de identificación 
+                         <b>' . old('identification_number') . '</b> ya está matriculado en '. '
+                         <a href="' . route('enrollment.create', $student_id) . '"> ver estudiante</a></h4>';
+
+                 }
+
+
+                 return '
+                 <h4 style="text-align: center"> El estudiante con número de identificación <b>' . old('identification_number')
+                     . '</b> ya existe, pero <b>NO ESTA MATRICULADO.</b>
+                 <a href="' . route('enrollment.create', $student_id) . '">Completar Matrícula</a></h4>';
+
+
+             }
+
+         }
+
+         return '';
+
+    }
 
 
     public static function getGroup($group_id)

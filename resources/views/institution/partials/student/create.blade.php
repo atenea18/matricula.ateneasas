@@ -19,7 +19,7 @@
 				<div class="panel panel-default">
 				  	<div class="panel-body">
 
-						{{-- {!! \App\Student::existStudent() !!} --}}
+						{!! \App\Student::existStudent() !!}
 				  		@include('complements.error')
 
 
