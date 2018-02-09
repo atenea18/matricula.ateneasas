@@ -343,7 +343,7 @@ class EnrollmentController extends Controller
         $student->discapacities()->sync($request->discapacity_id);
 
         // dd($request->all());
-        return redirect()->route('enrollment.lists', 1);
+        return redirect()->route('institution.enrollment.show');
     }
 
     /**
@@ -363,7 +363,7 @@ class EnrollmentController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function lists($state)
+    public function lists()
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
         $institution = Institution::findOrFail($institution_id);
@@ -374,8 +374,10 @@ class EnrollmentController extends Controller
         ->with('schoolYear')
         ->get();
 
-        return view('institution.partials.enrollment.index')
-            ->with('enrollments', $enrollments);
+        return response()->json($enrollments);
+
+        // return view('institution.partials.enrollment.index')
+        //     ->with('enrollments', $enrollments);
     }
 
     public function cardGrade()

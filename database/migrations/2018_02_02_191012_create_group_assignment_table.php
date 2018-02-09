@@ -15,7 +15,7 @@ class CreateGroupAssignmentTable extends Migration
     {
         Schema::create('group_assignment', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code');
+            $table->string('code_assignment');
 
             // Relacion con la matricula
             $table->unsignedBigInteger('enrollment_id')->nullable();

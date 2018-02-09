@@ -14,6 +14,7 @@
 		.table{
 			margin-bottom: 5px;
 		}
+
 		.table_header>tbody>tr>td{
 		  border-top: none;
 		}
@@ -29,7 +30,10 @@
 		.bg-gray{
 		  background-color: #f2f2f2;
 		}
-
+		
+		.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td{
+			padding: 3px;
+		}
 		.table td{
 			padding: 0;
 		}
@@ -65,7 +69,7 @@
 			@foreach($students->sortBy('last_name') as $key => $student)
 			<tr>
 				<td width="5">{{ (++$cont) }}</td>
-				<td style="height:5px; min-height:5px;">{{$student->fullNameInverse}}</td>
+				<td>{{$student->fullNameInverse}}</td>
 				<td></td>
 				<td></td>
 			</tr>

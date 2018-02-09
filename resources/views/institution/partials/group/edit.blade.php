@@ -44,18 +44,6 @@
 				  						{!! Form::text('quota', $group->quota, ['class'=>'form-control']) !!}
 				  					</div>
 				  				</div>
-				  				<div class="col-md-2">
-				  					<div class="form-group">
-				  						{!! Form::label('type', 'Tipo') !!}
-				  						{!! Form::select('type', ['group'=>'Grupo', 'sub_group'=>'Subgrupo'], $group->type, ['class'=>'form-control chosen-select', 'placeholder'=>'Tipo']) !!}
-				  					</div>
-				  				</div>
-				  				<div class="col-md-2">
-				  					<div class="form-group">
-				  						{!! Form::label('modality', 'Modalidad') !!}
-				  						{!! Form::select('modality', ['t'=>'ténica', 'a'=>'académica'], $group->modality, ['class'=>'form-control chosen-select', 'placeholder'=>'Modalidad']) !!}
-				  					</div>
-				  				</div>
 				  			</div>
 				  			<div class="row">
 				  				<div class="col-md-3">

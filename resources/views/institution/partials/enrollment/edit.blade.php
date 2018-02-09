@@ -8,7 +8,7 @@
 
 @section('breadcrums')
     <ol class="breadcrumb">
-    <!--<li><a href="{{route('enrollment.lists', 1)}}"></a></li>
+    <!--<li><a href="{{route('institution.enrollment.show')}}"></a></li>
 	  <li class="active">Crear</li>-->
         Actualizar Datos del Estudiante
     </ol>
