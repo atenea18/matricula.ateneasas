@@ -25,7 +25,7 @@
                     <table class="table" id="table">
                         <thead>
                         <tr>
-                            <th>#</th>
+                            {{-- <th>#</th> --}}
                             <th>Apellidos y Nombres</th>
                             <th>Sede</th>
                             <th>Grupo</th>
@@ -34,23 +34,6 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <?php $cont=0;?>
-                        @foreach($enrollments as $key => $enrollment)
-                            <tr>
-                                <td>{{ (++$cont) }}</td>
-                                <td>{{ $enrollment->student->fullNameInverse}}</td>
-                                <td>{{ (isset($enrollment->group[0])) ? $enrollment->group[0]->headquarter->name : ''}}</td>
-                                <td>{{ (isset($enrollment->group[0])) ? $enrollment->group[0]->name : ''}}</td>
-                                <td>
-                                    {{ $enrollment->schoolYear->year}}
-                                </td>
-
-                                <td>
-                                    <a href="{{ route('enrollment.edit', $enrollment->id) }}" class="btn btn-primary btn-sm"><i
-                                                class="fa fa-edit"></i></a>
-                                </td>
-                            </tr>
-                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -63,14 +46,52 @@
     <script>
         $(document).ready(function () {
 
+            var cont = 0;
+
             $(".table").DataTable({
-                // "order": [1, "asc" ],
+                "order": [1, "asc" ],
                 "language": {
                     "url": "{{asset('plugin/DataTables/languaje/Spanish.json')}}"
                 },
                 "info": true,
                 // "order": [1],
                 "autoWidth": false,
+                "ajax": {
+                    "method": "GET",
+                    "url": "{{route('institution.enrollments', [$institution_id,'2018'])}}"
+                },
+                "columns": [
+                    // {
+                    //     "render": function(data, type, full, meta){
+                    //         return ++cont;
+                    //     }
+                    // },
+                    {
+                        "render": function(data, type, full, meta){
+                            return full.student.last_name+" "+full.student.name;
+                        }
+                    },
+                    { 
+                        "render": function(data, type, full, meta){
+                            return (full.group.length) ? full.group[0].headquarter.name : ''
+                        }
+                    },
+                    { 
+                        "render": function(data, type, full, meta){
+                            return (full.group.length) ? full.group[0].name : ''
+                        }
+                    },
+                    { 
+                        "render": function(data, type, full, meta){
+                            return full.school_year.year
+                        }
+                    },
+                    {
+                        "render": function(data, type, full, meta){
+                            return '<a href="enrollment/'+full.id+'/edit" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>';
+                        }
+                    }
+                ]
             });
         });
     </script>
