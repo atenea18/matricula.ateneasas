@@ -49,7 +49,7 @@
             var cont = 0;
 
             $(".table").DataTable({
-                "order": [1, "asc" ],
+                "order": [[ 0, "asc" ]],
                 "language": {
                     "url": "{{asset('plugin/DataTables/languaje/Spanish.json')}}"
                 },
