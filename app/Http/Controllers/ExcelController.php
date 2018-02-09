@@ -445,93 +445,110 @@ class ExcelController extends Controller
         });
     }
 
-    // public function oldStudent(Request $request)
-    // {
+    public function oldStudent(Request $request)
+    {
 
-    //     // dd($request->all());
-    //     \Excel::load($request->excel, function($reader) use($request) {
+        // dd($request->all());
+        \Excel::load($request->excel, function($reader) use($request) {
  
-    //         $excel = $reader->get();
+            $excel = $reader->get();
      
-    //         // iteracción
-    //         $reader->each(function($row) use($request){
+            // iteracción
+            $reader->each(function($row) use($request){
 
-    //             $identification = Identification::where('identification_number','=',$row->numero_documento)->first();
-    //             $identification_type =Identification_type::where('abbreviation', '=', $row->tipo_identificacion)->first();
-    //             $gender = Gender::where('prefix', '=', $row->genero)->first();
-    //             $bloodType = BloodType::where('blood_type', '=', $row->tipo_sangre)->first();
+                $identification = Identification::where('identification_number','=',$row->numero_documento)->first();
+                $identification_type =Identification_type::where('abbreviation', '=', $row->tipo_identificacion)->first();
+                $gender = Gender::where('prefix', '=', $row->genero)->first();
+                $bloodType = BloodType::where('blood_type', '=', $row->tipo_sangre)->first();
 
-    //             if($identification == null):
-    //                 $identification = new Identification();
-    //                 $identification->identification_number = $row->numero_documento;
-    //                 $identification->birthdate = $row->fecha_nacimiento;
-    //                 $identification->identification_type_id = $identification_type->id;
-    //                 $identification->gender_id = $gender->id;
-    //                 $identification->save();
+                // dd($request->all());
 
-    //                 $address = new Address();
-    //                 $address->address = $row->address;
-    //                 $address->neighborhood = $row->barrio;
-    //                 $address->phone = $row->telefono;
-    //                 $address->mobil = $row->telefono;
-    //                 $address->zone_id = 2;
-    //                 $address->save();
+                if($identification == null):
+                    $identification = new Identification();
+                    $identification->identification_number = $row->numero_documento;
+                    $identification->birthdate = $row->fecha_nacimiento;
+                    $identification->identification_type_id = $identification_type->id;
+                    $identification->gender_id = $gender->id;
+                    $identification->save();
 
-    //                 $student = new Student();
-    //                 $student->name = $row->primer_nombre." ".$row->segundo_nombre;
-    //                 $student->last_name = $row->primer_apellido." ".$row->segundo_apellido;
-    //                 $student->username = $row->numero_documento;
-    //                 $student->password = $row->numero_documento;
-    //                 $student->state_id = 2;
-    //                 $student->identification_id = $identification->id;   
-    //                 $student->address_id = $address->id;
-    //                 $student->save();
+                    $address = new Address();
+                    $address->address = $row->address;
+                    $address->neighborhood = $row->barrio;
+                    $address->phone = $row->telefono;
+                    $address->mobil = $row->telefono;
+                    $address->zone_id = 2;
+                    $address->save();
 
-    //                 $ai = new AcademicInformation();
-    //                 $ai->has_subsidy = 0;
-    //                 $ai->student_id = $student->id;
-    //                 $ai->academic_character_id = 3;
-    //                 $ai->academic_specialty_id = 6;
-    //                 $ai->save();
+                    $student = new Student();
+                    $student->name = $row->primer_nombre." ".$row->segundo_nombre;
+                    $student->last_name = $row->primer_apellido." ".$row->segundo_apellido;
+                    $student->username = $row->numero_documento;
+                    $student->password = $row->numero_documento;
+                    $student->state_id = 2;
+                    $student->identification_id = $identification->id;   
+                    $student->address_id = $address->id;
+                    $student->save();
 
-    //                 $mi = new MedicalInformation();
-    //                 $mi->ips = $row->ips;
-    //                 $mi->student_id = $student->id;
-    //                 $mi->eps_id = ($row->eps == 0) ? 49 : $row->eps_id;
-    //                 $mi->blood_type_id = ($bloodType == null) ? null : $bloodType->id;
-    //                 $mi->save();
+                    $ai = new AcademicInformation();
+                    $ai->has_subsidy = 0;
+                    $ai->student_id = $student->id;
+                    $ai->academic_character_id = 3;
+                    $ai->academic_specialty_id = 6;
+                    $ai->save();
 
-    //                 $di = new Displacement();
-    //                 $di->student_id = $student->id;
-    //                 $di->victim_of_conflict_id = 5;
-    //                 $di->save();
+                    $mi = new MedicalInformation();
+                    $mi->ips = $row->ips;
+                    $mi->student_id = $student->id;
+                    $mi->eps_id = ($row->eps == 0) ? 49 : $row->eps_id;
+                    $mi->blood_type_id = ($bloodType == null) ? null : $bloodType->id;
+                    $mi->save();
 
-    //                 $soc = new SocioeconomicInformation();
-    //                 $soc->sisben_number = $row->numero_carne_sisben;
-    //                 $soc->sisben_level = $row->nivel_sisben;
-    //                 $soc->student_id = $student->id;
-    //                 $soc->stratum_id = $row->estrato;
-    //                 $soc->save();
+                    $di = new Displacement();
+                    $di->student_id = $student->id;
+                    $di->victim_of_conflict_id = 5;
+                    $di->save();
 
-    //                 $ter = new Territorialty();
-    //                 $ter->guard = $row->resguardo;
-    //                 $ter->ethnicity = $row->etnia;
-    //                 $ter->student_id = $student->id;
-    //                 $ter->save();
+                    $soc = new SocioeconomicInformation();
+                    $soc->sisben_number = $row->numero_carne_sisben;
+                    $soc->sisben_level = $row->nivel_sisben;
+                    $soc->student_id = $student->id;
+                    $soc->stratum_id = $row->estrato;
+                    $soc->save();
 
-    //                 $enrollment = new Enrollment();
-    //                 $enrollment->code = ($gra) ? "2017".$request->institution_id."17".$student->id; //2018".$headquarter->institudion_id.$group->grade_id.$student->id
-    //                 $enrollment->school_year_id = 2;
-    //                 $enrollment->student_id = $student->id;
-    //                 $enrollment->garde_id = ($row->grado_igreso == null) ? 17 : $row->grado_igreso;
-    //                 $enrollment->enrollment_state_id = 3;
-    //                 $enrollment->institution_id = $request->institution_id;
-    //                 $enrollment->save();
+                    $ter = new Territorialty();
+                    $ter->guard = $row->resguardo;
+                    $ter->ethnicity = $row->etnia;
+                    $ter->student_id = $student->id;
+                    $ter->save();
 
-    //             endif;
-    //         });
-            
-    //         echo "Terminado.....";
-    //     });
-    // }
+                    // Matricual antigüa
+                    $enrollment_2017 = new Enrollment();
+                    $enrollment_2017->code = ($row->grado_igreso != null) ? "2017".$request->institution_id."17".$student->id  : ''; 
+                    $enrollment_2017->school_year_id = 2;
+                    $enrollment_2017->student_id = $student->id;
+                    $enrollment_2017->garde_id = ($row->grado_igreso == null) ? 17 : $row->grado_igreso;
+                    $enrollment_2017->enrollment_state_id = 3;
+                    $enrollment_2017->institution_id = $request->institution_id;
+                    $enrollment_2017->save();
+
+                    // Matricula nueva
+                    $enrollment_2018 = new Enrollment();
+                    $enrollment_2018->code = ($row->id_grado_matricular != null) ? "2018".$request->institution_id."17".$student->id : ''; 
+                    $enrollment_2018->school_year_id = 1;
+                    $enrollment_2018->student_id = $student->id;
+                    $enrollment_2018->garde_id = ($row->id_grado_matricular == null) ? 17 : $row->id_grado_matricular;
+                    $enrollment_2018->enrollment_state_id = 3;
+                    $enrollment_2018->institution_id = $request->institution_id;
+                    $enrollment_2018->save();
+
+                    if($row->id_grupo_matricular != null)
+                    {
+                        $enrollment_2018->attachGroupEnrollment($row->id_grupo_matricular);
+                    }
+                endif;
+            });
+        });
+
+        return redirect()->route('import.old_students.form');
+    }
 }

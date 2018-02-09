@@ -92,10 +92,10 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 		return view('institution.dashboard.index');
 	});
 
-	// Rutas para inscripcion
-	Route::resource('enrollment', 'EnrollmentController');
+	// Rutas para Matricula
+	Route::resource('enrollment', 'EnrollmentController', ['only'=> ['store', 'edit','update', 'destroy']]);
 	Route::get('enrollment/create/{id}', 'EnrollmentController@createById')->name('enrollment.create');
-	Route::get('enrollment/lists/{state}', 'EnrollmentController@lists')->name('enrollment.lists');
+	Route::get('enrollment/', 'Institution\EnrollmentController@index')->name('institution.enrollment.show');
 	Route::get('enrollment-card/grade', 'EnrollmentController@cardGrade')->name('enrollment.card.grade');
     Route::get('enrollment-card/group', 'EnrollmentController@cardGroup')->name('enrollment.card.group');
     Route::get('enrollment-card/student', 'EnrollmentController@cardStudent')->name('enrollment.card.student');
