@@ -25,7 +25,6 @@
 
 
 				  		@include('complements.error')
-
 				        <ul class="nav nav-tabs" role="tablist">
 				        	<li role="presentation" class="active"><a href="#personal_info" aria-controls="personal_info" role="tab" data-toggle="tab">Inf. Personal</a></li>
 						    <li role="presentation"><a href="#academic_info" aria-controls="academic_info" role="tab" data-toggle="tab">Inf. Académica</a></li>

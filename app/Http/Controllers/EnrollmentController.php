@@ -147,49 +147,61 @@ class EnrollmentController extends Controller
 
 
         // STUDENT
-        $student = Student::findOrFail($request->student_id);
-        $schoolYear = Schoolyear::findOrFail($request->school_year_id);
+        $student = Student::find($request->student_id);
+        $schoolYear = Schoolyear::find($request->school_year_id);
         $group = Group::find($request->group_id);
 
-        // dd($request->all());
         
-        // ACADEMIC INFORMATION
-        $enrollment = new Enrollment($request->all());
-        $enrollment->code = $schoolYear->year.time()."-".$request->student_id;
-        $enrollment->garde_id = ($group != null) ? $group->grade->id : null ;
-        
-        $enrollment->save();
+        if($student != null):
+            
+            $enro = Enrollment::existis($request->school_year_id, $request->student_id, $request->grade_id, $request->institution_id);
 
-        if($group != null)
-            $enrollment->attachGroupEnrollment($group->id);
+            // dd($enro);
+            if($enro == null):
+                // ACADEMIC INFORMATION
+                $enrollment = new Enrollment($request->all());
+                $enrollment->code = $schoolYear->year.time()."-".$request->student_id;
+                $enrollment->grade_id = ($group != null) ? $group->grade->id : null ;
+                    
+                if(!Enrollment::existis($request->school_year_id, $request->student_id, $request->grade_id, $request->institution_id) )
+                $enrollment->save();
 
-        $academic_information = new AcademicInformation($request->all());
-        $academic_information->save();
+                if($group != null)
+                    $enrollment->attachGroupEnrollment($group->id);
 
-        // MEDICAL INFORMATION
-        $medical_information = new MedicalInformation($request->all());
-        $medical_information->save();
+                $academic_information = new AcademicInformation($request->all());
+                $academic_information->save();
 
-
-        // DISPLACEMENT
-        $displacement = new Displacement($request->all());
-        $displacement->save();
-
-
-        // SOCIOECONOMIC INFORMATION
-        $socioeconomic = new SocioEconomicInformation($request->all());
-        $socioeconomic->save();
+                // MEDICAL INFORMATION
+                $medical_information = new MedicalInformation($request->all());
+                $medical_information->save();
 
 
-        // TERRITORIALTY
-        $territorialty = new Territorialty($request->all());
-        $territorialty->save();
+                // DISPLACEMENT
+                $displacement = new Displacement($request->all());
+                $displacement->save();
 
-        // CAPACITIES AND DISCAPACITIES
-        $student->capacities()->sync($request->capacity_id);
-        $student->discapacities()->sync($request->discapacity_id);
 
-        return redirect()->route('enrollment.lists', 1);
+                // SOCIOECONOMIC INFORMATION
+                $socioeconomic = new SocioEconomicInformation($request->all());
+                $socioeconomic->save();
+
+
+                // TERRITORIALTY
+                $territorialty = new Territorialty($request->all());
+                $territorialty->save();
+
+                // CAPACITIES AND DISCAPACITIES
+                $student->capacities()->sync($request->capacity_id);
+                $student->discapacities()->sync($request->discapacity_id);
+
+                return redirect()->route('institution.enrollment.show');
+
+            endif;
+
+                // dd($enro);
+                return redirect()->route('enrollment.edit', $enro->id);
+        endif;
     }
 
     /**
@@ -291,11 +303,19 @@ class EnrollmentController extends Controller
     public function update(Request $request, $id)
     {
         // STUDEN
-        $student = Student::findOrFail($request->student_id);
+        $student = Student::find($request->student_id);
         $group = Group::find($request->group_id);
 
         $student->fill($request->all());
         $student->update();
+
+        $identification = Identification::findOrFail($student->identification_id);
+        $identification->fill($request->all());
+        $identification->save();
+
+        $address = Address::findOrFail($student->address_id);
+        $address->fill($request->all());
+        $address->save();
 
         // ACADEMIC INFORMATION
         $academic_information = AcademicInformation::findOrFail($request->academic_information_id);
@@ -342,8 +362,9 @@ class EnrollmentController extends Controller
         $student->capacities()->sync($request->capacity_id);
         $student->discapacities()->sync($request->discapacity_id);
 
-        // dd($request->all());
+            // dd($request->all());
         return redirect()->route('institution.enrollment.show');
+
     }
 
     /**

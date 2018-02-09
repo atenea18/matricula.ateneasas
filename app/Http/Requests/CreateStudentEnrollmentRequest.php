@@ -49,7 +49,7 @@ class CreateStudentEnrollmentRequest extends FormRequest
             'academic_specialty_id'         =>  'required',
             'school_year_id'                 =>  'required',
             'has_subsidy'                   =>  'required',
-            'headquarter_id'                =>  'required',
+            // 'headquarter_id'                =>  'required',
             // 'workingday_id'                 =>  'required',
             // 'group_id'                      =>  'required',
             'eps_id'                        =>  'required',
