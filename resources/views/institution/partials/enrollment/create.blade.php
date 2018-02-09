@@ -8,7 +8,7 @@
 
 @section('breadcrums')
 	<ol class="breadcrumb">
-	  <li><a href="{{route('enrollment.lists', 1)}}">Inscripcion</a></li>
+	  {{--<li><a href="{{route('enrollment.lists', 1)}}">Inscripcion</a></li>--}}
 	  <li class="active">Crear</li>
 	</ol>
 @endsection
@@ -22,6 +22,7 @@
 				    	<h3 class="panel-title">Grupos</h3>
 				  	</div>
 				  	<div class="panel-body">
+
 
 				  		@include('complements.error')
 
