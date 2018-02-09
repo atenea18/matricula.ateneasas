@@ -8,7 +8,7 @@
 
 @section('breadcrums')
 	<ol class="breadcrumb">
-	  <li><a href="{{route('enrollment.lists', 1)}}">Inscripcion</a></li>
+	  {{--<li><a href="{{route('enrollment.lists', 1)}}">Inscripcion</a></li>--}}
 	  <li class="active">Crear</li>
 	</ol>
 @endsection
