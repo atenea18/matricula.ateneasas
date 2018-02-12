@@ -13,7 +13,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <div class="pull-right">
-                        <a class="btn btn-primary btn-sm" href="{{route('enrollment.lists', 1)}}">
+                        {{--<a class="btn btn-primary btn-sm" href="{{route('enrollment.lists', 1)}}">--}}
                         Ver Estudiantes</a>
                     <a href="{{route('student.create')}}" class="btn btn-primary btn-sm">
                     Crear Estudiante</a>

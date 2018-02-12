@@ -21,6 +21,12 @@
 				{!! Form::select('has_subsidy', [false=>'no', true=>'si'], old('has_subsidy'), ['class'=>'form-control chosen-select', 'placeholder'=>'Seleccione un tipo de subsidio']) !!}
 			</div>
 		</div>
+		<div class="col-md-3">
+			<div class="form-group{{ $errors->has('grade_id') ? ' has-error' : '' }}">
+				{!! Form::label('grade_id', 'Grado') !!}
+				{!! Form::select('grade_id', $grade, old('grade_id'), ['class'=>'form-control chosen-select', 'placeholder'=>'Seleccione un grado']) !!}
+			</div>
+		</div>
 	</div>
 </div>
 {{--  --}}

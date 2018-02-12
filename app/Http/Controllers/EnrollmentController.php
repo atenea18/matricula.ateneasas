@@ -71,6 +71,7 @@ class EnrollmentController extends Controller
     public function createById($id)
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
+        $grade = Grade::all()->pluck('name', 'id');
 
         $student = Student::find($id);
 
@@ -140,7 +141,8 @@ class EnrollmentController extends Controller
             ->with('headquarters', $headquarters)
             ->with('journeys', $journeys)
             ->with('schoolyears',$schoolyears)
-            ->with('institution_id',$institution_id);
+            ->with('institution_id',$institution_id)
+            ->with('grade', $grade);
     }
 
     /**
@@ -151,17 +153,15 @@ class EnrollmentController extends Controller
      */
     public function store(CreateStudentEnrollmentRequest $request)
     {
-
-
         // STUDENT
         $student = Student::find($request->student_id);
         $schoolYear = Schoolyear::find($request->school_year_id);
         $group = Group::find($request->group_id);
+        $grade_id = $request->grade_id;
 
-        
         if($student != null)
         {
-            
+
             $enro = Enrollment::existis($request->school_year_id, $request->student_id, $request->institution_id);
 
             // dd($enro);
@@ -170,8 +170,9 @@ class EnrollmentController extends Controller
 
                 // ACADEMIC INFORMATION
                 $enrollment = new Enrollment($request->all());
-                $enrollment->code = ($group != null) ? $schoolYear->year.$request->institution_id.$group->grade_id.$request->student_id : $schoolYear->year.$request->institution_id."17".$request->student_id;
-                $enrollment->grade_id = ($group != null) ? $group->grade->id : null ;
+                $enrollment->code = ($group != null) ? $schoolYear->year.$request->institution_id.$group->grade_id.$request->student_id : $schoolYear->year.$request->institution_id.$grade_id.$request->student_id;
+
+                $enrollment->grade_id = ($group != null) ? $group->grade->id : $grade_id ;
 
                 $enrollment->save();
 
@@ -205,7 +206,7 @@ class EnrollmentController extends Controller
                 $student->discapacities()->sync($request->discapacity_id);
 
                 return redirect()->route('institution.enrollment.show');
-                
+
             }
             else
                 return redirect()->route('enrollment.edit', $enro->id);
