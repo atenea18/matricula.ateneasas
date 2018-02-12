@@ -15,8 +15,8 @@ class CreateEnrollmentTable extends Migration
     {
         Schema::create('enrollment', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code');
-            $table->string('folio');
+            $table->string('code')->unique();
+            $table->string('folio')->nullable();
             
             // Relacion Estudiante
             $table->unsignedBigInteger('school_year_id');
@@ -31,7 +31,7 @@ class CreateEnrollmentTable extends Migration
                   ->onDelete('cascade');
                   
             // Relacion Salon de clase
-            $table->unsignedInteger('garde_id')->nullable();
+            $table->unsignedInteger('garde_id');
             $table->foreign('garde_id')
                   ->references('id')->on('grade')
                   ->onDelete('cascade');
@@ -41,12 +41,6 @@ class CreateEnrollmentTable extends Migration
             $table->foreign('enrollment_state_id')
                   ->references('id')->on('enrollment_state')
                   ->onDelete('cascade');
-
-            // Relacion Resultado de matricula
-            // $table->unsignedInteger('enrollment_result_id')->unsigned();
-            // $table->foreign('enrollment_result_id')
-            //       ->references('id')->on('enrollment_result')
-            //       ->onDelete('cascade');
 
             // Relación con la institución
             $table->unsignedBigInteger('institution_id');

@@ -29,8 +29,7 @@
                     @include('complements.error')
 
                     <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#personal_info" aria-controls="personal_info" role="tab"
-                                                                  data-toggle="tab">Inf. Personal</a></li>
+                        <li role="presentation" class="active"><a href="#personal_info" aria-controls="personal_info" role="tab" data-toggle="tab">Inf. Personal</a></li>
                         <li role="presentation"><a href="#academic_info" aria-controls="academic_info" role="tab"
                                                    data-toggle="tab">Inf. Académica</a></li>
                         <li role="presentation"><a href="#medical_info" aria-controls="medical_info" role="tab" data-toggle="tab">Inf.
@@ -98,7 +97,7 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         {!! Form::label('city_expedition_dis', 'Ciudad de Expedición') !!}
-                                                        {!! Form::select('city_expedition_dis',$cities,  ($enrollment->student->identification->id_city_expedition != null) ? $enrollment->student->identification->city_expedition : null, ['class'=>'form-control', 'name'=>'id_city_expedition']) !!}
+                                                        {!! Form::select('city_expedition_dis',$cities,  ($enrollment->student->identification->id_city_expedition != null) ? $enrollment->student->identification->id_city_expedition : null, ['class'=>'form-control', 'name'=>'id_city_expedition']) !!}
                                                     </div>
                                                 </div>
                                             </div>
@@ -449,6 +448,8 @@
                         {!! Form::hidden('territorialty_id', $enrollment->student->territorialty->id) !!}
                         {!! Form::hidden('student_id', $enrollment->student->id, ['id'=>'student_id']) !!}
                         {!! Form::hidden('AppUrl', env('APP_URL'), ['id'=>'AppUrl']) !!}
+                        {!! Form::hidden('identification_id', $enrollment->student->identification_id) !!}
+                        {!! Form::hidden('address_id', $enrollment->student->address_id) !!}
                         {!! Form::submit('Actualizar Inscripción', ['class'=>'btn btn-primary']) !!}
                     </div>
                 </div>

@@ -43,7 +43,18 @@
             </ul>
         </li>
 
-
+        <!-- Documentos -->
+        <li class="">
+            <a data-toggle="collapse" data-parent="#menu" href="#collapse-files" aria-expanded="true" aria-controls="collapse-files">
+                <span class="fa-stack fa-lg pull-left"><i class="fa fa-file-alt fa-stack-1x "></i>
+                </span> 
+                Documentos
+            </a>
+            <ul id="collapse-files" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
+                <li><a href="{{route('sheet')}}">Planillas</a></li>
+                {{-- <li><a href="{{route('headquarter.index')}}">Ver Sedes</a></li> --}}
+            </ul>
+        </li>
 
 
 	</ul>
