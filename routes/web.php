@@ -43,7 +43,7 @@ Route::group(['middleware'=>'admin_guest'], function(){
 Route::group(['prefix'=>'admin','middleware'=>'admin_auth'], function(){
 
 	Route::get('/', function(){
-		return View('admin.partials.import.home');
+		return View('admin.partials.home');
 	})->name('admin.home');
 
 	Route::post('/logout', 'AdministratorAuth\LoginController@logout');
