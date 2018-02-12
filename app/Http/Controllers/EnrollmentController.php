@@ -71,6 +71,7 @@ class EnrollmentController extends Controller
     public function createById($id)
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
+        $grade = Grade::all()->pluck('name', 'id');
 
         $student = Student::findOrFail($id);
         $student->identification;
@@ -133,7 +134,8 @@ class EnrollmentController extends Controller
             ->with('headquarters', $headquarters)
             ->with('journeys', $journeys)
             ->with('schoolyears',$schoolyears)
-            ->with('institution_id',$institution_id);
+            ->with('institution_id',$institution_id)
+            ->with('grade', $grade);
     }
 
     /**
@@ -150,6 +152,8 @@ class EnrollmentController extends Controller
         $student = Student::find($request->student_id);
         $schoolYear = Schoolyear::find($request->school_year_id);
         $group = Group::find($request->group_id);
+        $grade_id = $request->grade_id;
+
 
         
         if($student != null):

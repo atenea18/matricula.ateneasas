@@ -43255,7 +43255,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             listGrade: null,
             enrollments: null,
             groups: null,
-            elsCheck: []
+            elsCheck: [],
+            elsCheckOther: [],
+            idGroupSelect: 0,
+            idGroupSelectOther: 0
         };
     },
 
@@ -43271,23 +43274,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this.elsCheck = [];
             });
         },
+
         getGroupByGrade: function getGroupByGrade() {
             var _this2 = this;
 
+            this.elsCheckOther.forEach(function (value) {
+                value = false;
+            });
             axios.get('groupsByGrade/' + this.idGrade).then(function (res) {
                 _this2.groups = res.data;
             });
         },
+
         checkMe: function checkMe(enrollment) {
             console.log(enrollment.student_name);
+        },
+
+        checkMeAll: function checkMeAll(e) {
+            var _this3 = this;
+
+            var checkOther = document.querySelectorAll('.checkOther');
+            checkOther.forEach(function (check, index) {
+                check.checked = e.srcElement.checked;
+                _this3.elsCheckOther[index] = e.srcElement.checked;
+            });
         }
 
     },
     mounted: function mounted() {
-        var _this3 = this;
+        var _this4 = this;
 
         axios.get('all-grades').then(function (res) {
-            _this3.listGrade = res.data;
+            _this4.listGrade = res.data;
         });
     }
 });
@@ -43428,8 +43446,8 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.idGroup,
-                  expression: "idGroup"
+                  value: _vm.idGroupSelect,
+                  expression: "idGroupSelect"
                 }
               ],
               staticClass: "form-control",
@@ -43445,11 +43463,11 @@ var render = function() {
                         var val = "_value" in o ? o._value : o.value
                         return val
                       })
-                    _vm.idGroup = $event.target.multiple
+                    _vm.idGroupSelect = $event.target.multiple
                       ? $$selectedVal
                       : $$selectedVal[0]
                   },
-                  _vm.getEnrollmentsByGrade
+                  function($event) {}
                 ]
               }
             },
@@ -43485,8 +43503,8 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.idGroup,
-                  expression: "idGroup"
+                  value: _vm.idGroupSelectOther,
+                  expression: "idGroupSelectOther"
                 }
               ],
               staticClass: "form-control",
@@ -43502,11 +43520,11 @@ var render = function() {
                         var val = "_value" in o ? o._value : o.value
                         return val
                       })
-                    _vm.idGroup = $event.target.multiple
+                    _vm.idGroupSelectOther = $event.target.multiple
                       ? $$selectedVal
                       : $$selectedVal[0]
                   },
-                  _vm.getEnrollmentsByGrade
+                  function($event) {}
                 ]
               }
             },
@@ -43619,10 +43637,16 @@ var render = function() {
       _c("div", { staticClass: "col-md-6" }, [
         _c("h5", [_vm._v("Estudiantes sin Grupos")]),
         _vm._v(" "),
-        _vm._m(5),
+        _c("label", [
+          _c("input", {
+            attrs: { type: "checkbox" },
+            on: { click: _vm.checkMeAll }
+          }),
+          _vm._v("\n                Seleccionar todos\n            ")
+        ]),
         _vm._v(" "),
         _c("table", { staticClass: "table table-bordered" }, [
-          _vm._m(6),
+          _vm._m(5),
           _vm._v(" "),
           _c(
             "tbody",
@@ -43643,23 +43667,24 @@ var render = function() {
                         {
                           name: "model",
                           rawName: "v-model",
-                          value: _vm.elsCheck[index],
-                          expression: "elsCheck[index]"
+                          value: _vm.elsCheckOther[index],
+                          expression: "elsCheckOther[index]"
                         }
                       ],
+                      staticClass: "checkOther",
                       attrs: { type: "checkbox" },
                       domProps: {
                         value: false,
-                        checked: Array.isArray(_vm.elsCheck[index])
-                          ? _vm._i(_vm.elsCheck[index], false) > -1
-                          : _vm.elsCheck[index]
+                        checked: Array.isArray(_vm.elsCheckOther[index])
+                          ? _vm._i(_vm.elsCheckOther[index], false) > -1
+                          : _vm.elsCheckOther[index]
                       },
                       on: {
                         click: function($event) {
                           _vm.checkMe(enrollment)
                         },
                         change: function($event) {
-                          var $$a = _vm.elsCheck[index],
+                          var $$a = _vm.elsCheckOther[index],
                             $$el = $event.target,
                             $$c = $$el.checked ? true : false
                           if (Array.isArray($$a)) {
@@ -43667,15 +43692,15 @@ var render = function() {
                               $$i = _vm._i($$a, $$v)
                             if ($$el.checked) {
                               $$i < 0 &&
-                                (_vm.elsCheck[index] = $$a.concat([$$v]))
+                                (_vm.elsCheckOther[index] = $$a.concat([$$v]))
                             } else {
                               $$i > -1 &&
-                                (_vm.elsCheck[index] = $$a
+                                (_vm.elsCheckOther[index] = $$a
                                   .slice(0, $$i)
                                   .concat($$a.slice($$i + 1)))
                             }
                           } else {
-                            _vm.$set(_vm.elsCheck, index, $$c)
+                            _vm.$set(_vm.elsCheckOther, index, $$c)
                           }
                         }
                       }
@@ -43785,15 +43810,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("Accion")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("label", [
-      _c("input", { attrs: { type: "checkbox" } }),
-      _vm._v("\n                Seleccionar todos\n            ")
     ])
   },
   function() {

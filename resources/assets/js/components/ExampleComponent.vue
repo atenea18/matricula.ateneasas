@@ -52,7 +52,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="">Seleccione un grupo</label>
-                    <select v-on:change="getEnrollmentsByGrade" class="form-control" name="" id="" v-model="idGroup">
+                    <select v-on:change="" class="form-control" name="" id="" v-model="idGroupSelect">
                         <option value="0">Seleccionar</option>
                         <option v-for="group in groups" :value="group.id">
                             {{ group.name}}
@@ -73,7 +73,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="">Seleccione un grupo</label>
-                    <select v-on:change="getEnrollmentsByGrade" class="form-control" name="" id="" v-model="idGroup">
+                    <select v-on:change="" class="form-control" name="" id="" v-model="idGroupSelectOther">
                         <option value="0">Seleccionar</option>
                         <option v-for="group in groups" :value="group.id">
                             {{ group.name}}
@@ -115,7 +115,7 @@
                         </th>
                         <td>
                             <label>
-                                <input type="checkbox" v-on:click="checkMe(enrollment)" v-model="elsCheck[index]"
+                                <input type="checkbox"  v-on:click="checkMe(enrollment)" v-model="elsCheck[index]"
                                        :value="false">
                                 {{ enrollment.student_last_name +" "+ enrollment.student_name}}
                             </label>
@@ -130,7 +130,7 @@
             <div class="col-md-6">
                 <h5>Estudiantes sin Grupos</h5>
                 <label>
-                    <input type="checkbox">
+                    <input type="checkbox" v-on:click="checkMeAll">
                     Seleccionar todos
                 </label>
                 <table class="table table-bordered">
@@ -148,7 +148,7 @@
                         </th>
                         <td>
                             <label>
-                                <input type="checkbox" v-on:click="checkMe(enrollment)" v-model="elsCheck[index]"
+                                <input type="checkbox" class="checkOther" v-on:click="checkMe(enrollment)" v-model="elsCheckOther[index]"
                                        :value="false">
                                 {{ enrollment.student_last_name +" "+ enrollment.student_name}}
                             </label>
@@ -174,7 +174,10 @@
                 listGrade: null,
                 enrollments: null,
                 groups: null,
-                elsCheck: []
+                elsCheck: [],
+                elsCheckOther: [],
+                idGroupSelect: 0,
+                idGroupSelectOther: 0
             }
         },
         methods: {
@@ -187,13 +190,26 @@
                     this.elsCheck = [];
                 });
             },
+
             getGroupByGrade: function () {
+                this.elsCheckOther.forEach(value => {
+                    value = false;
+                });
                 axios.get('groupsByGrade/' + this.idGrade).then(res => {
                     this.groups = res.data;
                 });
             },
+
             checkMe: function (enrollment) {
                 console.log(enrollment.student_name);
+            },
+            
+            checkMeAll: function (e) {
+                let checkOther = document.querySelectorAll('.checkOther');
+                checkOther.forEach((check, index) => {
+                    check.checked = e.srcElement.checked;
+                    this.elsCheckOther[index] = e.srcElement.checked;
+                })
             }
 
         },
