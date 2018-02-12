@@ -203,7 +203,7 @@
             checkMe: function (enrollment) {
                 console.log(enrollment.student_name);
             },
-            
+
             checkMeAll: function (e) {
                 let checkOther = document.querySelectorAll('.checkOther');
                 checkOther.forEach((check, index) => {

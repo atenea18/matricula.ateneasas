@@ -22,13 +22,13 @@ class CreateAddressTable extends Migration
             $table->string('email')->nullable();
 
             // Relacion Ciudad
-            $table->unsignedInteger('id_city_address')->nllable();
+            $table->unsignedInteger('id_city_address')->nullable();
             $table->foreign('id_city_address')
                   ->references('id')->on('city')
                   ->onDelete('cascade');
 
             // Relacion Zona rural
-            $table->unsignedInteger('zone_id');
+            $table->unsignedInteger('zone_id')->nullable();
             $table->foreign('zone_id')
                   ->references('id')->on('zones')
                   ->onDelete('cascade');

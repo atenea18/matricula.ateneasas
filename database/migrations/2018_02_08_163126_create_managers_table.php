@@ -15,6 +15,31 @@ class CreateManagersTable extends Migration
     {
         Schema::create('managers', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
+            $table->string('last_name');
+            $table->string('username')->nullable();
+            $table->string('password', 60)->nullable();
+            $table->string('remember_token', 100)->unique();
+            $table->string('picture', 60)->nullable();
+
+            // Relacion con el estado del estudiante
+            $table->unsignedInteger('state_manager_id');
+            $table->foreign('state_manager_id')
+                  ->references('id')->on('state_managers')
+                  ->onDelete('cascade');
+
+            // Relacion identificación
+            $table->unsignedBigInteger('identification_id');
+            $table->foreign('identification_id')
+                  ->references('id')->on('identification')
+                  ->onDelete('cascade');
+
+            // Relacion Direccion
+            $table->unsignedBigInteger('address_id');
+            $table->foreign('address_id')
+                  ->references('id')->on('address')
+                  ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

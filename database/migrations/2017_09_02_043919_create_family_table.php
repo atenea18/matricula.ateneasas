@@ -18,12 +18,6 @@ class CreateFamilyTable extends Migration
             $table->string('name', 45);
             $table->string('last_name', 45);
 
-            // Relacion Estudiante
-            // $table->integer('student_id')->unsigned();
-            // $table->foreign('student_id')
-            //       ->references('id')->on('student')
-            //       ->onDelete('cascade');
-
             // Relacion Identificación
             $table->unsignedBigInteger('identification_id');
             $table->foreign('identification_id')

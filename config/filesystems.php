@@ -62,6 +62,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'pdf' => [
+            'driver' => 'local',
+            'root' => public_path() . '/pdf',
+            'url' => env('APP_URL').'/pdf',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),

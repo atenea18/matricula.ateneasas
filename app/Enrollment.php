@@ -129,12 +129,11 @@ class Enrollment extends Model
         return $enrollments->all();
     }
 
-    public static function existis($school_year_id, $student_id, $grade_id, $institution_id)
+    public static function existis($school_year_id, $student_id, $institution_id)
     {
         $enrollment = Enrollment::where([
             ['school_year_id', '=', $school_year_id],
             ['student_id', '=', $student_id],
-            ['grade_id', '=', $grade_id],
             ['institution_id', '=', $institution_id]
         ])->first();
 

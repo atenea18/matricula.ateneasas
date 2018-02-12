@@ -52,19 +52,16 @@ class Group extends Model
         return $this->belongsTo(Grade::class, 'grade_id');
     }
 
-    /**
-     *
-     *
-     */
+<
     public static function getAllByInstitution($institution_id)
-    {
-        return Group::join('headquarter', 'group.headquarter_id', '=', 'headquarter.id')
-            ->join('institution', 'headquarter.institution_id', '=', 'institution.id')
-            ->select('group.*')
-            ->where('institution.id', '=', $institution_id)
-            ->orderBy('group.grade_id')
-            ->get();
-    }
+ 	{
+ 		return Group::join('headquarter', 'group.headquarter_id', '=', 'headquarter.id')
+ 			->join('institution', 'headquarter.institution_id', '=', 'institution.id')
+ 			->select('group.*')
+ 			->where('institution.id', '=', $institution_id)
+ 			->orderBy('group.grade_id')
+ 			->get();
+ 	}
 
     public static function  getGroupsByGrade($institution_id, $grade_id)
     {
@@ -73,4 +70,5 @@ class Group extends Model
             ->where('headquarter.institution_id','=',$institution_id)
             ->where('grade_id', '=', $grade_id)->get();
     }
+
 }

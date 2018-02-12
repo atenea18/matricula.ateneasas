@@ -17,7 +17,7 @@ class CreateFamilyRelationshipStudentTable extends Migration
             $table->bigIncrements('id');
 
             // Relacion con el alumno
-            $table->unsignedBigInteger('student_id')->after('id');
+            $table->unsignedBigInteger('student_id');
             $table->foreign('student_id')
                   ->references('id')->on('student')
                   ->onDelete('cascade');

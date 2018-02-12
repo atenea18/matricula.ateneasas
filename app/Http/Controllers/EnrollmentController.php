@@ -73,7 +73,14 @@ class EnrollmentController extends Controller
         $institution_id = Auth::guard('web_institution')->user()->id;
         $grade = Grade::all()->pluck('name', 'id');
 
-        $student = Student::findOrFail($id);
+        $student = Student::find($id);
+
+        if($student == null)
+        {
+            return redirect()->route('institution.enrollment.show');
+        }
+
+
         $student->identification;
         $student->identification->identification_type;
         $student->identification->city_expedition;
@@ -156,18 +163,20 @@ class EnrollmentController extends Controller
 
 
         
-        if($student != null):
+        if($student != null)
+        {
             
-            $enro = Enrollment::existis($request->school_year_id, $request->student_id, $request->grade_id, $request->institution_id);
+            $enro = Enrollment::existis($request->school_year_id, $request->student_id, $request->institution_id);
 
             // dd($enro);
-            if($enro == null):
+            if($enro == null)
+            {
+
                 // ACADEMIC INFORMATION
                 $enrollment = new Enrollment($request->all());
-                $enrollment->code = $schoolYear->year.time()."-".$request->student_id;
+                $enrollment->code = ($group != null) ? $schoolYear->year.$request->institution_id.$group->grade_id.$request->student_id : $schoolYear->year.$request->institution_id."17".$request->student_id;
                 $enrollment->grade_id = ($group != null) ? $group->grade->id : null ;
-                    
-                if(!Enrollment::existis($request->school_year_id, $request->student_id, $request->grade_id, $request->institution_id) )
+
                 $enrollment->save();
 
                 if($group != null)
@@ -200,12 +209,11 @@ class EnrollmentController extends Controller
                 $student->discapacities()->sync($request->discapacity_id);
 
                 return redirect()->route('institution.enrollment.show');
-
-            endif;
-
-                // dd($enro);
+                
+            }
+            else
                 return redirect()->route('enrollment.edit', $enro->id);
-        endif;
+        }
     }
 
     /**
@@ -232,8 +240,6 @@ class EnrollmentController extends Controller
 
         $institution_id = Auth::guard('web_institution')->user()->id;
 
-        // dd($enrollment->group);
-        // ACADEMIC INFORMATION
         $groups = array();
         $characters = AcademicCharacter::orderBy('name', 'ASC')->pluck('name', 'id');
         $specialties = AcademicSpecialty::orderBy('name', 'ASC')->pluck('name', 'id');
@@ -308,15 +314,18 @@ class EnrollmentController extends Controller
     {
         // STUDEN
         $student = Student::find($request->student_id);
+        $schoolYear = Schoolyear::find($request->school_year_id);
         $group = Group::find($request->group_id);
 
         $student->fill($request->all());
         $student->update();
 
+        // IDENTIFICACIÓN
         $identification = Identification::findOrFail($student->identification_id);
         $identification->fill($request->all());
         $identification->save();
-
+        
+        // DIRECCIÓN
         $address = Address::findOrFail($student->address_id);
         $address->fill($request->all());
         $address->save();
@@ -329,6 +338,10 @@ class EnrollmentController extends Controller
         // ENROLLMENT
         $enrollment = Enrollment::findOrFail($request->enrollment_id);
         $enrollment->fill($request->all());
+        $enrollment->grade_id = ($group != null) ? $group->grade_id : 17 ;
+        $enrollment->code = ($group != null) ? $schoolYear->year.$request->institution_id.$group->grade_id.$request->student_id : $schoolYear->year.$request->institution_id."17".$request->student_id;
+                $enrollment->grade_id = ($group != null) ? $group->grade->id : null ;
+        // dd($enrollment);
         $enrollment->save();
 
         if($group != null)

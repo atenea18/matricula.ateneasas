@@ -18,4 +18,6 @@ use Illuminate\Http\Request;
 // });
 
 Route::resource('enrollment', 'Institution\EnrollmentController', ['only'=>['index','show']]);
+
 Route::get('Institution/{institution}/enrollments/{year}', 'Institution\EnrollmentController@enrollments')->name('institution.enrollments');
+Route::get('headquarter/{headquarter}/{workingDay}/{grade}/getGroup', 'Headquarter\GroupController@getGroup')->name('api.headquarter.getGroup');
