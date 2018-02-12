@@ -55,6 +55,7 @@
         <script src="{{asset('js/app.js')}}"></script>
         <script src="{{asset('plugin/DataTables/datatables.min.js')}}"></script>
         <script src="{{asset('plugin/DataTables/dataTables.bootstrap.min.js')}}"></script>
+        <script src="{{asset('plugin/multiSelect/multiselect.js')}}"></script>
         @yield('js')
 
     </body>

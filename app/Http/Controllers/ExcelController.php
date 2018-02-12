@@ -415,29 +415,28 @@ class ExcelController extends Controller
      
             // iteracción
             $reader->each(function($row) {
-
-                $student = Student::find($row->student_id);
-                $headquarter = Headquarter::find($row->headquarter_id);
-                $group = Group::find($row->group_id);
+                
                 $enrollment = new Enrollment();
+                $code = ($row->grade_id != null) ? "2018".$row->institudion_id.$row->grade_id.$row->student_id : "2018".$row->institudion_id."17".$row->student_id;
 
-                $institution = $headquarter->institution;
+                $enrollment_existis = Enrollment::where('code','=',$code)->first();
 
-                if($headquarter != null && $student != null) {
+                if($row->student_id != null && $enrollment_existis == null) {
                     $enrollment->id = $row->id;
-                    $enrollment->code = ($group != null) ? "2018".$headquarter->institudion_id.$group->grade_id.$student->id : "2018".$headquarter->institudion_id."17".$student->id; //year.institudion_id.grade_id.student_id
-                    // $enrollment->folio =
-                    $enrollment->school_year_id = 1;
+                    $enrollment->code = $code; //
+                    $enrollment->school_year_id = $row->school_year_id;
                     $enrollment->student_id = $row->student_id;
-                    $enrollment->garde_id = ($group != null) ? $group->grade->id : 17 ;
-                    $enrollment->enrollment_state_id = ($group != null) ? 3 : 2 ;
-                    $enrollment->institution_id = $institution->id;
+                    $enrollment->grade_id = ($row->grade_id != null) ? $row->grade_id : 17 ;
+                    $enrollment->enrollment_state_id = $row->enrollment_state_id;
+                    $enrollment->institution_id = $row->institution_id;
                     $enrollment->created_at = $row->created_at;
                     $enrollment->updated_at = $row->updated_at;
 
-                    if($enrollment->save() && $group != null){
-                        $enrollment->attachGroupEnrollment($group->id);
-                    }
+                    $enrollment->save();
+
+                    // if($enrollment->save() && $row-> != null){
+                    //     $enrollment->attachGroupEnrollment($group->id);
+                    // }
 
                 }
             });

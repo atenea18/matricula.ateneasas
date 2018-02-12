@@ -19,7 +19,7 @@ class CreateStudentTable extends Migration
             $table->string('last_name');
             $table->string('username')->nullable();
             $table->string('password', 60)->nullable();
-            $table->string('remember_token', 100)->unique();
+            $table->string('remember_token', 100)->nullable();
             $table->string('picture', 60)->nullable();
 
             // Relacion con el estado del estudiante

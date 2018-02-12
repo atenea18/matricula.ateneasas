@@ -15,16 +15,16 @@ class CreateGroupAssignmentTable extends Migration
     {
         Schema::create('group_assignment', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code_assignment');
+            $table->string('code_assignment')->unique();
 
             // Relacion con la matricula
-            $table->unsignedBigInteger('enrollment_id')->nullable();
+            $table->unsignedBigInteger('enrollment_id');
             $table->foreign('enrollment_id')
                   ->references('id')->on('enrollment')
                   ->onDelete('cascade');
 
             // Relacion con el grupo
-            $table->unsignedBigInteger('group_id')->nullable();
+            $table->unsignedBigInteger('group_id');
             $table->foreign('group_id')
                   ->references('id')->on('group')
                   ->onDelete('cascade');

@@ -17,8 +17,6 @@ class CreateGroupTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->integer('quota')->nullable();
-            // $table->enum('modality', ['t', 'a'])->default('a');
-            // $table->enum('type', ['group', 'sub_group'])->default('group');
 
             // Relación Sede
             $table->unsignedBigInteger('headquarter_id');

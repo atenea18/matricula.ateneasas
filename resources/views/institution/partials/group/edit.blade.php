@@ -78,16 +78,22 @@
     			<div class="panel-heading clearfix">
     				<h4 class="pull-left">Listado de Estudiante</h4>
     				<div class="pull-right">
-    					<a href="{{route('inscription.group.pdf', [$group->id, '2018'])}}" class="btn btn-danger" target="_blank">
+    					<a href="{{route('student.attendance.pdf', [$group->id, '2018'])}}" class="btn btn-primary" target="_blank" title="Planilla de Asistencia">
     						<i class="fa fa-file-pdf"></i>
     					</a>
+    					{{-- <a href="{{route('inscription.group.pdf', [$group->id, '2018'])}}" class="btn btn-success" target="_blank" title="Planilla de Evaluación">
+    						<i class="fa fa-check"></i>
+    					</a>
+    					<a href="{{route('inscription.group.pdf', [$group->id, '2018'])}}" class="btn btn-danger" target="_blank">
+    						<i class="fa fa-file-pdf"></i>
+    					</a> --}}
     				</div>
     			</div>
     			<div class="panel-body">
     				<table class="table">
     					<thead>
     						<tr>
-    							<th>#</th>
+    							{{-- <th>#</th> --}}
     							<th>Apellidos y Nombres</th>
     							<th>Tipo Doc.</th>
     							<th>Num. Documento</th>
@@ -97,7 +103,7 @@
     						<?php $cont=0;?>
     						@foreach($students as $key => $student)
 								<tr>
-									<td>{{ (++$cont) }}</td>
+									{{-- <td>{{ (++$cont) }}</td> --}}
 									<td>{{$student->FullnameInverse}}</td>
 									<td>{{$student->identification->identification_type->name}}</td>
 									<td>{{$student->identification->identification_number}}</td>
@@ -127,14 +133,12 @@
 			},
 			"info":     true,
 			"autoWidth": false,
-			// "order": [
-			// 	[ 1, "asc" ]
-			// ],
+			"order": [
+				[ 0, "asc" ]
+			],
             "aLengthMenu": false,
             "lengthChange": false,
             "pageLength": 100
-
-
 		});
 	});
 </script>

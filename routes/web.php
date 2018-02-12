@@ -118,8 +118,13 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	// Ruta para las sedes
 	Route::resource('headquarter', 'HeadquarterController');	
 
+	// Planillas
+	Route::get('sheet', 'SheetController@index')->name('sheet');
+
 	// PDF's
-	Route::get('pdf/inscription/{group_id}/{year}', 'PdfController@inscription')->name('inscription.group.pdf');
+	Route::get('pdf/studentAttendance/{group_id}/{year}', 'PdfController@attendance')->name('student.attendance.pdf');
+	Route::post('pdf/studentAttendance', 'PdfController@attendances')->name('student.attendances.pdf');
+
 });
 
 Route::group(['prefix' => 'excel'], function() {
