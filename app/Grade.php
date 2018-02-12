@@ -41,7 +41,7 @@ class Grade extends Model
                 'institution.id as institution_id', 'institution.name as institution_name',
                 'schoolyears.id as schoolyears_id', 'schoolyears.year'
             )
-            ->join('grade', 'enrollment.garde_id', '=', 'grade.id')
+            ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
             ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
             ->join('group', 'group_assignment.group_id', '=', 'group.id')
             ->join('institution', 'enrollment.institution_id', '=', 'institution.id')

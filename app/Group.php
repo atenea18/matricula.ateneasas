@@ -52,7 +52,7 @@ class Group extends Model
         return $this->belongsTo(Grade::class, 'grade_id');
     }
 
-<
+
     public static function getAllByInstitution($institution_id)
  	{
  		return Group::join('headquarter', 'group.headquarter_id', '=', 'headquarter.id')
