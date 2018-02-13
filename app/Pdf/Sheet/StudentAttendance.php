@@ -73,7 +73,7 @@ class StudentAttendance extends Fpdf
 	    $this->Cell(25, 4, '', 0,0);
 	    $this->Cell(75, 4, 'GRUPO: '.$this->group->name, 0, 0, 'L');
 	    // Título
-	    $this->Cell(100,4, 'FECHA: '.date('d-m-Y'), 0, 0, 'C');
+	    $this->Cell(100,4, '', 0, 0, 'C');
 	    // Movernos a la derecha
 	    $this->Cell(0, 4, utf8_decode('AÑO LECTIVO ').date('Y'), 0,0);
 	    // Salto de línea
@@ -84,9 +84,9 @@ class StudentAttendance extends Fpdf
 	    $this->Cell(25, 4, '', 0,0);
 	    $this->Cell(75, 4, '', 0, 0, 'L');
 	    // Título
-	    $this->Cell(110,4, ' ', 0, 0, 'L');
+	    $this->Cell(100,4, ' ', 0, 0, 'L');
 	    // Movernos a la derecha
-	    
+	    $this->Cell(0,4, 'FECHA: '.date('d-m-Y'), 0, 0, 'L');
 	    // Salto de línea
 	    $this->Ln(4);
 
