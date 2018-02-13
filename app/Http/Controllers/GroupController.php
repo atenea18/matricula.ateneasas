@@ -28,18 +28,18 @@ class GroupController extends Controller
         $institution = Institution::findOrFail($institution_id);
 
         $groups = $institution->headquarters()
-        ->with('groups')
-        // ->with('groups.grade')
-        ->with('groups.workingday')
-        ->with('groups.headquarter')
-        ->get()
-        ->pluck('groups')
-        ->collapse()
-        ->sortBy('grade_id');
+            ->with('groups')
+            // ->with('groups.grade')
+            ->with('groups.workingday')
+            ->with('groups.headquarter')
+            ->get()
+            ->pluck('groups')
+            ->collapse()
+            ->sortBy('grade_id');
 
         // dd($groups);
         return view('institution.partials.group.index')
-                ->with('groups', $groups);
+            ->with('groups', $groups);
     }
 
     /**
@@ -48,31 +48,31 @@ class GroupController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {   
+    {
         $institution_id = Auth::guard('web_institution')->user()->id;
 
         $headquarters = Headquarter::where('institution_id', '=', $institution_id)->orderBy('name', 'ASC')->pluck('name', 'id');
 
-        
+
         $grades = Grade::orderBy('id', 'ASC')->pluck('name', 'id');
         $journeys = Workingday::orderBy('id', 'ASC')->pluck('name', 'id');
-        
+
 
         return view('institution.partials.group.create')
-                ->with('headquarters', $headquarters)
-                ->with('grades', $grades)
-                ->with('journeys', $journeys);
+            ->with('headquarters', $headquarters)
+            ->with('grades', $grades)
+            ->with('journeys', $journeys);
     }
 
-	/**
+    /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(CreateGroupRequest $request)
     {
-        
+
         $group = new Group($request->all());
         $group->save();
 
@@ -82,7 +82,7 @@ class GroupController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -93,7 +93,7 @@ class GroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -102,34 +102,34 @@ class GroupController extends Controller
 
         $headquarters = Headquarter::where('institution_id', '=', $institution_id)->orderBy('name', 'ASC')->pluck('name', 'id');
 
-        
+
         $grades = Grade::orderBy('id', 'ASC')->pluck('name', 'id');
         $journeys = Workingday::orderBy('id', 'ASC')->pluck('name', 'id');
 
         $group = Group::findOrFail($id);
         $students = $group->enrollments()
-        ->with('student')
-        ->with('student.identification')
-        ->with('student.identification.identification_type')
-        ->where('school_year_id', '=', 1)
-        ->get()
-        ->pluck('student');
+            ->with('student')
+            ->with('student.identification')
+            ->with('student.identification.identification_type')
+            ->where('school_year_id', '=', 1)
+            ->get()
+            ->pluck('student');
 
         // dd($students);
 
         return view('institution.partials.group.edit')
-                ->with('headquarters', $headquarters)
-                ->with('grades', $grades)
-                ->with('journeys', $journeys)
-                ->with('group', $group)
-                ->with('students',$students);
+            ->with('headquarters', $headquarters)
+            ->with('grades', $grades)
+            ->with('journeys', $journeys)
+            ->with('group', $group)
+            ->with('students', $students);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(CreateGroupRequest $request, $id)
@@ -145,7 +145,7 @@ class GroupController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -157,12 +157,12 @@ class GroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function getByWorkingDay(Request $request)
     {
-        if($request->ajax()):
+        if ($request->ajax()):
 
             $response = Group::where([
                 ['working_day_id', '=', $_GET['workingday_id']],
@@ -173,4 +173,21 @@ class GroupController extends Controller
 
         endif;
     }
+
+    public function assigment()
+    {
+        return view('institution.partials.group.assigment');
+    }
+
+    public function GroupsByGrade($grade_id){
+        $institution_id = Auth::guard('web_institution')->user()->id;
+        $groups = Group::getGroupsByGrade($institution_id, $grade_id);
+        return $groups;
+
+        if (request()->ajax()) {
+
+        }
+
+    }
+
 }

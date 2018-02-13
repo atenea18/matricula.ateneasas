@@ -6771,7 +6771,7 @@ body{
 }
 
 #content{
-    height: 580px;
+    height: 480px;
     overflow-y: scroll;
 }
 
@@ -7037,7 +7037,7 @@ body{
 }
 
 .contentF{
-    /*position: relative;*/
+    position: relative;
     margin-top: 30px;
 }
 

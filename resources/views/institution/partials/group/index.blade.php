@@ -13,7 +13,11 @@
     		<div class="panel panel-default">
 			  	<div class="panel-heading clearfix">
 
-			    	<a class="btn btn-primary btn-sm pull-right" href="{{route('group.create')}}">Crear Grupo</a>
+
+					<a class="btn btn-success btn-sm" style="margin-right: 3px" href="{{route('group.assignment')
+					}}">Asignar Grupos</a>
+
+					<a class="btn btn-primary btn-sm pull-right" href="{{route('group.create')}}">Crear Grupo</a>
 			  	</div>
 			  	<div class="panel-body">
 

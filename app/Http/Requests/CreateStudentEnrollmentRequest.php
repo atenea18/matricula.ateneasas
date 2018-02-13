@@ -34,6 +34,7 @@ class CreateStudentEnrollmentRequest extends FormRequest
             // 'group_id.required'                 =>  'Seleccione el grupo | Seccion Inf. Académica',
             // 'workingday_id.required'            =>  'Seleccione la jornada | Sección Inf. Académica',
             'headquarter_id.required'           =>  'Seleccione la sede | Sección Inf. Académica',
+            'grade_id.required'                   =>  'El grado es requerido',
         ];
     }
 
@@ -54,7 +55,7 @@ class CreateStudentEnrollmentRequest extends FormRequest
             // 'group_id'                      =>  'required',
             'eps_id'                        =>  'required',
             'victim_of_conflict_id'         =>  'required',
-            // 'stratum_id'                    =>  'required',
+            'grade_id'                    =>  'required',
         ];
     }
 }

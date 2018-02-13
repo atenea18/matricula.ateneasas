@@ -67,7 +67,8 @@ class GenerateEnrollmentCard extends Fpdi
                 $this->Cell(40, 8, '', $lineas, 1, 'C');
             }
             $this->ln(4);
-            $grade_enrollment = Grade::findOrfail(Group::findOrfail($enrollment->group->id)->grade_id)->name;
+
+            $grade_enrollment = Grade::findOrfail(Group::findOrfail($enrollment->group_id)->grade_id)->name;
 
             # Fecha Matricula
             $this->Cell(99.5, 4, '', $lineas, 0, 'C');
@@ -179,8 +180,9 @@ class GenerateEnrollmentCard extends Fpdi
             $this->Cell(39.7, 3.6, strtoupper(utf8_decode($address->phone)), $lineas, 0, 'C');
 
 
-            $enrollment_level = Grade::findOrfail($enrollment->group->grade_id)->academic_level_id;
-            $enrollment_grade = $enrollment->group->grade_id;
+            $enrollment_level = Grade::findOrfail(Group::findOrfail($enrollment->group_id)->grade_id)->academic_level_id;
+
+            $enrollment_grade = $enrollment->grade_id;
             $this->ln(8);
             $this->Cell(188.9, 3.6, "", $lineas, 0, 'C');
             $this->Cell(9.9, 3.6, ($enrollment_level == 1 ? "X" : ""), $lineas, 0, 'C');

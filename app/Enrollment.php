@@ -83,10 +83,11 @@ class Enrollment extends Model
     public static function getEnrollmentCardGrade($grade_id, $institution_id)
     {
         $enrollments = self::
-        join('headquarter', 'enrollment.headquarter_id', '=', 'headquarter.id')
-            ->join('institution', 'headquarter.institution_id', '=', 'institution.id')
+        join('institution', 'enrollment.institution_id', '=', 'institution.id')
+            ->join('headquarter', 'headquarter.institution_id', '=', 'institution.id')
             ->join('student', 'student.id', '=', 'enrollment.student_id')
-            ->join('group', 'group.id', '=', 'enrollment.group_id')
+            ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
+            ->join('group', 'group_assignment.group_id', '=', 'group.id')
             ->join('grade', 'grade.id', '=', 'group.grade_id')
             ->where('institution.id', $institution_id)
             ->where('grade.id', '=', $grade_id)
@@ -99,10 +100,11 @@ class Enrollment extends Model
     public static function getEnrollmentCardGroup($group_id, $institution_id)
     {
         $enrollments = self::
-        join('headquarter', 'enrollment.headquarter_id', '=', 'headquarter.id')
-            ->join('institution', 'headquarter.institution_id', '=', 'institution.id')
+        join('institution', 'enrollment.institution_id', '=', 'institution.id')
+            ->join('headquarter', 'headquarter.institution_id', '=', 'institution.id')
             ->join('student', 'student.id', '=', 'enrollment.student_id')
-            ->join('group', 'group.id', '=', 'enrollment.group_id')
+            ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
+            ->join('group', 'group_assignment.group_id', '=', 'group.id')
             ->join('grade', 'grade.id', '=', 'group.grade_id')
             ->where('institution.id', $institution_id)
             ->where('group.id', '=', $group_id)
@@ -115,10 +117,15 @@ class Enrollment extends Model
     public static function getEnrollmentCardStudent($student_id, $institution_id)
     {
         $enrollments = self::
-        join('headquarter', 'enrollment.headquarter_id', '=', 'headquarter.id')
-            ->join('institution', 'headquarter.institution_id', '=', 'institution.id')
+        join('institution', 'enrollment.institution_id', '=', 'institution.id')
+            ->join('headquarter', 'headquarter.institution_id', '=', 'institution.id')
+            ->join('student', 'student.id', '=', 'enrollment.student_id')
+            ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
+            ->join('group', 'group_assignment.group_id', '=', 'group.id')
+            ->join('grade', 'grade.id', '=', 'group.grade_id')
             ->where('enrollment.student_id', $student_id)
             ->get();
+
         return $enrollments->all();
     }
 

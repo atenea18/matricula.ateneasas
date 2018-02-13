@@ -114,6 +114,14 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 
 	// Ruta para los salones de clase
 	Route::resource('group', 'GroupController');
+    Route::get('group-assignment', 'GroupController@assigment')->name('group.assignment');
+
+	//Rutas para request Ajax
+    Route::get('enrollmentByGrade/{group_id}', 'GradeController@getEnrollmentsByGrade');
+    Route::get('all-grades', 'GradeController@getAllGrades');
+    Route::get('groupsByGrade/{grade_id}', 'GroupController@GroupsByGrade');
+
+
 
 	// Ruta para las sedes
 	Route::resource('headquarter', 'HeadquarterController');	
