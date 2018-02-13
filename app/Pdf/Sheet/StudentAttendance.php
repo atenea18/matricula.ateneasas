@@ -11,7 +11,7 @@ use Codedge\Fpdf\Fpdf\Fpdf;
 class StudentAttendance extends Fpdf
 {
 
-	public $tipo = 'Planilla de asistencia';
+	public $tipo = 'Planilla De Asistencia';
 	public $infoGroupAndAsig = array();
 	public $institution = array();
 	public $group = array();
@@ -31,36 +31,39 @@ class StudentAttendance extends Fpdf
 				), 12, 14, 17, 17, "PNG");
 
 		//Marco
-	    $this->Cell($this->_width_mark, 24, '', 1,0);
+	    $this->Cell($this->_width_mark, (count($this->institution->headquarters)>1) ? 24 : 20, '', 1,0);
 	    $this->Ln(0);
 
 	    // PRIMERA LINEA
-	    $this->SetFont('Arial','B',12);
+	    $this->SetFont('Arial','B',14);
 	    // Movernos a la dereca
-	    $this->Cell(90, 6, '', 0,0);
+	    // $this->Cell(90, 6, '', 0,0);
 	    // Título
-	    $this->Cell(120, 6, utf8_decode($this->institution->name), 0, 0, 'C');
+	    $this->Cell(0, 6, utf8_decode($this->institution->name), 0, 0, 'C');
 	    // Movernos a la derecha
-	    $this->Cell(0, 6, '', 0,0);
+	    // $this->Cell(0, 6, '', 0,0);
 	    // Salto de línea
 	    $this->Ln(6);
 
 	    // SEGUNDA LINEA
 	    $this->SetFont('Arial','B',9);
-	    $this->Cell(90, 4, '', 0,0);
+	    // $this->Cell(90, 4, '', 0,0);
+	    
 	    // Título
-	    $this->Cell(120,4, $this->group->headquarter->name, 0, 0, 'C');
+	    if(count($this->institution->headquarters) > 1){
+	    	$this->Cell(0,4, $this->group->headquarter->name, 0, 0, 'C');
+	    	$this->Ln(4);	
+	    }
 	    // Movernos a la derecha
-	    $this->Cell(0, 4, '', 0,0);
+	    // $this->Cell(0, 4, '', 0,0);
 	    // Salto de línea
-	    $this->Ln(4);
 
 	    // TERCERA LINEA
-	    $this->Cell(90, 4, '', 0,0);
+	    // $this->Cell(90, 4, '', 0,0);
 	    // Título
-	    $this->Cell(120, 4, $this->tipo, 0, 0, 'C');
+	    $this->Cell(0, 4, $this->tipo, 0, 0, 'C');
 	    // Movernos a la derecha
-	    $this->Cell(0, 4, '', 0,0);
+	    // $this->Cell(0, 4, '', 0,0);
 	    // Salto de línea
 	    $this->Ln(4);
 
@@ -70,7 +73,7 @@ class StudentAttendance extends Fpdf
 	    $this->Cell(25, 4, '', 0,0);
 	    $this->Cell(75, 4, 'GRUPO: '.$this->group->name, 0, 0, 'L');
 	    // Título
-	    $this->Cell(100,4, 'FECHA: '.date('d-m-Y'), 0, 0, 'C');
+	    $this->Cell(100,4, '', 0, 0, 'C');
 	    // Movernos a la derecha
 	    $this->Cell(0, 4, utf8_decode('AÑO LECTIVO ').date('Y'), 0,0);
 	    // Salto de línea
@@ -81,9 +84,9 @@ class StudentAttendance extends Fpdf
 	    $this->Cell(25, 4, '', 0,0);
 	    $this->Cell(75, 4, '', 0, 0, 'L');
 	    // Título
-	    $this->Cell(110,4, ' ', 0, 0, 'L');
+	    $this->Cell(100,4, ' ', 0, 0, 'L');
 	    // Movernos a la derecha
-	    
+	    $this->Cell(0,4, 'FECHA: '.date('d-m-Y'), 0, 0, 'L');
 	    // Salto de línea
 	    $this->Ln(4);
 
@@ -96,7 +99,7 @@ class StudentAttendance extends Fpdf
 		// Salto de linea
 		$this->Ln(4);
 		// 
-		$this->SetFillColor(135, 206, 235);
+		$this->SetFillColor(172, 220, 240);
 		// 
 		$this->SetFont('Arial','B',9);
 
@@ -154,6 +157,6 @@ class StudentAttendance extends Fpdf
 	    // Arial italic 8
 	    $this->SetFont('Arial','I',8);
 	    // Número de página
-	    $this->Cell(0,10,utf8_decode('Atenea - Página ').$this->PageNo(),0,0,'C');
+	    $this->Cell(0,10,utf8_decode('@Atenea - Página ').$this->PageNo(),0,0,'C');
 	}
 }
