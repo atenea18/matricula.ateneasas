@@ -17,8 +17,6 @@
         @yield('css')
 
         <!-- Scripts -->
-         <script src="{{asset('js/jquery-3.2.1.min.js')}}"></script>
-        <script src="{{asset('js/bootstrap.js')}}"></script> 
         <script src="{{asset('plugin/fontawesome5/svg-with-js/js/fontawesome-all.js')}}"></script>
         <script>
             window.Laravel = <?php echo json_encode([

@@ -31,7 +31,7 @@ class StudentAttendance extends Fpdf
 				), 12, 14, 17, 17, "PNG");
 
 		//Marco
-	    $this->Cell($this->_width_mark, (count($this->institution->headquarters)>1) ? 24 : 20, '', 1,0);
+	    $this->Cell($this->_width_mark,24, '', 1,0);
 	    $this->Ln(0);
 
 	    // PRIMERA LINEA
@@ -88,7 +88,7 @@ class StudentAttendance extends Fpdf
 	    // Movernos a la derecha
 	    $this->Cell(0,4, 'FECHA: '.date('d-m-Y'), 0, 0, 'L');
 	    // Salto de línea
-	    $this->Ln(4);
+	    $this->Ln(8);
 
 	    // 
 	    $this->subheader();

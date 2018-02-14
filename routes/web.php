@@ -112,6 +112,13 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	Route::delete('student/deleteFamily/{id}', 'StudentController@deleteFamily')->name('student.deleteFamily');
 	Route::get('student/searchFamily', 'StudentController@searchFamily')->name('student.searchFamily');
 
+	// Ruta para entes administrativos
+	Route::resource('manager', 'Institution\ManagerController', ['only'=> ['create','store', 'edit','update', 'destroy']]);
+
+	// Ruta para los docentes
+	Route::resource('teacher', 'Institution\TeacherController', ['only'=> ['create','store', 'edit','update', 'destroy']]);
+	Route::get('teacher/list', 'Institution\TeacherController@listTeacher')->name('institution.list.teacher');
+
 	// Ruta para los salones de clase
 	Route::resource('group', 'GroupController');
     Route::get('group-assignment', 'GroupController@assigment')->name('group.assignment');

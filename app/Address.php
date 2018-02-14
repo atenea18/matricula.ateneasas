@@ -25,7 +25,15 @@ class Address extends Model
      */
     public function student()
     {
-        return $this->hasOne('App\Student', 'address_id');
+        return $this->hasOne(Student::class, 'address_id');
+    }
+
+    /**
+     * Obtiene la relacion que hay entre identificacion y la sede
+     */
+    public function manager()
+    {
+        return $this->hasOne(Manager::class, 'address_id');
     }
 
     /**
@@ -33,7 +41,7 @@ class Address extends Model
      */
     public function headquarter()
     {
-        return $this->hasOne('App\Headquarter', 'address_id');
+        return $this->hasOne(Headquarter::class, 'address_id');
     }
 
     /**
@@ -41,7 +49,7 @@ class Address extends Model
      */
     public function family()
     {
-        return $this->hasOne('App\Family', 'address_id');
+        return $this->hasOne(Family::class, 'address_id');
     }
 
     /**
@@ -49,7 +57,7 @@ class Address extends Model
      */
     public function zone()
     {
-        return $this->belongsTo('App\Zone', 'zone_id');
+        return $this->belongsTo(Zone::class, 'zone_id');
     }
 
     /**
@@ -57,6 +65,6 @@ class Address extends Model
      */
     public function city()
     {
-        return $this->belongsTo('App\City', 'id_city_address');
+        return $this->belongsTo(City::class, 'id_city_address');
     }
 }

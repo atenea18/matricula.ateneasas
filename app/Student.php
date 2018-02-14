@@ -107,7 +107,7 @@ class Student extends Model
      */
     public function family()
     {
-        return $this->belongsToMany('App\Family', 'family_relationship_student')
+        return $this->belongsToMany(Family::class, 'family_relationship_student')
             ->withPivot('relationship_id');
     }
 
