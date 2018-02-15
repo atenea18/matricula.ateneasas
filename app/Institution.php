@@ -37,6 +37,14 @@ class Institution extends Authenticatable
     }
 
     /**
+     * Obtiene la relacion que hay entre la Institución y los docentes
+     */
+    public function teachers()
+    {
+    	return $this->hasMany(Teacher::class, 'institution_id');
+    }
+
+    /**
      * Obtiene la relacion que hay entre la matricula y la institución
      */
     public function enrollments()
