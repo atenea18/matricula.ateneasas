@@ -47,9 +47,13 @@ Route::group(['prefix'=>'admin','middleware'=>'admin_auth'], function(){
 	})->name('admin.home');
 
 	Route::post('/logout', 'AdministratorAuth\LoginController@logout');
+
+	// Ruta para la institucion
 	Route::resource('institution', 'InstitutionController');
 	Route::put('institution/{id}/changePassword', 'InstitutionController@changePassword')->name('institution.changePassword');
 
+	// Ruta Para las Areas
+	Route::resource('area', 'Administrator\AreaController',['only'=>['list','create','store','edit','update','destroy']]);
 
 	// Excel's
 	Route::get('excel', 'ExcelController@exportInstitutions')->name('institutions.excel');

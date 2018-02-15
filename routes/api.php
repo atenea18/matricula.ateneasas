@@ -25,3 +25,6 @@ Route::get('headquarter/{headquarter}/{workingDay}/{grade}/getGroup', 'Headquart
 // RUTA PARA DOCENTES
 Route::resource('teacher', 'Institution\TeacherController', ['only'=>['index','show']]);
 Route::get('institution/{institution}/teachers/{year?}', 'Institution\TeacherController@getByInstitution')->name('institution.teachers');
+
+// RUTA PARA LAS AREAS DESDE EL ADMINISTRADOR
+Route::resource('area', 'Administrator\AreaController', ['only'=>['index','show']]);

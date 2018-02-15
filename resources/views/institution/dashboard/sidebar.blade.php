@@ -12,7 +12,8 @@
             	Inicio
             </a>
         </li>
-
+    
+        {{-- Matricula --}}
         <li class="">
             <a  href="{{route('institution.enrollment.show')}}">
                 <span class="fa-stack fa-lg pull-left"><i class="fa fa-archive fa-stack-1x "></i>

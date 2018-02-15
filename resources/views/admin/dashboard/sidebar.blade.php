@@ -22,6 +22,21 @@
                 <li><a href="{{route('institution.index')}}">Ver</a></li>
             </ul>
         </li>
+
+        {{-- Areas --}}
+        <li class="">
+            <a data-toggle="collapse" data-parent="#menu" href="#areas_asig" aria-expanded="true" aria-controls="areas_asig">
+                <span class="fa-stack fa-lg pull-left"><i class="fa fa-book fa-stack-1x "></i>
+                </span> 
+                Areas y Asignaturas
+            </a>
+            <ul id="areas_asig" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
+                <li><a href="">Areas</a></li>
+                <li><a href="">Asignaturas</a></li>
+            </ul>
+        </li>
+        
+        {{-- Carga de Archivos --}}
         <li class="">
             <a data-toggle="collapse" data-parent="#menu" href="#import_files" aria-expanded="true" aria-controls="import_files">
                 <span class="fa-stack fa-lg pull-left"><i class="fa fa-upload fa-stack-1x "></i>
