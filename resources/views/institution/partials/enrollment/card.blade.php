@@ -9,16 +9,17 @@
 
 @section('content')
     <div class="row">
+        <div id="app">
+
+        </div>
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <div class="pull-right">
-                        {{--<a class="btn btn-primary btn-sm" href="{{route('enrollment.lists', 1)}}">--}}
-                        Ver Estudiantes</a>
-                    <a href="{{route('student.create')}}" class="btn btn-primary btn-sm">
-                    Crear Estudiante</a>
+                        <a href="{{route('student.create')}}" class="btn btn-primary btn-sm">
+                            Crear Estudiante</a>
                     </div>
-                @include('institution.partials.enrollment.optionsEnrollmentCard')
+                    @include('institution.partials.enrollment.optionsEnrollmentCard')
 
                 </div>
 
@@ -33,20 +34,21 @@
                                     <select name="grade_id" id="grade_id" class="form-control chosen-select">
                                         <option value="">Seleccione un Grado</option>
                                         @foreach($grades as $grade)
-                                            <option value="{{$grade->id}}" value="{{old('grade_id')}}">{{$grade->name}}</option>
+                                            <option value="{{$grade->id}}"
+                                                    value="{{old('grade_id')}}">{{$grade->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-                        <!--
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                {!! Form::label('school_year', 'Año Lectivo')!!}
-                        {!! Form::select('school_year', [], old('school_year'), ['class'=>'form-control chosen-select',
-                        'placeholder'=>'Seleccione un año']) !!}
+                            {{--
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    {!! Form::label('school_year', 'Año Lectivo')!!}
+                            {!! Form::select('school_year', [], old('school_year'), ['class'=>'form-control chosen-select',
+                            'placeholder'=>'Seleccione un año']) !!}
+                                    </div>
                                 </div>
-                            </div>
--->
+                            --}}
                             <div class="col-md-3">
                                 <div class="form-group" style="padding-top: 25px;">
                                     <input type="hidden" name="typecard" value="byGrade">
@@ -67,7 +69,8 @@
                                     <select name="group_id" id="group_id" class="form-control chosen-select">
                                         <option value="">Seleccione un Grupo</option>
                                         @foreach($groups as $group)
-                                            <option value="{{$group->id}}" value="{{old('group_id')}}">{{$group->name}}</option>
+                                            <option value="{{$group->id}}"
+                                                    value="{{old('group_id')}}">{{$group->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>

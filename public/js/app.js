@@ -986,7 +986,7 @@ window.Vue = __webpack_require__(35);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', __webpack_require__(38));
+Vue.component('group-assignment', __webpack_require__(38));
 
 var app = new Vue({
     el: '#app'
@@ -42943,7 +42943,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\ExampleComponent.vue"
+Component.options.__file = "resources\\assets\\js\\components\\GroupAssignment.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -42952,9 +42952,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0ca92eac", Component.options)
+    hotAPI.createRecord("data-v-26e84685", Component.options)
   } else {
-    hotAPI.reload("data-v-0ca92eac", Component.options)
+    hotAPI.reload("data-v-26e84685", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -43079,6 +43079,8 @@ module.exports = function normalizeComponent (
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__enrollments_ListEnrollments__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__enrollments_ListEnrollments___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__enrollments_ListEnrollments__);
 //
 //
 //
@@ -43124,97 +43126,1216 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    components: { ListEnrollments: __WEBPACK_IMPORTED_MODULE_0__enrollments_ListEnrollments___default.a },
+    data: function data() {
+        return {
+            idGrade: 0,
+            idGroup: 0,
+            titleOne: "ESTUDIANTES EN GRUPOS",
+            titleTwo: "ESTUDIANTES SIN GRUPOS",
+            option1: "option-with",
+            option2: "option",
+            groups: null,
+            listGrade: null,
+            isRender: false,
+            enrollments: null
+
+        };
+    },
+
+    methods: {
+        getEnrollmentsByGrade: function getEnrollmentsByGrade() {
+            var _this = this;
+
+            this.isRender = false;
+            axios.get('enrollmentByGrade/' + this.idGroup).then(function (res) {
+                _this.enrollments = res.data;
+                _this.isRender = true;
+            });
+        },
+
+        getGroupByGrade: function getGroupByGrade() {
+            var _this2 = this;
+
+            this.isRender = false;
+            axios.get('groupsByGrade/' + this.idGrade).then(function (res) {
+                _this2.groups = res.data;
+            });
+        }
+
+    },
+    created: function created() {
+        var _this3 = this;
+
+        axios.get('all-grades').then(function (res) {
+            _this3.listGrade = res.data;
+        });
+    }
+});
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      {
+        staticClass: "row",
+        staticStyle: {
+          "text-align": "center",
+          "background-color": "#eee",
+          "padding-top": "10px"
+        }
+      },
+      [
+        _c("div", { staticClass: "col-md-6" }, [
+          _c("div", { staticClass: "form-group" }, [
+            _c("label", { attrs: { for: "" } }, [
+              _vm._v("Seleccione un grado")
+            ]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.idGrade,
+                    expression: "idGrade"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { name: "", id: "" },
+                on: {
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.idGrade = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    },
+                    _vm.getGroupByGrade
+                  ]
+                }
+              },
+              [
+                _c("option", { attrs: { value: "0" } }, [
+                  _vm._v("Seleccionar")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.listGrade, function(grade) {
+                  return _c("option", { domProps: { value: grade.id } }, [
+                    _vm._v(
+                      "\n                        " +
+                        _vm._s(grade.name) +
+                        "\n                    "
+                    )
+                  ])
+                })
+              ],
+              2
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-md-6" }, [
+          _c("div", { staticClass: "form-group" }, [
+            _c("label", { attrs: { for: "" } }, [
+              _vm._v("Seleccione un grupo")
+            ]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.idGroup,
+                    expression: "idGroup"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { name: "", id: "" },
+                on: {
+                  change: [
+                    function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.idGroup = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    },
+                    _vm.getEnrollmentsByGrade
+                  ]
+                }
+              },
+              [
+                _c("option", { attrs: { value: "0" } }, [
+                  _vm._v("Seleccionar")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.groups, function(group) {
+                  return _c("option", { domProps: { value: group.id } }, [
+                    _vm._v(
+                      "\n                        " +
+                        _vm._s(group.name) +
+                        "\n                        "
+                    ),
+                    _c("small", [_vm._v(_vm._s(group.headquarter_name))])
+                  ])
+                })
+              ],
+              2
+            )
+          ])
+        ])
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "row" },
+      [
+        _vm.isRender
+          ? _c("list-enrollments", {
+              attrs: {
+                enrollments: _vm.enrollments,
+                groups: _vm.groups,
+                title: _vm.titleOne,
+                nameOption: _vm.option1
+              }
+            })
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.isRender
+          ? _c("list-enrollments", {
+              attrs: {
+                enrollments: _vm.enrollments,
+                groups: _vm.groups,
+                title: _vm.titleTwo,
+                nameOption: _vm.option2
+              }
+            })
+          : _c("div", { staticClass: "col-md-12" }, [
+              _c(
+                "h5",
+                {
+                  staticClass: "alert-info",
+                  staticStyle: {
+                    padding: "10px",
+                    "text-align": "center",
+                    "text-transform": "uppercase",
+                    "font-weight": "bold"
+                  }
+                },
+                [
+                  _vm._v(
+                    "\n                Seleccione un grado y luego un grupo. "
+                  )
+                ]
+              )
+            ])
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-26e84685", module.exports)
+  }
+}
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(43)
+}
+var normalizeComponent = __webpack_require__(39)
+/* script */
+var __vue_script__ = __webpack_require__(48)
+/* template */
+var __vue_template__ = __webpack_require__(49)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-7509e646"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\enrollments\\ListEnrollments.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-7509e646", Component.options)
+  } else {
+    hotAPI.reload("data-v-7509e646", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(44);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(46)("0c3ca07e", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-7509e646\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./ListEnrollments.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-7509e646\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./ListEnrollments.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(45)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __webpack_require__(47)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+var options = null
+var ssrIdKey = 'data-vue-ssr-id'
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction, _options) {
+  isProduction = _isProduction
+
+  options = _options || {}
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+  if (options.ssrId) {
+    styleElement.setAttribute(ssrIdKey, obj.id)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports) {
+
+/**
+ * Translates the list format produced by css-loader into something
+ * easier to manipulate.
+ */
+module.exports = function listToStyles (parentId, list) {
+  var styles = []
+  var newStyles = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i]
+    var id = item[0]
+    var css = item[1]
+    var media = item[2]
+    var sourceMap = item[3]
+    var part = {
+      id: parentId + ':' + i,
+      css: css,
+      media: media,
+      sourceMap: sourceMap
+    }
+    if (!newStyles[id]) {
+      styles.push(newStyles[id] = { id: id, parts: [part] })
+    } else {
+      newStyles[id].parts.push(part)
+    }
+  }
+  return styles
+}
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ItemEnrollments__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ItemEnrollments___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__ItemEnrollments__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Assignment__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Assignment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Assignment__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    name: "list-enrollments",
+    components: { ItemEnrollments: __WEBPACK_IMPORTED_MODULE_0__ItemEnrollments___default.a, Assignment: __WEBPACK_IMPORTED_MODULE_1__Assignment___default.a },
+    props: {
+        enrollments: { type: Array },
+        groups: { type: Array },
+        title: { type: String },
+        nameOption: { type: String }
+    },
+    data: function data() {
+        return {
+            isCheckMeAll: false,
+            listCheckTrue: [],
+            listCheckFalse: []
+
+        };
+    },
+
+    methods: {
+        checkMeAll: function checkMeAll() {
+            var _this = this;
+
+            this.$children.forEach(function (component) {
+                component.isChecked = !_this.isCheckMeAll;
+                var i = component.index;
+                if (component.isChecked) {
+                    _this.listCheckFalse[i] = null;
+                    _this.listCheckTrue[i] = component._props.enrollment;
+                } else {
+                    _this.listCheckTrue[i] = null;
+                    _this.listCheckFalse[i] = component._props.enrollment;
+                }
+            });
+
+            //console.log(this.listCheckTrue);
+            //console.log(this.listCheckFalse);
+        },
+        setComponent: function setComponent(component) {
+            var i = component.index;
+            var checked = !component._data.isChecked;
+            if (checked) {
+                this.listCheckFalse[i] = null;
+                this.listCheckTrue[i] = component._props.enrollment;
+            } else {
+                this.listCheckTrue[i] = null;
+                this.listCheckFalse[i] = component._props.enrollment;
+            }
+            //console.log(this.listCheckTrue);
+            //console.log(this.listCheckFalse);
+        }
+
+    }
+});
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "col-md-6" },
+    [
+      _c(
+        "h5",
+        { staticStyle: { "font-weight": "bold", "text-align": "center" } },
+        [_vm._v(_vm._s(_vm.title))]
+      ),
+      _vm._v(" "),
+      _c("assignment", {
+        attrs: {
+          groups: _vm.groups,
+          nameOption: _vm.nameOption,
+          checksFalse: _vm.listCheckFalse,
+          checksTrue: _vm.listCheckTrue
+        }
+      }),
+      _vm._v(" "),
+      _c("label", [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.isCheckMeAll,
+              expression: "isCheckMeAll"
+            }
+          ],
+          attrs: { type: "checkbox" },
+          domProps: {
+            checked: Array.isArray(_vm.isCheckMeAll)
+              ? _vm._i(_vm.isCheckMeAll, null) > -1
+              : _vm.isCheckMeAll
+          },
+          on: {
+            click: _vm.checkMeAll,
+            change: function($event) {
+              var $$a = _vm.isCheckMeAll,
+                $$el = $event.target,
+                $$c = $$el.checked ? true : false
+              if (Array.isArray($$a)) {
+                var $$v = null,
+                  $$i = _vm._i($$a, $$v)
+                if ($$el.checked) {
+                  $$i < 0 && (_vm.isCheckMeAll = $$a.concat([$$v]))
+                } else {
+                  $$i > -1 &&
+                    (_vm.isCheckMeAll = $$a
+                      .slice(0, $$i)
+                      .concat($$a.slice($$i + 1)))
+                }
+              } else {
+                _vm.isCheckMeAll = $$c
+              }
+            }
+          }
+        }),
+        _vm._v("\n        Seleccionar todos\n    ")
+      ]),
+      _vm._v(" "),
+      _c("table", { staticClass: "table table-bordered" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.enrollments, function(enrollment, index) {
+            return _c(
+              "tr",
+              [
+                _c("th", { attrs: { scope: "row" } }, [
+                  _vm._v(
+                    "\n                " + _vm._s(index + 1) + "\n            "
+                  )
+                ]),
+                _vm._v(" "),
+                _c("item-enrollments", {
+                  attrs: { enrollment: enrollment, index: index },
+                  on: { click: _vm.setComponent }
+                }),
+                _vm._v(" "),
+                _c("td")
+              ],
+              1
+            )
+          })
+        )
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Nombres y Apellidos")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Accion")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-7509e646", module.exports)
+  }
+}
+
+/***/ }),
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(56)
+}
+var normalizeComponent = __webpack_require__(39)
+/* script */
+var __vue_script__ = __webpack_require__(58)
+/* template */
+var __vue_template__ = __webpack_require__(59)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-3a7969c8"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\enrollments\\ItemEnrollments.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-3a7969c8", Component.options)
+  } else {
+    hotAPI.reload("data-v-3a7969c8", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(57);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(46)("15f4176c", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3a7969c8\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./ItemEnrollments.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-3a7969c8\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./ItemEnrollments.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(45)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 58 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    name: "item-enrollments",
+    props: {
+        enrollment: { type: Object },
+        index: { type: Number }
+    },
+    data: function data() {
+        return {
+            isChecked: false,
+            position: this.index
+        };
+    },
+
+    methods: {
+        checkMe: function checkMe(enrollment) {
+            this.$emit('click', this);
+        }
+    }
+});
+
+/***/ }),
+/* 59 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("td", [
+    _c("label", [
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.isChecked,
+            expression: "isChecked"
+          }
+        ],
+        staticClass: "checkOther",
+        attrs: { type: "checkbox" },
+        domProps: {
+          value: false,
+          checked: Array.isArray(_vm.isChecked)
+            ? _vm._i(_vm.isChecked, false) > -1
+            : _vm.isChecked
+        },
+        on: {
+          click: function($event) {
+            _vm.checkMe(_vm.enrollment)
+          },
+          change: function($event) {
+            var $$a = _vm.isChecked,
+              $$el = $event.target,
+              $$c = $$el.checked ? true : false
+            if (Array.isArray($$a)) {
+              var $$v = false,
+                $$i = _vm._i($$a, $$v)
+              if ($$el.checked) {
+                $$i < 0 && (_vm.isChecked = $$a.concat([$$v]))
+              } else {
+                $$i > -1 &&
+                  (_vm.isChecked = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
+              }
+            } else {
+              _vm.isChecked = $$c
+            }
+          }
+        }
+      }),
+      _vm._v(
+        "\n        " +
+          _vm._s(
+            _vm.enrollment.student_last_name + " " + _vm.enrollment.student_name
+          ) +
+          "\n    "
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-3a7969c8", module.exports)
+  }
+}
+
+/***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(61)
+}
+var normalizeComponent = __webpack_require__(39)
+/* script */
+var __vue_script__ = __webpack_require__(63)
+/* template */
+var __vue_template__ = __webpack_require__(64)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-126cb211"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\enrollments\\Assignment.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-126cb211", Component.options)
+  } else {
+    hotAPI.reload("data-v-126cb211", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(62);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(46)("71702c8c", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-126cb211\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Assignment.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-126cb211\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Assignment.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(45)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 63 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
@@ -43248,70 +44369,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    name: "assignment",
+    props: {
+        groups: { type: Array },
+        nameOption: { type: String },
+        checksFalse: { type: Array },
+        checksTrue: { type: Array }
+    },
     data: function data() {
         return {
-            idGrade: 0,
-            idGroup: 0,
-            listGrade: null,
-            enrollments: null,
-            groups: null,
-            elsCheck: [],
-            elsCheckOther: [],
             idGroupSelect: 0,
-            idGroupSelectOther: 0
+            picked: null
         };
     },
 
     methods: {
-        getEnrollmentsByGrade: function getEnrollmentsByGrade() {
-            var _this = this;
-
-            this.elsCheck.forEach(function (value) {
-                value = false;
-            });
-            axios.get('enrollmentByGrade/' + this.idGroup).then(function (res) {
-                _this.enrollments = res.data;
-                _this.elsCheck = [];
-            });
-        },
-
-        getGroupByGrade: function getGroupByGrade() {
-            var _this2 = this;
-
-            this.elsCheckOther.forEach(function (value) {
-                value = false;
-            });
-            axios.get('groupsByGrade/' + this.idGrade).then(function (res) {
-                _this2.groups = res.data;
-            });
-        },
-
-        checkMe: function checkMe(enrollment) {
-            console.log(enrollment.student_name);
-        },
-
-        checkMeAll: function checkMeAll(e) {
-            var _this3 = this;
-
-            var checkOther = document.querySelectorAll('.checkOther');
-            checkOther.forEach(function (check, index) {
-                check.checked = e.srcElement.checked;
-                _this3.elsCheckOther[index] = e.srcElement.checked;
-            });
+        assignment: function assignment() {
+            console.log(this.checksTrue);
         }
-
-    },
-    mounted: function mounted() {
-        var _this4 = this;
-
-        axios.get('all-grades').then(function (res) {
-            _this4.listGrade = res.data;
-        });
     }
+
 });
 
 /***/ }),
-/* 41 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -43319,520 +44400,121 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("div", { staticClass: "row", staticStyle: { "text-align": "center" } }, [
-      _c("div", { staticClass: "col-md-3" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "" } }, [_vm._v("Seleccione un grado")]),
-          _vm._v(" "),
-          _c(
-            "select",
+    _c("div", { staticClass: "form-group" }, [
+      _c("label", { attrs: { for: "" } }, [_vm._v("Seleccione un grupo")]),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
             {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.idGrade,
-                  expression: "idGrade"
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { name: "", id: "" },
-              on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.idGrade = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  _vm.getGroupByGrade
-                ]
-              }
-            },
-            [
-              _c("option", { attrs: { value: "0" } }, [_vm._v("Seleccionar")]),
-              _vm._v(" "),
-              _vm._l(_vm.listGrade, function(grade) {
-                return _c("option", { domProps: { value: grade.id } }, [
-                  _vm._v(
-                    "\n                        " +
-                      _vm._s(grade.name) +
-                      "\n                    "
-                  )
-                ])
-              })
-            ],
-            2
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-3" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "" } }, [_vm._v("Seleccione un grupo")]),
+              name: "model",
+              rawName: "v-model",
+              value: _vm.idGroupSelect,
+              expression: "idGroupSelect"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: { name: "", id: "" },
+          on: {
+            change: [
+              function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.idGroupSelect = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              },
+              function($event) {}
+            ]
+          }
+        },
+        [
+          _c("option", { attrs: { value: "0" } }, [_vm._v("Seleccionar")]),
           _vm._v(" "),
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.idGroup,
-                  expression: "idGroup"
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { name: "", id: "" },
-              on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.idGroup = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  _vm.getEnrollmentsByGrade
-                ]
-              }
-            },
-            [
-              _c("option", { attrs: { value: "0" } }, [_vm._v("Seleccionar")]),
-              _vm._v(" "),
-              _vm._l(_vm.groups, function(group) {
-                return _c("option", { domProps: { value: group.id } }, [
-                  _vm._v(
-                    "\n                        " +
-                      _vm._s(group.name) +
-                      "\n                        "
-                  ),
-                  _c("small", [_vm._v(_vm._s(group.headquarter_name))])
-                ])
-              })
-            ],
-            2
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _vm._m(0),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-3" })
+          _vm._l(_vm.groups, function(group) {
+            return _c("option", { domProps: { value: group.id } }, [
+              _vm._v(
+                "\n                " + _vm._s(group.name) + "\n                "
+              ),
+              _c("small", [_vm._v(_vm._s(group.headquarter_name))])
+            ])
+          })
+        ],
+        2
+      )
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-3" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "" } }, [_vm._v("Seleccione un grupo")]),
-          _vm._v(" "),
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.idGroupSelect,
-                  expression: "idGroupSelect"
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { name: "", id: "" },
-              on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.idGroupSelect = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  function($event) {}
-                ]
+    _c("div", { staticClass: "form-group" }, [
+      _c("label", { attrs: { for: "" } }, [_vm._v("Seleccione operación")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "radio" }, [
+        _c("label", { staticStyle: { "margin-right": "20px" } }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.picked,
+                expression: "picked"
               }
-            },
-            [
-              _c("option", { attrs: { value: "0" } }, [_vm._v("Seleccionar")]),
-              _vm._v(" "),
-              _vm._l(_vm.groups, function(group) {
-                return _c("option", { domProps: { value: group.id } }, [
-                  _vm._v(
-                    "\n                        " +
-                      _vm._s(group.name) +
-                      "\n                        "
-                  ),
-                  _c("small", [_vm._v(_vm._s(group.headquarter_name))])
-                ])
-              })
             ],
-            2
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _vm._m(1),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-3" }, [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "" } }, [_vm._v("Seleccione un grupo")]),
-          _vm._v(" "),
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.idGroupSelectOther,
-                  expression: "idGroupSelectOther"
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { name: "", id: "" },
-              on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.idGroupSelectOther = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  function($event) {}
-                ]
+            attrs: {
+              type: "radio",
+              name: _vm.nameOption,
+              id: "optionsRadios1",
+              value: "1"
+            },
+            domProps: { checked: _vm._q(_vm.picked, "1") },
+            on: {
+              change: function($event) {
+                _vm.picked = "1"
               }
-            },
-            [
-              _c("option", { attrs: { value: "0" } }, [_vm._v("Seleccionar")]),
-              _vm._v(" "),
-              _vm._l(_vm.groups, function(group) {
-                return _c("option", { domProps: { value: group.id } }, [
-                  _vm._v(
-                    "\n                        " +
-                      _vm._s(group.name) +
-                      "\n                        "
-                  ),
-                  _c("small", [_vm._v(_vm._s(group.headquarter_name))])
-                ])
-              })
-            ],
-            2
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _vm._m(2)
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("h5", [_vm._v("Estudiantes en Grupos")]),
-        _vm._v(" "),
-        _vm._m(3),
-        _vm._v(" "),
-        _c("table", { staticClass: "table table-bordered" }, [
-          _vm._m(4),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(_vm.enrollments, function(enrollment, index) {
-              return _c("tr", [
-                _c("th", { attrs: { scope: "row" } }, [
-                  _vm._v(
-                    "\n                        " +
-                      _vm._s(index + 1) +
-                      "\n                    "
-                  )
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("label", [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.elsCheck[index],
-                          expression: "elsCheck[index]"
-                        }
-                      ],
-                      attrs: { type: "checkbox" },
-                      domProps: {
-                        value: false,
-                        checked: Array.isArray(_vm.elsCheck[index])
-                          ? _vm._i(_vm.elsCheck[index], false) > -1
-                          : _vm.elsCheck[index]
-                      },
-                      on: {
-                        click: function($event) {
-                          _vm.checkMe(enrollment)
-                        },
-                        change: function($event) {
-                          var $$a = _vm.elsCheck[index],
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = false,
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 &&
-                                (_vm.elsCheck[index] = $$a.concat([$$v]))
-                            } else {
-                              $$i > -1 &&
-                                (_vm.elsCheck[index] = $$a
-                                  .slice(0, $$i)
-                                  .concat($$a.slice($$i + 1)))
-                            }
-                          } else {
-                            _vm.$set(_vm.elsCheck, index, $$c)
-                          }
-                        }
-                      }
-                    }),
-                    _vm._v(
-                      "\n                            " +
-                        _vm._s(
-                          enrollment.student_last_name +
-                            " " +
-                            enrollment.student_name
-                        ) +
-                        "\n                        "
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("td")
-              ])
-            })
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-6" }, [
-        _c("h5", [_vm._v("Estudiantes sin Grupos")]),
+            }
+          }),
+          _vm._v("\n                Incluir\n            ")
+        ]),
         _vm._v(" "),
         _c("label", [
           _c("input", {
-            attrs: { type: "checkbox" },
-            on: { click: _vm.checkMeAll }
+            attrs: {
+              type: "radio",
+              name: _vm.nameOption,
+              id: "",
+              value: "2",
+              checked: ""
+            }
           }),
-          _vm._v("\n                Seleccionar todos\n            ")
-        ]),
-        _vm._v(" "),
-        _c("table", { staticClass: "table table-bordered" }, [
-          _vm._m(5),
-          _vm._v(" "),
-          _c(
-            "tbody",
-            _vm._l(_vm.enrollments, function(enrollment, index) {
-              return _c("tr", [
-                _c("th", { attrs: { scope: "row" } }, [
-                  _vm._v(
-                    "\n                        " +
-                      _vm._s(index + 1) +
-                      "\n                    "
-                  )
-                ]),
-                _vm._v(" "),
-                _c("td", [
-                  _c("label", [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.elsCheckOther[index],
-                          expression: "elsCheckOther[index]"
-                        }
-                      ],
-                      staticClass: "checkOther",
-                      attrs: { type: "checkbox" },
-                      domProps: {
-                        value: false,
-                        checked: Array.isArray(_vm.elsCheckOther[index])
-                          ? _vm._i(_vm.elsCheckOther[index], false) > -1
-                          : _vm.elsCheckOther[index]
-                      },
-                      on: {
-                        click: function($event) {
-                          _vm.checkMe(enrollment)
-                        },
-                        change: function($event) {
-                          var $$a = _vm.elsCheckOther[index],
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = false,
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 &&
-                                (_vm.elsCheckOther[index] = $$a.concat([$$v]))
-                            } else {
-                              $$i > -1 &&
-                                (_vm.elsCheckOther[index] = $$a
-                                  .slice(0, $$i)
-                                  .concat($$a.slice($$i + 1)))
-                            }
-                          } else {
-                            _vm.$set(_vm.elsCheckOther, index, $$c)
-                          }
-                        }
-                      }
-                    }),
-                    _vm._v(
-                      "\n                            " +
-                        _vm._s(
-                          enrollment.student_last_name +
-                            " " +
-                            enrollment.student_name
-                        ) +
-                        "\n                        "
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("td")
-              ])
-            })
-          )
+          _vm._v("\n                Excluir\n            ")
         ])
       ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "form-group" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary btn-block",
+          on: { click: _vm.assignment }
+        },
+        [_vm._v(" Asignar")]
+      )
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-3" }, [
-      _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "" } }, [_vm._v("Seleccione operación")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "radio" }, [
-          _c("label", { staticStyle: { "margin-right": "20px" } }, [
-            _c("input", {
-              attrs: {
-                type: "radio",
-                name: "optionsRadios",
-                id: "optionsRadios1",
-                value: "option1",
-                checked: ""
-              }
-            }),
-            _vm._v("\n                        Incluir\n                    ")
-          ]),
-          _vm._v(" "),
-          _c("label", [
-            _c("input", {
-              attrs: {
-                type: "radio",
-                name: "optionsRadios",
-                id: "optionsRadios1",
-                value: "option1",
-                checked: ""
-              }
-            }),
-            _vm._v("\n                        Excluir\n                    ")
-          ])
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-3" }, [
-      _c("label", { attrs: { for: "" } }, [_vm._v(".")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group" }, [
-        _c("button", { staticClass: "btn btn-default" }, [_vm._v(" Asignar")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-3" }, [
-      _c("label", { attrs: { for: "" } }, [_vm._v(".")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group" }, [
-        _c("button", { staticClass: "btn btn-default" }, [_vm._v(" Asignar")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("label", [
-      _c("input", { attrs: { type: "checkbox" } }),
-      _vm._v("\n                Seleccionar todos\n            ")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Nombres y Apellidos")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Accion")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Nombres y Apellidos")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Accion")])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-0ca92eac", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-126cb211", module.exports)
   }
 }
 
