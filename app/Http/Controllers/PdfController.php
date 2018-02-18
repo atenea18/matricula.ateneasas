@@ -102,6 +102,7 @@ class PdfController extends Controller
             $institution = $group->headquarter->institution;
             $schoolYear = Schoolyear::where('year','=',$request->year)->first();
 
+            // dd(count($institution->headquarters));
             $students = $group->enrollments()
             ->with('student')
             ->with('student.state')

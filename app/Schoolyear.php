@@ -13,4 +13,12 @@ class Schoolyear extends Model
     {
         return $this->hasMany(Enrollment::class, 'school_year_id');
     }
+
+    /**
+     * Obtiene la relacion que hay entre el ente el año lectivo y el docente
+     */
+    public function teachers()
+    {
+        return $this->belongsTo(Teacher::class, 'school_year_id');
+    }
 }

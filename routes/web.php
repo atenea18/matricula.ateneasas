@@ -51,9 +51,13 @@ Route::group(['prefix'=>'admin','middleware'=>'admin_auth'], function(){
 	})->name('admin.home');
 
 	Route::post('/logout', 'AdministratorAuth\LoginController@logout');
+
+	// Ruta para la institucion
 	Route::resource('institution', 'InstitutionController');
 	Route::put('institution/{id}/changePassword', 'InstitutionController@changePassword')->name('institution.changePassword');
 
+	// Ruta Para las Areas
+	Route::resource('area', 'Administrator\AreaController',['only'=>['list','create','store','edit','update','destroy']]);
 
 	// Excel's
 	Route::get('excel', 'ExcelController@exportInstitutions')->name('institutions.excel');
@@ -115,6 +119,13 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	Route::put('student/updateFamily/{id}', 'StudentController@updateFamily')->name('student.updateFamily');
 	Route::delete('student/deleteFamily/{id}', 'StudentController@deleteFamily')->name('student.deleteFamily');
 	Route::get('student/searchFamily', 'StudentController@searchFamily')->name('student.searchFamily');
+
+	// Ruta para entes administrativos
+	Route::resource('manager', 'Institution\ManagerController', ['only'=> ['create','store', 'edit','update', 'destroy']]);
+
+	// Ruta para los docentes
+	Route::resource('teacher', 'Institution\TeacherController', ['only'=> ['create','store', 'edit','update', 'destroy']]);
+	Route::get('teacher/list', 'Institution\TeacherController@listTeacher')->name('institution.list.teacher');
 
 	// Ruta para los salones de clase
 	Route::resource('group', 'GroupController');

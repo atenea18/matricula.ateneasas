@@ -24,7 +24,15 @@ class Identification extends Model
      */
     public function student()
     {
-        return $this->hasOne('App\Student', 'identification_id');
+        return $this->hasOne(Student::class, 'identification_id');
+    }
+
+    /**
+     * Obtiene la relacion que hay entre identificacion y el ente administrativo
+     */
+    public function manager()
+    {
+        return $this->hasOne(Manager::class, 'identification_id');
     }
 
     /**
@@ -40,7 +48,7 @@ class Identification extends Model
      */
     public function identification_type()
     {
-        return $this->belongsTo('App\Identification_type', 'identification_type_id');
+        return $this->belongsTo(Identification_type::class, 'identification_type_id');
     }
 
     /**
@@ -48,7 +56,7 @@ class Identification extends Model
      */
     public function gender()
     {
-        return $this->belongsTo('App\Gender', 'gender_id');
+        return $this->belongsTo(Gender::class, 'gender_id');
     }
 
     /**
@@ -56,7 +64,7 @@ class Identification extends Model
      */
     public function city_expedition()
     {
-        return $this->belongsTo('App\City', 'id_city_expedition');
+        return $this->belongsTo(City::class, 'id_city_expedition');
     }
 
     /**
@@ -64,6 +72,6 @@ class Identification extends Model
      */
     public function city_birth()
     {
-        return $this->belongsTo('App\City', 'id_city_of_birth');
+        return $this->belongsTo(City::class, 'id_city_of_birth');
     }
 }

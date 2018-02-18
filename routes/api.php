@@ -17,7 +17,14 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
+// RUTA PARA MATRICULAS
 Route::resource('enrollment', 'Institution\EnrollmentController', ['only'=>['index','show']]);
-
 Route::get('Institution/{institution}/enrollments/{year}', 'Institution\EnrollmentController@enrollments')->name('institution.enrollments');
 Route::get('headquarter/{headquarter}/{workingDay}/{grade}/getGroup', 'Headquarter\GroupController@getGroup')->name('api.headquarter.getGroup');
+
+// RUTA PARA DOCENTES
+Route::resource('teacher', 'Institution\TeacherController', ['only'=>['index','show']]);
+Route::get('institution/{institution}/teachers/{year?}', 'Institution\TeacherController@getByInstitution')->name('institution.teachers');
+
+// RUTA PARA LAS AREAS DESDE EL ADMINISTRADOR
+Route::resource('area', 'Administrator\AreaController', ['only'=>['index','show']]);
