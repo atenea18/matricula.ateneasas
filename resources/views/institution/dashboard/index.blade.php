@@ -16,7 +16,6 @@
         <link rel="stylesheet" href="{{asset('plugin/DataTables/dataTables.bootstrap.min.css')}}">
         @yield('css')
 
-        <!-- Scripts -->
         <script src="{{asset('plugin/fontawesome5/svg-with-js/js/fontawesome-all.js')}}"></script>
         <script>
             window.Laravel = <?php echo json_encode([

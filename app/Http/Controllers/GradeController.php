@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class GradeController extends Controller
 {
-    public function getAllGrades(){
+    public function getAllGrades(Request $request){
 
-        if (request()->ajax()) {
+        if ($request->ajax()){
             return Grade::all();
         }
     }

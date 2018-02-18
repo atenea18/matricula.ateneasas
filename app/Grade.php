@@ -35,11 +35,11 @@ class Grade extends Model
             ->select(
                 'enrollment.id',
                 'student.id as student_id', 'student.name as student_name', 'student.last_name as student_last_name',
-                'grade.id as grade_id', 'grade.name as grade_name',
-                'group.id as group_id', 'group.name as group_name',
-                'headquarter.id as headquarter_id', 'headquarter.name as headquarter_name',
-                'institution.id as institution_id', 'institution.name as institution_name',
-                'schoolyears.id as schoolyears_id', 'schoolyears.year'
+                'grade.id as grade_id',
+                'group.id as group_id',
+                'group_assignment.id as a_id',
+                'institution.id as institution_id',
+                'schoolyears.id as schoolyears_id'
             )
             ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
             ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')

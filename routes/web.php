@@ -24,6 +24,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+
 // RUTAS AJAX
 Route::group(['prefix'=>'ajax'], function(){
 
@@ -31,6 +32,9 @@ Route::group(['prefix'=>'ajax'], function(){
 	Route::get('/student/getFamily/{id}', 'StudentController@getFamily')->name('student.getFamily');
 	Route::get('/student/getFamilyById/{id}', 'StudentController@getFamilyById');
 	Route::get('/family/search', 'FamilyController@search')->name('family.search');
+
+
+
 	
 });
 
@@ -127,10 +131,14 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	Route::resource('group', 'GroupController');
     Route::get('group-assignment', 'GroupController@assigment')->name('group.assignment');
 
-	//Rutas para request Ajax
+    //Rutas para request Ajax
     Route::get('enrollmentByGrade/{group_id}', 'GradeController@getEnrollmentsByGrade');
-    Route::get('all-grades', 'GradeController@getAllGrades');
+    Route::get('allgrades', 'GradeController@getAllGrades');
     Route::get('groupsByGrade/{grade_id}', 'GroupController@GroupsByGrade');
+
+    Route::post('groupupdate', 'GroupController@groupUpdate');
+
+
 
 
 

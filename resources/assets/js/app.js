@@ -15,7 +15,11 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component('group-assignment', require('./components/GroupAssignment.vue'));
+
+import EventBus from './plugin/event-bus';
+
+Vue.use(EventBus);
 
 const app = new Vue({
     el: '#app'
