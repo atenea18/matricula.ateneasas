@@ -2,7 +2,7 @@
     <td>
         <label>
             <input type="checkbox" class="checkOther"
-                   v-on:click="checkMe(enrollment)"
+                   v-on:click="checkMe()"
                    v-model="isChecked"
                    :value="false">
             {{ enrollment.student_last_name +" "+ enrollment.student_name}}
@@ -24,9 +24,8 @@
             }
         },
         methods: {
-            checkMe: function (enrollment) {
+            checkMe: function () {
                 this.$emit('click', this)
-
             },
         }
     }

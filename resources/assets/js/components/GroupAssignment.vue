@@ -31,12 +31,15 @@
         </div>
 
         <div class="row">
-            <list-enrollments v-if="isRender" :enrollments="enrollments" :groups="groups" :title="titleOne" :nameOption="option1">
+            <list-enrollments v-if="isRender" :enrollments="enrollments" :groups="groups" :title="titleOne"
+                              :nameOption="option1" :typeQuery="'UPDATE'">
             </list-enrollments>
-            <list-enrollments v-if="isRender" :enrollments="enrollments" :groups="groups" :title="titleTwo" :nameOption="option2">
+            <list-enrollments v-if="isRender" :enrollments="null" :groups="groups" :title="titleTwo"
+                              :nameOption="option2" :typeQuery="'INSERT'">
             </list-enrollments>
             <div class="col-md-12" v-else="isRender">
-                <h5 class="alert-info" style="padding: 10px; text-align: center; text-transform: uppercase; font-weight: bold">
+                <h5 class="alert-info"
+                    style="padding: 10px; text-align: center; text-transform: uppercase; font-weight: bold">
                     Seleccione un grado y luego un grupo. </h5>
             </div>
         </div>
@@ -52,9 +55,9 @@
             return {
                 idGrade: 0,
                 idGroup: 0,
-                titleOne:"ESTUDIANTES EN GRUPOS",
-                titleTwo:"ESTUDIANTES SIN GRUPOS",
-                option1:"option-with",
+                titleOne: "ESTUDIANTES EN GRUPOS",
+                titleTwo: "ESTUDIANTES SIN GRUPOS",
+                option1: "option-with",
                 option2: "option",
                 groups: null,
                 listGrade: null,
@@ -82,10 +85,12 @@
 
         },
         created() {
-            axios.get('all-grades').then(res => {
+            this.$bus.$on('reload-enroll', () =>{
+               this.getEnrollmentsByGrade();
+            });
+            axios.get('allgrades').then(res => {
                 this.listGrade = res.data;
-            })
-            ;
+            });
         }
 
     }

@@ -967,8 +967,11 @@ module.exports = __webpack_require__(10);
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__plugin_event_bus__ = __webpack_require__(66);
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -987,6 +990,10 @@ window.Vue = __webpack_require__(35);
  */
 
 Vue.component('group-assignment', __webpack_require__(38));
+
+
+
+Vue.use(__WEBPACK_IMPORTED_MODULE_0__plugin_event_bus__["a" /* default */]);
 
 var app = new Vue({
     el: '#app'
@@ -43126,6 +43133,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -43171,7 +43181,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     created: function created() {
         var _this3 = this;
 
-        axios.get('all-grades').then(function (res) {
+        this.$bus.$on('reload-enroll', function () {
+            _this3.getEnrollmentsByGrade();
+        });
+        axios.get('allgrades').then(function (res) {
             _this3.listGrade = res.data;
         });
     }
@@ -43326,7 +43339,8 @@ var render = function() {
                 enrollments: _vm.enrollments,
                 groups: _vm.groups,
                 title: _vm.titleOne,
-                nameOption: _vm.option1
+                nameOption: _vm.option1,
+                typeQuery: "UPDATE"
               }
             })
           : _vm._e(),
@@ -43334,10 +43348,11 @@ var render = function() {
         _vm.isRender
           ? _c("list-enrollments", {
               attrs: {
-                enrollments: _vm.enrollments,
+                enrollments: null,
                 groups: _vm.groups,
                 title: _vm.titleTwo,
-                nameOption: _vm.option2
+                nameOption: _vm.option2,
+                typeQuery: "INSERT"
               }
             })
           : _c("div", { staticClass: "col-md-12" }, [
@@ -43460,7 +43475,7 @@ exports = module.exports = __webpack_require__(45)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -43851,6 +43866,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -43862,7 +43879,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         enrollments: { type: Array },
         groups: { type: Array },
         title: { type: String },
-        nameOption: { type: String }
+        nameOption: { type: String },
+        typeQuery: { type: String }
     },
     data: function data() {
         return {
@@ -43874,6 +43892,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
+
         checkMeAll: function checkMeAll() {
             var _this = this;
 
@@ -43888,11 +43907,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     _this.listCheckFalse[i] = component._props.enrollment;
                 }
             });
-
-            //console.log(this.listCheckTrue);
-            //console.log(this.listCheckFalse);
         },
-        setComponent: function setComponent(component) {
+        getComponent: function getComponent(component) {
+
             var i = component.index;
             var checked = !component._data.isChecked;
             if (checked) {
@@ -43902,10 +43919,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.listCheckTrue[i] = null;
                 this.listCheckFalse[i] = component._props.enrollment;
             }
-            //console.log(this.listCheckTrue);
-            //console.log(this.listCheckFalse);
         }
 
+    },
+    mounted: function mounted() {
+        var _this2 = this;
+
+        this.$children.forEach(function (component) {
+            var i = component.index;
+            if (component.isChecked) {
+                _this2.listCheckFalse[i] = null;
+                _this2.listCheckTrue[i] = component._props.enrollment;
+            } else {
+                _this2.listCheckTrue[i] = null;
+                _this2.listCheckFalse[i] = component._props.enrollment;
+            }
+        });
     }
 });
 
@@ -43932,7 +43961,8 @@ var render = function() {
           groups: _vm.groups,
           nameOption: _vm.nameOption,
           checksFalse: _vm.listCheckFalse,
-          checksTrue: _vm.listCheckTrue
+          checksTrue: _vm.listCheckTrue,
+          typeQuery: _vm.typeQuery
         }
       }),
       _vm._v(" "),
@@ -43995,7 +44025,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("item-enrollments", {
                   attrs: { enrollment: enrollment, index: index },
-                  on: { click: _vm.setComponent }
+                  on: { click: _vm.getComponent }
                 }),
                 _vm._v(" "),
                 _c("td")
@@ -44125,7 +44155,7 @@ exports = module.exports = __webpack_require__(45)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -44163,7 +44193,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
-        checkMe: function checkMe(enrollment) {
+        checkMe: function checkMe() {
             this.$emit('click', this);
         }
     }
@@ -44198,7 +44228,7 @@ var render = function() {
         },
         on: {
           click: function($event) {
-            _vm.checkMe(_vm.enrollment)
+            _vm.checkMe()
           },
           change: function($event) {
             var $$a = _vm.isChecked,
@@ -44325,7 +44355,7 @@ exports = module.exports = __webpack_require__(45)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -44367,6 +44397,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "assignment",
@@ -44374,19 +44407,69 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         groups: { type: Array },
         nameOption: { type: String },
         checksFalse: { type: Array },
-        checksTrue: { type: Array }
+        checksTrue: { type: Array },
+        typeQuery: { type: String }
     },
     data: function data() {
         return {
             idGroupSelect: 0,
-            picked: null
+            picked: "1",
+            isSend: false
         };
     },
 
     methods: {
         assignment: function assignment() {
-            console.log(this.checksTrue);
+
+            if (this.typeQuery == "UPDATE") {
+                this.updateEnrollment();
+            }
+        },
+        updateEnrollment: function updateEnrollment() {
+            var _this = this;
+
+            var data = "";
+            var newArray = [];
+            if (this.picked == "1") {
+                newArray = this.checksTrue.filter(Boolean);
+                newArray.forEach(function (element) {
+                    element.group_id = _this.idGroupSelect;
+                });
+            } else {
+                newArray = this.checksFalse.filter(Boolean);
+                newArray.forEach(function (element) {
+                    element.group_id = _this.idGroupSelect;
+                });
+            }
+            if (newArray.length) {
+                data = JSON.stringify(newArray);
+                this.sendData(data);
+            }
+        },
+        sendData: function sendData(data) {
+            //console.log(data);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: 'groupupdate',
+                data: { data: data },
+                beforeSend: function beforeSend(xhr) {
+                    this.isSend = true;
+                },
+                success: function success(response) {
+                    this.isSend = false;
+
+                    console.log(response);
+                }
+            });
+            this.$bus.$emit('reload-enroll', null);
         }
+
     }
 
 });
@@ -44400,8 +44483,12 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _vm.isSend ? _c("div", [_c("p", [_vm._v("Cargando...")])]) : _vm._e(),
+    _vm._v(" "),
     _c("div", { staticClass: "form-group" }, [
-      _c("label", { attrs: { for: "" } }, [_vm._v("Seleccione un grupo")]),
+      _c("label", { attrs: { for: "" } }, [
+        _vm._v("Seleccione grupo a asignar")
+      ]),
       _vm._v(" "),
       _c(
         "select",
@@ -44436,7 +44523,9 @@ var render = function() {
           }
         },
         [
-          _c("option", { attrs: { value: "0" } }, [_vm._v("Seleccionar")]),
+          _c("option", { domProps: { value: 0 } }, [
+            _vm._v(" Seleccione un grupo ")
+          ]),
           _vm._v(" "),
           _vm._l(_vm.groups, function(group) {
             return _c("option", { domProps: { value: group.id } }, [
@@ -44468,8 +44557,8 @@ var render = function() {
             attrs: {
               type: "radio",
               name: _vm.nameOption,
-              id: "optionsRadios1",
-              value: "1"
+              value: "1",
+              checked: ""
             },
             domProps: { checked: _vm._q(_vm.picked, "1") },
             on: {
@@ -44483,12 +44572,20 @@ var render = function() {
         _vm._v(" "),
         _c("label", [
           _c("input", {
-            attrs: {
-              type: "radio",
-              name: _vm.nameOption,
-              id: "",
-              value: "2",
-              checked: ""
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.picked,
+                expression: "picked"
+              }
+            ],
+            attrs: { type: "radio", name: _vm.nameOption, value: "2" },
+            domProps: { checked: _vm._q(_vm.picked, "2") },
+            on: {
+              change: function($event) {
+                _vm.picked = "2"
+              }
             }
           }),
           _vm._v("\n                Excluir\n            ")
@@ -44500,6 +44597,14 @@ var render = function() {
       _c(
         "button",
         {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.idGroupSelect,
+              expression: "idGroupSelect"
+            }
+          ],
           staticClass: "btn btn-primary btn-block",
           on: { click: _vm.assignment }
         },
@@ -44517,6 +44622,20 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-126cb211", module.exports)
   }
 }
+
+/***/ }),
+/* 65 */,
+/* 66 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var eventBus = {};
+
+eventBus.install = function (Vue) {
+    Vue.prototype.$bus = new Vue();
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (eventBus);
 
 /***/ })
 /******/ ]);

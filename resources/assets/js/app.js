@@ -17,6 +17,10 @@ window.Vue = require('vue');
 
 Vue.component('group-assignment', require('./components/GroupAssignment.vue'));
 
+import EventBus from './plugin/event-bus';
+
+Vue.use(EventBus);
+
 const app = new Vue({
     el: '#app'
 });

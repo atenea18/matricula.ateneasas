@@ -1,6 +1,7 @@
 @extends('institution.dashboard.index')
 
 
+
 @section('breadcrums')
     <ol class="breadcrumb">
         <li class="active">Ficha Académica</li>

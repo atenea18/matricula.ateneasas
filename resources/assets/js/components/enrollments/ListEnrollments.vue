@@ -2,7 +2,8 @@
 
     <div class="col-md-6">
         <h5 style="font-weight: bold; text-align: center">{{title}}</h5>
-        <assignment :groups="groups" :nameOption="nameOption" :checksFalse="listCheckFalse" :checksTrue="listCheckTrue">
+        <assignment :groups="groups" :nameOption="nameOption" :checksFalse="listCheckFalse" :checksTrue="listCheckTrue"
+                    :typeQuery="typeQuery">
         </assignment>
         <label>
             <input type="checkbox" v-on:click="checkMeAll" v-model="isCheckMeAll">
@@ -21,7 +22,8 @@
                 <th scope="row">
                     {{index+1}}
                 </th>
-                <item-enrollments :enrollment="enrollment" :index="index" v-on:click="setComponent"></item-enrollments>
+                <item-enrollments :enrollment="enrollment" :index="index" v-on:click="getComponent">
+                </item-enrollments>
                 <td></td>
             </tr>
             </tbody>
@@ -42,7 +44,8 @@
             enrollments: {type: Array},
             groups: {type: Array},
             title: {type: String},
-            nameOption: {type: String}
+            nameOption: {type: String},
+            typeQuery: {type: String}
         },
         data() {
             return {
@@ -53,6 +56,7 @@
             }
         },
         methods: {
+
             checkMeAll: function () {
                 this.$children.forEach((component) => {
                     component.isChecked = !this.isCheckMeAll
@@ -64,12 +68,10 @@
                         this.listCheckTrue[i] = null;
                         this.listCheckFalse[i] = component._props.enrollment;
                     }
-                })
-
-                //console.log(this.listCheckTrue);
-                //console.log(this.listCheckFalse);
+                });
             },
-            setComponent: function (component) {
+            getComponent: function (component) {
+
                 let i = component.index;
                 let checked = !component._data.isChecked;
                 if (checked) {
@@ -79,12 +81,20 @@
                     this.listCheckTrue[i] = null;
                     this.listCheckFalse[i] = component._props.enrollment;
                 }
-                //console.log(this.listCheckTrue);
-                //console.log(this.listCheckFalse);
-
             }
 
-
+        },
+        mounted(){
+            this.$children.forEach((component) => {
+                let i = component.index;
+                if (component.isChecked) {
+                    this.listCheckFalse[i] = null;
+                    this.listCheckTrue[i] = component._props.enrollment;
+                } else {
+                    this.listCheckTrue[i] = null;
+                    this.listCheckFalse[i] = component._props.enrollment;
+                }
+            })
         }
     }
 </script>

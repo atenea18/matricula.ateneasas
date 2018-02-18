@@ -1,4 +1,5 @@
 @extends('institution.dashboard.index')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 @section('css')
     <link rel="stylesheet" href="{{asset('css/bootstrap-chosen.css')}}">
