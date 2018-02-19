@@ -1,35 +1,35 @@
 <template>
 
-    <div class="col-md-6">
+    <div class="col-md-12">
         <h5 style="font-weight: bold; text-align: center">{{title}}</h5>
         <assignment :groups="groups" :nameOption="nameOption" :checksFalse="listCheckFalse" :checksTrue="listCheckTrue"
                     :typeQuery="typeQuery">
         </assignment>
-        <label>
-            <input type="checkbox" v-on:click="checkMeAll" v-model="isCheckMeAll">
-            Seleccionar todos
-        </label>
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Nombres y Apellidos</th>
-                <th scope="col">Accion</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="(enrollment,index) in enrollments">
-                <th scope="row">
-                    {{index+1}}
-                </th>
-                <item-enrollments :enrollment="enrollment" :index="index" v-on:click="getComponent">
-                </item-enrollments>
-                <td></td>
-            </tr>
-            </tbody>
-        </table>
-
-
+        <div class="col-md-12">
+            <label>
+                <input type="checkbox" v-on:click="checkMeAll" v-model="isCheckMeAll">
+                Seleccionar todos
+            </label>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombres y Apellidos</th>
+                    <th scope="col">Novedades</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(enrollment,index) in enrollments">
+                    <td>
+                        {{index+1}}
+                    </td>
+                    <item-enrollments :enrollment="enrollment" :index="index" v-on:click="getComponent">
+                    </item-enrollments>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -84,7 +84,7 @@
             }
 
         },
-        mounted(){
+        mounted() {
             this.$children.forEach((component) => {
                 let i = component.index;
                 if (component.isChecked) {
@@ -100,5 +100,13 @@
 </script>
 
 <style scoped>
+    th {
+        font-size: 13px;
+        padding: 4px !important;
+    }
 
+    td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
 </style>
