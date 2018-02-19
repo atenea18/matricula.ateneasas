@@ -132,11 +132,13 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
     Route::get('group-assignment', 'GroupController@assigment')->name('group.assignment');
 
     //Rutas para request Ajax
-    Route::get('enrollmentByGrade/{group_id}', 'GradeController@getEnrollmentsByGrade');
+    Route::get('enrollmentByGroup/{group_id}', 'GroupController@getEnrollmentsByGroup');
     Route::get('allgrades', 'GradeController@getAllGrades');
     Route::get('groupsByGrade/{grade_id}', 'GroupController@GroupsByGrade');
+    Route::get('enrollmentsWithOutGroup/{grade_id}', 'GroupController@getEnrollmentsWithOutGroup');
 
     Route::post('groupupdate', 'GroupController@groupUpdate');
+    Route::post('groupinsert', 'GroupController@groupInsert');
 
 
 

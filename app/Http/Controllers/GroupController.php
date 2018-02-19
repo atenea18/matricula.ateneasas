@@ -192,9 +192,28 @@ class GroupController extends Controller
 
     }
 
-    public function groupUpdate(Request $request)
+    public function getEnrollmentsByGroup($group_id)
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
+        $enrollmentsByGroup = Group::enrollmentsByGroup($institution_id, $group_id);
+        return $enrollmentsByGroup;
+
+        if (request()->ajax()) {
+
+        }
+    }
+
+
+
+    public function getEnrollmentsWithOutGroup($grade_id){
+        $institution_id = Auth::guard('web_institution')->user()->id;
+        $enrollmentsByGroup = Group::enrollmentsWithOutGroup($institution_id, $grade_id);
+        return $enrollmentsByGroup;
+    }
+
+    public function groupUpdate(Request $request)
+    {
+
         $enrollments = json_decode($request->data, true);
         if ($request->ajax()) {
             foreach ($enrollments as $enrollment) {
@@ -204,6 +223,22 @@ class GroupController extends Controller
             }
 
             return $value;
+        }
+
+        return "ok";
+    }
+
+    public function groupInsert(Request $request){
+
+        $enrollments = json_decode($request->data, true);
+        if ($request->ajax()) {
+            foreach ($enrollments as $enrollment) {
+                $value = DB::table('group_assignment')->insert(
+                    ['enrollment_id' => $enrollment['id'], 'group_id' => $enrollment['group_id']]
+                );
+            }
+
+            return "ok";
         }
 
         return "ok";

@@ -15,15 +15,5 @@ class GradeController extends Controller
         }
     }
 
-    public function getEnrollmentsByGrade($group_id)
-    {
-        $institution_id = Auth::guard('web_institution')->user()->id;
-        $enrollmentsByGrade = Grade::enrollmentsByGrade($institution_id, $group_id);
-        return $enrollmentsByGrade;
 
-        if (request()->ajax()) {
-
-        }
-
-    }
 }
