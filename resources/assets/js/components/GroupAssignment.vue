@@ -28,8 +28,8 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <div class="form-group" style="padding-top: 25px; ">
-                    <button class="btn btn-default btn-block" @click="lookLists">{{lookEnrollment}}</button>
+                <div class="form-group" style="padding-top: 25px;">
+                    <a class="btn btn-default btn-block" style="font-size: 11px" @click="lookLists">{{lookEnrollment}}</a>
                 </div>
             </div>
 
@@ -72,7 +72,7 @@
                 isRender: false,
                 enrollments: null,
                 enrollmentsWithOut: null,
-                lookEnrollment: "SIN GRUPOS",
+                lookEnrollment: "Ver estudiante SIN grupos",
                 isLook:false,
                 lookClass:"btn-primary"
             }
@@ -103,12 +103,12 @@
                 this.isLook = !this.isLook;
                 if(this.isLook){
                     this.lookClass = "btn-success";
-                    this.lookEnrollment = "EN GRUPOS"
+                    this.lookEnrollment = "Ver estudiante EN grupos"
                 }
 
                 else{
                     this.lookClass = "btn-primary";
-                    this.lookEnrollment = "SIN GRUPOS";
+                    this.lookEnrollment = "Ver estudiante SIN grupos";
                 }
 
 
