@@ -15,7 +15,7 @@
         name: "item-enrollments",
         props: {
             enrollment: {type: Object},
-            index:{type: Number}
+            index: {type: Number}
         },
         data() {
             return {
@@ -32,5 +32,12 @@
 </script>
 
 <style scoped>
+    label {
+        font-size: 12px;
+        margin-bottom: 0px;
+    }
 
+    td,th{
+        padding: 4px !important;
+    }
 </style>
