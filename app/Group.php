@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Group extends Model
 {
@@ -62,6 +63,82 @@ class Group extends Model
  			->orderBy('group.grade_id')
  			->get();
  	}
+
+ 	public static function enrollmentsWithOutGroup($institution_id, $grade_id){
+        $enrollments = Enrollment::join('student', 'enrollment.student_id', '=', 'student.id')
+            ->select(
+                'enrollment.id'
+            )
+            ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
+            ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
+            ->join('group', 'group_assignment.group_id', '=', 'group.id')
+            ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
+            ->join('headquarter', 'institution.id', '=', 'headquarter.institution_id')
+            ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
+            ->whereColumn(
+                [
+                    ['headquarter.id', '=', 'group.headquarter_id'],
+                    ['group.grade_id', '=', 'grade.id']
+                ]
+            )
+            ->where('grade.id', '=', $grade_id)
+            ->where('institution.id', '=', $institution_id)
+            ->where('schoolyears.id', '=', '1')
+            ->orderByRaw('student.last_name ASC')
+            ->get();
+
+        return $enrollmentsWithOutGroup = DB::table('enrollment')
+            ->join('student', 'enrollment.student_id', '=', 'student.id')
+            ->select(
+                'enrollment.id',
+                'student.id as student_id', 'student.name as student_name', 'student.last_name as student_last_name',
+                'grade.id as grade_id',
+                'institution.id as institution_id',
+                'schoolyears.id as schoolyears_id'
+            )
+            ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
+            ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
+            ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
+            ->where('institution.id', '=', $institution_id)
+            ->where('schoolyears.id', '=', '1')
+            ->orderByRaw('student.last_name ASC')
+            ->where('grade.id', '=', $grade_id)
+            ->whereNotIn('enrollment.id', $enrollments)
+            ->get();
+
+
+    }
+
+    public static function enrollmentsByGroup($institution_id, $group_id)
+    {
+        return $enrollments = Enrollment::join('student', 'enrollment.student_id', '=', 'student.id')
+            ->select(
+                'enrollment.id',
+                'student.id as student_id', 'student.name as student_name', 'student.last_name as student_last_name',
+                'grade.id as grade_id',
+                'group.id as group_id',
+                'group_assignment.id as a_id',
+                'institution.id as institution_id',
+                'schoolyears.id as schoolyears_id'
+            )
+            ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
+            ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
+            ->join('group', 'group_assignment.group_id', '=', 'group.id')
+            ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
+            ->join('headquarter', 'institution.id', '=', 'headquarter.institution_id')
+            ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
+            ->whereColumn(
+                [
+                    ['headquarter.id', '=', 'group.headquarter_id'],
+                    ['group.grade_id', '=', 'grade.id']
+                ]
+            )
+            ->where('group.id', '=', $group_id)
+            ->where('institution.id', '=', $institution_id)
+            ->where('schoolyears.id', '=', '1')
+            ->orderByRaw('student.last_name ASC')
+            ->get();
+    }
 
     public static function  getGroupsByGrade($institution_id, $grade_id)
     {
