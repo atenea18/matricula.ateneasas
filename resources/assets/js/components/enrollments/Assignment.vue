@@ -1,33 +1,44 @@
 <template>
-    <div>
 
-        <div class="form-group">
-            <label for="">Seleccione grupo a asignar</label>
-            <select v-on:change="" class="form-control" name="" id="" v-model="idGroupSelect">
-                <option :value="0"> Seleccione un grupo </option>
-                <option v-for="group in groups" :value="group.id">
-                    {{ group.name}}
-                    <small>{{group.headquarter_name}}</small>
-                </option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="">Seleccione operación</label>
-            <div class="radio">
-                <label style="margin-right: 20px">
-                    <input type="radio" :name="nameOption" value="1" v-model="picked" checked>
-                    Incluir
-                </label>
-                <label>
-                    <input type="radio" :name="nameOption" value="2" v-model="picked">
-                    Excluir
-                </label>
+    <div>
+        <hr>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="">Seleccione grupo a asignar</label>
+                <select v-on:change="" class="form-control" name="" id="" v-model="idGroupSelect">
+                    <option :value="0"> Seleccione un grupo </option>
+                    <option v-for="group in groups" :value="group.id">
+                        {{ group.name}}
+                        <small>{{group.headquarter_name}}</small>
+                    </option>
+                </select>
             </div>
         </div>
-        <p v-show="isSend">Cargando..</p>
-        <div class="form-group">
-            <button v-show="idGroupSelect" class="btn btn-primary btn-block" @click="assignment"> Asignar</button>
+        <div class="col-md-4">
+            <div class="form-group controls-center">
+                <label for="">Seleccione operación</label>
+                <div class="radio">
+                    <label style="margin-right: 20px">
+                        <input type="radio" :name="nameOption" value="1" v-model="picked" checked>
+                        Incluir
+                    </label>
+                    <label>
+                        <input type="radio" :name="nameOption" value="2" v-model="picked">
+                        Excluir
+                    </label>
+                </div>
+            </div>
         </div>
+        <div class="col-md-4">
+            <div class="form-group" style="padding-top: 20px; ">
+                <button v-show="idGroupSelect" class="btn btn-primary btn-block" @click="assignment"> Asignar</button>
+            </div>
+        </div>
+        <div v-show="isSend" class="col-md-12 alert-info" style="text-align: center; padding: 5px;">
+            <p >Cargando..</p>
+        </div>
+
+
     </div>
 </template>
 
@@ -50,7 +61,7 @@
         },
         methods: {
             assignment: function () {
-                this.isSend = true;
+
                 if (this.typeQuery == "UPDATE") {
 
                     this.updateEnrollment();
@@ -72,6 +83,7 @@
                     });
                 }
                 if(newArray.length){
+                    this.isSend = true;
                     data = JSON.stringify(newArray);
                     this.sendData(data)
                 }
@@ -98,6 +110,8 @@
                         console.log(response);
                         _this.$bus.$emit('reload-enroll', null)
                     }
+
+
                 });
 
             }
@@ -108,5 +122,9 @@
 </script>
 
 <style scoped>
+    .controls-center{
+        text-align: center;
+        padding: 4px auto;
 
+    }
 </style>

@@ -34,9 +34,11 @@
             <list-enrollments v-if="isRender" :enrollments="enrollments" :groups="groups" :title="titleOne"
                               :nameOption="option1" :typeQuery="'UPDATE'">
             </list-enrollments>
+            <!--
             <list-enrollments v-if="isRender" :enrollments="null" :groups="groups" :title="titleTwo"
                               :nameOption="option2" :typeQuery="'INSERT'">
             </list-enrollments>
+            -->
             <div class="col-md-12" v-else="isRender">
                 <h5 class="alert-info"
                     style="padding: 10px; text-align: center; text-transform: uppercase; font-weight: bold">
