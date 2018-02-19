@@ -1,8 +1,6 @@
 <template>
     <div>
-        <div v-if="isSend">
-            <p>Cargando...</p>
-        </div>
+
         <div class="form-group">
             <label for="">Seleccione grupo a asignar</label>
             <select v-on:change="" class="form-control" name="" id="" v-model="idGroupSelect">
@@ -26,6 +24,7 @@
                 </label>
             </div>
         </div>
+        <p v-show="isSend">Cargando..</p>
         <div class="form-group">
             <button v-show="idGroupSelect" class="btn btn-primary btn-block" @click="assignment"> Asignar</button>
         </div>
@@ -51,8 +50,9 @@
         },
         methods: {
             assignment: function () {
-
+                this.isSend = true;
                 if (this.typeQuery == "UPDATE") {
+
                     this.updateEnrollment();
                 }
             },
@@ -78,27 +78,28 @@
 
             },
             sendData: function (data) {
+
                 //console.log(data);
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-
+                let _this = this;
                 $.ajax({
                     type: "POST",
                     url: 'groupupdate',
                     data: {data},
                     beforeSend: function(xhr){
-                        this.isSend = true;
+
                     },
                     success: function (response) {
                         this.isSend = false;
-
                         console.log(response);
+                        _this.$bus.$emit('reload-enroll', null)
                     }
                 });
-                this.$bus.$emit('reload-enroll', null)
+
             }
 
         }
