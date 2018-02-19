@@ -141,8 +141,11 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	Route::get('sheet', 'SheetController@index')->name('sheet');
 
 	// PDF's
+		// LISRAS DE ASISTENCIAS
 	Route::get('pdf/studentAttendance/{group_id}/{year}', 'PdfController@attendance')->name('student.attendance.pdf');
 	Route::post('pdf/studentAttendance', 'PdfController@attendances')->name('student.attendances.pdf');
+		// CONSTANCIAS
+	Route::resource('constancy', 'Institution\ConstancyController');
 
 });
 
