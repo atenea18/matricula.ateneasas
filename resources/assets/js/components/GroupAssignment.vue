@@ -50,6 +50,7 @@
     import ListEnrollments from './enrollments/ListEnrollments';
 
     export default {
+        name:"group-assignment",
         components: {ListEnrollments},
         data() {
             return {
