@@ -10,7 +10,7 @@ body{
 }
 
 #content{
-    height: 480px;
+    height: 90%;
     overflow-y: scroll;
 }
 

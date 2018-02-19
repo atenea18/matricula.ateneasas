@@ -1,4 +1,5 @@
 @extends('institution.dashboard.index')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 @section('css')
     <link rel="stylesheet" href="{{asset('css/bootstrap-chosen.css')}}">
@@ -19,9 +20,9 @@
                 {{--<div class="panel-heading clearfix">
                     <a class="btn btn-primary btn-sm pull-right" href="{{route('group.create')}}">Crear Grupo</a>
                 </div>--}}
-                <div class="panel-body">
+                <div class="panel-body" style="padding-top: 0px;">
                     <div id="app">
-                        <example-component></example-component>
+                        <group-assignment></group-assignment>
                     </div>
                 </div>
             </div>

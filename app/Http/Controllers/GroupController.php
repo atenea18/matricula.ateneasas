@@ -13,6 +13,7 @@ use App\Grade;
 use App\Workingday;
 use App\Group;
 use App\Institution;
+use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller
 {
@@ -179,7 +180,8 @@ class GroupController extends Controller
         return view('institution.partials.group.assigment');
     }
 
-    public function GroupsByGrade($grade_id){
+    public function GroupsByGrade($grade_id)
+    {
         $institution_id = Auth::guard('web_institution')->user()->id;
         $groups = Group::getGroupsByGrade($institution_id, $grade_id);
         return $groups;
@@ -188,6 +190,23 @@ class GroupController extends Controller
 
         }
 
+    }
+
+    public function groupUpdate(Request $request)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+        $enrollments = json_decode($request->data, true);
+        if ($request->ajax()) {
+            foreach ($enrollments as $enrollment) {
+                $value = DB::update(
+                    'update group_assignment set group_id = ' . $enrollment['group_id'] . ' where id = ?', [$enrollment['a_id']]
+                );
+            }
+
+            return $value;
+        }
+
+        return "ok";
     }
 
 }
