@@ -66,6 +66,10 @@
 
                     this.updateEnrollment();
                 }
+                if (this.typeQuery == "INSERT") {
+
+                    this.insertEnrollment();
+                }
             },
             updateEnrollment: function () {
 
@@ -85,11 +89,33 @@
                 if(newArray.length){
                     this.isSend = true;
                     data = JSON.stringify(newArray);
-                    this.sendData(data)
+                    this.sendData(data,'groupupdate')
                 }
 
             },
-            sendData: function (data) {
+            insertEnrollment: function(){
+                let data = "";
+                let newArray = [];
+                if (this.picked == "1") {
+                    newArray = this.checksTrue.filter(Boolean)
+                    newArray.forEach(element => {
+                        element.group_id = this.idGroupSelect;
+                    });
+                } else {
+                    newArray = this.checksFalse.filter(Boolean)
+                    newArray.forEach(element => {
+                        element.group_id = this.idGroupSelect;
+                    });
+                }
+                if(newArray.length){
+                    this.isSend = true;
+                    data = JSON.stringify(newArray);
+                    console.log(data);
+                    this.sendData(data,'groupinsert')
+                }
+
+            },
+            sendData: function (data,url) {
 
                 //console.log(data);
                 $.ajaxSetup({
@@ -100,15 +126,15 @@
                 let _this = this;
                 $.ajax({
                     type: "POST",
-                    url: 'groupupdate',
+                    url: url,
                     data: {data},
                     beforeSend: function(xhr){
 
                     },
                     success: function (response) {
-                        this.isSend = false;
+                        _this.isSend = false;
                         console.log(response);
-                        _this.$bus.$emit('reload-enroll', null)
+                        _this.$bus.$emit('reload-enroll', _this.idGroupSelect)
                     }
 
 
