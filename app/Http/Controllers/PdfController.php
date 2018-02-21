@@ -48,7 +48,7 @@ class PdfController extends Controller
             }
         }
 
-        ob_clean();
+        //ob_clean();
         $pdi->Output('D',$fileName.'.pdf');
 
         system('rm -rf ' . escapeshellarg($path), $retval);
