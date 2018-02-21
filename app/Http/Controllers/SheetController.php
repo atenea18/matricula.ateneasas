@@ -17,8 +17,7 @@ class SheetController extends Controller
 
     	$journeys = Workingday::orderBy('id', 'ASC')->pluck('name', 'id');
     	$grades = Grade::orderBy('id', 'ASC')->pluck('name', 'id');
-    	$headquarters = Auth::guard('web_institution')
-    					->user()
+    	$headquarters = $institution
     					->headquarters
     					->pluck('name', 'id');
 

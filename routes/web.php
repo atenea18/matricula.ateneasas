@@ -150,9 +150,15 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	// Planillas
 	Route::get('sheet', 'SheetController@index')->name('sheet');
 
+	// Constancias
+	Route::resource('constancy', 'Institution\ConstancyController');
+
 	// PDF's
+		// LISTAS DE ASISTENCIAS
 	Route::get('pdf/studentAttendance/{group_id}/{year}', 'PdfController@attendance')->name('student.attendance.pdf');
 	Route::post('pdf/studentAttendance', 'PdfController@attendances')->name('student.attendances.pdf');
+		// CONSTANCIA DE ESTUDIO
+	Route::post('pdf/constancy_study', 'PdfController@constancyStudy')->name('constancy.study.pdf');
 
 });
 

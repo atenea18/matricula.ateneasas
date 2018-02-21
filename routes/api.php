@@ -28,3 +28,12 @@ Route::get('institution/{institution}/teachers/{year?}', 'Institution\TeacherCon
 
 // RUTA PARA LAS AREAS DESDE EL ADMINISTRADOR
 Route::resource('area', 'Administrator\AreaController', ['only'=>['index','show']]);
+
+// RUTA PARA LOS GRUPOS DE UNA  INSTITUCION
+Route::get('institution/{institution}/groups', 'Institution\GroupController@index');
+
+// RUTA PARA LOS GRUPOS DE UNA  INSTITUCION
+Route::get('institution/{institution}/grades', 'Institution\GradeController@index');
+
+// RUTA PARA LOS ESTUDIANTES DE UNA GRUPO
+Route::get('group/{group}/students', 'Institution\GroupController@students');
