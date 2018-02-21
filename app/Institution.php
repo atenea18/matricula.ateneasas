@@ -52,6 +52,24 @@ class Institution extends Authenticatable
         return $this->hasMany(Enrollment::class, 'institution_id');
     }
 
+    public function constancies()
+    {
+        return $this->hasMany(Constancy::class, 'institution_id');
+    }
+
+    public function hasConstancyStudy()
+    {
+        $constancies = $this->constancies;
+
+        foreach($constancies as $key => $constancy)
+        {
+            if($constancy->type_id == 1)
+                return true;
+        }
+        
+        return false;
+    }
+
 	//Send password reset notification
 	public function sendPasswordResetNotification($token)
 	{

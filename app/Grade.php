@@ -16,9 +16,9 @@ class Grade extends Model
     /**
      * Obtiene la relacion que hay entre el grupo y el grado
      */
-    public function group()
+    public function groups()
     {
-        return $this->belongsTo(Group::class, 'grade_id');
+        return $this->hasMany(Group::class, 'grade_id');
     }
 
     /**

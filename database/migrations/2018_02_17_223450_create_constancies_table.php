@@ -14,7 +14,21 @@ class CreateConstanciesTable extends Migration
     public function up()
     {
         Schema::create('constancies', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
+            $table->longText('content');
+
+            // Relacion Con la tabla administrativo
+            $table->unsignedBigInteger('type_id');
+            $table->foreign('type_id')
+                  ->references('id')->on('constancy_types')
+                  ->onDelete('cascade');
+
+            // Relación con la institución
+            $table->unsignedBigInteger('institution_id');
+            $table->foreign('institution_id')
+                  ->references('id')->on('institution')
+                  ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

@@ -42,7 +42,7 @@ class Group extends Model
      */
     public function headquarter()
     {
-        return $this->belongsTo('App\Headquarter', 'headquarter_id');
+        return $this->belongsTo(Headquarter::class, 'headquarter_id');
     }
 
     /**
