@@ -7,13 +7,16 @@ use Illuminate\Http\Request;
 
 use App\Student;
 use App\Group;
+use App\Grade;
 use App\Schoolyear;
+use App\Institution;
 
 use PDF;
 use Auth;
 
 // 
 use App\Pdf\Sheet\StudentAttendance;
+use App\Pdf\Constancy\Study as ConstancyStudy;
 use setasign\Fpdi\Fpdi;
 
 class PdfController extends Controller
@@ -89,7 +92,7 @@ class PdfController extends Controller
     public function attendances(Request $request)
     {
         // 
-        $path = "./pdf/".time()."-".$request->institution_id.$request->year."/";
+        $path = "./pdf/".time()."-".$request->institution_id.$request->year."-attendance/";
 
         if(!file_exists($path))
         {   
@@ -119,5 +122,44 @@ class PdfController extends Controller
 
         }
         $this->merge($path, 'lista de asistencia_'.time()."_".$request->institution_id,'l');
+    }
+
+    public function constancyStudy(Request $request)
+    {
+        $path = "./pdf/".time()."-".$request->institution_id.$request->year."-constancyStudy/";
+        $institution = Institution::findOrFail($request->institution_id);
+        $constancy = $institution->constancies()->where('type_id', '=', 1)->first();
+        
+        $constancy_Study = new ConstancyStudy('p', 'mm', 'letter');
+        $constancy_Study->constancy = $constancy;
+        $constancy_Study->institution = $institution;
+
+        if(!file_exists($path))
+        {   
+            mkdir($path);
+        }
+
+        if(isset($request->group_id_cs))
+        {
+            $group = Group::findOrFail($request->group_id_cs);
+
+            if(!isset($request->students) && $group != null){
+                $constancy_Study->createByGroup($group);
+            }
+            else
+            {
+                $constancy_Study->createByStudents($request->students);
+            }
+        }
+        else
+        {   
+            $grade = Grade::findOrFail($request->grade_id_cs);
+
+            $constancy_Study->createByGrade($grade);
+        }
+
+        $constancy_Study->Output($path.$institution->id."constancia.pdf", "F");
+        
+        $this->merge($path, 'Constancias','p');
     }
 }

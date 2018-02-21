@@ -49,6 +49,7 @@ class Headquarter extends Model
     {
         return $this->belongsTo(Institution::class, 'institution_id');
     }
+    
     /**
      *
      *

@@ -66,7 +66,7 @@
             </a>
             <ul id="collapse-files" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
                 <li><a href="{{route('sheet')}}">Planillas</a></li>
-                {{-- <li><a href="{{route('headquarter.index')}}">Ver Sedes</a></li> --}}
+                <li><a href="{{route('constancy.index')}}">Constancias</a></li>
             </ul>
         </li>
 

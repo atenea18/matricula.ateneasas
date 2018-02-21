@@ -126,7 +126,7 @@ class Student extends Model
      */
     public function enrollments()
     {
-        return $this->hasMany('App\Enrollment', 'student_id');
+        return $this->hasMany(Enrollment::class, 'student_id');
     }
 
     // 
