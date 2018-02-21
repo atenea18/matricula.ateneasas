@@ -108,7 +108,7 @@ class Study extends Fpdf
 
 	private function showHeader()
 	{
-		$this->SetFont('Arial','',12);
+		$this->SetFont('Arial','',10);
 		$this->MultiCell(0, 4, utf8_decode($this->constancy->header), 0, 'C');
 		
 		$this->Ln(20);
