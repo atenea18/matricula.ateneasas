@@ -19,6 +19,7 @@
     "vue": "^2.5.7"
   },
   "dependencies": {
-    "vue-selector": "0.0.1"
+    "vue-selector": "0.0.1",
+    "vue-tabs-component": "^1.4.0"
   }
 }

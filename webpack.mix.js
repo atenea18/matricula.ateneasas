@@ -20,6 +20,7 @@ mix.js(
 	[
 		'resources/assets/css/bootstrap.css',
 		'resources/assets/css/default.css',
+        'resources/assets/css/tabs-component.css',
 	]
 	,'public/css/app.css');
    // .sass('resources/assets/sass/app.scss', 'public/css');

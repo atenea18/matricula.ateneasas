@@ -140,7 +140,15 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
     Route::post('groupupdate', 'GroupController@groupUpdate');
     Route::post('groupinsert', 'GroupController@groupInsert');
 
+    Route::get('getAreas', 'AreasAndAsignatureController@getAreas');
+    Route::get('getSubjectsType', 'AreasAndAsignatureController@getSubjectsType');
+    Route::get('getCustomAreas', 'AreasAndAsignatureController@getCustomAreas');
+    Route::post('setCustomAreas', 'AreasAndAsignatureController@storeCustomAreas');
 
+
+
+    //Rutas áreas y asignaturas
+    Route::get('areas-and-asignature', 'AreasAndAsignatureController@index')->name('areaasignature.index');
 
 
 
