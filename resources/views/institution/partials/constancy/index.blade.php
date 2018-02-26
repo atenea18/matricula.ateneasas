@@ -16,15 +16,14 @@
 			  	</div> --}}
 			  	<div class="panel-body" style="padding: 0">
 					<ul class="nav nav-tabs" role="tablist">
-			        	<li role="presentation" class="active">
-					    	<a href="#constancies" aria-controls="constancies" role="tab" data-toggle="tab">Constancias</a>
-					    </li>
-
-					    @if($institution->hasConstancyStudy())
-				        	<li role="presentation" class="">
+			        	@if($institution->hasConstancyStudy())
+				        	<li role="presentation" class="active">
 				        		<a href="#stydy_constancy" aria-controls="stydy_constancy" role="tab" data-toggle="tab">Constancias de estudio</a>
 				        	</li>
 			        	@endif
+			        	<li role="presentation" class="{{($institution->hasConstancyStudy()) ? : 'active'}}">
+					    	<a href="#constancies" aria-controls="constancies" role="tab" data-toggle="tab">Configurar Constancias</a>
+					    </li>
 			        </ul>
 			  	</div>
 			</div>
@@ -36,11 +35,11 @@
 						<div class="row">
 							<div class="tab-content">
 								{{-- CONSTANCIAS --}}
-								<div role="tabpanel" class="tab-pane active" id="constancies">
+								<div role="tabpanel" class="tab-pane {{($institution->hasConstancyStudy()) ? : 'active'}}" id="constancies">
 							    	@include('institution.partials.constancy.constancies.home')
 							    </div>
 					        	{{-- CONSTANCIA DE ESTUDIO --}}
-							    <div role="tabpanel" class="tab-pane" id="stydy_constancy">
+							    <div role="tabpanel" class="tab-pane {{($institution->hasConstancyStudy()) ? 'active' : ''}}" id="stydy_constancy">
 							    	@include('institution.partials.constancy.study.home')
 							    </div>
 							</div>

@@ -70,6 +70,18 @@
             </ul>
         </li>
 
+        <!-- Configuración -->
+        <li class="">
+            <a data-toggle="collapse" data-parent="#menu" href="#collapse-config" aria-expanded="true" aria-controls="collapse-config">
+                <span class="fa-stack fa-lg pull-left"><i class="fa fa-cog fa-stack-1x "></i>
+                </span> 
+                Reportes
+            </a>
+            <ul id="collapse-config" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
+                <li><a href="{{route('sheet')}}">Parametros de Eval.</a></li>
+                {{-- <li><a href="{{route('constancy.index')}}">Constancias</a></li> --}}
+            </ul>
+        </li>
 
 	</ul>
 
