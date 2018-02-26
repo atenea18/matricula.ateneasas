@@ -57,6 +57,14 @@
             </ul>
         </li>
 
+        <li class="">
+            <a href="{{route('areaasignature.index')}}">
+                <span class="fa-stack fa-lg pull-left"><i class="fas fa-plus fa-stack-1x"></i>
+                </span>
+                Áreas y Asignaturas
+            </a>
+        </li>
+
         <!-- Documentos -->
         <li class="">
             <a data-toggle="collapse" data-parent="#menu" href="#collapse-files" aria-expanded="true" aria-controls="collapse-files">
