@@ -1,0 +1,1 @@
+[23-Feb-2018 19:19:13 UTC] PHP Fatal error:  Allowed memory size of 33554432 bytes exhausted (tried to allocate 16384 bytes) in /home/ateneasas/public_html/matricula/vendor/doctrine/dbal/lib/Doctrine/DBAL/Driver/PDOStatement.php on line 105
