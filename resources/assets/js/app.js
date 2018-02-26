@@ -16,10 +16,13 @@ window.Vue = require('vue');
  */
 
 Vue.component('group-assignment', require('./components/GroupAssignment.vue'));
+Vue.component('manager', require('./components/areas-asignature/manger.vue'));
 
 import EventBus from './plugin/event-bus';
+import Tabs from 'vue-tabs-component';
 
 Vue.use(EventBus);
+Vue.use(Tabs);
 
 const app = new Vue({
     el: '#app'
