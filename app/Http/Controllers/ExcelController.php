@@ -455,14 +455,13 @@ class ExcelController extends Controller
             // iteracción
             $reader->each(function($row) use($request){
 
-                $identification = Identification::where('identification_number','=',$row->numero_documento)->first();
+                $ident = Identification::where('identification_number','=',$row->numero_documento)->first();
                 $identification_type =Identification_type::where('abbreviation', '=', $row->tipo_identificacion)->first();
-                $gender = Gender::where('prefix', '=', $row->genero)->first();
+                $gender = Gender::where('gender', '=', $row->genero)->first();
                 $bloodType = BloodType::where('blood_type', '=', $row->tipo_sangre)->first();
 
-                // dd($request->all());
-
-                if($identification == null):
+                // dd($identification_type->id);
+                if($ident == null && $identification_type != null):
                     $identification = new Identification();
                     $identification->identification_number = $row->numero_documento;
                     $identification->birthdate = $row->fecha_nacimiento;
@@ -471,10 +470,10 @@ class ExcelController extends Controller
                     $identification->save();
 
                     $address = new Address();
-                    $address->address = $row->address;
-                    $address->neighborhood = $row->barrio;
-                    $address->phone = $row->telefono;
-                    $address->mobil = $row->telefono;
+                    $address->address = (isset($row->address)) ? $row->address : '';
+                    $address->neighborhood = (isset($row->barrio)) ? $row->barrio : '';
+                    $address->phone = (isset($row->telefono)) ? $row->telefono : '';
+                    $address->mobil = (isset($row->telefono)) ? $row->telefono : '';
                     $address->zone_id = 2;
                     $address->save();
 
@@ -496,9 +495,9 @@ class ExcelController extends Controller
                     $ai->save();
 
                     $mi = new MedicalInformation();
-                    $mi->ips = $row->ips;
+                    $mi->ips = (isset($row->ips)) ? $row->ips : '';
                     $mi->student_id = $student->id;
-                    $mi->eps_id = ($row->eps == 0) ? 49 : $row->eps_id;
+                    $mi->eps_id = ( (!isset($row->eps)) || $row->eps == 0) ? 49 : $row->eps_id;
                     $mi->blood_type_id = ($bloodType == null) ? null : $bloodType->id;
                     $mi->save();
 
@@ -508,41 +507,47 @@ class ExcelController extends Controller
                     $di->save();
 
                     $soc = new SocioeconomicInformation();
-                    $soc->sisben_number = $row->numero_carne_sisben;
-                    $soc->sisben_level = $row->nivel_sisben;
+                    $soc->sisben_number = (isset($row->numero_carne_sisben)) ? $row->numero_carne_sisben : '';
+                    $soc->sisben_level = (isset($row->nivel_sisben)) ? $row->nivel_sisben : '';
                     $soc->student_id = $student->id;
-                    $soc->stratum_id = $row->estrato;
+                    $soc->stratum_id = (isset($row->estrato)) ? $row->estrato : '';
                     $soc->save();
 
                     $ter = new Territorialty();
-                    $ter->guard = $row->resguardo;
-                    $ter->ethnicity = $row->etnia;
+                    $ter->guard = (isset($row->resguardo)) ?  $row->resguardo : '' ;
+                    $ter->ethnicity = (isset($row->etnia)) ?  $row->etnia : '' ;
                     $ter->student_id = $student->id;
                     $ter->save();
 
                     // Matricual antigüa
-                    $enrollment_2017 = new Enrollment();
-                    $enrollment_2017->code = ($row->grado_igreso != null) ? "2017".$request->institution_id."17".$student->id  : ''; 
-                    $enrollment_2017->school_year_id = 2;
-                    $enrollment_2017->student_id = $student->id;
-                    $enrollment_2017->garde_id = ($row->grado_igreso == null) ? 17 : $row->grado_igreso;
-                    $enrollment_2017->enrollment_state_id = 3;
-                    $enrollment_2017->institution_id = $request->institution_id;
-                    $enrollment_2017->save();
-
-                    // Matricula nueva
-                    $enrollment_2018 = new Enrollment();
-                    $enrollment_2018->code = ($row->id_grado_matricular != null) ? "2018".$request->institution_id."17".$student->id : ''; 
-                    $enrollment_2018->school_year_id = 1;
-                    $enrollment_2018->student_id = $student->id;
-                    $enrollment_2018->garde_id = ($row->id_grado_matricular == null) ? 17 : $row->id_grado_matricular;
-                    $enrollment_2018->enrollment_state_id = 3;
-                    $enrollment_2018->institution_id = $request->institution_id;
-                    $enrollment_2018->save();
-
-                    if($row->id_grupo_matricular != null)
+                    if(isset($row->grado_igreso))
                     {
-                        $enrollment_2018->attachGroupEnrollment($row->id_grupo_matricular);
+                        $enrollment_2017 = new Enrollment();
+                        $enrollment_2017->code = ($row->grado_igreso != null) ? "2017".$request->institution_id."17".$student->id  : ''; 
+                        $enrollment_2017->school_year_id = 2;
+                        $enrollment_2017->student_id = $student->id;
+                        $enrollment_2017->grade_id = ($row->grado_igreso == null) ? 17 : $row->grado_igreso;
+                        $enrollment_2017->enrollment_state_id = 3;
+                        $enrollment_2017->institution_id = $request->institution_id;
+                        $enrollment_2017->save();
+                    }
+                    
+                    if(isset($row->id_grado_matricular))
+                    {   
+                        // Matricula nueva
+                        $enrollment_2018 = new Enrollment();
+                        $enrollment_2018->code = ($row->id_grado_matricular != null) ? "2018".$request->institution_id."17".$student->id : ''; 
+                        $enrollment_2018->school_year_id = 1;
+                        $enrollment_2018->student_id = $student->id;
+                        $enrollment_2018->grade_id = ($row->id_grado_matricular == null) ? 17 : $row->id_grado_matricular;
+                        $enrollment_2018->enrollment_state_id = 3;
+                        $enrollment_2018->institution_id = $request->institution_id;
+                        $enrollment_2018->save();
+
+                        if($row->id_grupo_matricular != null)
+                        {
+                            $enrollment_2018->attachGroupEnrollment($row->id_grupo_matricular);
+                        }
                     }
                 endif;
             });
