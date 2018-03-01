@@ -79,16 +79,16 @@
         </li>
 
         <!-- Configuración -->
-        {{-- <li class="">
+        <li class="">
             <a data-toggle="collapse" data-parent="#menu" href="#collapse-config" aria-expanded="true" aria-controls="collapse-config">
                 <span class="fa-stack fa-lg pull-left"><i class="fa fa-cog fa-stack-1x "></i>
                 </span> 
                 Configuración
             </a>
             <ul id="collapse-config" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
-                <li><a href="{{route('sheet')}}">Parametros de Eval.</a></li>
+                <li><a href="{{route('evaluationParameter.index')}}">Parametros de Eval.</a></li>
             </ul>
-        </li> --}}
+        </li>
 
 	</ul>
 

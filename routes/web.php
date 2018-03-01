@@ -151,7 +151,6 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
     Route::get('areas-and-asignature', 'AreasAndAsignatureController@index')->name('areaasignature.index');
 
 
-
 	// Ruta para las sedes
 	Route::resource('headquarter', 'HeadquarterController');	
 
@@ -161,10 +160,18 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	// Constancias
 	Route::resource('constancy', 'Institution\ConstancyController');
 
+	// Parametros de Evaluación
+	Route::resource('evaluationParameter', 'Institution\EvaluationParameterController');
+
+	// Criterios de Evaluación
+	Route::resource('criteria', 'Institution\CriteriaController', ['only'=>['store','create','edit','update','destroy']]);
+
 	// PDF's
 		// LISTAS DE ASISTENCIAS
 	Route::get('pdf/studentAttendance/{group_id}/{year}', 'PdfController@attendance')->name('student.attendance.pdf');
 	Route::post('pdf/studentAttendance', 'PdfController@attendances')->name('student.attendances.pdf');
+		// PLANILLAS AUXILIARES DE EVALUACIÓN
+	Route::post('pdf/evaluationSheet', 'PdfController@evaluationPdf')->name('evaluationSheet.pdf');
 		// CONSTANCIA DE ESTUDIO
 	Route::post('pdf/constancy_study', 'PdfController@constancyStudy')->name('constancy.study.pdf');
 

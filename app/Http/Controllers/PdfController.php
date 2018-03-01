@@ -14,10 +14,13 @@ use App\Institution;
 use PDF;
 use Auth;
 
+use setasign\Fpdi\Fpdi;
+
 // 
 use App\Pdf\Sheet\StudentAttendance;
 use App\Pdf\Constancy\Study as ConstancyStudy;
-use setasign\Fpdi\Fpdi;
+use App\Pdf\Sheet\EvaluationSheet;
+
 
 class PdfController extends Controller
 {
@@ -122,6 +125,50 @@ class PdfController extends Controller
 
         }
         $this->merge($path, 'lista de asistencia_'.time()."_".$request->institution_id,'l');
+    }
+
+    public function evaluationPdf(Request $request)
+    {
+        $path = "./pdf/".time()."-".$request->institution_id.$request->year."-evaluationSheet/";
+        $institution = Institution::findOrFail($request->institution_id);
+        $schoolYear = Schoolyear::where('year','=',$request->year)->first();
+        $parameters = $institution->evaluationParameters()
+                        ->with('criterias')
+                        ->with('schoolYear')
+                        ->where('school_year_id', '=', '1')
+                        ->get();
+
+        // return response()->json($parameters);
+
+        if(!file_exists($path))
+        {   
+            mkdir($path);
+        }
+
+        foreach($request->groups as $key => $group_id)
+        {
+            $group = Group::findOrFail($group_id);
+
+            // dd(count($institution->headquarters));
+            $students = $group->enrollments()
+            ->with('student')
+            ->with('student.state')
+            ->where('school_year_id', '=', $schoolYear->id)
+            ->get()
+            ->pluck('student')
+            ->sortBy('last_name');
+
+            // return response()->json($students);
+            $evaluationSheet = new EvaluationSheet('l', 'mm', 'letter');
+            $evaluationSheet->institution = $institution;
+            $evaluationSheet->group = $group;
+            $evaluationSheet->parameters = $parameters;
+            $evaluationSheet->create($students);
+            $evaluationSheet->Output($path.$group_id.".pdf", "F");
+
+        }
+
+        $this->merge($path, 'Planilla-Evaluacion','l');        
     }
 
     public function constancyStudy(Request $request)

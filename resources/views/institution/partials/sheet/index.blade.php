@@ -20,7 +20,7 @@
 			        		<a href="#attendance_sheet" aria-controls="attendance_sheet" role="tab" data-toggle="tab">Planilla de asistencia</a>
 			        	</li>
 					    <li role="presentation">
-					    	{{-- <a href="#academic_info" aria-controls="academic_info" role="tab" data-toggle="tab">Inf. Académica</a> --}}
+					    	<a href="#evaluation_sheet" aria-controls="evaluation_sheet" role="tab" data-toggle="tab">Planilla Auxiliar de Evaluación</a>
 					    </li>
 			        </ul>
 			  	</div>
@@ -35,6 +35,9 @@
 					        	{{-- PERSONAL INFORMATION --}}
 							    <div role="tabpanel" class="tab-pane active" id="attendance_sheet">
 							    	@include('institution.partials.sheet.attendance.home')
+							    </div>
+							    <div role="tabpanel" class="tab-pane" id="evaluation_sheet">
+							    	@include('institution.partials.sheet.evaluation.home')
 							    </div>
 							</div>
 						</div>
@@ -73,8 +76,32 @@
 				}	
 			});
 
+			// Planillas de evaluacion
+			$("#headquarter_id_ev, #working_day_id_ev, #grade_id_ev").change(function(){
+
+				var headquarter = $("#headquarter_id_ev").val(),
+					workinDay = $("#working_day_id_ev").val(),
+					grade = $("#grade_id_ev").val();
+
+				if(headquarter != '' && workinDay != '' && grade != '')
+				{
+					$.get("{{env('APP_URL')}}/api/headquarter/"+headquarter+"/"+workinDay+"/"+grade+"/getGroup", function(data){
+						
+						var options = '';
+						$.each(data.data, function(indx, el){
+							
+							options += '<option value="'+el.id+'">' + el.name + '</option>';
+						});
+
+						console.log(options);
+						$( '#sheet_ev' ).html( options );
+
+					}, "json");
+				}	
+			});
+
 			// Multi Select
-			$('#sheet_as').multiselect({
+			$('#sheet_as, #sheet_ev').multiselect({
 				search: {
 					left: '<input type="text" name="q" class="form-control" placeholder="Buscar..." style="margin-bottom:5px;"/>',
 						 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEvaluationParamtersTable extends Migration
+class CreateEvaluationParametersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class CreateEvaluationParamtersTable extends Migration
      */
     public function up()
     {
-        Schema::create('evaluation_paramters', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('evaluation_parameters', function (Blueprint $table) {
+            $table->bigIncrements('id');
             // $table->string('code')->nullable();
             $table->string('parameter');
             $table->string('abbreviation');
@@ -43,6 +43,6 @@ class CreateEvaluationParamtersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('evaluation_paramters');
+        Schema::dropIfExists('evaluation_parameters');
     }
 }
