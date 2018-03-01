@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddForeignKeysToCustomAreasTable extends Migration
+class AddForeignKeysToCustomAsignaturesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,14 @@ class AddForeignKeysToCustomAreasTable extends Migration
      */
     public function up()
     {
-        Schema::table('custom_areas', function (Blueprint $table) {
-            $table->unsignedBigInteger('areas_id');
+        Schema::table('custom_asignatures', function (Blueprint $table) {
+            $table->unsignedBigInteger('asignatures_id');
             $table->unsignedBigInteger('subjects_type_id');
             $table->unsignedBigInteger('institution_id');
 
-            $table->foreign('areas_id')->references('id')->on('areas');
+            $table->foreign('asignatures_id')->references('id')->on('asignature');
             $table->foreign('subjects_type_id')->references('id')->on('subjects_type');
             $table->foreign('institution_id')->references('id')->on('institution');
-
         });
     }
 
@@ -32,13 +31,12 @@ class AddForeignKeysToCustomAreasTable extends Migration
      */
     public function down()
     {
-        Schema::table('custom_areas', function (Blueprint $table) {
-
-            $table->dropForeign(['areas_id']);
+        Schema::table('custom_asignatures', function (Blueprint $table) {
+            $table->dropForeign(['asignatures_id']);
             $table->dropForeign(['subjects_type_id']);
             $table->dropForeign(['institution_id']);
 
-            $table->dropColumn('areas_id');
+            $table->dropColumn('asignatures_id');
             $table->dropColumn('subjects_type_id');
             $table->dropColumn('institution_id');
         });
