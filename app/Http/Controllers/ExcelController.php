@@ -447,17 +447,17 @@ class ExcelController extends Controller
     public function oldStudent(Request $request)
     {
 
-        // dd($request->all());
         \Excel::load($request->excel, function($reader) use($request) {
  
             $excel = $reader->get();
      
             // iteracción
             $reader->each(function($row) use($request){
+            
 
                 $ident = Identification::where('identification_number','=',$row->numero_documento)->first();
                 $identification_type =Identification_type::where('abbreviation', '=', $row->tipo_identificacion)->first();
-                $gender = Gender::where('gender', '=', $row->genero)->first();
+                $gender = Gender::where('prefix', '=', $row->genero)->first();
                 $bloodType = BloodType::where('blood_type', '=', $row->tipo_sangre)->first();
 
                 // dd($identification_type->id);
