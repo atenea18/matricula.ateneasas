@@ -143,10 +143,22 @@ class EvaluationSheet extends Fpdf
 		// show Criteria
 		foreach($this->parameters as $parameter){
 
-			$withCellCriteria = round(  $this->_with_C_H / (count($parameter->criterias)) );
+			$withCellCriteria = (count($parameter->criterias) > 0) ? round(  $this->_with_C_H / (count($parameter->criterias)) ) : $this->_with_C_H;
 
-			foreach($parameter->criterias as $criteria)
-				$this->Cell($withCellCriteria , 4, utf8_decode($criteria->abbreviation), 1, 0, 'C', true);
+			if(count($parameter->criterias) == 0)
+			{
+				$withCellCriteria = ($this->_with_C_H / 5);
+
+				for ($i=0; $i < 5; $i++) { 
+					$this->Cell($withCellCriteria , 4, '', 1, 0, 'C', true);
+				}
+			}
+			else
+			{
+
+				foreach($parameter->criterias as $criteria)
+					$this->Cell($withCellCriteria , 4, utf8_decode($criteria->abbreviation), 1, 0, 'C', true);
+			}
 		}
 
 	}
@@ -179,10 +191,22 @@ class EvaluationSheet extends Fpdf
 			// show field Criteria note
 			foreach($this->parameters as $parameter){
 
-				$withCellCriteria = round(  $this->_with_C_H / (count($parameter->criterias)) );
+				$withCellCriteria = (count($parameter->criterias) > 0) ? round(  $this->_with_C_H / (count($parameter->criterias)) ) : $this->_with_C_H;
 
-				foreach($parameter->criterias as $criteria)
-					$this->Cell($withCellCriteria , 4, '', 1, 0, 'C', false);
+				if(count($parameter->criterias) == 0)
+				{
+					$withCellCriteria = ($this->_with_C_H / 5);
+
+					for ($i=0; $i < 5; $i++) { 
+						$this->Cell($withCellCriteria , 4, '', 1, 0, 'C', false);
+					}
+				}
+				else
+				{
+
+					foreach($parameter->criterias as $criteria)
+						$this->Cell($withCellCriteria , 4, '', 1, 0, 'C', false);
+				}
 			}
 
 			// 
