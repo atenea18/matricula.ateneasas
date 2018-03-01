@@ -27,4 +27,9 @@ class SheetController extends Controller
     			->with('journeys',$journeys)
     			->with('grades',$grades);
     }
+
+    public function evaluationPdf(Request $request)
+    {
+        dd($request->all());
+    }
 }
