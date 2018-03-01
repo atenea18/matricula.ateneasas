@@ -141,9 +141,27 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
     Route::post('groupinsert', 'GroupController@groupInsert');
 
     Route::get('getAreas', 'AreasAndAsignatureController@getAreas');
+    Route::get('getAsignatures', 'AreasAndAsignatureController@getAsignatures');
     Route::get('getSubjectsType', 'AreasAndAsignatureController@getSubjectsType');
+
     Route::get('getCustomAreas', 'AreasAndAsignatureController@getCustomAreas');
+    Route::get('getCustomAsignatures', 'AreasAndAsignatureController@getCustomAsignatures');
+    Route::get('getCustomAreas/{type_id}', 'AreasAndAsignatureController@getCustomAreasByType');
+    Route::get('getCustomAsignatures/{type_id}', 'AreasAndAsignatureController@getCustomAsignaturesByType');
+
+    Route::get('getAsignaturesByArea/{id}', 'AreasAndAsignatureController@getAsignaturesByArea');
+    Route::get('getAreaByAsignature/{id}', 'AreasAndAsignatureController@getAreaByAsignature');
+
+
     Route::post('setCustomAreas', 'AreasAndAsignatureController@storeCustomAreas');
+    Route::post('setCustomAsignatures', 'AreasAndAsignatureController@storeCustomAsignatures');
+    Route::post('setAreasAndAsignatures', 'AreasAndAsignatureController@storeCustom');
+    Route::post('deleteAreasAndAsignatures', 'AreasAndAsignatureController@deleteCustom');
+    Route::post('deleteCustomArea', 'AreasAndAsignatureController@deleteCustomArea');
+    Route::post('deleteCustomAsignature', 'AreasAndAsignatureController@deleteCustomAsignature');
+
+    //
+
 
 
 
