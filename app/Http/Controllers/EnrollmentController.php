@@ -496,7 +496,6 @@ class EnrollmentController extends Controller
             ->get();
 
         return view('institution.partials.enrollment.tableStudentsSearch', compact('data'));
-        dd($request);
     }
 
 
