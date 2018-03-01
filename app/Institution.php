@@ -57,6 +57,11 @@ class Institution extends Authenticatable
         return $this->hasMany(Constancy::class, 'institution_id');
     }
 
+    public function evaluationParameters()
+    {
+        return $this->hasMany(EvaluationParameter::class, 'institution_id');
+    }
+
     public function hasConstancyStudy()
     {
         $constancies = $this->constancies;

@@ -37,3 +37,8 @@ Route::get('institution/{institution}/grades', 'Institution\GradeController@inde
 
 // RUTA PARA LOS ESTUDIANTES DE UNA GRUPO
 Route::get('group/{group}/students', 'Institution\GroupController@students');
+
+// RUTA PARA LOS CRITERIOS DE EVALUACIÓN
+Route::resource('criteria', 'Institution\CriteriaController',['only'=>['show']]);
+
+// 

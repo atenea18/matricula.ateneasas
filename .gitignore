@@ -2,6 +2,8 @@
 /.vagrant
 /public/hot
 /public/storage
+/public/pdf
+/public/uploads/images
 /storage/*.key
 /.idea
 Homestead.json
