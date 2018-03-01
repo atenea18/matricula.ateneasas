@@ -194,4 +194,14 @@ class EvaluationSheet extends Fpdf
 		}
 	}
 
+	public function Footer()
+	{
+		// Posición: a 1,5 cm del final
+	    $this->SetY(-18);
+	    // Arial italic 8
+	    $this->SetFont('Arial','I',8);
+	    // Número de página
+	    $this->Cell(0,10,utf8_decode('@Atenea - Página ').$this->PageNo(),0,0,'C');
+	}
+
 }

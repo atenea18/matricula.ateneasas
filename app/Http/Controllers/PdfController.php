@@ -158,13 +158,16 @@ class PdfController extends Controller
             ->pluck('student')
             ->sortBy('last_name');
 
-            // return response()->json($students);
-            $evaluationSheet = new EvaluationSheet('l', 'mm', 'letter');
-            $evaluationSheet->institution = $institution;
-            $evaluationSheet->group = $group;
-            $evaluationSheet->parameters = $parameters;
-            $evaluationSheet->create($students);
-            $evaluationSheet->Output($path.$group_id.".pdf", "F");
+            for ($i=0; $i < $request->copy; $i++) { 
+
+                $evaluationSheet = new EvaluationSheet('l', 'mm', 'letter');
+                $evaluationSheet->institution = $institution;
+                $evaluationSheet->group = $group;
+                $evaluationSheet->parameters = $parameters;
+                $evaluationSheet->create($students);
+                $evaluationSheet->Output($path.$group_id.$i.".pdf", "F");
+                
+            }
 
         }
 
