@@ -5,7 +5,7 @@
                 <h4 class="panel-title">
                     <a role="button" data-toggle="collapse" data-parent="#accordion" :href="'#'+index"
                        aria-expanded="false" :aria-controls="index">
-                        {{index+1}} - {{area.custom_name}}
+                        <small>{{index+1}} - {{area.custom_name}}</small>
                     </a>
                 </h4>
             </div>
@@ -33,7 +33,7 @@
         },
 
         created() {
-            this.$bus.$on('reload-areas', () => {
+            this.$bus.$on('reload-add', () => {
                 axios.get('getCustomAreas').then(res => {
                     this.customAreas = res.data;
                     console.log(res.data);

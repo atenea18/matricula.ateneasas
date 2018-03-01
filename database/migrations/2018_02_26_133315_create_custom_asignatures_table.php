@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCustomAreasTable extends Migration
+class CreateCustomAsignaturesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateCustomAreasTable extends Migration
      */
     public function up()
     {
-        Schema::create('custom_areas', function (Blueprint $table) {
+        Schema::create('custom_asignatures', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code_custom_area');
+            $table->string('code_custom_asignature')->unique();
             $table->string('custom_name');
             $table->integer('order');
             $table->timestamps();
@@ -29,6 +29,6 @@ class CreateCustomAreasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('custom_areas');
+        Schema::dropIfExists('custom_asignatures');
     }
 }

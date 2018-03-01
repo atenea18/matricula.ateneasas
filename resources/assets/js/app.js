@@ -16,11 +16,14 @@ window.Vue = require('vue');
  */
 
 Vue.component('group-assignment', require('./components/GroupAssignment.vue'));
-Vue.component('manager', require('./components/areas-asignature/manger.vue'));
+Vue.component('manager', require('./components/areas-asignature/Manger.vue'));
+
 
 import EventBus from './plugin/event-bus';
 import Tabs from 'vue-tabs-component';
+import VueGoodTable from 'vue-good-table';
 
+Vue.use(VueGoodTable);
 Vue.use(EventBus);
 Vue.use(Tabs);
 
