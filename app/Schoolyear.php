@@ -21,4 +21,12 @@ class Schoolyear extends Model
     {
         return $this->belongsTo(Teacher::class, 'school_year_id');
     }
+
+    /**
+     * Obtiene la relacion que hay entre la matricula y el año lectivo
+     */
+    public function evaluationParameter()
+    {
+        return $this->hasMany(EvaluationParameter::class, 'school_year_id');
+    }
 }
