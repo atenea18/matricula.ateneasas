@@ -14,7 +14,7 @@ class EvaluationSheet extends Fpdf
 	public $institution = array();
 	public $parameters = array();
 	public $group = array();
-	public $title = "PLANILLA DE EVALUCIÓN";
+	public $title = "PLANILLA DE EVALUACIÓN";
  
 	// 
 	private $_width_mark = 267; //Ancho del marco de la cabecera

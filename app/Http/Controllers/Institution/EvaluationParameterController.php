@@ -77,7 +77,10 @@ class EvaluationParameterController extends Controller
      */
     public function edit($id)
     {
-        $parameter = EvaluationParameter::findOrFail($id);
+        $institution = Auth::guard('web_institution')->user();
+
+        $parameter = $institution->evaluationParameters;
+        
         $schoolyears = Schoolyear::orderBy('id', 'ASC')->pluck('year', 'id');
 
         return View('institution.partials.evaluationParameter.edit')
