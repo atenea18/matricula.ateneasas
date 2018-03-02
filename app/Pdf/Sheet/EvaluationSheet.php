@@ -20,7 +20,7 @@ class EvaluationSheet extends Fpdf
 	private $_width_mark = 267; //Ancho del marco de la cabecera
 	private $_with_CE = 75; //Ancho de la celda de estudiantes
 	private $_with_C_N_E = 8; //Ancho de la celda novedad (NOV) y estatus (EST)
-	private $_with_C_H = 42; //Ancho de la celda donde estan los header (Desempeños)
+	private $_with_C_H = 50; //Ancho de la celda donde estan los header (Desempeños)
 	private $_width_VG_VRA = 8; //Ancho de las celdas (VRA y VG)
 
 	public function Header()
@@ -140,6 +140,8 @@ class EvaluationSheet extends Fpdf
 	private function showCriteria()
 	{
 
+		$this->SetFont('Arial','B',7);
+
 		// show Criteria
 		foreach($this->parameters as $parameter){
 
@@ -186,7 +188,7 @@ class EvaluationSheet extends Fpdf
 			$this->Cell($this->_with_C_N_E, 4, '', 1,0);
 			
 			// Mostramos el estado
-			$this->Cell($this->_with_C_N_E, 4, $student->state->state, 1,0);
+			$this->Cell($this->_with_C_N_E, 4, $student->state->state, 1,0, 'C');
 
 			// show field Criteria note
 			foreach($this->parameters as $parameter){
@@ -218,14 +220,35 @@ class EvaluationSheet extends Fpdf
 		}
 	}
 
+	public function showCriteriaFooter()
+	{
+		$content = '';
+		
+		foreach($this->parameters as $parameter){
+
+			if(count($parameter->criterias) > 0)
+			{
+				foreach($parameter->criterias as $criteria)
+					$content .= $criteria->abbreviation." - ".$criteria->parameter." \\ ";
+					// $this->Cell($withCellCriteria , 4, utf8_decode($criteria->abbreviation), 1, 0, 'C', true);
+			}
+		}
+
+		$this->SetFont('Arial','I',6);
+		$this->MultiCell(0, 4, utf8_decode($content), 0, 'L');	
+	}
+
 	public function Footer()
 	{
 		// Posición: a 1,5 cm del final
-	    $this->SetY(-18);
+	    $this->SetY(-25);
+
+		$this->showCriteriaFooter();
+	    
 	    // Arial italic 8
 	    $this->SetFont('Arial','I',8);
 	    // Número de página
-	    $this->Cell(0,10,utf8_decode('@Atenea - Página ').$this->PageNo(),0,0,'C');
+	    $this->Cell(0,10,utf8_decode('@tenea - Página ').$this->PageNo(),0,0,'C');
 	}
 
 }
