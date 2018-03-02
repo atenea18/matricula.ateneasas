@@ -30,7 +30,7 @@
 							</div>
 							<div class="col-md-3">
 								<div class="form-group">
-									{!! Form::label('abbreviation', 'Abreviacón', []) !!}
+									{!! Form::label('abbreviation', 'Abreviación', []) !!}
 									
 									{!! Form::text('abbreviation', $parameter->abbreviation, ['class'=>'form-control
 									']) !!}
