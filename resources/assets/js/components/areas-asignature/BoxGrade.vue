@@ -1,0 +1,57 @@
+<template>
+    <div>
+        <div for="" id="title" style="">
+            {{grade.name.slice(0, 2)}}
+        </div>
+        <div class="form-group">
+            <div for="" style="font-size: 12px; text-align: center">IHS</div>
+            <select v-on:change="" class="form-control" v-model="valueIhs">
+                <option :value="0"></option>
+                <option v-for="n in 12">
+                    {{ n }}
+                </option>
+            </select>
+            <hr style="margin: 6px;">
+            <div for="" style="font-size: 12px; text-align: center">Porcentaje</div>
+            <select v-on:change="" class="form-control" v-model="valuePercent">
+                <option :value="0"></option>
+                <option v-for="n in 100">
+                    {{ n }}
+                </option>
+            </select>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "box-grade",
+        props: {
+            grade: {type: Object}
+        },
+        data() {
+            return {
+                valueIhs: 0,
+                valuePercent: 0,
+                idGrade:this.grade.id,
+            }
+        },
+        methods: {},
+        created() {
+
+        }
+    }
+</script>
+
+<style scoped>
+
+    #title {
+        margin-bottom: 6px;
+        font-size: 12px;
+        text-align: center;
+        background-color: #1d75b3;
+        padding: 4px;
+        color: #FFFFFF;
+    }
+
+</style>

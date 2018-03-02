@@ -15,44 +15,53 @@ class AreasAndAsignatureController extends Controller
         return view('institution.partials.areas-asignature.index');
     }
 
-    public function getAreas()
+    public function getAreas($institution_id = 6, $grade_id = 4)
     {
 
         if (request()->ajax()) {
-            $custom_areas = DB::table('custom_areas')
+            /*
+            $pensum = DB::table('pensum')
                 ->select('areas_id')
+                ->where('grade_id','=',$grade_id)
+                ->where('institution_id','=',$institution_id)
                 ->get();
 
             $array = [];
-            foreach ($custom_areas as $key => $value)
+            foreach ($pensum as $key => $value)
                 $array[$key] = $value->areas_id;
-
+            */
             $areas = DB::table('areas')
-                ->whereNotIn('id', $array)
+                #->whereNotIn('id', $array)
                 ->get();
             return $areas;
         }
-
-        return "error";
+        return [];
     }
 
     public function getAsignatures()
     {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+
         if (request()->ajax()) {
-            $custom_asignatures = DB::table('custom_asignatures')
+            /*
+            $pensum = DB::table('pensum')
                 ->select('asignatures_id')
+                ->where('grade_id','=',$grade_id)
+                ->where('institution_id','=',$institution_id)
                 ->get();
             $array = [];
-            foreach ($custom_asignatures as $key => $value)
+            foreach ($pensum as $key => $value)
                 $array[$key] = $value->asignatures_id;
+            */
 
-            $asignatures = DB::table('asignature')
-                ->whereNotIn('id', $array)
+            $asignatures = DB::table('asignatures')
+                #->whereNotIn('id', $array)
                 ->get();
 
             return $asignatures;
         }
-        return "error";
+
+        return [];
     }
 
     public function getSubjectsType()
@@ -65,6 +74,41 @@ class AreasAndAsignatureController extends Controller
         return "error";
     }
 
+    public function storePensum(request $request)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+        $pensum = $request->data;
+
+
+        if ($request->ajax()) {
+            foreach ($pensum as $row) {
+                try {
+
+                    $value = DB::table('pensum')->insertGetId(
+                        [
+                            'percent' => $row['percent'],
+                            'ihs' => $row['ihs'],
+                            'order' => $row['order'],
+                            'grade_id' => $row['grade_id'],
+                            'areas_id' => $row['areas_id'],
+                            'subjects_type_id' => $row['subjects_type_id'],
+                            'asignatures_id' => $row['asignatures_id'],
+                            'institution_id' => $institution_id
+                        ]
+                    );
+                } catch (\Exception $e) {
+                    $value = 5;
+                }
+            }
+
+            return $value;
+        }
+        return 4;
+    }
+
+
+
+    
     public function getAsignaturesByArea($area_id)
     {
         if (request()->ajax()) {
