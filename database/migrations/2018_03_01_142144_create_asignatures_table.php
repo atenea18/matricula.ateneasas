@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAreasTable extends Migration
+class CreateAsignaturesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,14 @@ class CreateAreasTable extends Migration
      */
     public function up()
     {
-        Schema::create('areas', function (Blueprint $table) {
+        Schema::create('asignatures', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('abbreviation');
+            $table->unsignedBigInteger('subjects_type_id');
             $table->timestamps();
+            $table->foreign('subjects_type_id')
+                ->references('id')->on('subjects_type');
         });
     }
 
@@ -28,6 +31,6 @@ class CreateAreasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('areas');
+        Schema::dropIfExists('asignatures');
     }
 }
