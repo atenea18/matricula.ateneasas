@@ -17,7 +17,10 @@ class CreateAsignaturesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('abbreviation');
+            $table->unsignedBigInteger('subjects_type_id');
             $table->timestamps();
+            $table->foreign('subjects_type_id')
+                ->references('id')->on('subjects_type');
         });
     }
 

@@ -44849,7 +44849,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -44866,7 +44866,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AccordionAreas___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__AccordionAreas__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Table__ = __webpack_require__(75);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Table___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Table__);
-//
 //
 //
 //
@@ -45023,6 +45022,8 @@ exports.push([module.i, "\nfieldset[disabled] .multiselect{pointer-events:none\n
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_multiselect__ = __webpack_require__(68);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_multiselect__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__BoxGrade__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__BoxGrade___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__BoxGrade__);
 //
 //
 //
@@ -45097,123 +45098,72 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "add",
-    components: { Multiselect: __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default.a },
-    props: {
-        title: { type: String },
-        typeAreaOrAsignatures: { type: String },
-        typeComponent: { type: String }
-    },
+    components: { Multiselect: __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default.a, BoxGrade: __WEBPACK_IMPORTED_MODULE_1__BoxGrade___default.a },
+    props: {},
     data: function data() {
         return {
-
-            num: 0,
-            nameCustom: '',
+            title: '',
             order: 1,
             message: '',
-            value: null,
+            value: [],
             isSend: false,
             options: [],
+            dataGrades: [],
             selected: null,
             isMultiple: true,
             isResponse: false,
-            idSubjectsType: 2,
-            subjectsType: null,
+            idSubjectsType: 1,
+            subjectsType: [],
             textButton: "Adiccionar",
-            dataAreasOrAsignatures: null,
+            dataAreas: null,
             selectedIdAreaOrAsignature: 0,
-            textMultiselect: "",
-            customData: 0,
-            arrayAreasAndAsignature: []
+            dataAsignatures: 0,
+            arrayDataPensum: [],
+            arrayDirtyBoxGrade: []
         };
     },
 
     methods: {
         customLabel: function customLabel(option) {
-            return '' + option.custom_name;
+            return '' + option.name;
         },
-
-        setType: function setType() {
-            this.options = this.customData == null ? [] : this.customData;
-        },
-        reloadMultiselect: function reloadMultiselect() {
-            if (this.typeAreaOrAsignatures == "areas") {
-                this.getCustomToAsignment('getCustomAsignatures/' + this.idSubjectsType);
-            } else {
-                this.getCustomToAsignment('getCustomAreas/' + this.idSubjectsType);
-            }
-            this.value = [];
-        },
-        getNameSelectedAreaOrAsignature: function getNameSelectedAreaOrAsignature() {
+        setStorePensum: function setStorePensum() {
             var _this2 = this;
 
-            this.dataAreasOrAsignatures.forEach(function (item) {
-                if (item.id == _this2.selectedIdAreaOrAsignature) {
-                    _this2.nameCustom = item.name;
+            this.arrayDataPensum = [];
+            this.arrayDirtyBoxGrade = [];
+
+            this.$refs.boxGrade.forEach(function (component) {
+
+                if (component._data.valueIhs != "0" || component._data.valuePercent != "0") {
+                    _this2.arrayDirtyBoxGrade.push(component._data);
                 }
             });
-        },
-        setCustomAreasOrAsignatures: function setCustomAreasOrAsignatures() {
-            var customAreasOrAsginatures = {
-                custom_name: this.nameCustom,
-                order: this.order,
-                area_or_asig_id: this.selectedIdAreaOrAsignature,
-                subjects_type_id: this.idSubjectsType
-            };
 
-            var data = JSON.stringify(customAreasOrAsginatures);
-
-            if (this.typeAreaOrAsignatures == "areas") {
-                this.sendData(data, 'setCustomAreas');
-            } else {
-                this.sendData(data, 'setCustomAsignatures');
-            }
-        },
-        createObjectCustom: function createObjectCustom(id) {
-            var _this3 = this;
-
-            if (this.typeAreaOrAsignatures == "areas") {
-                this.value.forEach(function (custom, i) {
-                    _this3.arrayAreasAndAsignature[i] = {
-                        custom_areas_id: id,
-                        custom_asignatures_id: custom.id
-                    };
+            this.value.forEach(function (asignature) {
+                _this2.arrayDirtyBoxGrade.forEach(function (grade) {
+                    _this2.arrayDataPensum.push({
+                        percent: grade.valuePercent,
+                        ihs: grade.valueIhs,
+                        order: _this2.order,
+                        grade_id: grade.idGrade,
+                        areas_id: _this2.selectedIdAreaOrAsignature,
+                        subjects_type_id: _this2.idSubjectsType,
+                        asignatures_id: asignature.id
+                    });
                 });
-            } else {
-                if (this.value != null) {
-                    this.arrayAreasAndAsignature[0] = {
-                        custom_asignatures_id: id,
-                        custom_areas_id: this.value.id
-                    };
-                }
-            }
+            });
 
-            this.sendDataAreasAndAsignatures();
+            //console.log(this.arrayDataPensum);
+            if (this.arrayDataPensum.length != 0) this.sendData(this.arrayDataPensum, 'storePensum');
         },
-        sendDataAreasAndAsignatures: function sendDataAreasAndAsignatures() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            var _this = this;
-            var data = this.arrayAreasAndAsignature;
-            $.ajax({
-                type: "POST",
-                url: 'setAreasAndAsignatures',
-                data: { data: data },
-                success: function success(response) {
-                    _this.setting();
-                    _this.$bus.$emit('reload-add', null);
-                }
-            });
-        },
+
 
         sendData: function sendData(data, url) {
             $.ajaxSetup({
@@ -45227,65 +45177,63 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 url: url,
                 data: { data: data },
                 success: function success(response) {
+                    console.log(response);
+                    /*
                     _this.isSend = false;
                     if (response != 0) {
-                        _this.message = "Ok";
+                        _this.message = "Ok"
                         _this.selectedIdAreaOrAsignature = 0;
-                        _this.createObjectCustom(parseInt(response));
                         _this.value = [];
                     } else {
-                        _this.message = "Registro Duplicado";
+                        _this.message = "Registro Duplicado"
                     }
                     _this.isResponse = true;
                     setTimeout(function () {
                         _this.isResponse = false;
                     }, 2000);
+                    */
                 }
             });
         },
 
         setting: function setting() {
-            //Update or Insert
-            if (this.typeComponent == "update") {
-                this.textButton = "Actualizar";
-            } else {}
-            // Areas or Asignatures
-            if (this.typeAreaOrAsignatures == "areas") {
-                this.getDataAreasOrAsignatures('getAreas');
-                this.getCustomToAsignment('getCustomAsignatures/' + this.idSubjectsType);
-                this.isMultiple = true;
-                this.textMultiselect = "Seleccionar Asignaturas";
-            } else {
-                this.getDataAreasOrAsignatures('getAsignatures');
-                this.getCustomToAsignment('getCustomAreas/' + this.idSubjectsType);
-                this.isMultiple = false;
-                this.textMultiselect = "Seleccionar Área";
-            }
+            this.getDataAreas();
+            this.getDataAsignatures();
+            this.getDataSubjectsType();
+            this.getDataGrades();
+            this.isMultiple = true;
         },
-        getDataAreasOrAsignatures: function getDataAreasOrAsignatures(method) {
-            var _this4 = this;
+        getDataAreas: function getDataAreas() {
+            var _this3 = this;
 
-            axios.get(method).then(function (res) {
-                _this4.dataAreasOrAsignatures = res.data;
+            axios.get('getAreas').then(function (res) {
+                _this3.dataAreas = res.data;
             });
         },
-        getCustomToAsignment: function getCustomToAsignment(method) {
+        getDataAsignatures: function getDataAsignatures() {
+            var _this4 = this;
+
+            axios.get('getAsignatures').then(function (res) {
+                _this4.options = res.data;
+            });
+        },
+        getDataGrades: function getDataGrades() {
             var _this5 = this;
 
-            axios.get(method).then(function (res) {
-                _this5.customData = res.data;
-                _this5.setType();
+            axios.get('allgrades').then(function (res) {
+                _this5.dataGrades = res.data;
+            });
+        },
+        getDataSubjectsType: function getDataSubjectsType() {
+            var _this6 = this;
+
+            axios.get('getSubjectsType').then(function (res) {
+                _this6.subjectsType = res.data;
             });
         }
     },
     created: function created() {
-        var _this6 = this;
-
         this.setting();
-
-        axios.get('getSubjectsType').then(function (res) {
-            _this6.subjectsType = res.data;
-        });
     }
 });
 
@@ -45328,7 +45276,7 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "col-md-6" }, [
       _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "" } }, [_vm._v("Seleccionar")]),
+        _c("label", { attrs: { for: "" } }, [_vm._v("Seleccionar Área")]),
         _vm._v(" "),
         _c(
           "select",
@@ -45358,14 +45306,14 @@ var render = function() {
                     ? $$selectedVal
                     : $$selectedVal[0]
                 },
-                _vm.getNameSelectedAreaOrAsignature
+                function($event) {}
               ]
             }
           },
           [
             _c("option", { domProps: { value: 0 } }, [_vm._v("Seleccionar")]),
             _vm._v(" "),
-            _vm._l(_vm.dataAreasOrAsignatures, function(data) {
+            _vm._l(_vm.dataAreas, function(data) {
               return _c("option", { domProps: { value: data.id } }, [
                 _vm._v(
                   "\n                    " +
@@ -45395,29 +45343,33 @@ var render = function() {
           staticClass: "form-group"
         },
         [
-          _c("label", { attrs: { for: "" } }, [_vm._v("Personalizar nombre")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.nameCustom,
-                expression: "nameCustom"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { type: "text" },
-            domProps: { value: _vm.nameCustom },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.nameCustom = $event.target.value
-              }
-            }
-          })
+          _vm.idSubjectsType
+            ? _c(
+                "div",
+                [
+                  _c("label", { attrs: { for: "" } }, [
+                    _vm._v("Seleccionar Asignatura")
+                  ]),
+                  _vm._v(" "),
+                  _c("multiselect", {
+                    attrs: {
+                      options: _vm.options,
+                      multiple: _vm.isMultiple,
+                      "track-by": "name",
+                      "custom-label": _vm.customLabel
+                    },
+                    model: {
+                      value: _vm.value,
+                      callback: function($$v) {
+                        _vm.value = $$v
+                      },
+                      expression: "value"
+                    }
+                  })
+                ],
+                1
+              )
+            : _vm._e()
         ]
       )
     ]),
@@ -45467,24 +45419,19 @@ var render = function() {
                       ? $$selectedVal
                       : $$selectedVal[0]
                   },
-                  _vm.reloadMultiselect
+                  function($event) {}
                 ]
               }
             },
-            [
-              _c("option", { domProps: { value: 0 } }, [_vm._v("Seleccionar")]),
-              _vm._v(" "),
-              _vm._l(_vm.subjectsType, function(type) {
-                return _c("option", { domProps: { value: type.id } }, [
-                  _vm._v(
-                    "\n                    " +
-                      _vm._s(type.name) +
-                      "\n                "
-                  )
-                ])
-              })
-            ],
-            2
+            _vm._l(_vm.subjectsType, function(type) {
+              return _c("option", { domProps: { value: type.id } }, [
+                _vm._v(
+                  "\n                    " +
+                    _vm._s(type.name) +
+                    "\n                "
+                )
+              ])
+            })
           )
         ]
       )
@@ -45558,78 +45505,28 @@ var render = function() {
       )
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "col-md-5" }, [
-      _c(
-        "div",
-        {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: _vm.selectedIdAreaOrAsignature,
-              expression: "selectedIdAreaOrAsignature"
-            }
-          ],
-          staticClass: "form-group"
-        },
-        [
-          _vm.idSubjectsType
-            ? _c(
-                "div",
+    _c("div", { staticClass: "col-md-12" }, [
+      _c("table", { staticClass: "table table-bordered" }, [
+        _c("tbody", [
+          _c(
+            "tr",
+            _vm._l(_vm.dataGrades, function(grade) {
+              return _c(
+                "td",
+                { staticStyle: { padding: "2px" } },
                 [
-                  _c("label", { attrs: { for: "" } }, [
-                    _vm._v(_vm._s(_vm.textMultiselect))
-                  ]),
-                  _vm._v(" "),
-                  _c("multiselect", {
-                    attrs: {
-                      options: _vm.options,
-                      multiple: _vm.isMultiple,
-                      "track-by": "custom_name",
-                      "custom-label": _vm.customLabel
-                    },
-                    model: {
-                      value: _vm.value,
-                      callback: function($$v) {
-                        _vm.value = $$v
-                      },
-                      expression: "value"
-                    }
+                  _c("box-grade", {
+                    ref: "boxGrade",
+                    refInFor: true,
+                    attrs: { grade: grade }
                   })
                 ],
                 1
               )
-            : _vm._e()
-        ]
-      )
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "col-md-2" }, [
-      _c(
-        "div",
-        {
-          directives: [
-            {
-              name: "show",
-              rawName: "v-show",
-              value: _vm.selectedIdAreaOrAsignature,
-              expression: "selectedIdAreaOrAsignature"
-            }
-          ],
-          staticClass: "form-group"
-        },
-        [
-          _c(
-            "a",
-            {
-              staticClass: "btn btn-default btn-block",
-              staticStyle: { display: "inline-block", "margin-top": "26px" },
-              on: { click: _vm.reloadMultiselect }
-            },
-            [_vm._v("Reload")]
+            })
           )
-        ]
-      )
+        ])
+      ])
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "col-md-12" }, [
@@ -45659,7 +45556,7 @@ var render = function() {
                 }
               ],
               staticClass: "btn btn-primary btn-block",
-              on: { click: _vm.setCustomAreasOrAsignatures }
+              on: { click: _vm.setStorePensum }
             },
             [_vm._v(_vm._s(_vm.textButton))]
           )
@@ -46492,80 +46389,12 @@ var render = function() {
           _c(
             "tabs",
             [
-              _c("tab", { attrs: { name: "Areas" } }, [
-                _c("div", { staticClass: "row" }, [
-                  _c(
-                    "div",
-                    { staticClass: "col-md-12" },
-                    [
-                      _c("add", {
-                        attrs: {
-                          title: "ADICIONAR ÁREAS",
-                          typeAreaOrAsignatures: "areas",
-                          typeComponent: "insert"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "col-md-12" },
-                    [
-                      _c("hr"),
-                      _vm._v(" "),
-                      _c("table-custom", {
-                        attrs: {
-                          typeAreaOrAsignatures: "areas",
-                          title: "LISTADO DE ÁREAS"
-                        }
-                      })
-                    ],
-                    1
-                  )
-                ])
-              ]),
-              _vm._v(" "),
-              _c("tab", { attrs: { name: "Asignaturas" } }, [
-                _c("div", { staticClass: "row" }, [
-                  _c(
-                    "div",
-                    { staticClass: "col-md-12" },
-                    [
-                      _c("add", {
-                        attrs: {
-                          title: "ADICIONAR ASIGNATURAS",
-                          typeAreaOrAsignatures: "asignatures",
-                          typeComponent: "insert"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "col-md-12" },
-                    [
-                      _c("hr"),
-                      _vm._v(" "),
-                      _c("table-custom", {
-                        attrs: {
-                          typeAreaOrAsignatures: "asignatures",
-                          title: "LISTADO DE ASIGNATURAS"
-                        }
-                      })
-                    ],
-                    1
-                  )
-                ])
-              ]),
-              _vm._v(" "),
               _c("tab", { attrs: { name: "Pensum" } }, [
-                _vm._v(
-                  "\n                    Third tab content\n                "
-                )
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-md-12" }, [_c("add")], 1),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-12" }, [_c("hr")])
+                ])
               ])
             ],
             1
@@ -62750,6 +62579,278 @@ module.exports = __webpack_require__(86);
 /***/ })
 /******/ ]);
 });
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(90)
+}
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(92)
+/* template */
+var __vue_template__ = __webpack_require__(93)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-2d01d6a3"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\areas-asignature\\BoxGrade.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-2d01d6a3", Component.options)
+  } else {
+    hotAPI.reload("data-v-2d01d6a3", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(91);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(3)("c6504660", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2d01d6a3\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./BoxGrade.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-2d01d6a3\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./BoxGrade.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(2)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n#title[data-v-2d01d6a3] {\n    margin-bottom: 6px;\n    font-size: 12px;\n    text-align: center;\n    background-color: #1d75b3;\n    padding: 4px;\n    color: #FFFFFF;\n}\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 92 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    name: "box-grade",
+    props: {
+        grade: { type: Object }
+    },
+    data: function data() {
+        return {
+            valueIhs: 0,
+            valuePercent: 0,
+            idGrade: this.grade.id
+        };
+    },
+
+    methods: {},
+    created: function created() {}
+});
+
+/***/ }),
+/* 93 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("div", { attrs: { for: "", id: "title" } }, [
+      _vm._v("\n        " + _vm._s(_vm.grade.name.slice(0, 2)) + "\n    ")
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "form-group" }, [
+      _c(
+        "div",
+        {
+          staticStyle: { "font-size": "12px", "text-align": "center" },
+          attrs: { for: "" }
+        },
+        [_vm._v("IHS")]
+      ),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.valueIhs,
+              expression: "valueIhs"
+            }
+          ],
+          staticClass: "form-control",
+          on: {
+            change: [
+              function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.valueIhs = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              },
+              function($event) {}
+            ]
+          }
+        },
+        [
+          _c("option", { domProps: { value: 0 } }),
+          _vm._v(" "),
+          _vm._l(12, function(n) {
+            return _c("option", [
+              _vm._v("\n                " + _vm._s(n) + "\n            ")
+            ])
+          })
+        ],
+        2
+      ),
+      _vm._v(" "),
+      _c("hr", { staticStyle: { margin: "6px" } }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticStyle: { "font-size": "12px", "text-align": "center" },
+          attrs: { for: "" }
+        },
+        [_vm._v("Porcentaje")]
+      ),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.valuePercent,
+              expression: "valuePercent"
+            }
+          ],
+          staticClass: "form-control",
+          on: {
+            change: [
+              function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.valuePercent = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              },
+              function($event) {}
+            ]
+          }
+        },
+        [
+          _c("option", { domProps: { value: 0 } }),
+          _vm._v(" "),
+          _vm._l(100, function(n) {
+            return _c("option", [
+              _vm._v("\n                " + _vm._s(n) + "\n            ")
+            ])
+          })
+        ],
+        2
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-2d01d6a3", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
