@@ -22,7 +22,9 @@ class EvaluationParameterController extends Controller
      */
     public function index()
     {
-        $parameters = EvaluationParameter::orderBy('id','DESC')->get();
+        $institution = Auth::guard('web_institution')->user();
+
+        $parameters = $institution->evaluationParameters;
 
         return View('institution.partials.evaluationParameter.index')
         ->with('parameters',$parameters);
