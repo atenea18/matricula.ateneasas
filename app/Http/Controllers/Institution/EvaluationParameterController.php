@@ -22,7 +22,9 @@ class EvaluationParameterController extends Controller
      */
     public function index()
     {
-        $parameters = EvaluationParameter::orderBy('id','DESC')->get();
+        $institution = Auth::guard('web_institution')->user();
+
+        $parameters = $institution->evaluationParameters;
 
         return View('institution.partials.evaluationParameter.index')
         ->with('parameters',$parameters);
@@ -77,10 +79,7 @@ class EvaluationParameterController extends Controller
      */
     public function edit($id)
     {
-        $institution = Auth::guard('web_institution')->user();
-
-        $parameter = $institution->evaluationParameters;
-        
+        $parameter = EvaluationParameter::findOrFail($id);
         $schoolyears = Schoolyear::orderBy('id', 'ASC')->pluck('year', 'id');
 
         return View('institution.partials.evaluationParameter.edit')
