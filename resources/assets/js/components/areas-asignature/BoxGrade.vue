@@ -12,7 +12,7 @@
                 </option>
             </select>
             <hr style="margin: 6px;">
-            <div for="" style="font-size: 12px; text-align: center">Porcentaje</div>
+            <div for="" style="font-size: 12px; text-align: center">%</div>
             <select v-on:change="" class="form-control" v-model="valuePercent">
                 <option :value="0"></option>
                 <option v-for="n in 100">
