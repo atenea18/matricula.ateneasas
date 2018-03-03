@@ -107,20 +107,46 @@ class AreasAndAsignatureController extends Controller
     }
 
 
-
-    
-    public function getAsignaturesByArea($area_id)
+    public function getAreasByGrade($grade_id)
     {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+        try {
+            $pensum = DB::table('pensum')
+                ->select('pensum.areas_id', 'areas.name as name_area', 'subjects_type.name as subjects_type_name')
+                ->join('areas', 'areas.id', '=', 'pensum.areas_id')
+                ->join('subjects_type', 'subjects_type.id', '=', 'pensum.subjects_type_id')
+                ->where('pensum.grade_id', '=', $grade_id)
+                ->where('institution_id', '=', $institution_id)
+                ->groupBy('areas_id')
+                ->get();
+            return $pensum;
+        } catch (\Exception $e) {
+            return [];
+        }
+        if (request()->ajax()) {
+
+        }
+
+    }
+
+
+    public function getAsignaturesPensumByGrade($grade_id, $area_id)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+
         if (request()->ajax()) {
 
             try {
-                $value = DB::table('areas_asignatures')
-                    ->select(
-                        'custom_asignatures.custom_name as name', 'custom_asignatures.id'
-                    )
-                    ->join('custom_asignatures', 'custom_asignatures.id', '=', 'areas_asignatures.custom_asignatures_id')
-                    ->where('custom_areas_id', '=', $area_id)->get();
-                return $value;
+                $pensum = DB::table('pensum')
+                    ->select('pensum.id','pensum.asignatures_id', 'asignatures.name as name_asignatures', 'subjects_type.name as subjects_type_name'
+                    ,'pensum.order' , 'pensum.percent', 'pensum.ihs')
+                    ->join('asignatures', 'asignatures.id', '=', 'pensum.asignatures_id')
+                    ->join('subjects_type', 'subjects_type.id', '=', 'pensum.subjects_type_id')
+                    ->where('pensum.grade_id', '=', $grade_id)
+                    ->where('pensum.institution_id', '=', $institution_id)
+                    ->where('pensum.areas_id', '=', $area_id)
+                    ->get();
+                return $pensum;
 
             } catch (\Exception $e) {
                 return [];
@@ -128,6 +154,46 @@ class AreasAndAsignatureController extends Controller
         }
         return [];
     }
+
+
+    public function deleteAreaPensumByGrade(request $request)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+
+        $area = $request->data;
+        if ($request->ajax()) {
+            try {
+                DB::table('pensum')
+                    ->where('pensum.areas_id', '=', $area['areas_id'])
+                    ->where('pensum.grade_id', '=', $area['grade_id'])
+                    ->where('pensum.institution_id', '=', $institution_id)
+                    ->delete();
+
+            } catch (\Exception $e) {
+            }
+        }
+        return 0;
+    }
+
+    public function deleteAsignaturePensumByGrade(request $request)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+
+        $asignature = $request->data;
+        if ($request->ajax()) {
+            try {
+                DB::table('pensum')
+                    ->where('pensum.id', '=', $asignature['id'])
+                    ->delete();
+
+            } catch (\Exception $e) {
+            }
+        }
+        return $asignature;
+    }
+
+    /*
+
 
     public function getAreaByAsignature($asignature_id)
     {
@@ -317,6 +383,7 @@ class AreasAndAsignatureController extends Controller
             ->get();
         return $customAsignatures;
     }
+    */
 
 
 }

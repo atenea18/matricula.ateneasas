@@ -10,24 +10,18 @@
                             </div>
                             <div class="col-md-12">
                                 <hr>
-                                <!--<table-custom typeAreaOrAsignatures="areas" title="LISTADO DE ÁREAS"></table-custom>-->
+
                                 <!--<accordion-areas></accordion-areas>-->
                             </div>
                         </div>
                     </tab>
-                    <!--<tab name="Asignaturas">
+                    <tab name="Ver">
                         <div class="row">
                             <div class="col-md-12">
-                                <add title="ADICIONAR ASIGNATURAS" typeAreaOrAsignatures="asignatures"
-                                     typeComponent="insert"></add>
-                            </div>
-                            <div class="col-md-12">
-                                <hr>
-                                <table-custom typeAreaOrAsignatures="asignatures"
-                                              title="LISTADO DE ASIGNATURAS"></table-custom>
+                                <table-custom></table-custom>
                             </div>
                         </div>
-                    </tab>-->
+                    </tab>
                     <!--<tab name="Pensum">
                         Third tab content
                     </tab>-->
