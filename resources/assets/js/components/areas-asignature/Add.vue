@@ -1,9 +1,6 @@
 <template>
     <form action="">
         <h5> {{title}}</h5>
-        <div class="alert-info" v-show="isResponse">
-            <p style="text-align: center; padding: 5px;">{{message}}</p>
-        </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label for="">Seleccionar Área</label>
@@ -53,7 +50,7 @@
             </div>
         </div>
         <div class="col-md-12">
-            <table class="table table-bordered">
+            <table class="table table-bordered"  v-show="selectedIdAreaOrAsignature">
                 <tbody>
                 <tr>
                     <td v-for="grade in dataGrades" style="padding: 2px;">
@@ -68,6 +65,14 @@
             <div v-show="selectedIdAreaOrAsignature" class="form-group">
                 <a class="btn btn-primary btn-block" v-show="idSubjectsType" @click="setStorePensum">{{textButton}}</a>
             </div>
+
+
+        </div>
+        <div v-show="isSend" class="col-md-12 alert-info" style="text-align: center; padding: 5px;">
+            <p >CARGANDO</p>
+        </div>
+        <div v-show="isResponse" class="col-md-12 alert-info" style="text-align: center; padding: 5px;">
+            <p>{{message}}</p>
         </div>
     </form>
 </template>
@@ -90,7 +95,7 @@
                 options: [],
                 dataGrades: [],
                 selected: null,
-                isMultiple: true,
+                isMultiple: false,
                 isResponse: false,
                 idSubjectsType: 1,
                 subjectsType: [],
@@ -99,7 +104,7 @@
                 selectedIdAreaOrAsignature: 0,
                 dataAsignatures: 0,
                 arrayDataPensum: [],
-                arrayDirtyBoxGrade:[]
+                arrayDirtyBoxGrade: []
             }
         },
         methods: {
@@ -107,6 +112,7 @@
                 return `${option.name}`;
             },
             setStorePensum() {
+                this.isSend = true;
                 this.arrayDataPensum = [];
                 this.arrayDirtyBoxGrade = [];
 
@@ -115,7 +121,6 @@
                     if (component._data.valueIhs != "0" || component._data.valuePercent != "0") {
                         this.arrayDirtyBoxGrade.push(component._data);
                     }
-
                 });
 
                 this.value.forEach((asignature) => {
@@ -133,10 +138,15 @@
                         );
                     })
                 })
+                this.arrayDirtyBoxGrade.forEach((grade) => {
+                    grade.valuePercent = 0;
+                    grade.valueIhs = 0;
+                })
 
                 //console.log(this.arrayDataPensum);
-                if(this.arrayDataPensum.length != 0)
-                    this.sendData(this.arrayDataPensum,'storePensum')
+                if (this.arrayDataPensum.length != 0)
+
+                    this.sendData(this.arrayDataPensum, 'storePensum')
             },
 
             sendData: function (data, url) {
@@ -151,21 +161,27 @@
                     url: url,
                     data: {data},
                     success: function (response) {
-                        console.log(response);
-                        /*
+
+
                         _this.isSend = false;
                         if (response != 0) {
-                            _this.message = "Ok"
-                            _this.selectedIdAreaOrAsignature = 0;
-                            _this.value = [];
+                            _this.message = "REGISTRO EXITOSO"
+                            _this.$bus.$emit('reload-grade', this)
+                            _this.value=[];
+                            _this.order=1;
+                            _this.idSubjectsType = 1;
+                            //_this.selectedIdAreaOrAsignature = 0;
+
                         } else {
-                            _this.message = "Registro Duplicado"
+                            _this.message = "REGISTRO EXISTENTE"
                         }
+
                         _this.isResponse = true;
+
                         setTimeout(function () {
                             _this.isResponse = false;
-                        }, 2000);
-                        */
+                        }, 2500);
+
                     }
                 });
             },
@@ -188,12 +204,12 @@
                 });
 
             },
-            getDataGrades(){
+            getDataGrades() {
                 axios.get('allgrades').then(res => {
                     this.dataGrades = res.data;
                 });
             },
-            getDataSubjectsType(){
+            getDataSubjectsType() {
                 axios.get('getSubjectsType').then(res => {
                     this.subjectsType = res.data;
                 });
