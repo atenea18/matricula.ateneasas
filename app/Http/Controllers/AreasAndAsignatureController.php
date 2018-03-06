@@ -97,13 +97,13 @@ class AreasAndAsignatureController extends Controller
                         ]
                     );
                 } catch (\Exception $e) {
-                    $value = 5;
+                    $value = 0;
                 }
             }
 
             return $value;
         }
-        return 4;
+        return 0;
     }
 
 
