@@ -3,7 +3,7 @@ $(document).ready(function(){
 	var student_id = $('#student_id').val(),
         AppUrl = $("#AppUrl").val();
 
-        console.log(AppUrl);
+
 	$('.chosen-select').chosen({width: "100%"});
 
 	$('.chosen-group, .chosen-it, .chosen-ice, .chosen-icb, .chosen-ig, .chosen-ac, .chosen-az, .chosen-ri').chosen({width: "100%"});

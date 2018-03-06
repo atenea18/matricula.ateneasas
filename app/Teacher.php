@@ -36,4 +36,12 @@ class Teacher extends Model
     {
         return $this->belongsTo(Schoolyear::class, 'school_year_id');
     }
+
+    /**
+     * Obtiene la relacion que hay entre el grupo y el director de grupo
+     */
+    public function groupDirector()
+    {
+        return $this->belongsToMany(Group::class, 'group_directors', 'teacher_id', 'group_id');
+    }
 }

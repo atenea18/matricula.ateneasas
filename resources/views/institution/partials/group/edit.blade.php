@@ -58,6 +58,12 @@
 				  						{!! Form::text('name', $group->name, ['class'=>'form-control']) !!}
 				  					</div>
 				  				</div>
+				  				{{-- <div class="col-md-3">
+				  					<div class="form-group">
+				  						{!! Form::label('teacher_id', 'Director de Grupo') !!}
+				  						{!! Form::select('teacher_id', $teachers, null, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciones una jornada']) !!}
+				  					</div>
+				  				</div> --}}
 				  			</div>
 				  		</div>
 				  	</div>

@@ -300,4 +300,9 @@ class StudentController extends Controller
             return response()->json($request->all());
         }
     }
+
+    public function uploadPicture(Request $request)
+    {
+        dd($request->all());
+    }
 }
