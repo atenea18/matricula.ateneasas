@@ -21,6 +21,7 @@
 			  			<thead>
 			  				<tr>
 								<th>Parametros de Evaluación</th>
+								<th>Abreviación</th>
 			  					<th>Porcentaje</th>
 			  					<th>Año</th>
 			  					<th>Acción</th>
@@ -30,8 +31,9 @@
 			  			@foreach($parameters as $parameter)
 						<tr>
 							<td>{{ $parameter->parameter }}</td>
+							<td>{{ $parameter->abbreviation }}</td>
 							<td>{{ $parameter->percent}}</td>
-							<td>{{ $parameter->school_year_id}}</td>
+							<td>{{ $parameter->schoolYear->year}}</td>
 							<td>
 								<a href="{{route('evaluationParameter.edit',$parameter)}}" class="btn btn-primary btn-sm">
 									<i class="fa fa-edit"></i>

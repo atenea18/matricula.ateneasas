@@ -51,138 +51,135 @@
                         {{-- PERSONAL INFORMATION --}}
                         <div role="tabpanel" class="tab-pane active" id="personal_info">
                             <div class="container-fluid">
-                                {{-- PERSONAL IDENTIFICATION --}}
-                                <div id="identification" class="section_inscription">
-                                    <div class="section_inscription__tittle">
-                                        <h4>Datos de Identificación</h4>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div style="width: 160px;height: 210px; background-color: #eee;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-9">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        {!! Form::label('last_name', 'Apellidos') !!}
-                                                        {!! Form::text('last_name', $enrollment->student->last_name, ['class'=>'form-control']) !!}
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        {!! Form::label('name', 'Nombres') !!}
-                                                        {!! Form::text('name', $enrollment->student->name, ['class'=>'form-control']) !!}
-                                                    </div>
-                                                </div>
+                                    <div class="col-md-9">
+                                        {{-- PERSONAL IDENTIFICATION --}}
+                                        <div id="identification" class="section_inscription">
+                                            <div class="section_inscription__tittle">
+                                                <h4>Datos de Identificación</h4>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        {!! Form::label('identification_type_dis', 'Tipo de Identificación') !!}
-                                                        {!! Form::text('identification_type', $enrollment->student->identification->identification_type->name, ['class'=>'form-control']) !!}
+                                                <div class="col-md-9">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                {!! Form::label('last_name', 'Apellidos') !!}
+                                                                {!! Form::text('last_name', $enrollment->student->last_name, ['class'=>'form-control']) !!}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                {!! Form::label('name', 'Nombres') !!}
+                                                                {!! Form::text('name', $enrollment->student->name, ['class'=>'form-control']) !!}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        {!! Form::label('identification_number_dis', 'Número de Identificación') !!}
-                                                        {!! Form::text('identification_number', $enrollment->student->identification->identification_number, ['class'=>'form-control']) !!}
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                {!! Form::label('identification_type_dis', 'Tipo de Identificación') !!}
+                                                                {!! Form::text('identification_type', $enrollment->student->identification->identification_type->name, ['class'=>'form-control']) !!}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                {!! Form::label('identification_number_dis', 'Número de Identificación') !!}
+                                                                {!! Form::text('identification_number', $enrollment->student->identification->identification_number, ['class'=>'form-control']) !!}
+                                                            </div>
+                                                        </div>
+                                                        <!--  CITY  EXPEDITION / BIRTH-->
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                {!! Form::label('city_expedition_dis', 'Ciudad de Expedición') !!}
+                                                                {!! Form::select('city_expedition_dis',$cities,  ($enrollment->student->identification->id_city_expedition != null) ? $enrollment->student->identification->id_city_expedition : null, ['class'=>'form-control', 'name'=>'id_city_expedition']) !!}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <!--  CITY  EXPEDITION / BIRTH-->
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        {!! Form::label('city_expedition_dis', 'Ciudad de Expedición') !!}
-                                                        {!! Form::select('city_expedition_dis',$cities,  ($enrollment->student->identification->id_city_expedition != null) ? $enrollment->student->identification->id_city_expedition : null, ['class'=>'form-control', 'name'=>'id_city_expedition']) !!}
-                                                    </div>
-                                                </div>
-                                            </div>
 
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                {!! Form::label('city_birth_dis', 'Ciudad de Nacimiento') !!}
+                                                                {!! Form::text('city_birth', ($enrollment->student->identification->id_city_of_birth != null) ? $enrollment->student->identification->id_city_of_birth : null, ['class'=>'form-control']) !!}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                {!! Form::label('birthdate_dis', 'Fecha de Nacimiento') !!}
+                                                                {!! Form::text('birthdate_dis', ($enrollment->student->identification->birthdate != null) ? $enrollment->student->identification->birthdate : '', ['class'=>'form-control']) !!}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                {!! Form::label('gender_dis', 'Genero') !!}
+                                                                {!! Form::text('gender', $enrollment->student->identification->gender->gender, ['class'=>'form-control']) !!}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+                                        {{-- ADDRESS --}}
+                                        <div id="identification" class="section_inscription">
+                                            <div class="section_inscription__tittle">
+                                                <h4>Dirección Residencia</h4>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        {!! Form::label('city_birth_dis', 'Ciudad de Nacimiento') !!}
-                                                        {!! Form::text('city_birth', ($enrollment->student->identification->id_city_of_birth != null) ? $enrollment->student->identification->id_city_of_birth : null, ['class'=>'form-control']) !!}
+                                                        {!! Form::label('address', 'Dirección') !!}
+                                                        {!! Form::text('adress_dis', $enrollment->student->address->address, ['class' => 'form-control']) !!}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        {!! Form::label('neighborhood', 'Barrio') !!}
+                                                        {!! Form::text('neighborhood_dis', $enrollment->student->address->neighborhood, ['class' => 'form-control']) !!}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        {!! Form::label('city', 'Ciudad') !!}
+                                                        {!! Form::select('city_dis', $cities,($enrollment->student->address->id_city_address != null) ? $enrollment->student->address->id_city_address : null, ['class' => 'form-control']) !!}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        {!! Form::label('zone', 'Zona (Urbana/Rural)') !!}
+                                                        {!! Form::text('zone_dis', $enrollment->student->address->zone->name, ['class' => 'form-control']) !!}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        {!! Form::label('phone', 'Telefono') !!}
+                                                        {!! Form::text('phone_dis', $enrollment->student->address->phone, ['class' => 'form-control']) !!}
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        {!! Form::label('birthdate_dis', 'Fecha de Nacimiento') !!}
-                                                        {!! Form::text('birthdate_dis', ($enrollment->student->identification->birthdate != null) ? $enrollment->student->identification->birthdate : '', ['class'=>'form-control']) !!}
+                                                        {!! Form::label('mobil', 'Celular') !!}
+                                                        {!! Form::text('mobil_dis', $enrollment->student->address->mobil, ['class' => 'form-control']) !!}
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        {!! Form::label('gender_dis', 'Genero') !!}
-                                                        {!! Form::text('gender', $enrollment->student->identification->gender->gender, ['class'=>'form-control']) !!}
+                                                        {!! Form::label('email', 'Email') !!}
+                                                        {!! Form::text('email_dis', $enrollment->student->address->email, ['class' => 'form-control']) !!}
                                                     </div>
                                                 </div>
                                             </div>
-
-                                        </div>
-
-
-                                    </div>
-
-
-                                </div>
-
-                                {{-- ADDRESS --}}
-                                <div id="identification" class="section_inscription">
-                                    <div class="section_inscription__tittle">
-                                        <h4>Dirección Residencia</h4>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {!! Form::label('address', 'Dirección') !!}
-                                                {!! Form::text('adress_dis', $enrollment->student->address->address, ['class' => 'form-control']) !!}
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                {!! Form::label('neighborhood', 'Barrio') !!}
-                                                {!! Form::text('neighborhood_dis', $enrollment->student->address->neighborhood, ['class' => 'form-control']) !!}
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                {!! Form::label('city', 'Ciudad') !!}
-                                                {!! Form::select('city_dis', $cities,($enrollment->student->address->id_city_address != null) ? $enrollment->student->address->id_city_address : null, ['class' => 'form-control']) !!}
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                {!! Form::label('zone', 'Zona (Urbana/Rural)') !!}
-                                                {!! Form::text('zone_dis', $enrollment->student->address->zone->name, ['class' => 'form-control']) !!}
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="row">
-
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {!! Form::label('phone', 'Telefono') !!}
-                                                {!! Form::text('phone_dis', $enrollment->student->address->phone, ['class' => 'form-control']) !!}
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {!! Form::label('mobil', 'Celular') !!}
-                                                {!! Form::text('mobil_dis', $enrollment->student->address->mobil, ['class' => 'form-control']) !!}
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {!! Form::label('email', 'Email') !!}
-                                                {!! Form::text('email_dis', $enrollment->student->address->email, ['class' => 'form-control']) !!}
-                                            </div>
-                                        </div>
+                                        </div>  
                                     </div>
                                 </div>
                             </div>
@@ -252,7 +249,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         {{-- MEDIC INFORMATION --}}
                         <div role="tabpanel" class="tab-pane" id="medical_info">

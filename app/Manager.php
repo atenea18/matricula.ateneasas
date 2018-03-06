@@ -17,6 +17,16 @@ class Manager extends Model
     	'address_id'
     ];
 
+    public function getFullNameAttribute()
+    {
+        return "{$this->name} {$this->last_name}";
+    }
+
+    public function getFullNameInverseAttribute()
+    {
+        return "{$this->last_name} {$this->name}";
+    }
+
     /**
      * Obtiene la relacion que hay entre el ente administrativo y el docente
      */

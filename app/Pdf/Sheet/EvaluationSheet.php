@@ -18,7 +18,7 @@ class EvaluationSheet extends Fpdf
  
 	// 
 	private $_width_mark = 267; //Ancho del marco de la cabecera
-	private $_with_CE = 75; //Ancho de la celda de estudiantes
+	private $_with_CE = 70; //Ancho de la celda de estudiantes
 	private $_with_C_N_E = 8; //Ancho de la celda novedad (NOV) y estatus (EST)
 	private $_with_C_H = 50; //Ancho de la celda donde estan los header (Desempeños)
 	private $_width_VG_VRA = 8; //Ancho de las celdas (VRA y VG)
@@ -127,7 +127,15 @@ class EvaluationSheet extends Fpdf
 		// show Parameter
 		foreach($this->parameters as $parameter)
 		{
-			$this->Cell($this->_with_C_H, 4, utf8_decode($parameter->parameter), 1, 0, 'C', true);
+			if(strtolower($parameter->abbreviation) == 'aee')
+			{
+				$this->Cell($this->_width_VG_VRA, 8, 'AEE', 1,0, 'C', true);
+			}
+			else
+			{
+
+				$this->Cell($this->_with_C_H, 4, utf8_decode($parameter->parameter), 1, 0, 'C', true);
+			}
 		}
 
 		$this->Cell($this->_width_VG_VRA, 8, 'VG', 1,0, 'C', true);
@@ -147,19 +155,22 @@ class EvaluationSheet extends Fpdf
 
 			$withCellCriteria = (count($parameter->criterias) > 0) ? round(  $this->_with_C_H / (count($parameter->criterias)) ) : $this->_with_C_H;
 
-			if(count($parameter->criterias) == 0)
+			if(strtolower($parameter->abbreviation) != 'aee')
 			{
-				$withCellCriteria = ($this->_with_C_H / 5);
+				if(count($parameter->criterias) == 0)
+				{
+					$withCellCriteria = ($this->_with_C_H / 5);
 
-				for ($i=0; $i < 5; $i++) { 
-					$this->Cell($withCellCriteria , 4, '', 1, 0, 'C', true);
+					for ($i=0; $i < 5; $i++) { 
+						$this->Cell($withCellCriteria , 4, '', 1, 0, 'C', true);
+					}
 				}
-			}
-			else
-			{
+				else
+				{
 
-				foreach($parameter->criterias as $criteria)
-					$this->Cell($withCellCriteria , 4, utf8_decode($criteria->abbreviation), 1, 0, 'C', true);
+					foreach($parameter->criterias as $criteria)
+						$this->Cell($withCellCriteria , 4, utf8_decode($criteria->abbreviation), 1, 0, 'C', true);
+				}
 			}
 		}
 
@@ -195,19 +206,26 @@ class EvaluationSheet extends Fpdf
 
 				$withCellCriteria = (count($parameter->criterias) > 0) ? round(  $this->_with_C_H / (count($parameter->criterias)) ) : $this->_with_C_H;
 
-				if(count($parameter->criterias) == 0)
+				if(strtolower($parameter->abbreviation) != 'aee')
 				{
-					$withCellCriteria = ($this->_with_C_H / 5);
+					if(count($parameter->criterias) == 0)
+					{
+						$withCellCriteria = ($this->_with_C_H / 5);
 
-					for ($i=0; $i < 5; $i++) { 
-						$this->Cell($withCellCriteria , 4, '', 1, 0, 'C', false);
+						for ($i=0; $i < 5; $i++) { 
+							$this->Cell($withCellCriteria , 4, '', 1, 0, 'C', false);
+						}
+					}
+					else
+					{
+
+						foreach($parameter->criterias as $criteria)
+							$this->Cell($withCellCriteria , 4, '', 1, 0, 'C', false);
 					}
 				}
 				else
 				{
-
-					foreach($parameter->criterias as $criteria)
-						$this->Cell($withCellCriteria , 4, '', 1, 0, 'C', false);
+					$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false);	
 				}
 			}
 

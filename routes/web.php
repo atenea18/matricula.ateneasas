@@ -93,7 +93,7 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	Route::post('/logout', 'InstitutionAuth\LoginController@logout');
 	
 	Route::get('/', function(){
-		return view('institution.dashboard.index');
+		return view('institution.partials.home.home');
 	})->name('institution.home');
 
 	Route::get('/home', function(){
@@ -119,6 +119,7 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	Route::put('student/updateFamily/{id}', 'StudentController@updateFamily')->name('student.updateFamily');
 	Route::delete('student/deleteFamily/{id}', 'StudentController@deleteFamily')->name('student.deleteFamily');
 	Route::get('student/searchFamily', 'StudentController@searchFamily')->name('student.searchFamily');
+	Route::post('student/uploadPicture', 'StudentController@uploadPicture')->name('student.uploadPicture');
 
 	// Ruta para entes administrativos
 	Route::resource('manager', 'Institution\ManagerController', ['only'=> ['create','store', 'edit','update', 'destroy']]);
