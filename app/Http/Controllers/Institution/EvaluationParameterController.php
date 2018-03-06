@@ -24,7 +24,9 @@ class EvaluationParameterController extends Controller
     {
         $institution = Auth::guard('web_institution')->user();
 
-        $parameters = $institution->evaluationParameters;
+        $parameters = $institution->evaluationParameters()
+        ->with('schoolYear')
+        ->get();
 
         return View('institution.partials.evaluationParameter.index')
         ->with('parameters',$parameters);
@@ -96,7 +98,11 @@ class EvaluationParameterController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $parameter = EvaluationParameter::findOrFail($id);
+        $parameter->fill($request->all());
+        $parameter->save();
+
+        return redirect()->route('evaluationParameter.index');
     }
 
     /**

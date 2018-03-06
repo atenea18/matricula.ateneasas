@@ -99,9 +99,9 @@ class GroupController extends Controller
      */
     public function edit($id)
     {
-        $institution_id = Auth::guard('web_institution')->user()->id;
+        $institution = Auth::guard('web_institution')->user();
 
-        $headquarters = Headquarter::where('institution_id', '=', $institution_id)->orderBy('name', 'ASC')->pluck('name', 'id');
+        $headquarters = Headquarter::where('institution_id', '=', $institution->id)->orderBy('name', 'ASC')->pluck('name', 'id');
 
 
         $grades = Grade::orderBy('id', 'ASC')->pluck('name', 'id');
@@ -116,13 +116,25 @@ class GroupController extends Controller
             ->get()
             ->pluck('student');
 
-        // dd($students);
+        $teachers = $institution->teachers()
+        ->with('manager')
+        ->with('schoolyear')
+        ->with('manager.identification')
+        ->with('manager.identification.identification_type')
+        ->with('manager.address')
+        ->where('school_year_id','=', 1)
+        ->get()
+        ->pluck('manager')
+        ->pluck('fullNameInverse', 'id');
+
+        // dd($teachers);
 
         return view('institution.partials.group.edit')
             ->with('headquarters', $headquarters)
             ->with('grades', $grades)
             ->with('journeys', $journeys)
             ->with('group', $group)
+            ->with('teachers',$teachers)
             ->with('students', $students);
     }
 
@@ -135,11 +147,14 @@ class GroupController extends Controller
      */
     public function update(CreateGroupRequest $request, $id)
     {
+
         $group = Group::findOrFail($id);
 
         $group->fill($request->all());
         $group->save();
 
+        $group->director()->sync($request->tracher_id);
+        
         return redirect()->route('group.index');
     }
 

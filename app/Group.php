@@ -53,6 +53,13 @@ class Group extends Model
         return $this->belongsTo(Grade::class, 'grade_id');
     }
 
+    /**
+     * Obtiene la relacion que hay entre el grupo y el director de grupo
+     */
+    public function director()
+    {
+        return $this->belongsToMany(Teacher::class, 'group_directors', 'group_id', 'teacher_id');
+    }
 
     public static function getAllByInstitution($institution_id)
  	{

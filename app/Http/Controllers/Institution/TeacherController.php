@@ -53,6 +53,7 @@ class TeacherController extends ApiController
         ->with('manager.address')
         ->where('school_year_id','=',$year->id)
         ->get();
+        
         // dd($teachers);
 
         return $this->showAll($teachers);
