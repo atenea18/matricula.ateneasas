@@ -15,8 +15,6 @@ padding: 4px;">ASIGNATURAS
 
             </tbody>
         </table>
-
-
     </div>
 </template>
 

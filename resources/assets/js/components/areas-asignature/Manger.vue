@@ -25,6 +25,8 @@
                     <tab name="Asignación">
                         <div class="row">
                             <div class="col-md-12">
+                                <!--
+                                {{grades}}
                                 {{stringTest}}
                                 {{counter}}
                                 {{getDouble}}
@@ -32,9 +34,10 @@
                                     <button @click="increment">+</button>
                                     <button @click="decrement">-</button>
                                     <button @click="increments10">+10</button>
-                                    <button ></button>
+                                    <button @click="incrementAsync">+Async</button>
                                 </div>
-                                <!--<add-group></add-group>-->
+                                -->
+                                <add-group></add-group>
                             </div>
                         </div>
                     </tab>
@@ -56,8 +59,14 @@
             TableCustom,
             Add, AddGroup
         },
+        created(){
+            this.getGrades()
+            this.getAreas()
+            this.getAsignatures()
+            this.getSubjectsType()
+        },
         computed: {
-            ...mapState(['counter']),
+            //...mapState(['grades','areas']),
             ...mapGetters(['getDouble']),
 
             /*
@@ -83,10 +92,32 @@
                     number:10
                 })
             },
+
+            incrementAsync(){
+                this.$store.dispatch('incrementAsync', { number:5 })
+                    .then( () => {
+                        console.log('Actions finished')
+                    })
+            },
+            getGrades(){
+                this.$store.dispatch('grades')
+            },
+            getAreas(){
+                this.$store.dispatch('areas')
+            },
+            getAsignatures(){
+                this.$store.dispatch('asignatures')
+            },
+            getSubjectsType(){
+                this.$store.dispatch('subjectsType')
+            }
+
         }
+
     }
 </script>
 
 <style scoped>
+
 
 </style>

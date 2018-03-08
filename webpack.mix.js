@@ -1,5 +1,20 @@
 let mix = require('laravel-mix');
 
+mix.webpackConfig({
+    module: {
+        rules: [
+            {
+                use: {
+
+                    options: {
+                        presets: ['env', 'stage-2']
+                    }
+                }
+            }
+        ]
+    }
+})
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -12,15 +27,15 @@ let mix = require('laravel-mix');
  */
 
 mix.js(
-	[
-		'resources/assets/js/app.js',
-	]
-	, 'public/js/app.js')
-	.styles(
-	[
-		'resources/assets/css/bootstrap.css',
-		'resources/assets/css/default.css',
-        'resources/assets/css/tabs-component.css',
-	]
-	,'public/css/app.css');
-   // .sass('resources/assets/sass/app.scss', 'public/css');
+    [
+        'resources/assets/js/app.js',
+    ]
+    , 'public/js/app.js')
+    .styles(
+        [
+            'resources/assets/css/bootstrap.css',
+            'resources/assets/css/default.css',
+            'resources/assets/css/tabs-component.css',
+        ]
+        , 'public/css/app.css');
+// .sass('resources/assets/sass/app.scss', 'public/css');

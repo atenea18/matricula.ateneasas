@@ -19,16 +19,20 @@ Vue.component('group-assignment', require('./components/GroupAssignment.vue'));
 Vue.component('manager', require('./components/areas-asignature/Manger.vue'));
 
 
+import VueSweetAlert from 'vue-sweetalert';
 import EventBus from './plugin/event-bus';
 import Tabs from 'vue-tabs-component';
 import VueGoodTable from 'vue-good-table';
+import store from './store'
 
+Vue.use(VueSweetAlert);
 Vue.use(VueGoodTable);
 Vue.use(EventBus);
 Vue.use(Tabs);
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    store
 });
 
 // App.js
