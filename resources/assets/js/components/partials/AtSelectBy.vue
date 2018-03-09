@@ -1,6 +1,6 @@
 <template>
     <div>
-        <at-select :type="{name:type.name, nameEv:type.nameEv, tby:type.tby}" :data="tdata"></at-select>
+        <at-select :type="{name:type.name, nameEv:type.nameEv, tby:type.tby, validate:true}" :data="tdata"></at-select>
     </div>
 </template>
 

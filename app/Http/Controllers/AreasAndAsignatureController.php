@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\CustomAreas;
+use App\Group;
 use Auth;
 
 use Illuminate\Http\Request;
@@ -105,6 +106,42 @@ class AreasAndAsignatureController extends Controller
         }
         return 0;
     }
+    public function storePensumByGroup(request $request)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+        $pensum = $request->data;
+
+        if ($request->ajax()) {
+
+            foreach ($pensum as $row) {
+
+                try {
+                    $value = DB::table('group_pensum')->insertGetId(
+                        [
+                            'percent' => $row['percent'],
+                            'ihs' => $row['ihs'],
+                            'order' => $row['order'],
+                            'group_id' => $row['group_id'],
+                            'areas_id' => $row['areas_id'],
+                            'subjects_type_id' => $row['subjects_type_id'],
+                            'asignatures_id' => $row['asignatures_id'],
+                            'schoolyear_id' => 1
+                        ]
+                    );
+                } catch (\Exception $e) {
+                    $value = 0;
+                }
+            }
+
+            return $value;
+        }
+
+        return $pensum;
+
+
+
+
+    }
 
 
     public function getAreasByGrade($grade_id)
@@ -129,7 +166,29 @@ class AreasAndAsignatureController extends Controller
 
     }
 
+    public function getAreasByGroup($group_id)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+        try {
+            $pensum = DB::table('group_pensum')
+                ->select('group_pensum.areas_id', 'areas.name as name_area', 'subjects_type.name as subjects_type_name')
+                ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
+                ->join('subjects_type', 'subjects_type.id', '=', 'group_pensum.subjects_type_id')
+                ->where('group_pensum.group_id', '=', $group_id)
+                ->where('schoolyear_id', '=', 1)
+                ->groupBy('areas_id')
+                ->get();
+            return $pensum;
+        } catch (\Exception $e) {
+            return [];
+        }
+        if (request()->ajax()) {
 
+        }
+    }
+
+
+    # Obtiene el pensum académico por un grupo específico
     public function getAsignaturesPensumByGrade($grade_id, $area_id)
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
@@ -138,13 +197,38 @@ class AreasAndAsignatureController extends Controller
 
             try {
                 $pensum = DB::table('pensum')
-                    ->select('pensum.id','pensum.asignatures_id', 'asignatures.name as name_asignatures', 'subjects_type.name as subjects_type_name'
-                    ,'pensum.order' , 'pensum.percent', 'pensum.ihs')
+                    ->select('pensum.id', 'pensum.asignatures_id', 'asignatures.name as name_asignatures', 'subjects_type.name as subjects_type_name'
+                        , 'pensum.order', 'pensum.percent', 'pensum.ihs')
                     ->join('asignatures', 'asignatures.id', '=', 'pensum.asignatures_id')
                     ->join('subjects_type', 'subjects_type.id', '=', 'pensum.subjects_type_id')
                     ->where('pensum.grade_id', '=', $grade_id)
                     ->where('pensum.institution_id', '=', $institution_id)
                     ->where('pensum.areas_id', '=', $area_id)
+                    ->get();
+                return $pensum;
+
+            } catch (\Exception $e) {
+                return [];
+            }
+        }
+        return [];
+    }
+
+    public function getAsignaturesPensumByGroup($group_id, $area_id)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+
+        if (request()->ajax()) {
+
+            try {
+                $pensum = DB::table('group_pensum')
+                    ->select('group_pensum.id', 'group_pensum.asignatures_id', 'asignatures.name as name_asignatures', 'subjects_type.name as subjects_type_name'
+                        , 'group_pensum.order', 'group_pensum.percent', 'group_pensum.ihs')
+                    ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
+                    ->join('subjects_type', 'subjects_type.id', '=', 'group_pensum.subjects_type_id')
+                    ->where('group_pensum.group_id', '=', $group_id)
+                    ->where('schoolyear_id', '=', 1)
+                    ->where('group_pensum.areas_id', '=', $area_id)
                     ->get();
                 return $pensum;
 
@@ -175,6 +259,27 @@ class AreasAndAsignatureController extends Controller
         return 0;
     }
 
+
+
+    public function deleteAreaPensumByGroup(request $request)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+
+        $area = $request->data;
+        if ($request->ajax()) {
+            try {
+                DB::table('group_pensum')
+                    ->where('group_pensum.areas_id', '=', $area['areas_id'])
+                    ->where('group_pensum.group_id', '=', $area['group_id'])
+                    ->delete();
+
+            } catch (\Exception $e) {
+            }
+        }
+        return 0;
+    }
+
+
     public function deleteAsignaturePensumByGrade(request $request)
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
@@ -184,12 +289,72 @@ class AreasAndAsignatureController extends Controller
             try {
                 DB::table('pensum')
                     ->where('pensum.id', '=', $asignature['id'])
+
                     ->delete();
 
             } catch (\Exception $e) {
             }
         }
         return $asignature;
+    }
+
+    public function deleteAsignaturePensumByGroup(request $request)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+        $data = $request->data;
+
+        if ($request->ajax()) {
+            try {
+                DB::table('group_pensum')
+                    ->where('group_pensum.id', '=', $data['id'])
+                    ->delete();
+            } catch (\Exception $e) {
+            }
+        }
+
+    }
+
+
+    public function copyPensumByGrade(request $request)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+
+        $data = $request->data;
+        $pensumGrade = DB::table('pensum')
+            ->where('pensum.grade_id', '=', $data['grade_id'])
+            ->where('pensum.institution_id', '=', $institution_id)
+            ->get();
+
+        $groups = Group::getGroupsByGrade($institution_id, $data['grade_id']);
+
+
+        if ($request->ajax()) {
+            foreach ($groups as $group) {
+                foreach ($pensumGrade as $row) {
+                    try {
+
+                        DB::table('group_pensum')->insertGetId(
+                            [
+                                'code_group_pensum' => $group->id . $row->percent . $row->asignatures_id,
+                                'percent' => $row->percent,
+                                'ihs' => $row->ihs,
+                                'order' => $row->order,
+                                'group_id' => $group->id,
+                                'areas_id' => $row->areas_id,
+                                'subjects_type_id' => $row->subjects_type_id,
+                                'asignatures_id' => $row->asignatures_id,
+                                'schoolyear_id' => 1
+                            ]
+                        );
+                    } catch (\Exception $e) {
+
+                    }
+                }
+            }
+
+        }
+
+
     }
 
     /*

@@ -16,12 +16,11 @@
                 :title="title"
                 :columns="columns"
                 :rows="rows"
-                :lineNumbers="true"
+                :lineNumbers="false"
                 :defaultSortBy="{field: 'custom_name', type: 'asc'}"
                 :globalSearch="true"
                 :paginate="true"
                 class="table-custom"
-
                 styleClass="table condensed table-bordered table-striped">
             <template slot="table-row" slot-scope="props">
                 <td style="padding-left: 7px; padding-top: 10px; padding-bottom: 0px">

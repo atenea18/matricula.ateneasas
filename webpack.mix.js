@@ -1,20 +1,5 @@
 let mix = require('laravel-mix');
 
-mix.webpackConfig({
-    module: {
-        rules: [
-            {
-                use: {
-
-                    options: {
-                        presets: ['env', 'stage-2']
-                    }
-                }
-            }
-        ]
-    }
-})
-
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
