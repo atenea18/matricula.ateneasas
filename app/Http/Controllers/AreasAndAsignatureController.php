@@ -103,7 +103,7 @@ class AreasAndAsignatureController extends Controller
 
             return $value;
         }
-        return 4;
+        return 0;
     }
 
 
