@@ -447,7 +447,6 @@ class ExcelController extends Controller
     public function oldStudent(Request $request)
     {
 
-        // dd($request->all());
         \Excel::load($request->excel, function($reader) use($request) {
  
             $excel = $reader->get();

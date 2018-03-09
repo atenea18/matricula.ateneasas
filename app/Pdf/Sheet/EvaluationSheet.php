@@ -31,20 +31,20 @@ class EvaluationSheet extends Fpdf
 			$this->Image(
 				Storage::disk('uploads')->url(
 					$this->institution->picture
-				), 12, 14, 17, 17, "PNG");
+				), 12, 12, 17, 17, "PNG");
 
 		//Marco
-	    $this->Cell($this->_width_mark,24, '', 1,0);
-	    $this->Ln(0);
+	    $this->Cell($this->_width_mark,20, '', 1,0);
+	    $this->Ln(2);
 
 	    // PRIMERA LINEA
 	    $this->SetFont('Arial','B',14);
 	    // Movernos a la dereca
-	    // $this->Cell(90, 6, '', 0,0);
+	    $this->Cell(40, 6, '', 0,0);
 	    // Título
-	    $this->Cell(0, 6, (utf8_decode($this->institution->name)), 0, 0, 'C');
+	    $this->Cell(187, 6, (utf8_decode($this->institution->name)), 0, 0, 'C');
 	    // Movernos a la derecha
-	    // $this->Cell(0, 6, '', 0,0);
+	    $this->Cell(40, 6, '', 0,0);
 	    // Salto de línea
 	    $this->Ln(6);
 
@@ -91,7 +91,7 @@ class EvaluationSheet extends Fpdf
 	    // Movernos a la derecha
 	    $this->Cell(0,4, 'FECHA: '.date('d-m-Y'), 0, 0, 'L');
 	    // Salto de línea
-	    $this->Ln(8);
+	    $this->Ln(1);
 
 	    // 
 	    $this->subheader();
@@ -102,7 +102,7 @@ class EvaluationSheet extends Fpdf
 		// Salto de linea
 		$this->Ln(4);
 		// 
-		$this->SetFillColor(172, 220, 240);
+		$this->SetFillColor(225, 249, 255);
 		// 
 		$this->SetFont('Arial','B',9);
 
@@ -179,7 +179,7 @@ class EvaluationSheet extends Fpdf
 	public function create($students)
 	{
 		$this->AddPage();
-		$this->SetFont('Arial','',8);
+		$this->SetFont('Arial','',7);
 
 		$cont = 1;
 		foreach ($students as $key => $student) {
@@ -240,6 +240,7 @@ class EvaluationSheet extends Fpdf
 
 	public function showCriteriaFooter()
 	{
+		$this->SetFont('Arial','',6);
 		$content = '';
 		
 		foreach($this->parameters as $parameter){
@@ -247,7 +248,7 @@ class EvaluationSheet extends Fpdf
 			if(count($parameter->criterias) > 0)
 			{
 				foreach($parameter->criterias as $criteria)
-					$content .= $criteria->abbreviation." - ".$criteria->parameter." \\ ";
+					$content .= ucwords($criteria->abbreviation)." : ".$criteria->parameter." - ";
 					// $this->Cell($withCellCriteria , 4, utf8_decode($criteria->abbreviation), 1, 0, 'C', true);
 			}
 		}
