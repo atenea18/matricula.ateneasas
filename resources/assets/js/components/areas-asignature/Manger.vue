@@ -15,7 +15,7 @@
                             </div>
                         </div>
                     </tab>
-                    <tab name="Ver">
+                    <tab name="Ver Grados">
                         <div class="row">
                             <div class="col-md-12">
                                 <table-custom></table-custom>
@@ -41,6 +41,13 @@
                             </div>
                         </div>
                     </tab>
+                    <tab name="Ver Grupos">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <at-table-pensum></at-table-pensum>
+                            </div>
+                        </div>
+                    </tab>
                 </tabs>
             </div>
         </div>
@@ -52,12 +59,13 @@
     import Add from './Add';
     import AddGroup from './AddGroup.vue';
     import TableCustom from "./Table";
+    import AtTablePensum from '../partials/TableData/AtTablePensum'
 
     export default {
         name: "manger",
         components: {
             TableCustom,
-            Add, AddGroup
+            Add, AddGroup, AtTablePensum
         },
         created(){
             this.getGrades()

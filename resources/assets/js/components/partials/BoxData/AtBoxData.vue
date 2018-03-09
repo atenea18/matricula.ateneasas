@@ -8,7 +8,7 @@
         </tr>
         <tr>
             <td v-for="row in tdata" style="padding: 2px;">
-                <at-box :ref="'box'+type.nameEv" :data="row"></at-box>
+                <at-box ref="groupadd" :data="row"></at-box>
             </td>
         </tr>
         </tbody>
@@ -28,18 +28,35 @@
         },
         data() {
             return {
-                tdata:[]
+                tdata: [],
+                arrayDirtyBoxData: [],
             }
         },
         methods: {
             getBy: function (id) {
-                axios.get(this.type.url+'/' + id).then(res => {
+                axios.get(this.type.url + '/' + id).then(res => {
                     this.tdata = res.data;
                 });
             },
+            setStorePensum() {
+
+
+                this.arrayDirtyBoxData = [];
+                this.$refs.groupadd.forEach((component) => {
+                    if (component._data.valueIhs != "0" || component._data.valuePercent != "0") {
+                        this.arrayDirtyBoxData.push(component._data);
+                    }
+                });
+
+                this.$bus.$emit('set-send-at-box',this.arrayDirtyBoxData)
+
+            },
         },
         created() {
-            this.$bus.$on('selected-id-'+this.type.tby, (id) => {
+            this.$bus.$on('set-send', () => {
+                this.setStorePensum()
+            })
+            this.$bus.$on('selected-id-' + this.type.tby, (id) => {
                 this.getBy(id)
             });
         }

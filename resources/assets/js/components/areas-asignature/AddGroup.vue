@@ -5,22 +5,38 @@
 
         <div class="row">
             <div class="col-md-6">
-                <at-select :type="{name:'Grado', nameEv:'grade', tby:'null', validate:true}"
+                <at-select :type="{name:'Grado', nameEv:'grade-add', tby:'null', validate:true}"
                            :data="grades"></at-select>
             </div>
             <div class="col-md-6">
-                <at-select :type="{name:'Área', nameEv:'area', tby:'null', validate:true}"
-                           :data="areas"></at-select>
-                <!--
-                <at-select-by
-                        :type="{name:'un Grupo', nameEv:'group', url:'groupsByGrade', tby:'grade'}"></at-select-by>
-                        -->
+                <div class="form-group" style="padding-top: 25px">
+                    <a href="#" @click="setCopyPensum" class="btn btn-default btn-block">COPIAR PENSUM</a>
+                </div>
             </div>
         </div>
 
         <div class="row">
+            <div class="col-md-6">
+                <at-select :type="{name:'Área', nameEv:'area-add', tby:'null', validate:true}"
+                           :data="areas"></at-select>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <multi-select :type="{name:'Asignatura', nameEv:'asignature-add', tby:'null', validate:true}"
+                                  :data="asignatures"></multi-select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <at-select :type="{name:'un Docente', nameEv:'teacher-add', tby:'null'}" :data="[]"></at-select>
+                </div>
+            </div>
             <div class="col-md-3">
-                <at-select :type="{name:'Tipo', nameEv:'subjetcType', tby:'null', id:1, validate:true}" :data="subjectsType"></at-select>
+                <at-select :type="{name:'Tipo', nameEv:'subjetcType-add', tby:'null', id:1, validate:true}"
+                           :data="subjectsType"></at-select>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
@@ -33,34 +49,17 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <multi-select :type="{name:'Asignatura', nameEv:'asignature', tby:'null', validate:true}"
-                                  :data="asignatures"></multi-select>
-                </div>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <at-select :type="{name:'un Docente', nameEv:'teacher', tby:'null'}" :data="[]"></at-select>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group" style="padding-top: 25px">
-                    <a href="#" class="btn btn-default">COPIAR PENSUM</a>
-                </div>
-            </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <at-box-data
-                        :type="{name:'Tabla de Grupos', nameEv:'group', url:'groupsByGrade', tby:'grade'}"></at-box-data>
+                <at-box-data ref="box"
+                             :type="{name:'Tabla de Grupos', nameEv:'groupadd', url:'groupsByGrade', tby:'grade-add'}"></at-box-data>
             </div>
             <div class="col-md-12">
-                <div class="form-group">
+                <div class="form-group" v-show="assignmentGroup.idgrade">
                     <input type="submit" value="Submit" class="btn btn-primary btn-block">
+
                 </div>
             </div>
             <div v-show="isSend" class="col-md-12 alert-info" style="text-align: center; padding: 5px;">
@@ -97,7 +96,7 @@
                     idgroup: 0,
                     idarea: 0,
                     asignatures: [],
-                    idsubjectsType: 0,
+                    idsubjectsType: 1,
                     idteacher: 0,
                     order: 0
                 },
@@ -118,84 +117,139 @@
                 idSelectedGrade: 0
             }
         },
-        created() {
-            this.listiningChild();
-            this.setting();
-        },
-
         computed: {
             ...mapState(['grades', 'areas', 'asignatures', 'subjectsType']),
         }
         ,
+        created() {
+            this.listiningChild();
+            this.setting();
+
+            this.$bus.$on('set-send-at-box', (arrayD) => {
+                this.setStorePensum(arrayD)
+            })
+        },
+
+
         methods: {
+
             listiningChild() {
-                this.$bus.$on('selected-id-grade', (id) => {
+                this.$bus.$on('selected-id-grade-add', (id) => {
                     this.assignmentGroup.idgrade = id
                 });
-                this.$bus.$on('selected-id-area', (id) => {
+                this.$bus.$on('selected-id-area-add', (id) => {
                     this.assignmentGroup.idarea = id
                 })
-                this.$bus.$on('selected-id-group', (id) => {
+                this.$bus.$on('selected-id-group-add', (id) => {
                     this.assignmentGroup.idgroup = id
                 })
-                this.$bus.$on('selected-id-subjectType', (id) => {
+                this.$bus.$on('selected-id-subjectType-add', (id) => {
                     this.assignmentGroup.idsubjectsType = id
                 })
-                this.$bus.$on('selected-values-asignature', (values) => {
+                this.$bus.$on('selected-values-asignature-add', (values) => {
                     this.assignmentGroup.asignatures = values
                 })
             },
+
             checkForm(e) {
-                if (this.assignmentGroup.idgrade)
-                    this.$swal(
-                        'Good job!',
-                        'You clicked the button!',
-                        'success'
-                    )
+
+                if (this.assignmentGroup.idarea) {
+                    if(this.assignmentGroup.asignatures.length != 0){
+                        this.$bus.$emit('set-send', null)
+                    }else{
+                        this.$swal({
+                            position: 'top-end',
+                            type: 'info',
+                            title: 'Seleccione una asignatura',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    }
+
+
+                } else {
+                    this.$swal({
+                        position: 'top-end',
+                        type: 'info',
+                        title: 'Seleccione un área',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+
+
                 e.preventDefault();
             },
-            setStorePensum() {
-                /*
-                this.isSend = true;
+
+            setCopyPensum() {
+
+                if (this.assignmentGroup.idgrade) {
+                    let data = {
+                        grade_id: this.assignmentGroup.idgrade
+                    }
+
+                    let _this = this
+
+                    axios.post('copyPensumByGrade', {data})
+                        .then(function (response) {
+                            if (response.status == 200) {
+                                _this.$swal({
+                                    position: 'top-end',
+                                    type: 'success',
+                                    title: 'LISTO',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                })
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }
+                else {
+
+                }
+            },
+            setStorePensum(arrayDirtys) {
                 this.arrayDataPensum = [];
                 this.arrayDirtyBoxGrade = [];
 
-                this.$refs.boxgroup.forEach((component) => {
+                this.arrayDirtyBoxGrade = arrayDirtys
 
-                    if (component._data.valueIhs != "0" || component._data.valuePercent != "0") {
-                        this.arrayDirtyBoxGrade.push(component._data);
-                    }
-                });
 
-                this.value.forEach((asignature) => {
-                    this.arrayDirtyBoxGrade.forEach((grade) => {
+                this.assignmentGroup.asignatures.forEach((asignature) => {
+                    this.arrayDirtyBoxGrade.forEach((row) => {
                         this.arrayDataPensum.push(
                             {
-                                percent: grade.valuePercent,
-                                ihs: grade.valueIhs,
+                                percent: row.valuePercent,
+                                ihs: row.valueIhs,
                                 order: this.order,
-                                grade_id: grade.idGrade,
-                                areas_id: this.selectedIdAreaOrAsignature,
-                                subjects_type_id: this.idSubjectsType,
+                                group_id: row.id,
+                                areas_id: this.assignmentGroup.idarea,
+                                subjects_type_id: this.assignmentGroup.idsubjectsType,
                                 asignatures_id: asignature.id
                             }
                         );
                     })
                 })
-                this.arrayDirtyBoxGrade.forEach((grade) => {
-                    grade.valuePercent = 0;
-                    grade.valueIhs = 0;
-                })
 
-                //console.log(this.arrayDataPensum);
-                if (this.arrayDataPensum.length != 0)
+                if (this.arrayDataPensum.length != 0) {
+                    this.arrayDirtyBoxGrade.forEach((grade) => {
+                        grade.valuePercent = 0;
+                        grade.valueIhs = 0;
+                    })
 
-                    this.sendData(this.arrayDataPensum, 'storePensum')
-                    */
+                    console.log(this.arrayDataPensum)
+
+                    this.sendData(this.arrayDataPensum, 'storePensumByGroup')
+                }
+
+
             },
 
+
             sendData: function (data, url) {
-                /*
+
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -207,19 +261,29 @@
                     url: url,
                     data: {data},
                     success: function (response) {
-
+                        console.log(response)
 
                         _this.isSend = false;
                         if (response != 0) {
-                            _this.message = "REGISTRO EXITOSO"
-                            _this.$bus.$emit('reload-grade', this)
-                            _this.value = [];
+                            _this.$swal({
+                                position: 'top-end',
+                                type: 'success',
+                                title: 'LISTO',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
                             _this.order = 1;
                             _this.idSubjectsType = 1;
-                            //_this.selectedIdAreaOrAsignature = 0;
+
 
                         } else {
-                            _this.message = "REGISTRO EXISTENTE"
+                            _this.$swal({
+                                position: 'top-end',
+                                type: 'error',
+                                title: 'Error',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
                         }
 
                         _this.isResponse = true;
@@ -230,8 +294,9 @@
 
                     }
                 });
-                */
+
             },
+
 
             setting: function () {
 
