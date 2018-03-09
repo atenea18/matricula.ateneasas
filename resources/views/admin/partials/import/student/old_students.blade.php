@@ -45,36 +45,36 @@
 	<script>
 		$(document).ready(function(){
 
-			$("#formUploadFile").submit(function(e){
+			// $("#formUploadFile").submit(function(e){
 
-				e.preventDefault();
+			// 	e.preventDefault();
 
-				var formData = new FormData(),
-					file_data = $('#excel').prop('files')[0],
-					institution_id = $('#institution_id').val();
+			// 	var formData = new FormData(),
+			// 		file_data = $('#excel').prop('files')[0],
+			// 		institution_id = $('#institution_id').val();
 
-					// formData.append('excel', file_data);
-					formData.append('institution_id', institution_id);
+			// 		// formData.append('excel', file_data);
+			// 		formData.append('institution_id', institution_id);
 
-				$.ajaxSetup({
-				    headers: {
-				        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-				    }
-				});
+			// 	$.ajaxSetup({
+			// 	    headers: {
+			// 	        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			// 	    }
+			// 	});
 
-				$.ajax({
-				    url: $(this).attr('action'),
-				    type: 'POST',
-				    data: formData,
-				    success: function (data) {
-				        console.log(data);
-				    },
-				    cache: false,
-				    processData: false
-				});
+			// 	$.ajax({
+			// 	    url: $(this).attr('action'),
+			// 	    type: 'POST',
+			// 	    data: formData,
+			// 	    success: function (data) {
+			// 	        console.log(data);
+			// 	    },
+			// 	    cache: false,
+			// 	    processData: false
+			// 	});
 
-				return false;
-			});
+			// 	return false;
+			// });
 		});
 	</script>
 @endsection
