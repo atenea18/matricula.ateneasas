@@ -459,7 +459,7 @@ class ExcelController extends Controller
                 $gender = Gender::where('prefix', '=', $row->genero)->first();
                 $bloodType = BloodType::where('blood_type', '=', $row->tipo_sangre)->first();
 
-                 dd($ident);
+                //dd($ident);
                 if($ident == null && $identification_type != null):
                     $identification = new Identification();
                     $identification->identification_number = $row->numero_documento;
