@@ -454,13 +454,12 @@ class ExcelController extends Controller
             // iteracción
             $reader->each(function($row) use($request){
             
-
                 $ident = Identification::where('identification_number','=',$row->numero_documento)->first();
                 $identification_type =Identification_type::where('abbreviation', '=', $row->tipo_identificacion)->first();
                 $gender = Gender::where('prefix', '=', $row->genero)->first();
                 $bloodType = BloodType::where('blood_type', '=', $row->tipo_sangre)->first();
 
-                // dd($identification_type->id);
+                 dd($ident);
                 if($ident == null && $identification_type != null):
                     $identification = new Identification();
                     $identification->identification_number = $row->numero_documento;
@@ -553,6 +552,6 @@ class ExcelController extends Controller
             });
         });
 
-        return redirect()->route('import.old_students.form');
+        return redirect()->back();
     }
 }
