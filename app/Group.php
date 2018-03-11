@@ -58,7 +58,16 @@ class Group extends Model
      */
     public function director()
     {
-        return $this->belongsToMany(Teacher::class, 'group_directors', 'group_id', 'teacher_id');
+        return $this->belongsToMany(Teacher::class, 'group_directors', 'group_id', 'teacher_id')
+                ->withPivot('created_at', 'updated_at');
+    }
+
+    /**
+    *
+    */
+    public function synchDirector($teacher_id)
+    {
+        return $this->director()->sync($teacher_id, ['created_at' => \Illuminate\Support\Carbon::now()]);   
     }
 
     public static function getAllByInstitution($institution_id)
