@@ -50,19 +50,30 @@ class GroupController extends Controller
      */
     public function create()
     {
-        $institution_id = Auth::guard('web_institution')->user()->id;
+        $institution = Auth::guard('web_institution')->user();
 
-        $headquarters = Headquarter::where('institution_id', '=', $institution_id)->orderBy('name', 'ASC')->pluck('name', 'id');
+        $headquarters = Headquarter::where('institution_id', '=', $institution->id)->orderBy('name', 'ASC')->pluck('name', 'id');
 
 
         $grades = Grade::orderBy('id', 'ASC')->pluck('name', 'id');
         $journeys = Workingday::orderBy('id', 'ASC')->pluck('name', 'id');
 
+        $teachers = $institution->teachers()
+        ->with('manager')
+        ->with('schoolyear')
+        ->with('manager.identification')
+        ->with('manager.identification.identification_type')
+        ->with('manager.address')
+        ->where('school_year_id','=', 1)
+        ->get()
+        ->pluck('manager')
+        ->pluck('fullNameInverse', 'id');
 
         return view('institution.partials.group.create')
             ->with('headquarters', $headquarters)
             ->with('grades', $grades)
-            ->with('journeys', $journeys);
+            ->with('journeys', $journeys)
+            ->with('teachers',$teachers);
     }
 
     /**
@@ -76,6 +87,8 @@ class GroupController extends Controller
 
         $group = new Group($request->all());
         $group->save();
+
+        $group->synchDirector($request->teacher_id);
 
         return redirect()->route('group.index');
     }
@@ -108,6 +121,7 @@ class GroupController extends Controller
         $journeys = Workingday::orderBy('id', 'ASC')->pluck('name', 'id');
 
         $group = Group::findOrFail($id);
+
         $students = $group->enrollments()
             ->with('student')
             ->with('student.identification')
@@ -127,7 +141,7 @@ class GroupController extends Controller
         ->pluck('manager')
         ->pluck('fullNameInverse', 'id');
 
-        // dd($teachers);
+        // dd($group->director()->first()->manager->fullName);
 
         return view('institution.partials.group.edit')
             ->with('headquarters', $headquarters)
@@ -151,11 +165,12 @@ class GroupController extends Controller
         $group = Group::findOrFail($id);
 
         $group->fill($request->all());
+
+        $group->synchDirector($request->teacher_id);
+        
         $group->save();
 
-        $group->director()->sync($request->tracher_id);
-        
-        return redirect()->route('group.index');
+        return redirect()->route('group.edit', $group);
     }
 
     /**

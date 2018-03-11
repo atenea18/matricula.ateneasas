@@ -7,14 +7,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Manager extends Model
 {
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
     	'name', 
     	'last_name', 
-    	'username', 
+    	'username',
+        'password', 
     	'picture', 
     	'state_manager_id',
     	'identification_id',
     	'address_id'
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', 'remember_token',
     ];
 
     public function getFullNameAttribute()
