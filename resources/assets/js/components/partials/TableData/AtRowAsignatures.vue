@@ -15,7 +15,7 @@
             </small>
 
         </td>
-        <td width="70px">
+        <td width="90px">
             <small>
                 <label for="">%</label>
                 <select v-on:change="setEdit({value:valuePercent, field:'percent', id:dataAsignature.id})" class="form-control"
@@ -27,7 +27,7 @@
                 </select>
             </small>
         </td>
-        <td width="70px">
+        <td width="90px">
             <small>
                 <label for="" >Ihs</label>
                 <select v-on:change="setEdit({value:valueIhs, field:'ihs', id:dataAsignature.id})" class="form-control"
@@ -39,7 +39,7 @@
                 </select>
             </small>
         </td>
-        <td width="70px">
+        <td width="90px">
             <small>
                 <label for="">Orde</label>
                 <select v-on:change="setEdit({value:order, field:'order', id:dataAsignature.id})"
@@ -199,9 +199,9 @@
         },
         created() {
             console.log(this.dataAsignature.id)
-            this.$bus.$off('selected-id-asignature-row' + this.index)
-            this.$bus.$off('selected-id-subjetcType-row' + this.index)
-            this.$bus.$off('selected-id-teacher-row' + this.index)
+            this.$bus.$off('selected-id-asignature-row' + this.dataAsignature.asignatures_id)
+            this.$bus.$off('selected-id-subjetcType-row' + this.dataAsignature.asignatures_id)
+            this.$bus.$off('selected-id-teacher-row' + this.dataAsignature.asignatures_id)
 
 
             this.listiningChild()
