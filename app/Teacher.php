@@ -42,6 +42,7 @@ class Teacher extends Model
      */
     public function groupDirector()
     {
-        return $this->belongsToMany(Group::class, 'group_directors', 'teacher_id', 'group_id');
+        return $this->belongsToMany(Group::class, 'group_directors', 'teacher_id', 'group_id')
+                ->withPivot('created_at', 'updated_at');    
     }
 }

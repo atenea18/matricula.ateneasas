@@ -48,10 +48,20 @@
 										{!! Form::select('working_day_id', $journeys, null, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciones una jornada']) !!}
 									</div>
 								</div>
-
 				  			</div>
 				  			<div class="row">
-
+								<div class="col-md-3">
+				  					<div class="form-group">
+				  						{!! Form::label('quota', 'Cupos') !!}
+				  						{!! Form::text('quota', null, ['class'=>'form-control']) !!}
+				  					</div>
+				  				</div>
+				  				<div class="col-md-3">
+				  					<div class="form-group">
+				  						{!! Form::label('teacher_id', 'Director de Grupo') !!}
+				  						{!! Form::select('teacher_id', $teachers, null, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciones un docente']) !!}
+				  					</div>
+				  				</div>
 				  			</div>
 				  		</div>
 				  	</div>

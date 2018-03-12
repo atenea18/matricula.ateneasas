@@ -76,7 +76,7 @@ class EvaluationSheet extends Fpdf
 	    $this->Cell(25, 4, '', 0,0);
 	    $this->Cell(75, 4, 'GRUPO: '.$this->group->name, 0, 0, 'L');
 	    // Título
-	    $this->Cell(100,4, 'DIRECTOR DE GRUPO:', 0, 0, 'L');
+	    $this->Cell(100,4, ($this->group->director()->first() != null) ? 'DIRECTOR DE GRUPO: '.strtoupper($this->group->director()->first()->manager->fullName) : 'DIRECTOR DE GRUPO:', 0, 0, 'L');
 	    // Movernos a la derecha
 	    $this->Cell(0, 4, utf8_decode('AÑO LECTIVO ').date('Y'), 0,0);
 	    // Salto de línea
@@ -260,14 +260,14 @@ class EvaluationSheet extends Fpdf
 	public function Footer()
 	{
 		// Posición: a 1,5 cm del final
-	    $this->SetY(-25);
+	    $this->SetY(-20);
 
 		$this->showCriteriaFooter();
 	    
 	    // Arial italic 8
 	    $this->SetFont('Arial','I',8);
 	    // Número de página
-	    $this->Cell(0,10,utf8_decode('@tenea - Página ').$this->PageNo(),0,0,'C');
+	    $this->Cell(0,5,utf8_decode('@tenea - Página ').$this->PageNo(),0,0,'C');
 	}
 
 }

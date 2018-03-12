@@ -23,6 +23,8 @@ use App\Enrollment;
 use App\Gender;
 use App\StudentState;
 use App\BloodType;
+use App\Manager;
+use App\Teacher;
 
 class ExcelController extends Controller
 {
@@ -553,5 +555,62 @@ class ExcelController extends Controller
         });
 
         return redirect()->route('import.old_students.form');
+    }
+
+    public function oldTeacher(Request $request)
+    {
+
+        \Excel::load($request->excel, function($reader) use($request) {
+ 
+            $excel = $reader->get();
+     
+            // iteracción
+            $reader->each(function($row) use($request){
+
+                $ident = Identification::where('identification_number','=',$row->documento)->first();
+
+                // dd($row);
+                if($ident == null && $row->documento != null):
+                    $identification = new Identification();
+                    $identification->identification_number = $row->documento;
+                    $identification->birthdate = '';
+                    $identification->identification_type_id = 1;
+                    $identification->gender_id = 3;
+                    $identification->save();
+
+                    $address = new Address();
+                    $address->address = (isset($row->direccion)) ? $row->direccion : '';
+                    $address->neighborhood = '';
+                    $address->phone = (isset($row->tel_fijo)) ? $row->tel_fijo : '';
+                    $address->mobil = (isset($row->tel_celular)) ? $row->tel_celular : '';
+                    $address->zone_id = 2;
+                    $address->save();
+
+                    $manager = new Manager();
+                    $manager->name              = $row->primer_nombre.' '.$row->segundo_nombre;
+                    $manager->last_name         = $row->primer_apellido.' '.$row->segundo_apellido;
+                    $manager->username          = $row->documento;
+                    $manager->password          = bcrypt($row->documento);
+                    $manager->picture           = '';
+                    $manager->state_manager_id  = 1;
+                    $manager->address_id        = $address->id;
+                    $manager->identification_id = $identification->id;
+                    
+                    if($manager->save())
+                    {
+                        $teacher = new Teacher(); 
+                        $teacher->code = $request->institution_id."1".$manager->id;
+                        $teacher->manager_id = $manager->id;
+                        $teacher->institution_id = $request->institution_id;
+                        $teacher->school_year_id = 1;
+                        $teacher->save();
+                    }
+
+                endif;
+            });
+
+        });
+        
+        return redirect()->back();
     }
 }
