@@ -105,8 +105,8 @@
         methods: {
             listiningChild() {
                 console.log(this.idpensum)
-                this.$bus.$on('selected-id-asignatures-row' + this.dataAsignature.asignatures_id, (id) => {
-                    let data = {value: id, field: 'asignature_id', id:this.idpensum}
+                this.$bus.$on('selected-id-asignature-row' + this.dataAsignature.asignatures_id, (id) => {
+                    let data = {value: id, field: 'asignatures_id', id:this.idpensum}
                     this.setEdit(data)
                 })
                 this.$bus.$on('selected-id-subjetcType-row' + this.dataAsignature.asignatures_id, (id) => {
@@ -192,14 +192,14 @@
                     data: {data},
                     success: function (response) {
                         console.log(response);
-                        _this.$bus.$emit('reload-asignatures', this)
+                        //_this.$bus.$emit('reload-asignatures', this)
                     }
                 });
             },
         },
         created() {
             console.log(this.dataAsignature.id)
-            this.$bus.$off('selected-id-asignatures-row' + this.index)
+            this.$bus.$off('selected-id-asignature-row' + this.index)
             this.$bus.$off('selected-id-subjetcType-row' + this.index)
             this.$bus.$off('selected-id-teacher-row' + this.index)
 
