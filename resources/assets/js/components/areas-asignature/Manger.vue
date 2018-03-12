@@ -3,7 +3,15 @@
         <div class="col-md-12">
             <div>
                 <tabs>
-                    <tab name="Asignaci¨®n">
+
+                    <tab name="Ver Grupos">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <at-table-pensum></at-table-pensum>
+                            </div>
+                        </div>
+                    </tab>
+                    <tab name="Asignaci¨®n por Grupos">
                         <div class="row">
                             <div class="col-md-12">
                                 <!--
@@ -22,13 +30,7 @@
                             </div>
                         </div>
                     </tab>
-                    <tab name="Ver Grupos">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <at-table-pensum></at-table-pensum>
-                            </div>
-                        </div>
-                    </tab>
+
                     <tab name="Pensum Por Grado">
                         <div class="row">
                             <div class="col-md-12">
