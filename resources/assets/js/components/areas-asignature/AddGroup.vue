@@ -236,7 +236,7 @@
                                 ihs: row.valueIhs,
                                 order: this.order,
                                 group_id: row.id,
-                                teacher_id: this.assignmentGroup.idteacher,
+                                teacher_id: this.assignmentGroup.idteacher==0?null:this.assignmentGroup.idteacher,
                                 areas_id: this.assignmentGroup.idarea,
                                 subjects_type_id: this.assignmentGroup.idsubjectsType,
                                 asignatures_id: asignature.id
@@ -247,8 +247,8 @@
 
                 if (this.arrayDataPensum.length != 0) {
                     this.arrayDirtyBoxGrade.forEach((grade) => {
-                        grade.valuePercent = 0;
-                        grade.valueIhs = 0;
+                        grade.valuePercent = -1;
+                        grade.valueIhs = -1;
                     })
 
                     console.log(this.arrayDataPensum)
