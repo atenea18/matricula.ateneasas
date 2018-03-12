@@ -1,5 +1,5 @@
 <template>
-    <table class="table table-bordered">
+    <table class="table table-bordered" v-if="state">
         <tbody>
         <tr>
             <td :colspan="tdata.length" style="text-align: center;">
@@ -7,8 +7,8 @@
             </td>
         </tr>
         <tr>
-            <td v-for="row in tdata" style="padding: 2px;">
-                <at-box ref="groupadd" :data="row"></at-box>
+            <td v-for="(row,index) in tdata" style="padding: 2px;">
+                <at-box ref="groupadd" :data="row" :index="index"></at-box>
             </td>
         </tr>
         </tbody>
@@ -30,12 +30,14 @@
             return {
                 tdata: [],
                 arrayDirtyBoxData: [],
+                state: false
             }
         },
         methods: {
             getBy: function (id) {
                 axios.get(this.type.url + '/' + id).then(res => {
                     this.tdata = res.data;
+                    this.state = true
                 });
             },
             setStorePensum() {
@@ -53,10 +55,11 @@
             },
         },
         created() {
-            this.$bus.$on('set-send', () => {
+            this.$bus.$on('set-send', (id) => {
                 this.setStorePensum()
             })
             this.$bus.$on('selected-id-' + this.type.tby, (id) => {
+                this.state = false
                 this.getBy(id)
             });
         }

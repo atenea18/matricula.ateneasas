@@ -31,7 +31,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <at-select :type="{name:'un Docente', nameEv:'teacher-add', tby:'null'}" :data="[]"></at-select>
+                    <at-select :type="{name:'un Docente', nameEv:'teacher-add', tby:'null'}" :data="teachers"></at-select>
                 </div>
             </div>
             <div class="col-md-3">
@@ -118,7 +118,13 @@
             }
         },
         computed: {
-            ...mapState(['grades', 'areas', 'asignatures', 'subjectsType']),
+            ...mapState([
+                'grades',
+                'areas',
+                'asignatures',
+                'subjectsType',
+                'teachers'
+            ]),
         }
         ,
         created() {
@@ -143,20 +149,24 @@
                 this.$bus.$on('selected-id-group-add', (id) => {
                     this.assignmentGroup.idgroup = id
                 })
-                this.$bus.$on('selected-id-subjectType-add', (id) => {
+                this.$bus.$on('selected-id-subjetcType-add', (id) => {
+
                     this.assignmentGroup.idsubjectsType = id
                 })
                 this.$bus.$on('selected-values-asignature-add', (values) => {
                     this.assignmentGroup.asignatures = values
+                })
+                this.$bus.$on('selected-id-teacher-add', (id) => {
+                    this.assignmentGroup.idteacher = id
                 })
             },
 
             checkForm(e) {
 
                 if (this.assignmentGroup.idarea) {
-                    if(this.assignmentGroup.asignatures.length != 0){
-                        this.$bus.$emit('set-send', null)
-                    }else{
+                    if (this.assignmentGroup.asignatures.length != 0) {
+                        this.$bus.$emit('set-send', this.assignmentGroup.idgrade)
+                    } else {
                         this.$swal({
                             position: 'top-end',
                             type: 'info',
@@ -182,6 +192,7 @@
             },
 
             setCopyPensum() {
+                console.log(this.teachers)
 
                 if (this.assignmentGroup.idgrade) {
                     let data = {
@@ -225,6 +236,7 @@
                                 ihs: row.valueIhs,
                                 order: this.order,
                                 group_id: row.id,
+                                teacher_id: this.assignmentGroup.idteacher,
                                 areas_id: this.assignmentGroup.idarea,
                                 subjects_type_id: this.assignmentGroup.idsubjectsType,
                                 asignatures_id: asignature.id

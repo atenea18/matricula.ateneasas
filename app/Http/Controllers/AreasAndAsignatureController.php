@@ -75,6 +75,24 @@ class AreasAndAsignatureController extends Controller
         return "error";
     }
 
+    public  function  getTeachers(){
+
+        $institution_id = Auth::guard('web_institution')->user()->id;
+
+        if (request()->ajax()) {
+            $teachers = DB::table('teachers')
+                ->select('teachers.id', DB::raw('CONCAT(managers.last_name," ",managers.name) as name'))
+                ->join('managers', 'managers.id', '=', 'teachers.manager_id')
+                ->where('teachers.institution_id', '=', $institution_id)
+                ->where('teachers.school_year_id','=',1)
+                ->orderBy('managers.last_name', 'asc')
+                ->get();
+
+            return $teachers;
+        }
+        return "error";
+    }
+
     public function storePensum(request $request)
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
@@ -122,6 +140,7 @@ class AreasAndAsignatureController extends Controller
                             'ihs' => $row['ihs'],
                             'order' => $row['order'],
                             'group_id' => $row['group_id'],
+                            'teacher_id' => $row['teacher_id'],
                             'areas_id' => $row['areas_id'],
                             'subjects_type_id' => $row['subjects_type_id'],
                             'asignatures_id' => $row['asignatures_id'],
@@ -222,10 +241,18 @@ class AreasAndAsignatureController extends Controller
 
             try {
                 $pensum = DB::table('group_pensum')
-                    ->select('group_pensum.id', 'group_pensum.asignatures_id', 'asignatures.name as name_asignatures', 'subjects_type.name as subjects_type_name'
-                        , 'group_pensum.order', 'group_pensum.percent', 'group_pensum.ihs')
+                    ->select(
+                        'group_pensum.id',
+                        'group_pensum.asignatures_id', 'group_pensum.subjects_type_id',
+                        'group_pensum.areas_id', 'group_pensum.teacher_id',
+                        'asignatures.name as name_asignatures',
+                        'subjects_type.name as subjects_type_name',
+                        DB::raw('CONCAT(managers.last_name," ",managers.name) as name_teachers'),
+                        'group_pensum.order', 'group_pensum.percent', 'group_pensum.ihs')
                     ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
                     ->join('subjects_type', 'subjects_type.id', '=', 'group_pensum.subjects_type_id')
+                    ->leftJoin('teachers', 'teachers.id', '=', 'group_pensum.teacher_id')
+                    ->leftJoin('managers', 'managers.id', '=', 'teachers.manager_id')
                     ->where('group_pensum.group_id', '=', $group_id)
                     ->where('schoolyear_id', '=', 1)
                     ->where('group_pensum.areas_id', '=', $area_id)
@@ -313,6 +340,30 @@ class AreasAndAsignatureController extends Controller
         }
 
     }
+
+    public function editPensumGroup(request $request)
+    {
+        $institution_id = Auth::guard('web_institution')->user()->id;
+        $data = $request->data;
+        $value = 0;
+
+
+        if ($request->ajax()) {
+            try {
+                $value = DB::table('group_pensum')
+                    ->where('group_pensum.id', '=', $data['id'])
+                    ->update([ ''.$data['field'] => $data['value'] ]);
+            } catch (\Exception $e) {
+            }
+        }
+
+
+
+        return $value;
+
+    }
+
+
 
 
     public function copyPensumByGrade(request $request)
