@@ -138,15 +138,8 @@
                     url: 'editPensumGroup',
                     data: {data},
                     success: function (response) {
-                        if (response != 0) {
-                            _this.$swal({
-                                position: 'top-end',
-                                type: 'success',
-                                title: 'LISTO',
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                        }else{
+
+                        if (response == 0) {
                             _this.$swal({
                                 position: 'top-end',
                                 type: 'error',
@@ -154,9 +147,17 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             })
+                        }else{
+                            _this.$swal({
+                                position: 'top-end',
+                                type: 'success',
+                                title: 'LISTO',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
                         }
                         console.log(response);
-                       // _this.$bus.$emit('reload-asignatures', this)
+
                     }
                 });
             },
@@ -198,7 +199,7 @@
         },
         created() {
             console.log(this.dataAsignature.id)
-            this.$bus.$off('selected-id-asignature-row' + this.index)
+            this.$bus.$off('selected-id-asignatures-row' + this.index)
             this.$bus.$off('selected-id-subjetcType-row' + this.index)
             this.$bus.$off('selected-id-teacher-row' + this.index)
 
