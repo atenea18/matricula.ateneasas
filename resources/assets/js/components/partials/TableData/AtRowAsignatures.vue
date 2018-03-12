@@ -1,82 +1,89 @@
 <template>
-    <tr>
-        <!-- Listar   -->
-        <td v-show="isNotEdit">
-            <small>{{dataAsignature.name_asignatures}}</small>
+    <tr style="font-size:11.5px">
+
+        <td>
+            <small>
+                <input type="hidden" >
+                <at-select :type="{name:'Asignatura', nameEv:'asignature-row'+dataAsignature.asignatures_id, id:dataAsignature.asignatures_id
+            ,tby:'null', validate:true}" :data="asignatures"></at-select>
+            </small>
         </td>
-        <td v-show="isNotEdit">
-            <small>{{dataAsignature.subjects_type_name}}</small>
+        <td>
+            <small>
+                <at-select :type="{name:'Tipo', nameEv:'subjetcType-row'+dataAsignature.asignatures_id, id:dataAsignature.subjects_type_id
+            ,tby:'null', validate:true}" :data="subjectsType"></at-select>
+            </small>
+
         </td>
-        <td v-show="isNotEdit">
-            <small>PESO: {{dataAsignature.percent}}</small>
+        <td width="70px">
+            <small>
+                <label for="">%</label>
+                <select v-on:change="setEdit({value:valuePercent, field:'percent', id:dataAsignature.id})" class="form-control"
+                        v-model="valuePercent">
+                    <option :value="0">0</option>
+                    <option v-for="n in 100" :value="n">
+                        {{ n }}
+                    </option>
+                </select>
+            </small>
         </td>
-        <td v-show="isNotEdit">
-            <small>IHS: {{dataAsignature.ihs}}</small>
+        <td width="70px">
+            <small>
+                <label for="" >Ihs</label>
+                <select v-on:change="setEdit({value:valueIhs, field:'ihs', id:dataAsignature.id})" class="form-control"
+                        v-model="valueIhs">
+                    <option :value="0">0</option>
+                    <option v-for="n in 12" :value="n">
+                        {{ n }}
+                    </option>
+                </select>
+            </small>
         </td>
-        <td v-show="isNotEdit">
-            <small>ORDER: {{dataAsignature.order}}</small>
+        <td width="70px">
+            <small>
+                <label for="">Orde</label>
+                <select v-on:change="setEdit({value:order, field:'order', id:dataAsignature.id})"
+                        class="form-control" name="" v-model="order">
+                    <option :value="0">0</option>
+                    <option v-for="n in 20" :value="n">
+                        {{ n }}
+                    </option>
+                </select>
+            </small>
         </td>
-        <td v-show="isNotEdit">
+        <td>
+            <small>
+                <at-select
+                        :type="{name:'un Docente', nameEv:'teacher-row'+dataAsignature.asignatures_id, id:dataAsignature.teacher_id ,tby:'null'}"
+                        :data="teachers"></at-select>
+            </small>
+        </td>
+        <td>
             <a href="#" @click="deleteAsignaturePensumBy(dataAsignature.id)"><i
                     class="fas fa-trash"></i></a>
-            <a href="#" @click="editAsignaturePensumByGrade(dataAsignature.id)"><i
-                    class="fas fa-pen-square"></i></a>
         </td>
 
-        <!-- Editar  -->
-        <td v-show="isEdit">
-            <select v-on:change="" class="form-control" name="">
-                <option>ASIGNATURA</option>
-                <option v-for="type in 10">
-                    Seleccione
-                </option>
-            </select>
-        </td>
-        <td v-show="isEdit">
-            <select v-on:change="" class="form-control" name="">
-                <option>TIPO</option>
-                <option v-for="type in 10">
-                    Seleccione
-                </option>
-            </select>
-        </td>
-        <td v-show="isEdit">
-            <select v-on:change="" class="form-control" name="">
-                <option>PESO</option>
-                <option v-for="type in 10">
-                    Seleccione
-                </option>
-            </select>
-        </td>
-        <td v-show="isEdit">
-            <select v-on:change="" class="form-control" name="">
-                <option>IHS</option>
-                <option v-for="type in 10">
-                    Seleccione
-                </option>
-            </select>
-        </td>
-        <td v-show="isEdit">
-            <select v-on:change="" class="form-control" name="">
-                <option>ORDER</option>
-                <option v-for="type in 10">
-                    Seleccione
-                </option>
-            </select>
-        </td>
-        <td v-show="isEdit" style="padding-top: 19px;">
-            <a href="#" @click="editAsignaturePensumByGrade(dataAsignature.id)">
-                <i style="font-size: 15px" class="fas fa-save"></i></a>
-            <a href="#" @click="editAsignaturePensumByGrade(dataAsignature.id)">
-                <i style="font-size: 15px" class="fas fa-undo-alt"></i>
-            </a>
-        </td>
     </tr>
 </template>
 
 <script>
+    import {mapState, mapMutations, mapGetters} from 'vuex';
+    import AtSelect from '../AtSelect'
+
     export default {
         name: "at-row-asignatures",
+        components: {
+            AtSelect
+        },
+        computed: {
+            ...mapState([
+                'grades',
+                'areas',
+                'asignatures',
+                'subjectsType',
+                'teachers'
+            ]),
+        },
         props: {
             dataAsignature: {type: Object},
             index: {type: Number},
@@ -86,13 +93,77 @@
             return {
                 arrayDataToDelete: [],
                 isNotEdit: true,
-                isEdit: false
+                isEdit: false,
+                valuePercent: 0,
+                valueIhs: 0,
+                order: 0,
+                idpensum: this.dataAsignature.id
             }
         },
+
+
         methods: {
+            listiningChild() {
+                console.log(this.idpensum)
+                this.$bus.$on('selected-id-asignatures-row' + this.dataAsignature.asignatures_id, (id) => {
+                    let data = {value: id, field: 'asignature_id', id:this.idpensum}
+                    this.setEdit(data)
+                })
+                this.$bus.$on('selected-id-subjetcType-row' + this.dataAsignature.asignatures_id, (id) => {
+                    let data = {value: id, field: 'subjects_type_id', id:this.dataAsignature.id}
+                    this.setEdit(data)
+
+                })
+                this.$bus.$on('selected-id-teacher-row' + this.dataAsignature.asignatures_id, (id) => {
+                    let data = {value: id, field: 'teacher_id', id:this.dataAsignature.id}
+                    this.setEdit(data)
+                })
+            },
+            setEdit: function (pensum) {
+                console.log(pensum)
+                this.sendDataEdit(pensum)
+            },
+
+            sendDataEdit: function (dat) {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                let _this = this;
+                let data = dat;
+
+                $.ajax({
+                    type: "POST",
+                    url: 'editPensumGroup',
+                    data: {data},
+                    success: function (response) {
+                        if (response != 0) {
+                            _this.$swal({
+                                position: 'top-end',
+                                type: 'success',
+                                title: 'LISTO',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }else{
+                            _this.$swal({
+                                position: 'top-end',
+                                type: 'error',
+                                title: 'Error',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                        console.log(response);
+                       // _this.$bus.$emit('reload-asignatures', this)
+                    }
+                });
+            },
+
             deleteAsignaturePensumBy: function (id) {
 
-                console.log(this.type.url+': '+id)
+                console.log(this.type.url + ': ' + id)
 
                 this.arrayDataToDelete = {
                     id: id,
@@ -116,7 +187,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: 'deleteAsignature'+this.type.url,
+                    url: 'deleteAsignature' + this.type.url,
                     data: {data},
                     success: function (response) {
                         console.log(response);
@@ -125,15 +196,21 @@
                 });
             },
         },
-        data() {
-            return {
-                isEdit: false,
-                isNotEdit: true
-            }
-        },
         created() {
+            console.log(this.dataAsignature.id)
+            this.$bus.$off('selected-id-asignature-row' + this.index)
+            this.$bus.$off('selected-id-subjetcType-row' + this.index)
+            this.$bus.$off('selected-id-teacher-row' + this.index)
 
-        }
+
+            this.listiningChild()
+
+            this.valuePercent = this.dataAsignature.percent
+            this.valueIhs = this.dataAsignature.ihs
+            this.order = this.dataAsignature.order
+        },
+
+
     }
 </script>
 

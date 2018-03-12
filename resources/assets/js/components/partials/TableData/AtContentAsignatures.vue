@@ -8,6 +8,7 @@
         <table class="table table-bordered">
             <tbody>
             <template  v-for="(item, index) in dataAsignaturesPensumByArea">
+
                 <at-row-asignatures :type="{url:type.url, id:type.id}" :dataAsignature="item" :index="index">
                 </at-row-asignatures>
             </template>

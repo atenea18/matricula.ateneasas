@@ -3,25 +3,6 @@
         <div class="col-md-12">
             <div>
                 <tabs>
-                    <tab name="Pensum">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <add></add>
-                            </div>
-                            <div class="col-md-12">
-                                <hr>
-
-                                <!--<accordion-areas></accordion-areas>-->
-                            </div>
-                        </div>
-                    </tab>
-                    <tab name="Ver Grados">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table-custom></table-custom>
-                            </div>
-                        </div>
-                    </tab>
                     <tab name="Asignación">
                         <div class="row">
                             <div class="col-md-12">
@@ -48,6 +29,25 @@
                             </div>
                         </div>
                     </tab>
+                    <tab name="Pensum Por Grado">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <add></add>
+                            </div>
+                            <div class="col-md-12">
+                                <hr>
+                                <!--<accordion-areas></accordion-areas>-->
+                            </div>
+                        </div>
+                    </tab>
+                    <tab name="Ver Grados">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table-custom></table-custom>
+                            </div>
+                        </div>
+                    </tab>
+
                 </tabs>
             </div>
         </div>
@@ -72,6 +72,7 @@
             this.getAreas()
             this.getAsignatures()
             this.getSubjectsType()
+            this.getTeachers()
         },
         computed: {
             //...mapState(['grades','areas']),
@@ -118,6 +119,9 @@
             },
             getSubjectsType(){
                 this.$store.dispatch('subjectsType')
+            },
+            getTeachers(){
+                this.$store.dispatch('teachers')
             }
 
         }

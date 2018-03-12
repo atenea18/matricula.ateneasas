@@ -10,6 +10,7 @@ const store = new Vuex.Store({
         areas: [],
         asignatures: [],
         subjectsType: [],
+        teachers: [],
 
     },
 
@@ -36,6 +37,9 @@ const store = new Vuex.Store({
         },
         setSubjectsType(state, payload){
             state.subjectsType = payload.subjectsType || []
+        },
+        setTeachers(state, payload){
+            state.teachers = payload.teachers || []
         }
     },
     actions: {
@@ -71,6 +75,12 @@ const store = new Vuex.Store({
             axios.get('getSubjectsType').then(res => {
                 payload.subjectsType = res.data;
                 context.commit('setSubjectsType', payload)
+            });
+        },
+        teachers(context, payload = {}){
+            axios.get('getTeachers').then(res => {
+                payload.teachers = res.data;
+                context.commit('setTeachers', payload)
             });
         }
     }
