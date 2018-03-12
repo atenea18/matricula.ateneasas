@@ -61,7 +61,7 @@
             <a href="{{route('areaasignature.index')}}">
                 <span class="fa-stack fa-lg pull-left"><i class="fas fa-plus fa-stack-1x"></i>
                 </span>
-                Áreas y Asignaturas
+                Asignación Académ.
             </a>
         </li>
 

@@ -38,6 +38,7 @@
                         this.picked = true;
                     }else{
                         this.errors = []
+
                     }
                 }
                 this.$bus.$emit('selected-id-' + this.type.nameEv, this.id)

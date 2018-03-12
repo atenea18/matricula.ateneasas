@@ -158,6 +158,8 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
     Route::get('getAreas', 'AreasAndAsignatureController@getAreas');
     Route::get('getAsignatures', 'AreasAndAsignatureController@getAsignatures');
     Route::get('getSubjectsType', 'AreasAndAsignatureController@getSubjectsType');
+    Route::get('getTeachers', 'AreasAndAsignatureController@getTeachers');
+
 
     Route::get('getPensumByGrade/{grade_id}', 'AreasAndAsignatureController@getAreasByGrade');
     Route::get('getPensumByGroup/{group_id}', 'AreasAndAsignatureController@getAreasByGroup');
@@ -176,6 +178,9 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 
     Route::post('deleteAsignaturePensumByGrade', 'AreasAndAsignatureController@deleteAsignaturePensumByGrade');
     Route::post('deleteAsignaturePensumByGroup', 'AreasAndAsignatureController@deleteAsignaturePensumByGroup');
+    Route::post('editPensumGroup', 'AreasAndAsignatureController@editPensumGroup');
+
+
 
 
     Route::post('copyPensumByGrade', 'AreasAndAsignatureController@copyPensumByGrade');
