@@ -192,7 +192,7 @@
                     data: {data},
                     success: function (response) {
                         console.log(response);
-                        //_this.$bus.$emit('reload-asignatures', this)
+                        _this.$bus.$emit('reload-asignatures', this)
                     }
                 });
             },
