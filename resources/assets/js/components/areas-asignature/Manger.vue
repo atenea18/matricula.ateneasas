@@ -3,7 +3,7 @@
         <div class="col-md-12">
             <div>
                 <tabs>
-                    <tab name="AsignaciÃ³n">
+                    <tab name="Asignaci¨®n">
                         <div class="row">
                             <div class="col-md-12">
                                 <!--
