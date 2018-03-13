@@ -34,4 +34,11 @@ class GroupController extends ApiController
     	return $this->showAll($students);
     }
 
+    public function pensums(Group $group)
+    {
+        $pensums = $group->pensums()->get();
+
+        return $this->showAll($pensums);
+    }
+
 }

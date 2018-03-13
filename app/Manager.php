@@ -2,12 +2,18 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+//Trait for sending notifications in laravel
+use Illuminate\Notifications\Notifiable;
 
 
-class Manager extends Model
+class Manager extends Authenticatable
 {
 
+    // This trait has notify() method defined
+    use Notifiable;
+    
     /**
      * The attributes that are mass assignable.
      *
