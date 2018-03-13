@@ -45,4 +45,12 @@ class Teacher extends Model
         return $this->belongsToMany(Group::class, 'group_directors', 'teacher_id', 'group_id')
                 ->withPivot('created_at', 'updated_at');    
     }
+
+    /**
+     * Obtiene la relacion que hay entre el docente y los grupos del pensums
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_pensum', 'teacher_id', 'group_id');
+    }
 }

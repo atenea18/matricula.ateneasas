@@ -32,9 +32,6 @@ Route::group(['prefix'=>'ajax'], function(){
 	Route::get('/student/getFamily/{id}', 'StudentController@getFamily')->name('student.getFamily');
 	Route::get('/student/getFamilyById/{id}', 'StudentController@getFamilyById');
 	Route::get('/family/search', 'FamilyController@search')->name('family.search');
-
-
-
 	
 });
 
@@ -43,6 +40,29 @@ Route::group(['middleware'=>'admin_guest'], function(){
 	Route::get('admin_login', 'AdministratorAuth\LoginController@showLoginForm');
 	Route::post('admin_login', 'AdministratorAuth\LoginController@login');
 });
+
+//Logged in users/seller cannot access or send requests these pages
+Route::group(['middleware' => 'institution_guest'], function() {
+
+	Route::post('institution_logout', 'InstitutionAuth\LoginController@logout');
+	Route::get('institution_login', 'InstitutionAuth\LoginController@showLoginForm')->name('institution.login');
+	Route::post('institution_login', 'InstitutionAuth\LoginController@login');
+
+	//Password reset routes
+	Route::get('institution_password/reset', 'InstitutionAuth\ForgotPasswordController@showLinkRequestForm');
+	Route::post('institution_password/email', 'InstitutionAuth\ForgotPasswordController@sendResetLinkEmail');
+	Route::get('institution_password/reset/{token}', 'InstitutionAuth\ResetPasswordController@showResetForm');
+	Route::post('institution_password/reset', 'InstitutionAuth\ResetPasswordController@reset');
+
+});
+
+
+Route::group(['middleware'=>'teacher_guest'], function(){
+	Route::post('teacher_logout', 'TeacherAuth\LoginController@logout');
+	Route::get('teacher_login', 'TeacherAuth\LoginController@showLoginForm');
+	Route::post('teacher_login', 'TeacherAuth\LoginController@login');
+});
+
 
 Route::group(['prefix'=>'admin','middleware'=>'admin_auth'], function(){
 
@@ -78,23 +98,6 @@ Route::group(['prefix'=>'admin','middleware'=>'admin_auth'], function(){
 	})->name('import.old_teachers.form');
 });
 
-//Logged in users/seller cannot access or send requests these pages
-Route::group(['middleware' => 'institution_guest'], function() {
-
-	// Route::get('institution_register', 'InstitutionAuth\RegisterController@showRegistrationForm');
-	// Route::post('institution_register', 'InstitutionAuth\RegisterController@register');
-
-	Route::post('institution_logout', 'InstitutionAuth\LoginController@logout');
-	Route::get('institution_login', 'InstitutionAuth\LoginController@showLoginForm')->name('institution.login');
-	Route::post('institution_login', 'InstitutionAuth\LoginController@login');
-
-	//Password reset routes
-	Route::get('institution_password/reset', 'InstitutionAuth\ForgotPasswordController@showLinkRequestForm');
-	Route::post('institution_password/email', 'InstitutionAuth\ForgotPasswordController@sendResetLinkEmail');
-	Route::get('institution_password/reset/{token}', 'InstitutionAuth\ResetPasswordController@showResetForm');
-	Route::post('institution_password/reset', 'InstitutionAuth\ResetPasswordController@reset');
-
-});
 
 Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], function(){
 	
@@ -240,6 +243,18 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	Route::post('pdf/constancy_study', 'PdfController@constancyStudy')->name('constancy.study.pdf');
 
 });
+
+Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
+
+	Route::get('/', function(){
+		return View('teacher.partials.home');
+	})->name('teacher.home');
+
+	Route::get('evaluation', function() {
+	    return View('teacher.partials.evaluation.index');
+	})->name('teacher.evaluation');
+});
+
 
 Route::group(['prefix' => 'excel'], function() {
    
