@@ -250,6 +250,8 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 		return View('teacher.partials.home');
 	})->name('teacher.home');
 
+	Route::post('/logout', 'TeacherAuth\LoginController@logout');
+
 	Route::get('evaluation', function() {
 	    return View('teacher.partials.evaluation.index');
 	})->name('teacher.evaluation');
