@@ -52,6 +52,11 @@ return [
             'provider' => 'institutions',
         ],
 
+        'teachers' => [
+            'driver' => 'session',
+            'provider' => 'teachers'
+        ],
+
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -93,6 +98,10 @@ return [
             'model' => App\Institution::class,
         ],
 
+        'teachers' => [
+            'driver' => 'eloquent',  //We are using eloquent model
+            'model' => App\Manager::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

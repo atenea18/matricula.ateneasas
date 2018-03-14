@@ -31,7 +31,7 @@ class EvaluationSheet extends Fpdf
 			$this->Image(
 				Storage::disk('uploads')->url(
 					$this->institution->picture
-				), 12, 12, 17, 17, "PNG");
+				), 12, 12, 17, 17);
 
 		//Marco
 	    $this->Cell($this->_width_mark,20, '', 1,0);

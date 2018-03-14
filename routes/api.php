@@ -37,8 +37,10 @@ Route::get('institution/{institution}/grades', 'Institution\GradeController@inde
 
 // RUTA PARA LOS ESTUDIANTES DE UNA GRUPO
 Route::get('group/{group}/students', 'Institution\GroupController@students');
+Route::get('group/{group}/pensums', 'Institution\GroupController@pensums');
 
 // RUTA PARA LOS CRITERIOS DE EVALUACIÓN
 Route::resource('criteria', 'Institution\CriteriaController',['only'=>['show']]);
 
-// 
+// RUTA PARA LOS PENSUMS
+Route::get('teacher/{teacher}/pensums/{year}', 'Teacher\PensumController@pensums')->name('teacher.pensums');
