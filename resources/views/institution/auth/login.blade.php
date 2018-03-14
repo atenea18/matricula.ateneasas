@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-primary">
-                <div class="panel-heading">Iniciar sesión</div>
+                <div class="panel-heading">Iniciar sesión (Secretaria)</div>
                 <div class="panel-body">
                     <div class="alert alert-info">
                         <h4>Atención</h4>
