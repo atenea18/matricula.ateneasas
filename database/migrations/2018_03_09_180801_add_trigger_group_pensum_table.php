@@ -13,9 +13,7 @@ class AddTriggerGroupPensumTable extends Migration
      */
     public function up()
     {
-        Schema::table('', function (Blueprint $table) {
-            //
-        });
+
         Schema::table('group_pensum', function (Blueprint $table) {
             \Illuminate\Support\Facades\DB::unprepared('
             DROP PROCEDURE IF EXISTS insert_code_group_pensum;
