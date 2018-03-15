@@ -21,7 +21,6 @@ class AddForeignMessagesExpressionsToPerformancesTable extends Migration
             $table->unsignedBigInteger('messages_expressions_id')->after('evaluation_parameters_id');
             $table->foreign('messages_expressions_id')
                 ->references('id')->on('messages_expressions');
-
         });
     }
 
