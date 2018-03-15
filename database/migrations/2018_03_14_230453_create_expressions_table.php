@@ -17,10 +17,6 @@ class CreateExpressionsTable extends Migration
             $table->bigIncrements('id');
             $table->string('code_expressions', 191)->unique();
 
-            $table->unsignedInteger('word_expressions_id');
-            $table->foreign('word_expressions_id')
-                ->references('id')->on('words_expressions');
-
             $table->unsignedBigInteger('scale_evaluation_id');
             $table->foreign('scale_evaluation_id')
                 ->references('id')->on('scale_evaluations');
