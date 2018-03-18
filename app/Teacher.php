@@ -47,10 +47,10 @@ class Teacher extends Model
     }
 
     /**
-     * Obtiene la relacion que hay entre el docente y los grupos del pensums
+     * Obtiene la relacion que hay entre el docente y los grupos la asignatura (Pensum)
      */
-    public function groups()
+    public function pensums()
     {
-        return $this->belongsToMany(Group::class, 'group_pensum', 'teacher_id', 'group_id');
+        return $this->hasMany(GroupPensum::class, 'teacher_id'); 
     }
 }

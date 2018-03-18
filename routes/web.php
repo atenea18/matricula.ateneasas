@@ -252,9 +252,7 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 
 	Route::post('/logout', 'TeacherAuth\LoginController@logout');
 
-	Route::get('evaluation', function() {
-	    return View('teacher.partials.evaluation.index');
-	})->name('teacher.evaluation');
+	Route::get('evaluation', 'Teacher\EvaluationController@index')->name('teacher.evaluation');
 });
 
 
