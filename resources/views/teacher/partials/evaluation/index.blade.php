@@ -25,13 +25,50 @@
 								<th>N°</th>
 			    				<th>Grupo</th>
 				               	<th>Asignatura</th>
-				               	<th></th>
+				               	<th>Tipo</th>
+				               	<th>Acción</th>
 							</tr>
 						</thead>
-						<tbody></tbody>
+						<tbody>
+							@foreach($pemsun as $key => $pensum)
+								<tr>
+									<td>{{ ($key+1) }}</td>
+									<td>{{ $pensum->group->name }}</td>
+									<td>{{ $pensum->asignature->name }}</td>
+									<td>{{ $pensum->subjectType->name }}</td>
+									<td>
+										<div class='btn-group' role='group'>
+				                            <button type='button' class='btn btn-primary dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+				                                 Evaluación
+				                                 <span class='caret'></span>
+				                            </button>
+				                           	<ul class='dropdown-menu'>
+				                           		<li>
+				                           			<a href=''>Evaluar Periodo
+						                       		</a>
+				                           		</li>
+						                       	<li>
+							                       	<a href=''>Superaciones
+							                       	</a>
+						                       	</li>
+						                       	<li>
+						                       		<a href=''>Evaluar Periodo Pendiente
+						                       		</a>
+						                       	</li>
+						                       	<li><a href=''>Refuerzo Academico</a></li>
+				                           	</ul>
+				                        </div>
+									</td>
+								</tr>
+							@endforeach
+						</tbody>
 					</table>
 			  	</div>
 			</div>
     	</div>
     </div>
+@endsection
+
+@section('js')
+
 @endsection

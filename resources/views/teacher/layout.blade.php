@@ -51,7 +51,7 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
-                        @if (Auth::guard('web_institution')->guest())
+                        @if (Auth::guard('teachers')->guest())
 
                             <!--Seller Login and registration Links -->
 
@@ -60,7 +60,7 @@
                         @else
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::guard('web_institution')->user()->name }} <span class="caret"></span>
+                                    {{ Auth::guard('teachers')->user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu">
