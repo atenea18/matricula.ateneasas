@@ -6,7 +6,7 @@
             	<span class="fa-stack fa-lg pull-left">
             		<i class="fa fa-home fa-stack-1x "></i>
             	</span>
-            	Inicio
+            	Home
             </a>
         </li>
 		
