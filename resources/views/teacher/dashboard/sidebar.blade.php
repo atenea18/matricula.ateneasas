@@ -6,17 +6,37 @@
             	<span class="fa-stack fa-lg pull-left">
             		<i class="fa fa-home fa-stack-1x "></i>
             	</span>
-            	Inicio
+            	Home
             </a>
         </li>
 		
-        <!-- Grupo -->
+        <!-- Evaluación -->
         <li>
             <a href="{{route('teacher.evaluation')}}"> 
                 <span class="fa-stack fa-lg pull-left">
                     <i class="fa fa-check fa-stack-1x "></i>
                 </span>
                 Evaluacion
+            </a>
+        </li>
+
+        <!-- Planilla -->
+        <li>
+            <a href="{{route('teacher.evaluation')}}"> 
+                <span class="fa-stack fa-lg pull-left">
+                    <i class="fa fa-clipboard fa-stack-1x "></i>
+                </span>
+                Planillas
+            </a>
+        </li>
+
+        <!-- Configuracion -->
+        <li>
+            <a href="{{route('teacher.evaluation')}}"> 
+                <span class="fa-stack fa-lg pull-left">
+                    <i class="fa fa-cog fa-stack-1x "></i>
+                </span>
+                Configuracion
             </a>
         </li>
 

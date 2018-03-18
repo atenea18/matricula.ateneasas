@@ -43,4 +43,4 @@ Route::get('group/{group}/pensums', 'Institution\GroupController@pensums');
 Route::resource('criteria', 'Institution\CriteriaController',['only'=>['show']]);
 
 // RUTA PARA LOS PENSUMS
-Route::get('teacher/{teacher}/pensums/{year}', 'Teacher\PensumController@pensums')->name('teacher.pensums');
+Route::get('teacher/{teacher}/asignatures/{year}', 'Teacher\AsignatureController@index')->name('teacher.asignatures');
