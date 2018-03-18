@@ -56,7 +56,7 @@
 </template>
 
 <script>
-    import {mapState, mapMutations, mapGetters } from 'vuex'
+    import {mapState, mapMutations, mapGetters} from 'vuex'
     import Add from './Add';
     import AddGroup from './AddGroup.vue';
     import TableCustom from "./Table";
@@ -68,7 +68,16 @@
             TableCustom,
             Add, AddGroup, AtTablePensum
         },
-        created(){
+        created() {
+            /*
+            axios.get('generateEvaluation').then(res => {
+                this.parameter = res.data;
+            });*/
+            axios.get('evaluationParameter').then(res => {
+                this.parameter = res.data;
+            });
+
+
             this.getGrades()
             this.getAreas()
             this.getAsignatures()
@@ -92,36 +101,38 @@
         data() {
             return {
                 title: 'Adicionar Áreas',
+                parameter: null,
+
             }
         },
         methods: {
-            ...mapMutations(['increment','decrement']),
+            ...mapMutations(['increment', 'decrement']),
 
             increments10() {
-                this.$store.commit('increment',{
-                    number:10
+                this.$store.commit('increment', {
+                    number: 10
                 })
             },
 
-            incrementAsync(){
-                this.$store.dispatch('incrementAsync', { number:5 })
-                    .then( () => {
+            incrementAsync() {
+                this.$store.dispatch('incrementAsync', {number: 5})
+                    .then(() => {
                         console.log('Actions finished')
                     })
             },
-            getGrades(){
+            getGrades() {
                 this.$store.dispatch('grades')
             },
-            getAreas(){
+            getAreas() {
                 this.$store.dispatch('areas')
             },
-            getAsignatures(){
+            getAsignatures() {
                 this.$store.dispatch('asignatures')
             },
-            getSubjectsType(){
+            getSubjectsType() {
                 this.$store.dispatch('subjectsType')
             },
-            getTeachers(){
+            getTeachers() {
                 this.$store.dispatch('teachers')
             }
 

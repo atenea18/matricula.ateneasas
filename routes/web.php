@@ -149,6 +149,9 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
     Route::get('groupsByGrade/{grade_id}', 'GroupController@GroupsByGrade');
     Route::get('enrollmentsWithOutGroup/{grade_id}', 'GroupController@getEnrollmentsWithOutGroup');
 
+    Route::get('generateEvaluation', 'GenerateEvaluationController@index');
+
+
     Route::post('groupupdate', 'GroupController@groupUpdate');
     Route::post('groupinsert', 'GroupController@groupInsert');
 
@@ -182,6 +185,8 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
     Route::post('deleteAsignaturePensumByGrade', 'AreasAndAsignatureController@deleteAsignaturePensumByGrade');
     Route::post('deleteAsignaturePensumByGroup', 'AreasAndAsignatureController@deleteAsignaturePensumByGroup');
     Route::post('editPensumGroup', 'AreasAndAsignatureController@editPensumGroup');
+
+
 
 
 

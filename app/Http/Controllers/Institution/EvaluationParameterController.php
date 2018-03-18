@@ -20,16 +20,21 @@ class EvaluationParameterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $institution = Auth::guard('web_institution')->user();
 
         $parameters = $institution->evaluationParameters()
-        ->with('schoolYear')
-        ->get();
+            ->with('notesParameter')
+            ->with('schoolYear')
+            ->get();
+
+        if ($request->ajax()) {
+            return $parameters;
+        }
 
         return View('institution.partials.evaluationParameter.index')
-        ->with('parameters',$parameters);
+            ->with('parameters', $parameters);
     }
 
     /**
@@ -44,14 +49,14 @@ class EvaluationParameterController extends Controller
         $schoolyears = Schoolyear::orderBy('id', 'ASC')->pluck('year', 'id');
 
         return View('institution.partials.evaluationParameter.create')
-        ->with('schoolyears',$schoolyears)
-        ->with('institution',$institution);
+            ->with('schoolyears', $schoolyears)
+            ->with('institution', $institution);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(CreateEvaluationParameterRequest $request)
@@ -65,7 +70,7 @@ class EvaluationParameterController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -76,7 +81,7 @@ class EvaluationParameterController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -85,15 +90,15 @@ class EvaluationParameterController extends Controller
         $schoolyears = Schoolyear::orderBy('id', 'ASC')->pluck('year', 'id');
 
         return View('institution.partials.evaluationParameter.edit')
-        ->with('parameter',$parameter)
-        ->with('schoolyears',$schoolyears);
+            ->with('parameter', $parameter)
+            ->with('schoolyears', $schoolyears);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -108,7 +113,7 @@ class EvaluationParameterController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
