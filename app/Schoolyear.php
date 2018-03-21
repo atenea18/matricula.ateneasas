@@ -14,6 +14,14 @@ class Schoolyear extends Model
         return $this->hasMany(Enrollment::class, 'school_year_id');
     }
 
+     /**
+     * Obtiene la relacion que hay entre el pensum y el año lectivo
+     */
+    public function pensums()
+    {
+        return $this->hasMany(GroupPensum::class, 'schoolyear_id'); 
+    }
+
     /**
      * Obtiene la relacion que hay entre el ente el año lectivo y el docente
      */

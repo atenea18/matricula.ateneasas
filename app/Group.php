@@ -30,20 +30,20 @@ class Group extends Model
     }
 
     /**
-     * Obtiene la relacion que hay entre el grupo los pensums
+     * Obtiene la relacion que hay entre el docente y los grupos la asignatura (Pensum)
      */
     public function pensums()
     {
-        return $this->belongsToMany(Pensum::class, 'group_pensum', 'group_id', 'pensum_id');
+        return $this->belongsTo(GroupPensum::class, 'group_id'); 
     }
 
     /**
      * Obtiene la relacion que hay entre el docente y los grupos del pensums
      */
-    public function teachers()
-    {
-        return $this->belongsToMany(Group::class, 'group_pensum', 'group_id', 'teacher_id');
-    }
+    // public function teachers()
+    // {
+    //     return $this->belongsToMany(Group::class, 'group_pensum', 'group_id', 'teacher_id');
+    // }
 
     /**
      * Obtiene la relacion que hay entre el grupo y la jornada
