@@ -12,6 +12,7 @@ const store = new Vuex.Store({
         subjectsType: [],
         teachers: [],
         parameters: [],
+        asignature: Object
 
     },
 
@@ -35,6 +36,9 @@ const store = new Vuex.Store({
         },
         setAsignatures(state, payload) {
             state.asignatures = payload.asignatures || []
+        },
+        setAsignatureById(state, payload){
+            state.asignature = payload.asignature || []
         },
         setSubjectsType(state, payload){
             state.subjectsType = payload.subjectsType || []
@@ -73,6 +77,12 @@ const store = new Vuex.Store({
             axios.get('getAsignatures').then(res => {
                 payload.asignatures = res.data;
                 context.commit('setAsignatures', payload)
+            })
+        },
+        asignatureById(context, payload = {}){
+            axios.get('/teacher/evaluation/getAsignatureById/'+payload.asignatureid).then(res => {
+                payload.asignature = res.data;
+                context.commit('setAsignatureById', payload)
             })
         },
         subjectsType(context, payload = {}){

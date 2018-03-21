@@ -20,7 +20,7 @@
                 </div>
                 <div class="panel-body">
                     <div id="app">
-                        <evaluation-manager :notes="{{json_encode($notes)}}" :group="{{$group}}" :asignature="{{$asignature}}"   :enrollments="{{$enrollments}}">
+                        <evaluation-manager :collectionnotes="{{json_encode($collectionNotes)}}" :group="{{$group}}" :asignatureid="{{$asignature_id}}"   :enrollments="{{$enrollments}}">
                         </evaluation-manager>
                     </div>
                 </div>

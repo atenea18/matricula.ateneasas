@@ -230,6 +230,8 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 
     Route::get('evaluation/evaluationParameter', 'Teacher\EvaluationController@evaluationParameter');
 
+    Route::get('evaluation/getAsignatureById/{asignature_id}', 'Teacher\EvaluationController@getAsignatureById');
+
 });
 
 

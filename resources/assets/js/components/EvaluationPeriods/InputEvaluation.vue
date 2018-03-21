@@ -11,7 +11,8 @@
         name: "input-evaluation",
         props: {
             setting: {type: Object},
-            noteparameter: {type: Object}
+            noteparameter: {type: Object},
+            parameter: {type: Object}
         },
         data() {
             return {
@@ -24,7 +25,8 @@
         },
         methods: {
             writingNotes() {
-                console.log("Hola K")
+                let nameEvent = ''+this.setting.enrollment.id + this.setting.asignatureid + this.setting.periodid + this.parameter.id
+                this.$bus.$emit('set-dirty-' + nameEvent, nameEvent)
             },
 
             search(idnoteparameter) {

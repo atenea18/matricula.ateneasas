@@ -12,7 +12,7 @@
         </div>
         <div class="col-md-3">
             <label for="">Seleccionar Periodo</label>
-            <select v-on:change="" class="form-control" name="">
+            <select v-on:change="getEvaluationsByPeriod" class="form-control" name="" v-model="periodid">
                 <option :value="0">Seleccionar</option>
                 <option v-for="n in 4" :value="n">
                     {{ n }}
@@ -21,42 +21,14 @@
         </div>
         <div class="col-md-12">
 
-
-            <table class="table table-bordered">
-                <thead>
-                <tr style="font-size: 11px">
-                    <th scope="col">#</th>
-                    <th>
-                        Nombres Y Apellidos
-                    </th>
-                    <th>
-                        A
-                    </th>
-                    <template v-for="para in parameters">
-                        <th :colspan="para.notes_parameter.length+1">
-                            {{para.parameter}}
-                        </th>
-                    </template>
-                    <th>
-                        Nota Final
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <template style="font-size: 11px" v-for="(enrollment, index) in notes">
-                    <row-evaluation
-                            :setting="{index:index, asignatureid:asignature.id, periodid:periodid, enrollment:enrollment}"></row-evaluation>
-                </template>
-
-                </tbody>
-            </table>
         </div>
 
     </div>
 </template>
 
 <script>
-    import {mapState, mapMutations, mapGetters} from 'vuex';
+
+    import {mapState, mapMutations, mapGetters} from 'vuex'
     import RowEvaluation from './EvaluationPeriods/RowEvaluation';
 
     export default {
@@ -64,18 +36,12 @@
         props: {
             enrollments: {type: Array},
             group: {type: Object},
-            asignature: {type: Object},
-            notes: {type: Array}
+            asignatureid: {type: Number},
+            collectionnotes: {type: Array}
         },
         components: {
             RowEvaluation
         },
-        computed: {
-            ...mapState([
-                'parameters'
-            ]),
-        }
-        ,
         data() {
             return {
                 periodid: 0,
@@ -83,11 +49,26 @@
         },
         created() {
             this.getParameters()
+            this.getAsignatureId(this.asignatureid)
+        },
+        computed: {
+            ...mapState([
+                'asignature',
+            ]),
 
         },
         methods: {
             getParameters() {
                 this.$store.dispatch('parameters')
+            },
+            getAsignatureId(asignatureid){
+                this.$store.dispatch('asignatureById',{
+                    asignatureid:this.asignatureid
+                })
+
+            },
+            getEvaluationsByPeriod(){
+
             }
         }
 

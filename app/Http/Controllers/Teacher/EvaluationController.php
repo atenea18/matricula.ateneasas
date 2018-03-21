@@ -54,7 +54,7 @@ class EvaluationController extends Controller
 
         $id_after = 0;
 
-
+        #representa una lista de estudiantes con sus notas existente
         $collection = [];
 
         foreach ($enrollments as $key => $enrollment) {
@@ -73,37 +73,21 @@ class EvaluationController extends Controller
 
         }
 
-
-        /*
-        $enrollmentsWithEvaluation = Group::where('id', '=', $group_id)
-            ->with('enrollments')
-            ->get();
-
-        $enrollmentsWithEvaluation = $enrollmentsWithEvaluation[0]->enrollments;
-        $arrayIdEnrollments = [];
-        foreach ($enrollmentsWithEvaluation as $row) {
-            array_push($arrayIdEnrollments, $row->id);
-        }
-
-
-        $enrollmentsWithEvaluation = Enrollment::whereIn('enrollment.id', $arrayIdEnrollments)
-            ->select('enrollment.id as id','code','school_year_id','student_id','grade_id','institution_id','name',
-                'last_name')
-            ->join('student','student.id','=','enrollment.student_id')
-            ->with('evaluationPeriod')
-
-            ->get();
-        */
-
         $group = Group::where('id', '=', $group_id)->get();
-        $asignature = Asignature::where('id', '=', $asignatures_id)->get();
+
 
 
         return View('teacher.partials.evaluation.evaluationPeriods')
             ->with('group', $group[0])
             ->with('enrollments', $enrollments)
-            ->with('asignature', $asignature[0])
-            ->with('notes', $collection);
+            ->with('collectionNotes', $collection)
+            ->with('asignature_id', $asignatures_id);
+
+    }
+
+    public function getAsignatureById($asignatures_id){
+        $asignatures = Asignature::where('id', '=', $asignatures_id)->get();
+        return $asignatures[0];
     }
 
     public function evaluationParameter(Request $request)

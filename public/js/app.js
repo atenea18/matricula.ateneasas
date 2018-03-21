@@ -51458,7 +51458,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -51502,35 +51502,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 
 
 
@@ -51540,14 +51512,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     props: {
         enrollments: { type: Array },
         group: { type: Object },
-        asignature: { type: Object },
-        notes: { type: Array }
+        asignatureid: { type: Number },
+        collectionnotes: { type: Array }
     },
     components: {
         RowEvaluation: __WEBPACK_IMPORTED_MODULE_1__EvaluationPeriods_RowEvaluation___default.a
     },
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapState */])(['parameters'])),
-
     data: function data() {
         return {
             periodid: 0
@@ -51555,12 +51525,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
     created: function created() {
         this.getParameters();
+        this.getAsignatureId(this.asignatureid);
     },
 
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapState */])(['asignature'])),
     methods: {
         getParameters: function getParameters() {
             this.$store.dispatch('parameters');
-        }
+        },
+        getAsignatureId: function getAsignatureId(asignatureid) {
+            this.$store.dispatch('asignatureById', {
+                asignatureid: this.asignatureid
+            });
+        },
+        getEvaluationsByPeriod: function getEvaluationsByPeriod() {}
     }
 
 });
@@ -51651,7 +51629,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -51669,6 +51647,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__InputParameter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__InputParameter__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+//
+//
 //
 //
 //
@@ -51706,12 +51686,25 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         };
     },
     created: function created() {
+        var _this = this;
+
         this.enrollmentid = this.setting.enrollment.id;
+
+        this.parameters.forEach(function (parameter) {
+            var nameEvent = '' + _this.setting.enrollment.id + _this.asignature.id + _this.setting.periodid + parameter.id;
+            _this.$bus.$on('set-dirty-' + nameEvent, function (pthis) {
+                var arraychilds = _this.$refs[pthis];
+                _this.$bus.$emit('set-refs-' + nameEvent, arraychilds);
+            });
+        });
     },
 
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapState */])(['parameters']), {
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapState */])(['parameters', 'asignature']), {
         fullName: function fullName() {
             return this.setting.enrollment.student_last_name + " " + this.setting.enrollment.student_name;
+        },
+        parametersAll: function parametersAll() {
+            return this.$store.state.parameters;
         }
     }),
     props: {
@@ -51736,7 +51729,7 @@ var render = function() {
   return _c(
     "tr",
     [
-      _c("td", [_vm._v(_vm._s(_vm.setting.index))]),
+      _c("td", [_vm._v(_vm._s(_vm.setting.index + 1))]),
       _vm._v(" "),
       _c("td", { staticStyle: { width: "330px" } }, [
         _vm._v(" " + _vm._s(_vm.fullName))
@@ -51751,14 +51744,27 @@ var render = function() {
               "td",
               [
                 _c("input-evaluation", {
-                  attrs: { setting: _vm.setting, noteparameter: note_parameter }
+                  ref:
+                    "" +
+                    _vm.setting.enrollment.id +
+                    _vm.asignature.id +
+                    _vm.setting.periodid +
+                    parameter.id,
+                  refInFor: true,
+                  attrs: {
+                    setting: _vm.setting,
+                    noteparameter: note_parameter,
+                    parameter: parameter
+                  }
                 })
               ],
               1
             )
           }),
           _vm._v(" "),
-          _c("input-parameter")
+          _c("input-parameter", {
+            attrs: { setting: _vm.setting, parameter: parameter }
+          })
         ]
       }),
       _vm._v(" "),
@@ -51813,9 +51819,34 @@ var render = function() {
       _c(
         "select",
         {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.periodid,
+              expression: "periodid"
+            }
+          ],
           staticClass: "form-control",
           attrs: { name: "" },
-          on: { change: function($event) {} }
+          on: {
+            change: [
+              function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.periodid = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              },
+              _vm.getEvaluationsByPeriod
+            ]
+          }
         },
         [
           _c("option", { domProps: { value: 0 } }, [_vm._v("Seleccionar")]),
@@ -51830,69 +51861,7 @@ var render = function() {
       )
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "col-md-12" }, [
-      _c("table", { staticClass: "table table-bordered" }, [
-        _c("thead", [
-          _c(
-            "tr",
-            { staticStyle: { "font-size": "11px" } },
-            [
-              _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
-              _vm._v(" "),
-              _c("th", [
-                _vm._v(
-                  "\n                    Nombres Y Apellidos\n                "
-                )
-              ]),
-              _vm._v(" "),
-              _c("th", [_vm._v("\n                    A\n                ")]),
-              _vm._v(" "),
-              _vm._l(_vm.parameters, function(para) {
-                return [
-                  _c(
-                    "th",
-                    { attrs: { colspan: para.notes_parameter.length + 1 } },
-                    [
-                      _vm._v(
-                        "\n                        " +
-                          _vm._s(para.parameter) +
-                          "\n                    "
-                      )
-                    ]
-                  )
-                ]
-              }),
-              _vm._v(" "),
-              _c("th", [
-                _vm._v("\n                    Nota Final\n                ")
-              ])
-            ],
-            2
-          )
-        ]),
-        _vm._v(" "),
-        _c(
-          "tbody",
-          [
-            _vm._l(_vm.notes, function(enrollment, index) {
-              return [
-                _c("row-evaluation", {
-                  attrs: {
-                    setting: {
-                      index: index,
-                      asignatureid: _vm.asignature.id,
-                      periodid: _vm.periodid,
-                      enrollment: enrollment
-                    }
-                  }
-                })
-              ]
-            })
-          ],
-          2
-        )
-      ])
-    ])
+    _c("div", { staticClass: "col-md-12" })
   ])
 }
 var staticRenderFns = [
@@ -68124,7 +68093,8 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
         asignatures: [],
         subjectsType: [],
         teachers: [],
-        parameters: []
+        parameters: [],
+        asignature: Object
 
     },
 
@@ -68150,6 +68120,9 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
         },
         setAsignatures: function setAsignatures(state, payload) {
             state.asignatures = payload.asignatures || [];
+        },
+        setAsignatureById: function setAsignatureById(state, payload) {
+            state.asignature = payload.asignature || [];
         },
         setSubjectsType: function setSubjectsType(state, payload) {
             state.subjectsType = payload.subjectsType || [];
@@ -68193,6 +68166,14 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
             axios.get('getAsignatures').then(function (res) {
                 payload.asignatures = res.data;
                 context.commit('setAsignatures', payload);
+            });
+        },
+        asignatureById: function asignatureById(context) {
+            var payload = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+            axios.get('/teacher/evaluation/getAsignatureById/' + payload.asignatureid).then(function (res) {
+                payload.asignature = res.data;
+                context.commit('setAsignatureById', payload);
             });
         },
         subjectsType: function subjectsType(context) {
@@ -68310,7 +68291,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -68334,7 +68315,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     name: "input-evaluation",
     props: {
         setting: { type: Object },
-        noteparameter: { type: Object }
+        noteparameter: { type: Object },
+        parameter: { type: Object }
     },
     data: function data() {
         return {
@@ -68348,7 +68330,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         writingNotes: function writingNotes() {
-            console.log("Hola K");
+            var nameEvent = '' + this.setting.enrollment.id + this.setting.asignatureid + this.setting.periodid + this.parameter.id;
+            this.$bus.$emit('set-dirty-' + nameEvent, nameEvent);
         },
         search: function search(idnoteparameter) {
             var value = "";
@@ -68499,7 +68482,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -68518,7 +68501,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    name: "input-parameter"
+    name: "input-parameter",
+    props: {
+        setting: { type: Object },
+        parameter: { type: Object }
+    },
+    created: function created() {
+        var nameEvent = '' + this.setting.enrollment.id + this.setting.asignatureid + this.setting.periodid + this.parameter.id;
+        this.$bus.$on('set-refs-' + nameEvent, function (childs) {
+            console.log(childs);
+            console.log("My");
+        });
+    }
 });
 
 /***/ }),
@@ -68529,16 +68523,13 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("td", [
+    _c("label", { attrs: { for: "" } }, [
+      _vm._v(_vm._s(_vm.parameter.id) + " ")
+    ])
+  ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [_c("label", { attrs: { for: "" } }, [_vm._v("Re")])])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
