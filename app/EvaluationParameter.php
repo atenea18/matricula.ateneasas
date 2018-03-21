@@ -30,7 +30,7 @@ class EvaluationParameter extends Model
 
     public function  notesParameter()
     {
-        return $this->hasMany(NotesParameters::class);
+        return $this->hasMany(NotesParameters::class, '');
     }
 
 

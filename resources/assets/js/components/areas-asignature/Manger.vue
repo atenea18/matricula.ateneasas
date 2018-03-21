@@ -69,15 +69,6 @@
             Add, AddGroup, AtTablePensum
         },
         created() {
-            /*
-            axios.get('generateEvaluation').then(res => {
-                this.parameter = res.data;
-            });*/
-            axios.get('evaluationParameter').then(res => {
-                this.parameter = res.data;
-            });
-
-
             this.getGrades()
             this.getAreas()
             this.getAsignatures()
@@ -101,7 +92,6 @@
         data() {
             return {
                 title: 'Adicionar Áreas',
-                parameter: null,
 
             }
         },

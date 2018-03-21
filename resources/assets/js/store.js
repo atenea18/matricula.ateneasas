@@ -11,6 +11,7 @@ const store = new Vuex.Store({
         asignatures: [],
         subjectsType: [],
         teachers: [],
+        parameters: [],
 
     },
 
@@ -40,6 +41,9 @@ const store = new Vuex.Store({
         },
         setTeachers(state, payload){
             state.teachers = payload.teachers || []
+        },
+        setParameters(state, payload){
+            state.parameters = payload.parameters || []
         }
     },
     actions: {
@@ -81,6 +85,13 @@ const store = new Vuex.Store({
             axios.get('getTeachers').then(res => {
                 payload.teachers = res.data;
                 context.commit('setTeachers', payload)
+            });
+        },
+        parameters(context, payload = {}){
+            axios.get('/teacher/evaluation/evaluationParameter').then(res => {
+                payload.parameters = res.data;
+                context.commit('setParameters', payload)
+
             });
         }
     }

@@ -14,8 +14,8 @@ class AddNotesParameterForeignToNotesTable extends Migration
     public function up()
     {
         Schema::table('notes', function (Blueprint $table) {
-            $table->unsignedBigInteger('notes_parameters_id');
-            $table->foreign('notes_parameters_id')
+            $table->unsignedBigInteger('notes_parameter_id');
+            $table->foreign('notes_parameter_id')
                 ->references('id')->on('notes_parameters');
         });
     }
@@ -28,8 +28,8 @@ class AddNotesParameterForeignToNotesTable extends Migration
     public function down()
     {
         Schema::table('notes', function (Blueprint $table) {
-            $table->dropForeign(['notes_parameters_id']);
-            $table->dropColumn(['notes_parameters_id']);
+            $table->dropForeign(['notes_parameter_id']);
+            $table->dropColumn(['notes_parameter_id']);
         });
     }
 }
