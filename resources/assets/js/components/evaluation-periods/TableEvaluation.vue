@@ -20,9 +20,8 @@
         </tr>
         </thead>
         <tbody>
-        <template style="font-size: 11px" v-for="(enrollment, index) in collectionnotes">
-            <row-evaluation
-                    :setting="{index:index, periodid:periodid, enrollment:enrollment}"></row-evaluation>
+        <template style="font-size: 11px" v-for="(enrollment, index) in collectionNotes">
+            <row-evaluation  v-bind:setting="{index:index, enrollment:enrollment}"></row-evaluation>
         </template>
 
         </tbody>
@@ -41,7 +40,9 @@
         computed: {
             ...mapState([
                 'parameters',
-                'asignature'
+                'asignature',
+                'periodSelected',
+                'collectionNotes'
             ]),
         }
     }

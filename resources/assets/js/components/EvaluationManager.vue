@@ -14,13 +14,15 @@
             <label for="">Seleccionar Periodo</label>
             <select v-on:change="getEvaluationsByPeriod" class="form-control" name="" v-model="periodid">
                 <option :value="0">Seleccionar</option>
-                <option v-for="n in 4" :value="n">
-                    {{ n }}
+                <option v-for="period in periodsworkingday" :value="period.periods_id">
+                    {{ period.periods_name }}
                 </option>
             </select>
         </div>
         <div class="col-md-12">
-
+            <div v-if="isCollection">
+                <table-evaluation></table-evaluation>
+            </div>
         </div>
 
     </div>
@@ -29,31 +31,35 @@
 <script>
 
     import {mapState, mapMutations, mapGetters} from 'vuex'
-    import RowEvaluation from './EvaluationPeriods/RowEvaluation';
+    import RowEvaluation from './evaluation-periods/RowEvaluation';
+    import TableEvaluation from './evaluation-periods/TableEvaluation';
 
     export default {
         name: "evaluation-manager",
         props: {
-            enrollments: {type: Array},
             group: {type: Object},
             asignatureid: {type: Number},
-            collectionnotes: {type: Array}
         },
         components: {
-            RowEvaluation
+            RowEvaluation, TableEvaluation
         },
         data() {
             return {
-                periodid: 0,
+                periodid:0,
+                state: false
             }
         },
         created() {
             this.getParameters()
             this.getAsignatureId(this.asignatureid)
+            this.getPeriodsByWorkingDay(this.group.working_day_id);
         },
         computed: {
             ...mapState([
                 'asignature',
+                'periodsworkingday',
+                'periodSelected',
+                'isCollection'
             ]),
 
         },
@@ -61,15 +67,34 @@
             getParameters() {
                 this.$store.dispatch('parameters')
             },
-            getAsignatureId(asignatureid){
-                this.$store.dispatch('asignatureById',{
-                    asignatureid:this.asignatureid
+            getAsignatureId(asignatureid) {
+                this.$store.dispatch('asignatureById', {
+                    asignatureid: this.asignatureid
                 })
+            },
+            getEvaluationsByPeriod() {
+                this.$store.state.isCollection = false
+
+                this.$store.state.periodSelected = this.periodid
+                //console.log(this.$store.state.isCollection)
+                this.getCollectionNotes(this.group.id, this.asignatureid, this.$store.state.periodSelected)
+
 
             },
-            getEvaluationsByPeriod(){
+            getPeriodsByWorkingDay(workingdayid) {
+                this.$store.dispatch('periodsByWorkingDay', {
+                    workingdayid: workingdayid
+                })
+            },
 
+            getCollectionNotes(groupid, asignatureid, periodid){
+                this.$store.dispatch('collectionNotes', {
+                    groupid: groupid,
+                    asignatureid: asignatureid,
+                    periodid: periodid
+                })
             }
+
         }
 
     }

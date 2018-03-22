@@ -6,7 +6,7 @@
         <template v-for="parameter in parameters">
             <td v-for="note_parameter in parameter.notes_parameter">
                 <input-evaluation
-                        :ref="''+setting.enrollment.id + asignature.id + setting.periodid + parameter.id"
+                        :ref="''+setting.enrollment.id + asignature.id + periodSelected + parameter.id"
                         :setting="setting" :noteparameter="note_parameter"
                         :parameter="parameter"></input-evaluation>
             </td>
@@ -41,10 +41,12 @@
             this.enrollmentid = this.setting.enrollment.id
 
             this.parameters.forEach((parameter) => {
-                let nameEvent = '' + this.setting.enrollment.id + this.asignature.id + this.setting.periodid + parameter.id
+                let nameEvent = '' + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + parameter.id
+
+                this.$bus.$off('set-dirty-'+ nameEvent)
                 this.$bus.$on('set-dirty-'+ nameEvent, (pthis) => {
                     let arraychilds = this.$refs[pthis]
-                    this.$bus.$emit('set-refs-' + nameEvent, arraychilds)
+                    this.$bus.$emit('set-refs-'+nameEvent, arraychilds)
                 });
             })
 
@@ -52,7 +54,8 @@
         computed: {
             ...mapState([
                 'parameters',
-                'asignature'
+                'asignature',
+                'periodSelected'
             ]),
 
             fullName() {
@@ -66,9 +69,7 @@
             setting: {type: Object},
         },
         methods: {
-            writingNotes() {
-                console.log("Hola K")
-            },
+
 
         }
 
