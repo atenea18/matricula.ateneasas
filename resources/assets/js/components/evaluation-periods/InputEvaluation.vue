@@ -60,7 +60,7 @@
 
             },
             sendDataNotes() {
-                console.log(this.evaluationperiodsid)
+                //console.log(this.evaluationperiodsid)
                 let data = {
                     value: this.valuenote,
                     overcoming: null,
@@ -70,7 +70,7 @@
                 axios.post('/teacher/evaluation/storeNotes', {data})
                     .then(function (response) {
                         if (response.status == 200) {
-                            console.log(response.data)
+                            //console.log(response.data)
                         }
                     })
                     .catch(function (error) {

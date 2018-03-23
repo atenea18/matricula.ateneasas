@@ -113,6 +113,7 @@
                     if(this.evaluationperiodid == 0){
                         this.sendDataEvaluationPeriods()
                     }else{
+                        this.sendDataFinalNotes()
                         let nameEvent = '' +
                             this.setting.enrollment.id +
                             this.$store.state.asignature.id +
@@ -144,7 +145,7 @@
                         .then(function (response) {
                             if (response.status == 200) {
                                 _this.evaluationperiodid = response.data.id
-
+                                //console.log(_this.evaluationperiodid)
                                 _this.sendDataFinalNotes()
                                 _this.$bus.$emit("set-store-note-" + nameEvent, _this.evaluationperiodid);
                             }
@@ -156,6 +157,7 @@
 
             },
             sendDataFinalNotes() {
+
                 let data = {
                     value: this.valuenote.toFixed(2),
                     overcoming: null,
@@ -164,6 +166,7 @@
                 axios.post('/teacher/evaluation/storeFinalNotes', {data})
                     .then(function (response) {
                         if (response.status == 200) {
+                            //console.log(response.data)
                         }
                     })
                     .catch(function (error) {

@@ -70,6 +70,11 @@ class EvaluationController extends Controller
             }
         }
 
+        $evaluation = EvaluationPeriod::where('enrollment_id', '=', $data['enrollment_id'])
+            ->where('periods_id', '=', $data['periods_id'])
+            ->where('asignatures_id', $data['asignatures_id'])
+            ->first();
+
         return $evaluation;
 
     }
@@ -103,8 +108,6 @@ class EvaluationController extends Controller
                 ]);
         }
 
-        $notesFinal = NotesFinal::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
-            ->first();
         return $notesFinal;
 
     }
