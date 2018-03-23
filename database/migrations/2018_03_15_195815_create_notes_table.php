@@ -17,7 +17,7 @@ class CreateNotesTable extends Migration
             $table->bigIncrements('id');
             $table->string('code_notes', 191)->unique();
             $table->float('value')->nullable();
-            $table->float('overcomming')->nullable();
+            $table->float('overcoming')->nullable();
 
             $table->unsignedBigInteger('evaluation_periods_id');
             $table->foreign('evaluation_periods_id')

@@ -240,6 +240,10 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
     Route::get('evaluation/getPeriodsByWorkingDay/{working_day_id}', 'Teacher\EvaluationController@getPeriodsByWorkingDay');
     Route::get('evaluation/getCollectionsNotes/{group_id}/{asignature_id}/{period_id}', 'Teacher\EvaluationController@getCollectionsNotes');
 
+    Route::post('evaluation/storeEvaluationPeriods', 'Teacher\EvaluationController@storeEvaluationPeriods');
+    Route::post('evaluation/storeFinalNotes', 'Teacher\EvaluationController@storeFinalNotes');
+    Route::post('evaluation/storeNotes', 'Teacher\EvaluationController@storeNotes');
+
 
 
 });

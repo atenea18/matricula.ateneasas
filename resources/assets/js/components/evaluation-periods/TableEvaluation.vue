@@ -34,7 +34,7 @@
 
     export default {
         name: "table-evaluation",
-        components:{
+        components: {
             RowEvaluation
         },
         computed: {

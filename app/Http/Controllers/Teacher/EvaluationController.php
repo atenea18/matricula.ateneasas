@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Asignature;
 use App\Enrollment;
+use App\EvaluationPeriod;
 use App\Group;
 use App\Institution;
+use App\Note;
+use App\NotesFinal;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -44,6 +47,110 @@ class EvaluationController extends Controller
             ->with('asignature_id', $asignatures_id);
     }
 
+
+    public function storeEvaluationPeriods(request $request)
+    {
+        $data = $request->data;
+        $evaluation = null;
+        $evaluation = EvaluationPeriod::where('enrollment_id', '=', $data['enrollment_id'])
+            ->where('periods_id', '=', $data['periods_id'])
+            ->where('asignatures_id', $data['asignatures_id'])
+            ->first();
+        if (!$evaluation) {
+            try {
+                $evaluation = new EvaluationPeriod();
+                $evaluation->code_evaluation_periods = $data['enrollment_id'] . $data['periods_id'] . $data['asignatures_id'];
+                $evaluation->enrollment_id = $data['enrollment_id'];
+                $evaluation->periods_id = $data['periods_id'];
+                $evaluation->asignatures_id = $data['asignatures_id'];
+                $evaluation->save();
+            } catch (\Exception $e) {
+
+            }
+        }
+
+        return $evaluation;
+
+    }
+
+    public function storeFinalNotes(request $request)
+    {
+        $data = $request->data;
+        $notesFinal = null;
+
+        $notesFinal = NotesFinal::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+            ->first();
+
+        if (!$notesFinal) {
+            try {
+                $notesFinal = new NotesFinal();
+                $notesFinal->code_notes_final = $data['evaluation_periods_id'];
+                $notesFinal->value = $data['value'];
+                $notesFinal->overcoming = $data['overcoming'];
+                $notesFinal->evaluation_periods_id = $data['evaluation_periods_id'];
+                $notesFinal->save();
+
+            } catch (\Exception $e) {
+
+            }
+        } else {
+            NotesFinal::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+                ->update([
+                    'code_notes_final' => $data['evaluation_periods_id'],
+                    'value' => $data['value'],
+                    'overcoming' => $data['overcoming'],
+                ]);
+        }
+
+        $notesFinal = NotesFinal::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+            ->first();
+        return $notesFinal;
+
+    }
+
+    public function storeNotes(request $request)
+    {
+        $data = $request->data;
+        $notes = null;
+
+        $notes = Note::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+            ->where('notes_parameters_id', '=', $data['notes_parameters_id'])
+            ->first();
+
+
+        if (!$notes) {
+            try {
+                $notes = new Note();
+                $notes->code_notes = $data['evaluation_periods_id'] .'' . $data['notes_parameters_id'];
+                $notes->value = $data['value'];
+                $notes->overcoming = $data['overcoming'];
+                $notes->notes_parameters_id = $data['notes_parameters_id'];
+                $notes->evaluation_periods_id = $data['evaluation_periods_id'];
+                $notes->save();
+
+            } catch (\Exception $e) {
+
+            }
+        } else {
+            Note::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+                ->where('notes_parameters_id', '=', $data['notes_parameters_id'])
+                ->update([
+                    'code_notes' => $data['evaluation_periods_id'] . "" . $data['notes_parameters_id'],
+                    'value' => $data['value'],
+                    'overcoming' => $data['overcoming'],
+                ]);
+        }
+
+        $notes = Note::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+            ->where('notes_parameters_id', '=', $data['notes_parameters_id'])
+            ->first();
+
+
+        return $notes;
+
+    }
+
+
     public function getAsignatureById($asignatures_id)
     {
         $asignatures = Asignature::where('id', '=', $asignatures_id)->get();
@@ -70,12 +177,13 @@ class EvaluationController extends Controller
         return $periodsWorkingDay;
     }
 
-    public function getCollectionsNotes($group_id, $asignatures_id, $period_id = 1){
+    public function getCollectionsNotes($group_id, $asignatures_id, $period_id = 1)
+    {
         $teacher = Auth::guard('teachers')->user()->teachers()->first();
         $enrollments = Group::enrollmentsByGroup($teacher->institution_id, $group_id);
 
         $notes = DB::table('notes')
-            ->select('enrollment.id as enrollment_id', 'notes.value', 'notes.overcomming', 'notes.id as notes_id',
+            ->select('enrollment.id as enrollment_id', 'notes.value', 'notes.overcoming', 'notes.id as notes_id',
                 'notes.notes_parameters_id', 'notes_parameters.evaluation_parameter_id')
             ->join('notes_parameters', 'notes_parameters.id', '=', 'notes.notes_parameters_id')
             ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes.evaluation_periods_id')

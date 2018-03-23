@@ -19,10 +19,11 @@
         data() {
             return {
                 valuenote: "",
+                evaluationperiodsid: 0
             }
         },
         created() {
-            this.search(this.noteparameter.id)             
+            this.search(this.noteparameter.id)
         },
         computed: {
             ...mapState([
@@ -33,8 +34,16 @@
         },
         methods: {
             writingNotes() {
-                let nameEvent = ''+this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id
+                let nameEvent = '' + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id
                 this.$bus.$emit('set-dirty-' + nameEvent, nameEvent)
+                let nameEE = '' + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected
+                this.$bus.$off("set-store-note-" + nameEE);
+                this.$bus.$on("set-store-note-" + nameEE, keyEvaluationPeriodId => {
+                    this.evaluationperiodsid = keyEvaluationPeriodId
+                    this.sendDataNotes()
+
+                });
+
             },
 
             search(idnoteparameter) {
@@ -47,6 +56,26 @@
                     })
                 }
                 this.valuenote = value
+
+
+            },
+            sendDataNotes() {
+                console.log(this.evaluationperiodsid)
+                let data = {
+                    value: this.valuenote,
+                    overcoming: null,
+                    evaluation_periods_id: this.evaluationperiodsid,
+                    notes_parameters_id: this.noteparameter.id
+                }
+                axios.post('/teacher/evaluation/storeNotes', {data})
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            console.log(response.data)
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             }
 
         }
