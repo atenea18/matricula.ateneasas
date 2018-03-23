@@ -21,6 +21,7 @@ class EvaluationController extends Controller
     {
         $teacher = Auth::guard('teachers')->user()->teachers()->first();
 
+
         // dd($teacher);
         $pemsun = $teacher->pensums()
             ->where('schoolyear_id', '=', 1)
@@ -32,7 +33,7 @@ class EvaluationController extends Controller
             ->get();
 
 
-        // dd($pemsun);
+        //dd($pemsun);
         return View('teacher.partials.evaluation.index')
             ->with('teacher', $teacher)
             ->with('pemsun', $pemsun);

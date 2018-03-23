@@ -450,6 +450,8 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Family' => __DIR__ . '/../..' . '/app/Family.php',
         'App\\Gender' => __DIR__ . '/../..' . '/app/Gender.php',
+        'App\\GeneralObservation' => __DIR__ . '/../..' . '/app/GeneralObservation.php',
+        'App\\GeneralReport' => __DIR__ . '/../..' . '/app/GeneralReport.php',
         'App\\Grade' => __DIR__ . '/../..' . '/app/Grade.php',
         'App\\Group' => __DIR__ . '/../..' . '/app/Group.php',
         'App\\GroupPensum' => __DIR__ . '/../..' . '/app/GroupPensum.php',

@@ -45,3 +45,7 @@ section{
 .navbar-default{
 	background-color: #fff;
 }
+
+.tr_loading{
+	background-color: #ddd;
+}

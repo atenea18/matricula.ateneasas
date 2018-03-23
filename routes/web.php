@@ -211,6 +211,7 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 
 	// Periodos
 	Route::resource('period', 'Institution\PeriodController');
+	Route::post('period/changeState', 'Institution\PeriodController@changeState')->name('period.changeState');
 
 	// PDF's
 		// LISTAS DE ASISTENCIAS
@@ -232,6 +233,7 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 	Route::post('/logout', 'TeacherAuth\LoginController@logout');
 
 	Route::get('evaluation', 'Teacher\EvaluationController@index')->name('teacher.evaluation');
+
     Route::get('evaluation/periods/{group_id}/{asignatures_id}', 'Teacher\EvaluationController@evaluationPeriods')->name('teacher.evaluation.periods');
 
     Route::get('evaluation/evaluationParameter', 'Teacher\EvaluationController@evaluationParameter');
@@ -244,6 +246,12 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
     Route::post('evaluation/storeFinalNotes', 'Teacher\EvaluationController@storeFinalNotes');
     Route::post('evaluation/storeNotes', 'Teacher\EvaluationController@storeNotes');
 
+
+	// Rutas para el Informe General de Periodo
+	Route::resource('generalReport', 'Teacher\GeneralReportController');
+	
+	// Rutas para las Observaciones Generales
+	Route::resource('generalObservation', 'Teacher\GeneralObservationController');
 
 
 });

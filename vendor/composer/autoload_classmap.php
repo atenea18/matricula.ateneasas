@@ -30,6 +30,8 @@ return array(
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Family' => $baseDir . '/app/Family.php',
     'App\\Gender' => $baseDir . '/app/Gender.php',
+    'App\\GeneralObservation' => $baseDir . '/app/GeneralObservation.php',
+    'App\\GeneralReport' => $baseDir . '/app/GeneralReport.php',
     'App\\Grade' => $baseDir . '/app/Grade.php',
     'App\\Group' => $baseDir . '/app/Group.php',
     'App\\GroupPensum' => $baseDir . '/app/GroupPensum.php',
