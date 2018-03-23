@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWordsExpressionsTable extends Migration
+class CreatePeriodStatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateWordsExpressionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('words_expressions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 45);
+        Schema::create('period_states', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('state');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class CreateWordsExpressionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('words_expressions');
+        Schema::dropIfExists('period_states');
     }
 }
