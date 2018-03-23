@@ -68124,7 +68124,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -68140,6 +68140,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__InputEvaluation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__InputEvaluation__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__InputParameter__ = __webpack_require__(181);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__InputParameter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__InputParameter__);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -68168,47 +68170,72 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    name: "row-evaluation",
-    components: { InputEvaluation: __WEBPACK_IMPORTED_MODULE_1__InputEvaluation___default.a, InputParameter: __WEBPACK_IMPORTED_MODULE_2__InputParameter___default.a },
-    data: function data() {
-        return {
-            enrollmentid: 0,
-            isExistEvaluationPeriod: false,
-            evaluationperiodid: 0,
-            valuenote: "",
-            state: false
+  name: "row-evaluation",
+  components: { InputEvaluation: __WEBPACK_IMPORTED_MODULE_1__InputEvaluation___default.a, InputParameter: __WEBPACK_IMPORTED_MODULE_2__InputParameter___default.a },
+  data: function data() {
+    return {
+      enrollmentid: 0,
+      isExistEvaluationPeriod: false,
+      evaluationperiodid: 0,
+      valuenote: 0,
+      state: false,
+      noteend: 0
+    };
+  },
+  created: function created() {
+    this.enrollmentid = this.setting.enrollment.id;
+    this.getInputsParameters();
+    this.eventForUpdateInputParameter("set-dirty-initial", "set-refs");
+    this.eventForUpdateInputParameter("set-dirty", "set-refs");
 
-        };
+    //this.eventForUpdateInputParameter("set-dirty-input","set-refs-input");
+  },
+
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapState */])(["parameters", "asignature", "periodSelected"]), {
+    fullName: function fullName() {
+      return this.setting.enrollment.student_last_name + " " + this.setting.enrollment.student_name;
     },
-    created: function created() {
-        var _this = this;
+    refsInputParameter: function refsInputParameter() {
+      return "" + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected;
+    },
+    parametersAll: function parametersAll() {
+      return this.$store.state.parameters;
+    }
+  }),
+  props: {
+    setting: { type: Object }
+  },
+  methods: {
+    eventForUpdateInputParameter: function eventForUpdateInputParameter(keyEvent, KeyEmit) {
+      var _this = this;
 
-        this.enrollmentid = this.setting.enrollment.id;
+      this.parameters.forEach(function (parameter) {
+        var nameEvent = "" + _this.setting.enrollment.id + _this.$store.state.asignature.id + _this.$store.state.periodSelected + parameter.id;
 
-        this.parameters.forEach(function (parameter) {
-            var nameEvent = '' + _this.setting.enrollment.id + _this.$store.state.asignature.id + _this.$store.state.periodSelected + parameter.id;
-
-            _this.$bus.$off('set-dirty-' + nameEvent);
-            _this.$bus.$on('set-dirty-' + nameEvent, function (pthis) {
-                var arraychilds = _this.$refs[pthis];
-                _this.$bus.$emit('set-refs-' + nameEvent, arraychilds);
-            });
+        _this.$bus.$off(keyEvent + "-" + nameEvent);
+        _this.$bus.$on(keyEvent + "-" + nameEvent, function (pthis) {
+          var arraychilds = _this.$refs[pthis];
+          _this.$bus.$emit(KeyEmit + "-" + nameEvent, arraychilds);
         });
+      });
     },
+    getInputsParameters: function getInputsParameters() {
+      var _this2 = this;
 
-    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapState */])(['parameters', 'asignature', 'periodSelected']), {
-        fullName: function fullName() {
-            return this.setting.enrollment.student_last_name + " " + this.setting.enrollment.student_name;
-        },
-        parametersAll: function parametersAll() {
-            return this.$store.state.parameters;
+      var nameRef = "" + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected;
+
+      this.$bus.$off("set-note-" + nameRef);
+      this.$bus.$on("set-note-" + nameRef, function (keyName) {
+        var arraychilds = _this2.$refs[keyName];
+        if ((typeof arraychilds === "undefined" ? "undefined" : _typeof(arraychilds)) == "object") {
+          _this2.valuenote = 0;
+          arraychilds.forEach(function (e) {
+            _this2.valuenote += e.value;
+          });
         }
-    }),
-    props: {
-        setting: { type: Object }
-    },
-    methods: {}
-
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -68297,7 +68324,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -68335,7 +68362,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         };
     },
     created: function created() {
-
         this.search(this.noteparameter.id);
     },
 
@@ -68489,7 +68515,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -68521,16 +68547,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapState */])(["asignature", "periodSelected"])),
   methods: {
     calculate: function calculate(element) {
+      //Si la nota no tiene porcentaje
       if (element.percent == 0) {
         if (element.value > 0) {
           this.sumaZero += element.value;
           this.countPercentZero++;
         }
       }
+
+      //Si la nota si tiene porcentaje example proyecto 30%
       if (element.percent > 0) {
         this.promedioWith += element.value * element.percent;
         this.percentWith += element.percent;
       }
+      //Se le asigna el porcentaje restante a las notas sin porcentajes
       this.percentZero = 1 - this.percentWith;
       if (this.countPercentZero != 0) {
         this.promedioZero = this.sumaZero / this.countPercentZero * this.percentZero;
@@ -68557,7 +68587,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     var nameEvent = "" + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id;
 
     this.$bus.$off("set-refs-" + nameEvent);
-
     this.$bus.$on("set-refs-" + nameEvent, function (childs) {
       _this.initial();
       childs.forEach(function (element) {
@@ -68568,11 +68597,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
         _this.calculate(elementNotes);
       });
-      _this.value = _this.promedioZero + _this.promedioWith;
-
-      //console.log(this.$store.state.asignature)
-      //console.log(this.setting.enrollment)
+      _this.value = (_this.promedioZero + _this.promedioWith) * (_this.parameter.percent / 100);
+      var nameInputEvent = "" + _this.setting.enrollment.id + _this.$store.state.asignature.id + _this.$store.state.periodSelected;
+      _this.$bus.$emit("set-note-" + nameInputEvent, nameInputEvent);
     });
+
+    this.$bus.$emit("set-dirty-initial-" + nameEvent, nameEvent);
   }
 });
 
@@ -68584,8 +68614,21 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("td", [
-    _c("label", { attrs: { for: "" } }, [_vm._v(_vm._s(_vm.value) + " ")])
+  return _c("td", { staticStyle: { "padding-top": "16px", width: "15px" } }, [
+    _c(
+      "label",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.value,
+            expression: "value"
+          }
+        ]
+      },
+      [_vm._v(_vm._s(_vm.value.toFixed(2)) + " ")]
+    )
   ])
 }
 var staticRenderFns = []
@@ -68611,7 +68654,7 @@ var render = function() {
     [
       _c("td", [_vm._v(_vm._s(_vm.setting.index + 1))]),
       _vm._v(" "),
-      _c("td", { staticStyle: { width: "330px" } }, [
+      _c("td", { staticStyle: { width: "320px" } }, [
         _vm._v(" " + _vm._s(_vm.fullName))
       ]),
       _vm._v(" "),
@@ -68643,30 +68686,21 @@ var render = function() {
           }),
           _vm._v(" "),
           _c("input-parameter", {
+            ref: _vm.refsInputParameter,
+            refInFor: true,
             attrs: { setting: _vm.setting, parameter: parameter }
           })
         ]
       }),
       _vm._v(" "),
-      _vm._m(0)
+      _c("td", { staticStyle: { "padding-top": "16px", width: "15px" } }, [
+        _c("label", [_vm._v(_vm._s(_vm.valuenote.toFixed(2)) + " ")])
+      ])
     ],
     2
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("input", {
-        staticClass: "form-control",
-        staticStyle: { padding: "2px 2px" },
-        attrs: { type: "text" }
-      })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {

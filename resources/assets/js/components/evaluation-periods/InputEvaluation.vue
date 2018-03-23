@@ -22,8 +22,7 @@
             }
         },
         created() {
-
-            this.search(this.noteparameter.id)
+            this.search(this.noteparameter.id)             
         },
         computed: {
             ...mapState([

@@ -21,7 +21,7 @@
         </thead>
         <tbody>
         <template style="font-size: 11px" v-for="(enrollment, index) in collectionNotes">
-            <row-evaluation  v-bind:setting="{index:index, enrollment:enrollment}"></row-evaluation>
+            <row-evaluation v-bind:setting="{index:index, enrollment:enrollment}"></row-evaluation>
         </template>
 
         </tbody>
