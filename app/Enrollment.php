@@ -140,4 +140,9 @@ class Enrollment extends Model
         return $enrollment;
     }
 
+    public function evaluationPeriod()
+    {
+        return $this->hasMany(EvaluationPeriod::class,'enrollment_id');
+    }
+
 }

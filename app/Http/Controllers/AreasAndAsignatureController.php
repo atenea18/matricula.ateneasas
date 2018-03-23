@@ -20,19 +20,8 @@ class AreasAndAsignatureController extends Controller
     {
 
         if (request()->ajax()) {
-            /*
-            $pensum = DB::table('pensum')
-                ->select('areas_id')
-                ->where('grade_id','=',$grade_id)
-                ->where('institution_id','=',$institution_id)
-                ->get();
 
-            $array = [];
-            foreach ($pensum as $key => $value)
-                $array[$key] = $value->areas_id;
-            */
             $areas = DB::table('areas')
-                #->whereNotIn('id', $array)
                 ->get();
             return $areas;
         }
@@ -44,19 +33,8 @@ class AreasAndAsignatureController extends Controller
         $institution_id = Auth::guard('web_institution')->user()->id;
 
         if (request()->ajax()) {
-            /*
-            $pensum = DB::table('pensum')
-                ->select('asignatures_id')
-                ->where('grade_id','=',$grade_id)
-                ->where('institution_id','=',$institution_id)
-                ->get();
-            $array = [];
-            foreach ($pensum as $key => $value)
-                $array[$key] = $value->asignatures_id;
-            */
 
             $asignatures = DB::table('asignatures')
-                #->whereNotIn('id', $array)
                 ->get();
 
             return $asignatures;
@@ -75,7 +53,8 @@ class AreasAndAsignatureController extends Controller
         return "error";
     }
 
-    public  function  getTeachers(){
+    public function getTeachers()
+    {
 
         $institution_id = Auth::guard('web_institution')->user()->id;
 
@@ -84,7 +63,7 @@ class AreasAndAsignatureController extends Controller
                 ->select('teachers.id', DB::raw('CONCAT(managers.last_name," ",managers.name) as name'))
                 ->join('managers', 'managers.id', '=', 'teachers.manager_id')
                 ->where('teachers.institution_id', '=', $institution_id)
-                ->where('teachers.school_year_id','=',1)
+                ->where('teachers.school_year_id', '=', 1)
                 ->orderBy('managers.last_name', 'asc')
                 ->get();
 
@@ -124,6 +103,7 @@ class AreasAndAsignatureController extends Controller
         }
         return 0;
     }
+
     public function storePensumByGroup(request $request)
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
@@ -156,8 +136,6 @@ class AreasAndAsignatureController extends Controller
         }
 
         return $pensum;
-
-
 
 
     }
@@ -287,7 +265,6 @@ class AreasAndAsignatureController extends Controller
     }
 
 
-
     public function deleteAreaPensumByGroup(request $request)
     {
         $institution_id = Auth::guard('web_institution')->user()->id;
@@ -316,7 +293,6 @@ class AreasAndAsignatureController extends Controller
             try {
                 DB::table('pensum')
                     ->where('pensum.id', '=', $asignature['id'])
-
                     ->delete();
 
             } catch (\Exception $e) {
@@ -352,18 +328,15 @@ class AreasAndAsignatureController extends Controller
             try {
                 $value = DB::table('group_pensum')
                     ->where('group_pensum.id', '=', $data['id'])
-                    ->update([ ''.$data['field'] => $data['value'] ]);
+                    ->update(['' . $data['field'] => $data['value']]);
             } catch (\Exception $e) {
             }
         }
 
 
-
         return $value;
 
     }
-
-
 
 
     public function copyPensumByGrade(request $request)
