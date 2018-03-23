@@ -11,6 +11,7 @@
         <title>@yield('title')</title>
 
         <!-- Styles -->
+        <link href="{{asset('css/style.css')}}" rel="stylesheet">
         <link href="{{asset('css/app.css')}}" rel="stylesheet">
         <link rel="stylesheet" href="{{asset('plugin/DataTables/datatables.css')}}">
         <link rel="stylesheet" href="{{asset('plugin/DataTables/dataTables.bootstrap.min.css')}}">

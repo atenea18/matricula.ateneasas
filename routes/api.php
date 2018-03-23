@@ -44,3 +44,8 @@ Route::resource('criteria', 'Institution\CriteriaController',['only'=>['show']])
 
 // RUTA PARA LOS PENSUMS
 Route::get('teacher/{teacher}/asignatures/{year}', 'Teacher\AsignatureController@index')->name('teacher.asignatures');
+
+// RUTA PARA LOS PERIODOS
+Route::get('periods/{institution}', 'Institution\PeriodController@all')->name('institution.periods.all');
+Route::get('periodsByWorkingday/{institution}/{workingday_id}/{year?}', 'Institution\PeriodController@showByWorkingday')->name('institution.period.showByWorkingday');
+Route::get('periodsByPeriod/{institution}/{period_id}/{year?}', 'Institution\PeriodController@showByPeriod')->name('institution.period.showByPeriod');
