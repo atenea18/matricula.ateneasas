@@ -25,8 +25,7 @@ class CreatePeriodRequest extends FormRequest
     {
         return [
             'period_id'         =>  'required',
-            'working_day_id'    =>  'required',
-            'period_state_id'   =>  'required',
+            'working_day_id.item'  =>  'required',
             'school_year_id'    =>  'required',
             'percent'           =>  'integer',
             'start_date'        =>  'required',
@@ -38,8 +37,7 @@ class CreatePeriodRequest extends FormRequest
     {
         return [
             'period_id.required'         =>  'El periodo es requerido',
-            'working_day_id.required'    =>  'La jornada es requerida',
-            'period_state_id.required'   =>  'El estado es requerido',
+            'working_day_id.item.required'  =>  'La jornada es requerida',
             'school_year_id.required'    =>  'El año lectivo es requerido',
             'percent.integer'            =>  'El porcentaje debe ser númerico',
             'start_date.required'        =>  'La fecha de inicio es requerida',
