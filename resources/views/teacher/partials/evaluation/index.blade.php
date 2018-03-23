@@ -1,17 +1,19 @@
 @extends('teacher.dashboard.index')
 
 @section('css')
-	<link rel="stylesheet" href="{{asset('css/bootstrap-chosen.css')}}">
+    <link rel="stylesheet" href="{{asset('css/bootstrap-chosen.css')}}">
 @endsection
 
 @section('breadcrums')
-	<ol class="breadcrumb">
-		<li><a href="{{route('teacher.home')}}">Inicio</a></li>
-	  	<li class="active">Evaluación</li>
-	</ol>
+    <ol class="breadcrumb">
+        <li><a href="{{route('teacher.home')}}">Inicio</a></li>
+        <li class="active">Evaluación</li>
+    </ol>
 @endsection
 
 @section('content')
+
+
 <div class="row">
 	<div class="col-md-12">
 		<div class="panel panel-default" style="margin-bottom: 0">
@@ -59,6 +61,7 @@
 		</div>
 	</div>
 </div>
+
 @endsection
 
 @section('js')

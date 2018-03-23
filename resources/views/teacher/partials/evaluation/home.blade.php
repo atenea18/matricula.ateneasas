@@ -24,13 +24,13 @@
 							<td>{{ $pensum->subjectType->name }}</td>
 							<td>
 								<div class='btn-group' role='group'>
-									<button type='button' class='btn btn-primary dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+									<button   type='button' class='btn btn-primary dropdown-toggle' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
 										Evaluación
 										<span class='caret'></span>
 									</button>
 									<ul class='dropdown-menu'>
 										<li>
-											<a href=''>Evaluar Periodo
+											<a href="{{route('teacher.evaluation.periods', [$pensum->group->id,$pensum->asignature->id])}}" >Evaluar Periodo
 											</a>
 										</li>
 										<li>

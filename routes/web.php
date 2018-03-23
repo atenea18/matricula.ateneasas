@@ -149,14 +149,13 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
     Route::get('groupsByGrade/{grade_id}', 'GroupController@GroupsByGrade');
     Route::get('enrollmentsWithOutGroup/{grade_id}', 'GroupController@getEnrollmentsWithOutGroup');
 
+    Route::get('generateEvaluation', 'GenerateEvaluationController@index');
+
+
     Route::post('groupupdate', 'GroupController@groupUpdate');
     Route::post('groupinsert', 'GroupController@groupInsert');
 
 
-
-
-
-    //-----
 
     Route::get('getAreas', 'AreasAndAsignatureController@getAreas');
     Route::get('getAsignatures', 'AreasAndAsignatureController@getAsignatures');
@@ -185,33 +184,7 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 
 
 
-
     Route::post('copyPensumByGrade', 'AreasAndAsignatureController@copyPensumByGrade');
-
-    //-----
-
-
-
-
-
-
-    /*
-
-    Route::get('getAsignaturesByArea/{id}', 'AreasAndAsignatureController@getAsignaturesByArea');
-    Route::get('getAreaByAsignature/{id}', 'AreasAndAsignatureController@getAreaByAsignature');
-
-
-
-    Route::post('setCustomAsignatures', 'AreasAndAsignatureController@storeCustomAsignatures');
-    Route::post('setAreasAndAsignatures', 'AreasAndAsignatureController@storeCustom');
-    Route::post('deleteAreasAndAsignatures', 'AreasAndAsignatureController@deleteCustom');
-    Route::post('deleteCustomArea', 'AreasAndAsignatureController@deleteCustomArea');
-    Route::post('deleteCustomAsignature', 'AreasAndAsignatureController@deleteCustomAsignature');
-    */
-
-    //
-
-
 
 
     //Rutas áreas y asignaturas
@@ -261,11 +234,25 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 
 	Route::get('evaluation', 'Teacher\EvaluationController@index')->name('teacher.evaluation');
 
+    Route::get('evaluation/periods/{group_id}/{asignatures_id}', 'Teacher\EvaluationController@evaluationPeriods')->name('teacher.evaluation.periods');
+
+    Route::get('evaluation/evaluationParameter', 'Teacher\EvaluationController@evaluationParameter');
+
+    Route::get('evaluation/getAsignatureById/{asignature_id}', 'Teacher\EvaluationController@getAsignatureById');
+    Route::get('evaluation/getPeriodsByWorkingDay/{working_day_id}', 'Teacher\EvaluationController@getPeriodsByWorkingDay');
+    Route::get('evaluation/getCollectionsNotes/{group_id}/{asignature_id}/{period_id}', 'Teacher\EvaluationController@getCollectionsNotes');
+
+    Route::post('evaluation/storeEvaluationPeriods', 'Teacher\EvaluationController@storeEvaluationPeriods');
+    Route::post('evaluation/storeFinalNotes', 'Teacher\EvaluationController@storeFinalNotes');
+    Route::post('evaluation/storeNotes', 'Teacher\EvaluationController@storeNotes');
+
+
 	// Rutas para el Informe General de Periodo
 	Route::resource('generalReport', 'Teacher\GeneralReportController');
 	
 	// Rutas para las Observaciones Generales
 	Route::resource('generalObservation', 'Teacher\GeneralObservationController');
+
 
 });
 

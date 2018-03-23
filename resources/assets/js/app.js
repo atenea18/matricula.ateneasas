@@ -17,6 +17,7 @@ window.Vue = require('vue');
 
 Vue.component('group-assignment', require('./components/GroupAssignment.vue'));
 Vue.component('manager', require('./components/areas-asignature/Manger.vue'));
+Vue.component('evaluation-manager', require('./components/EvaluationManager.vue'));
 
 
 import VueSweetAlert from 'vue-sweetalert';

@@ -28,5 +28,10 @@ class EvaluationParameter extends Model
         return $this->belongsTo(Schoolyear::class, 'school_year_id');
     }
 
+    public function  notesParameter()
+    {
+        return $this->hasMany(NotesParameters::class, '');
+    }
+
 
 }
