@@ -25,50 +25,45 @@
 
 				  		<div class="container-fluid">
 				  			<div class="row">
-				  				<div class="col-md-3">
+				  				<div class="col-md-2">
 				  					<div class="form-group">
 				  						{!! Form::label('period_id', 'Periodo') !!}
-				  						{!! Form::select('period_id', $periods, $period->period_id, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciones una sede']) !!}
+				  						{!! Form::select('period_id', $periods, $period->period_id, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciona un periodo']) !!}
 				  					</div>
 				  				</div>
-				  				<div class="col-md-3">
-				  					<div class="form-group">
-				  						{!! Form::label('working_day_id', 'Jornada') !!}
-				  						{!! Form::select('working_day_id', $journeys, $period->working_day_id, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciones un grado']) !!}
-				  					</div>
-				  				</div>
-								<div class="col-md-3">
-				  					<div class="form-group">
-				  						{!! Form::label('period_state_id', 'Estado') !!}
-				  						{!! Form::select('period_state_id', $period_states, $period->period_state_id, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciones un estado']) !!}
-				  					</div>
-				  				</div>
-								<div class="col-md-3">
-									<div class="form-group">
-										{!! Form::label('school_year_id', 'Año lectivo') !!}
-										{!! Form::select('school_year_id', $schoolyears, $period->school_year_id, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciones una año lectivo']) !!}
-									</div>
-								</div>
-				  			</div>
-				  			<div class="row">
-								<div class="col-md-3">
+				  				<div class="col-md-2">
 				  					<div class="form-group">
 				  						{!! Form::label('percent', 'Porcentaje (%)') !!}
 				  						{!! Form::text('percent', $period->percent, ['class'=>'form-control']) !!}
 				  					</div>
 				  				</div>
-				  				<div class="col-md-3">
+				  				<div class="col-md-2">
+				  					<div class="form-group">
+				  						{!! Form::label('working_day_id', 'Jornada') !!}
+				  						{!! Form::select('working_day_id', $journeys, $period->working_day_id, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciona una jornada']) !!}
+				  					</div>
+				  				</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										{!! Form::label('school_year_id', 'Año lectivo') !!}
+										{!! Form::select('school_year_id', $schoolyears, $period->school_year_id, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciona un año lectivo']) !!}
+									</div>
+								</div>
+								<div class="col-md-2">
 									<div class="form-group">
 										{!! Form::label('start_date', 'Fecha de inicio') !!}
 										{!! Form::text('start_date', $period->start_date, ['class'=>'form-control datepicker']) !!}
 									</div>
 								</div>
-								<div class="col-md-3">
+								<div class="col-md-2">
 									<div class="form-group">
 										{!! Form::label('end_date', 'Fecha de culminación') !!}
 										{!! Form::text('end_date', $period->end_date, ['class'=>'form-control datepicker']) !!}
 									</div>
 								</div>
+				  			</div>
+				  			<div class="row">
+				  				
 				  			</div>
 				  		</div>
 				  	</div>

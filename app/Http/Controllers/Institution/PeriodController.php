@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Institution;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 
 use App\Http\Requests\CreatePeriodRequest;
 
@@ -12,10 +12,11 @@ use App\PeriodState;
 use App\PeriodWorkingday;
 use App\Schoolyear;
 use App\Workingday;
+use App\Institution;      
 
 use Auth;
 
-class PeriodController extends Controller
+class PeriodController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -33,8 +34,30 @@ class PeriodController extends Controller
         ->with('workingday')
         ->get();
 
+        $periodsPluck = $periods
+        ->pluck('period')
+        ->unique()
+        ->values()
+        ->pluck('period','id');
+    
+
         return View('institution.partials.period.index')
-        ->with('periods',$periods);
+        ->with('periods',$periods)
+        ->with('periodsPluck',$periodsPluck)
+        ->with('institution',$institution);
+    }
+
+    public function all(Institution $institution)
+    {
+
+        $periods = $institution->periods()
+        ->with('period')
+        ->with('schoolyear')
+        ->with('state')
+        ->with('workingday')
+        ->get();
+
+        return $this->showAll($periods);   
     }
 
     /**
@@ -46,7 +69,7 @@ class PeriodController extends Controller
     {
         $schoolyears = Schoolyear::orderBy('id', 'ASC')->pluck('year', 'id');
         $periods = Period::orderBy('period', 'ASC')->pluck('period', 'id');
-        $journeys = Workingday::orderBy('name', 'ASC')->pluck('name', 'id');
+        $journeys = Workingday::orderBy('name', 'ASC')->get();
         $period_states = PeriodState::orderBy('state', 'ASC')->pluck('state', 'id');
 
         return View('institution.partials.period.create')
@@ -64,11 +87,18 @@ class PeriodController extends Controller
      */
     public function store(CreatePeriodRequest $request)
     {
-        $institution = Auth::guard('web_institution')->user();
 
-        $period = new PeriodWorkingday($request->all());
-        $period->institution_id = $institution->id;
-        $period->save();
+        // dd($request->working_day_id);
+        $institution = Auth::guard('web_institution')->user();
+        
+        foreach($request->working_day_id['item'] as $key => $workingday_id)
+        {
+            $period = new PeriodWorkingday($request->all());
+            $period->institution_id = $institution->id;
+            $period->working_day_id = $workingday_id;
+            $period->period_state_id = 2;
+            $period->save();
+        }
 
         flash("Periodo creado con exito")->success();
 
@@ -84,6 +114,46 @@ class PeriodController extends Controller
     public function show($id)
     {
         //
+    }
+
+    public function showByWorkingday(Institution $institution, $year = '')
+    {
+        $newYear = ($year == '') ? date("Y") : $year;
+        $schoolyear = Schoolyear::where('year','=',$newYear)->first();
+
+        $periods = $institution->periods()
+        ->with('period')
+        ->with('schoolyear')
+        ->with('state')
+        ->with('workingday')
+        ->where([
+            ['working_day_id', '=', $workingday_id],
+            ['school_year_id', '=', $schoolyear->id]
+        ])
+        ->get();
+
+
+        return $this->showAll($periods);
+    }
+
+    public function showByPeriod(Institution $institution, $period_id, $year = '')
+    {
+        $newYear = ($year == '') ? date("Y") : $year;
+        $schoolyear = Schoolyear::where('year','=',$newYear)->first();
+
+        $periods = $institution->periods()
+        ->with('period')
+        ->with('schoolyear')
+        ->with('state')
+        ->with('workingday')
+        ->where([
+            ['period_id', '=', $period_id],
+            ['school_year_id', '=', $schoolyear->id]
+        ])
+        ->get();
+
+
+        return $this->showAll($periods);
     }
 
     /**
@@ -126,6 +196,20 @@ class PeriodController extends Controller
         return redirect()->route('period.index');
     }
 
+
+    public function changeState(Request $request)
+    {
+        if($request->ajax())
+        {
+            $period = PeriodWorkingday::findOrFail($request->value);
+            $period->period_state_id = ($request->checked == "true") ? 1 : 2;
+            $period->save();
+
+            return response()->json($period);
+        }
+    }
+
+
     /**
      * Remove the specified resource from storage.
      *
@@ -134,6 +218,11 @@ class PeriodController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $period = PeriodWorkingday::findOrFail($id);
+        $period->delete();
+
+        flash("Periodo Eliminado con exito")->success();
+
+        return redirect()->back();
     }
 }
