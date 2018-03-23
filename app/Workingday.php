@@ -21,4 +21,12 @@ class Workingday extends Model
     {
         return $this->hasMany('App\Group', 'working_day_id');
     }
+
+    /**
+     * Obtiene la relacion que hay entre el periodo y la jornada
+     */
+    public function periods()
+    {
+        return $this->hasMany(PeriodWorkingday::class, 'working_day_id');
+    }
 }

@@ -233,6 +233,12 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	// Criterios de Evaluación
 	Route::resource('criteria', 'Institution\CriteriaController', ['only'=>['store','create','edit','update','destroy']]);
 
+	// Escala Valorativa 
+	Route::resource('scaleEvaluation', 'Institution\ScaleEvaluationController');
+
+	// Periodos
+	Route::resource('period', 'Institution\PeriodController');
+
 	// PDF's
 		// LISTAS DE ASISTENCIAS
 	Route::get('pdf/studentAttendance/{group_id}/{year}', 'PdfController@attendance')->name('student.attendance.pdf');

@@ -37,4 +37,12 @@ class Schoolyear extends Model
     {
         return $this->hasMany(EvaluationParameter::class, 'school_year_id');
     }
+
+    /**
+     * Obtiene la relacion que hay entre el periodo y el año lectivo
+     */
+    public function periods()
+    {
+        return $this->hasMany(PeriodWorkingday::class, 'school_year_id');
+    }
 }

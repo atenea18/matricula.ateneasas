@@ -186,6 +186,7 @@ return [
         Codedge\Fpdf\FpdfServiceProvider::class,
         Laraveles\Spanish\SpanishServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Laracasts\Flash\FlashServiceProvider::class,
 
     ],
 
