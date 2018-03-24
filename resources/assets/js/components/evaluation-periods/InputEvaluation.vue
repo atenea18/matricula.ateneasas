@@ -35,7 +35,7 @@
             this.$bus.$off("i-can-save-note-" + referencia);
             this.$bus.$on("i-can-save-note-" + referencia, keyEvaluationPeriodId => {
                 this.evaluationperiodid = keyEvaluationPeriodId
-                console.log(this.evaluationperiodid)
+                //console.log(this.evaluationperiodid)
                 this.sendDataNotes(keyEvaluationPeriodId)
             });
 
@@ -90,7 +90,7 @@
                     evaluation_periods_id: key,
                     notes_parameters_id: this.noteparameter.id
                 }
-                console.log(data)
+                //console.log(data)
                 axios.post('/teacher/evaluation/storeNotes', {data})
                     .then(function (response) {
                         if (response.status == 200) {
