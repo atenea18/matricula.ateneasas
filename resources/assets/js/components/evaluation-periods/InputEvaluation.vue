@@ -18,32 +18,55 @@
         },
         data() {
             return {
-                valuenote: "",
-                evaluationperiodsid: 0
+                valuenote: 0,
+                evaluationperiodid: 0,
+                percent: ""
             }
         },
         created() {
+
+
+            this.percent = parseFloat(this.noteparameter.percent)
+            this.valuenote = parseFloat(this.valuenote).toFixed(2)
             this.search(this.noteparameter.id)
+
+            let referencia = this.refsInputEvaluation
+
+            this.$bus.$off("i-can-save-note-" + referencia);
+            this.$bus.$on("i-can-save-note-" + referencia, keyEvaluationPeriodId => {
+                this.evaluationperiodid = keyEvaluationPeriodId
+                //console.log(this.evaluationperiodid)
+                this.sendDataNotes(keyEvaluationPeriodId)
+            });
+
+
         },
+        mounted() {
+
+        },
+
         computed: {
             ...mapState([
                 'asignature',
                 'periodSelected'
-            ])
+            ]),
+            refsInputParameter() {
+                return "" + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id + this.noteparameter.id
+            },
+            refsInputEvaluation() {
+                return "" + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id + this.noteparameter.id
+            },
+            refsr() {
+                return "" + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id
+            },
 
         },
         methods: {
             writingNotes() {
-                let nameEvent = '' + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id
-                this.$bus.$emit('set-dirty-' + nameEvent, nameEvent)
-                let nameEE = '' + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected
-                this.$bus.$off("set-store-note-" + nameEE);
-                this.$bus.$on("set-store-note-" + nameEE, keyEvaluationPeriodId => {
-                    this.evaluationperiodsid = keyEvaluationPeriodId
-                    this.sendDataNotes()
 
-                });
-
+                let referencia = this.refsInputEvaluation
+                this.$bus.$emit('set-dirty-' + referencia, this.refsr)
+                //
             },
 
             search(idnoteparameter) {
@@ -59,18 +82,19 @@
 
 
             },
-            sendDataNotes() {
-                //console.log(this.evaluationperiodsid)
+            sendDataNotes(key) {
+
                 let data = {
                     value: this.valuenote,
                     overcoming: null,
-                    evaluation_periods_id: this.evaluationperiodsid,
+                    evaluation_periods_id: key,
                     notes_parameters_id: this.noteparameter.id
                 }
+                //console.log(data)
                 axios.post('/teacher/evaluation/storeNotes', {data})
                     .then(function (response) {
                         if (response.status == 200) {
-                            //console.log(response.data)
+
                         }
                     })
                     .catch(function (error) {
