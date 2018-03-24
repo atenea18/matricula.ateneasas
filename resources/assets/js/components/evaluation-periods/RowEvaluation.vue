@@ -13,7 +13,7 @@
             <input-parameter :ref="refsInputParameter" :setting="setting" :parameter="parameter"/>
         </template>
         <td style="padding-top:16px;width:15px">
-            <label>{{valuenote.toFixed(2)}} </label>
+            <label v-show="valuenote">{{valuenote.toFixed(2)}} </label>
         </td>
     </tr>
 </template>
@@ -59,74 +59,69 @@
 
         created() {
             this.enrollmentid = this.setting.enrollment.id;
-            /* Obtiene las prevaloraciones para generar valoración final */
-            this.getInputsParameters();
-            /* Calcula prevaloraciones al renderizar el componente */
-            this.eventForUpdateInputParameter("set-dirty-initial", "set-refs");
-            /* Calcula prevaloraciones al escuchar evento de keyup */
-            this.eventForUpdateInputParameter("set-dirty", "set-refs");
-
         },
         mounted() {
-            this.isSend = true
+            this.eventForUpdateInputParameter();
+
+            this.isSend = true;
+            this.parameters.forEach(parameter => {
+                let referencia = this.refsInputEvaluation + parameter.id
+                let notesBelongToParameter = this.$refs[referencia];
+                this.$bus.$emit("set-notes-to-parameter-" + referencia, notesBelongToParameter);
+            })
+
+            this.valuenote = 0;
+            let notesParameters = this.$refs[this.refsInputParameter];
+            notesParameters.forEach(e => {
+                this.valuenote += e.value
+            })
+
+
+        },
+        updated() {
+            if (this.evaluationperiodid) {
+                this.sendDataFinalNotes()
+
+            }
+
         },
         methods: {
 
             /*
              *  eventForUpdateInputParameter
              */
-            eventForUpdateInputParameter(keyEvent, KeyEmit) {
+            eventForUpdateInputParameter() {
+
+
                 this.parameters.forEach(parameter => {
-                    let nameEvent = "" +
-                        this.setting.enrollment.id +
-                        this.$store.state.asignature.id +
-                        this.$store.state.periodSelected +
-                        parameter.id;
 
-                    this.$bus.$off(keyEvent + "-" + nameEvent);
-                    this.$bus.$on(keyEvent + "-" + nameEvent, pthis => {
-                        let arraychilds = this.$refs[pthis];
-                        this.$bus.$emit(KeyEmit + "-" + nameEvent, arraychilds);
-                    });
-                });
-            },
 
-            /*
-             *  getInputsParameters
-             */
-            getInputsParameters() {
-                let nameRef =
-                    "" +
-                    this.setting.enrollment.id +
-                    this.$store.state.asignature.id +
-                    this.$store.state.periodSelected;
 
-                this.$bus.$off("set-note-" + nameRef);
-                this.$bus.$on("set-note-" + nameRef, keyName => {
-                    let arraychilds = this.$refs[keyName];
-                    if (typeof arraychilds == "object") {
-                        this.valuenote = 0;
-                        arraychilds.forEach(e => {
-                            this.valuenote += e.value;
+                    parameter.notes_parameter.forEach(note_parameter => {
+                        let referencia = this.refsInputEvaluation + parameter.id + note_parameter.id
+                        this.$bus.$off("set-dirty-" + referencia)
+                        this.$bus.$on("set-dirty-" + referencia, keyToSearch => {
+
+                            let notesBelongToParameter = this.$refs[keyToSearch];
+                            //console.log(notesBelongToParameter[0].valuenote)
+                            this.$bus.$emit("set-notes-to-parameter-" + keyToSearch, notesBelongToParameter);
+
+                            this.valuenote = 0;
+                            let notesParameters = this.$refs[this.refsInputParameter];
+                            notesParameters.forEach(e => {
+                                this.valuenote += e.value
+                            })
+                            //Por cada evento keyup en cada input se ejecuta una sola vez el método para
+                            //guardar una Evaluación de Periodo, esta retorna su id
+                            this.sendDataEvaluationPeriods(referencia)
                         });
-                    }
-                    if(this.evaluationperiodid == 0){
-                        this.sendDataEvaluationPeriods()
-                    }else{
-                        this.sendDataFinalNotes()
-                        let nameEvent = '' +
-                            this.setting.enrollment.id +
-                            this.$store.state.asignature.id +
-                            this.$store.state.periodSelected
-                        this.$bus.$emit("set-store-note-" + nameEvent, this.evaluationperiodid);
-                    }
+                    })
+
 
                 });
-
-
             },
 
-            sendDataEvaluationPeriods() {
+            sendDataEvaluationPeriods(keyRef) {
 
                 let data = {
                     enrollment_id: this.setting.enrollment.id,
@@ -143,12 +138,12 @@
 
                     axios.post('/teacher/evaluation/storeEvaluationPeriods', {data})
                         .then(function (response) {
+
                             if (response.status == 200) {
                                 _this.evaluationperiodid = response.data.id
-                                //console.log(_this.evaluationperiodid)
                                 _this.sendDataFinalNotes()
-                                _this.$bus.$emit("set-store-note-" + nameEvent, _this.evaluationperiodid);
                             }
+                            _this.$bus.$emit('i-can-save-note-' + keyRef, response.data.id)
                         })
                         .catch(function (error) {
                             console.log(error);
@@ -156,6 +151,8 @@
                 }
 
             },
+
+
             sendDataFinalNotes() {
 
                 let data = {
