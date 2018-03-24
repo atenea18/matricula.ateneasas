@@ -28,10 +28,18 @@
         },
 
         computed: {
-            ...mapState(["asignature", "periodSelected"])
+            ...mapState(["asignature", "periodSelected"]),
+
+            refsInputEvaluation() {
+                return "" + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id
+            },
         },
 
         created() {
+
+        },
+
+        mounted() {
             this.triggersEvents()
         },
 
@@ -41,14 +49,19 @@
              *  calculate
              */
             calculate(element) {
+
+                //console.log(parseFloat(element.valuenote))
                 //Si la nota no tiene porcentaje
                 if (element.percent == 0) {
                     if (element.value > 0) {
                         this.sumaZero += element.value;
                         this.countPercentZero++;
+                        //console.log(element.value)
                     }
                 }
+
                 //Si la nota si tiene porcentaje example proyecto 30%
+
                 if (element.percent > 0) {
                     this.promedioWith += element.value * element.percent;
                     this.percentWith += element.percent;
@@ -56,15 +69,16 @@
                 //Se le asigna el porcentaje restante a las notas sin porcentajes
                 this.percentZero = 1 - this.percentWith;
                 if (this.countPercentZero != 0) {
-                    this.promedioZero =
-                        this.sumaZero / this.countPercentZero * this.percentZero;
+                    this.promedioZero = (this.sumaZero / this.countPercentZero) * this.percentZero;
                 }
+
             },
 
             /*
              *  calculateValoration
              */
             calculateValoration() {
+
                 this.value = (this.promedioZero + this.promedioWith) * (this.parameter.percent / 100);
             },
 
@@ -84,29 +98,24 @@
              *  triggersEvents
              */
             triggersEvents() {
-                let nameEvent = "" +
-                    this.setting.enrollment.id +
-                    this.$store.state.asignature.id +
-                    this.$store.state.periodSelected +
-                    this.parameter.id;
+                let referencia = this.refsInputEvaluation
 
-
-                this.$bus.$off("set-refs-" + nameEvent);
-                this.$bus.$on("set-refs-" + nameEvent, childs => {
+                this.$bus.$off("set-notes-to-parameter-" + referencia);
+                this.$bus.$on("set-notes-to-parameter-" + referencia, (notes) => {
                     this.initial();
-                    childs.forEach(element => {
-                        let elementNotes = {
-                            percent: parseFloat(element._props.noteparameter.percent / 100),
-                            value: parseFloat(element.valuenote == "" ? 0 : element.valuenote)
-                        };
+                    notes.forEach(note => {
+                        let noteElement = {
+                            value: parseFloat(note.valuenote) || 0,
+                            percent: (parseFloat(note.percent) / 100)
 
-                        this.calculate(elementNotes);
-                    });
+                        }
+                        //console.log(noteElement)
+                        this.calculate(noteElement)
+                    })
                     this.calculateValoration()
-                    this.createEventSearchInputEvaluation()
-                });
+                })
 
-                this.$bus.$emit("set-dirty-initial-" + nameEvent, nameEvent);
+
             },
 
             /*
