@@ -125,7 +125,7 @@ class EvaluationController extends Controller
         if (!$notes) {
             try {
                 $notes = new Note();
-                $notes->code_notes = $data['evaluation_periods_id'] .'' . $data['notes_parameters_id'];
+                $notes->code_notes = $data['evaluation_periods_id'] . '' . $data['notes_parameters_id'];
                 $notes->value = $data['value'];
                 $notes->overcoming = $data['overcoming'];
                 $notes->notes_parameters_id = $data['notes_parameters_id'];
@@ -215,6 +215,15 @@ class EvaluationController extends Controller
         return $collection;
     }
 
+    public function getInstitutionOfTeacher(Request $request)
+    {
+        $teacher = Auth::guard('teachers')->user()->teachers()->first();
+        $institution = Institution::where('id', '=', $teacher->institution_id)->get();
+        if ($request->ajax()) {
+            return $institution[0];
+        }
+    }
+
     public function evaluationParameter(Request $request)
     {
 
@@ -227,9 +236,7 @@ class EvaluationController extends Controller
             ->get();
 
         return $parameters;
-        if ($request->ajax()) {
 
-        }
 
     }
 }

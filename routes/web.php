@@ -32,7 +32,12 @@ Route::group(['prefix'=>'ajax'], function(){
 	Route::get('/student/getFamily/{id}', 'StudentController@getFamily')->name('student.getFamily');
 	Route::get('/student/getFamilyById/{id}', 'StudentController@getFamilyById');
 	Route::get('/family/search', 'FamilyController@search')->name('family.search');
-	
+
+    Route::get('/allgrades', 'GradeController@getAllGrades');
+    Route::get('/asignaturesByGrade', 'Teacher\AsignatureController@asignaturesByGrade');
+    Route::get('/areasByGrade', 'Teacher\AreasController@areasByGrade');
+    Route::get('/getInstitutionOfTeacher', 'Teacher\EvaluationController@getInstitutionOfTeacher');
+
 });
 
 Route::group(['middleware'=>'admin_guest'], function(){
