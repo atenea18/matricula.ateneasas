@@ -173,4 +173,8 @@ class InstitutionController extends Controller
 
         return redirect()->route('institution.index');
     }
+
+    public function getIdInstitution(){
+
+    }
 }

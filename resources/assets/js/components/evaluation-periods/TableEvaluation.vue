@@ -7,7 +7,7 @@
                 Nombres Y Apellidos
             </th>
             <th>
-                A
+                FAA
             </th>
             <template v-for="para in parameters">
                 <th :colspan="para.notes_parameter.length+1">

@@ -16,7 +16,8 @@ const store = new Vuex.Store({
         periodsworkingday: Object,
         periodSelected: 0,
         collectionNotes: [],
-        isCollection: false
+        isCollection: false,
+        institutionOfTeacher: 0
 
     },
 
@@ -31,6 +32,9 @@ const store = new Vuex.Store({
         },
         decrement(state) {
             state.counter--
+        },
+        setInstitutionOfTeacher(state, payload){
+          state.institutionOfTeacher = payload.institutionOfTeacher || []
         },
         setGrades(state, payload) {
             state.grades = payload.grades || []
@@ -73,8 +77,14 @@ const store = new Vuex.Store({
             })
 
         },
+        institutionOfTeacher(context, payload = {}) {
+            axios.get('/ajax/getInstitutionOfTeacher').then(res => {
+                payload.institutionOfTeacher = res.data;
+                context.commit('setInstitutionOfTeacher', payload)
+            })
+        },
         grades(context, payload = {}) {
-            axios.get('allgrades').then(res => {
+            axios.get('/ajax/allgrades').then(res => {
                 payload.grades = res.data;
                 context.commit('setGrades', payload)
             })

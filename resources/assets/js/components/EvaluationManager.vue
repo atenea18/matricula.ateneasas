@@ -6,9 +6,7 @@
             <h5>{{group.name}}</h5>
         </div>
         <div class="col-md-3">
-            <div class="form-group" style="padding-top:22px;">
-                <button class="btn btn-default" style="margin:0px auto; display: block">Configurar Desempeños</button>
-            </div>
+           <performances-manager :objectPerformances="params"></performances-manager>
         </div>
         <div class="col-md-3">
             <label for="">Seleccionar Periodo</label>
@@ -33,6 +31,7 @@
     import {mapState, mapMutations, mapGetters} from 'vuex'
     import RowEvaluation from './evaluation-periods/RowEvaluation';
     import TableEvaluation from './evaluation-periods/TableEvaluation';
+    import PerformancesManager from './evaluation-periods/performances/PerformancesManager';
 
     export default {
         name: "evaluation-manager",
@@ -41,26 +40,39 @@
             asignatureid: {type: Number},
         },
         components: {
-            RowEvaluation, TableEvaluation
+            RowEvaluation, TableEvaluation, PerformancesManager
         },
         data() {
             return {
-                periodid:0,
-                state: false
+                periodid: 0,
+                state: false,
             }
         },
         created() {
+
             this.getParameters()
             this.getAsignatureId(this.asignatureid)
             this.getPeriodsByWorkingDay(this.group.working_day_id);
+            this.getInstitutionOfTeacher()
+            this.getGrades()
+
         },
         computed: {
             ...mapState([
+                'grades',
                 'asignature',
                 'periodsworkingday',
                 'periodSelected',
-                'isCollection'
+                'isCollection',
+                'institutionOfTeacher'
             ]),
+            params() {
+                return {
+                    grade_id: this.group.grade_id,
+                    asignature_id: this.asignatureid,
+                    period_id: this.$store.state.periodSelected
+                }
+            }
 
         },
         methods: {
@@ -74,12 +86,8 @@
             },
             getEvaluationsByPeriod() {
                 this.$store.state.isCollection = false
-
                 this.$store.state.periodSelected = this.periodid
-                //console.log(this.$store.state.isCollection)
                 this.getCollectionNotes(this.group.id, this.asignatureid, this.$store.state.periodSelected)
-
-
             },
             getPeriodsByWorkingDay(workingdayid) {
                 this.$store.dispatch('periodsByWorkingDay', {
@@ -87,19 +95,38 @@
                 })
             },
 
-            getCollectionNotes(groupid, asignatureid, periodid){
+            getCollectionNotes(groupid, asignatureid, periodid) {
                 this.$store.dispatch('collectionNotes', {
                     groupid: groupid,
                     asignatureid: asignatureid,
                     periodid: periodid
                 })
-            }
+            },
+            getGrades() {
+                this.$store.dispatch('grades')
+            },
+            getInstitutionOfTeacher() {
+                this.$store.dispatch('institutionOfTeacher')
+            },
 
         }
 
     }
 </script>
 
-<style scoped>
+<style>
+    .modal-content {
+        border-radius: 0px;
+    }
+
+    .modal-dialog {
+        width: 80%;
+        margin: 30px auto;
+    }
+
+    .form-control {
+        border-radius: 0px;
+    }
+
 
 </style>
