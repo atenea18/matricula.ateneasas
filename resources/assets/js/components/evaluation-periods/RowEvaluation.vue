@@ -2,7 +2,12 @@
     <tr>
         <td>{{setting.index+1}}</td>
         <td style="width:320px"> {{fullName}}</td>
-        <td> 2</td>
+        <td>
+            <!--
+            <label v-show="isConexion" for="">Si</label>
+            <label v-show="!isConexion" for="">No</label>
+            -->
+        </td>
         <template v-for="parameter in parameters">
             <td v-for="note_parameter in parameter.notes_parameter">
                 <input-evaluation
@@ -36,7 +41,8 @@
                 isExistEvaluationPeriod: false,
                 evaluationperiodid: 0,
                 valuenote: 0,
-                isSend: false
+                isSend: false,
+                isConexion: true
             }
         },
 
@@ -79,9 +85,10 @@
 
         },
         updated() {
-            if (this.evaluationperiodid) {
-                this.sendDataFinalNotes()
-
+            if (navigator.onLine) {
+                this.isConexion = true
+            } else {
+                this.isConexion = false
             }
 
         },
@@ -94,7 +101,6 @@
 
 
                 this.parameters.forEach(parameter => {
-
 
 
                     parameter.notes_parameter.forEach(note_parameter => {

@@ -72,7 +72,7 @@
     </form>
 </template>
 <script>
-    import {mapState, mapMutations, mapGetters} from 'vuex';
+    import {mapState} from 'vuex';
     import AtSelectBy from '../partials/AtSelectBy'
     import MultiSelect from '../partials/MultiSelect';
     import AtBoxData from '../partials/BoxData/AtBoxData';

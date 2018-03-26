@@ -26,6 +26,9 @@ import Tabs from 'vue-tabs-component';
 import VueGoodTable from 'vue-good-table';
 import store from './store'
 
+
+
+
 Vue.use(VueSweetAlert);
 Vue.use(VueGoodTable);
 Vue.use(EventBus);
