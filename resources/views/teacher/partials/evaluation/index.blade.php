@@ -27,12 +27,12 @@
 					</li>
 					@if($teacher->isDirector())
 					<li role="presentation">
-						<a href="#generalReportTab" aria-controls="generalReportTab" role="tab" data-toggle="tab">
+						<a href="{{route('generalReport.index')}}">
 							Informe General de Periodo
 						</a>
 					</li>
 					<li role="presentation">
-						<a href="#generalObservationTab" aria-controls="generalObservationTab" role="tab" data-toggle="tab">
+						<a href="{{route('generalObservation.index')}}">
 							Observaciones Generales
 						</a>
 					</li>
@@ -50,14 +50,14 @@
 				@include('teacher.partials.evaluation.home')
 			</div>
 
-			@if($teacher->isDirector())
+			{{-- @if($teacher->isDirector())
 			<div role="tabpanel" class="tab-pane" id="generalReportTab">
 				@include('teacher.partials.generalReport.index')
 			</div>
 			<div role="tabpanel" class="tab-pane" id="generalObservationTab">
 				@include('teacher.partials.generalObservation.index')
 			</div>
-			@endif
+			@endif --}}
 		</div>
 	</div>
 </div>

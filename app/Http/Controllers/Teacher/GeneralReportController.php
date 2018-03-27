@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Teacher;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
+use Auth;
+
+use App\Teacher;
+
 class GeneralReportController extends Controller
 {
     /**
@@ -14,7 +18,11 @@ class GeneralReportController extends Controller
      */
     public function index()
     {
-        //
+
+        $teacher = Auth::guard('teachers')->user()->teachers()->first();
+
+        return View('teacher.partials.generalReport.index')
+        ->with('teacher',$teacher);
     }
 
     /**
