@@ -1,13 +1,18 @@
 <template>
     <div class="form-group padding-at">
-        <label>Seleccionar {{inObject.name}}</label>
 
-        <select v-on:change="eventChange" class="form-control" name="" v-model="outObject.selectedRow">
+        <label>Seleccionar {{}}</label>
+
+        <!--
+        <select v-on:change="eventChange" class="form-control" name="" v-model="">
             <option :value="{}">Seleccionar</option>
-            <option v-for="row in inObject.rows" :value="row">
+            <option v-for="row in " :value="row">
                 {{ row.name }}
             </option>
         </select>
+        -->
+
+
         <!--
         <ul v-show="picked" class="content-error">
             <li v-for="error in errors">
@@ -23,12 +28,11 @@
         name: "at-select-object",
         components: {},
         props: {
-            object: {type: Object}
         },
         data() {
             return {
                 /* Recibe información del padre */
-                inObject: {
+                inObjectSelect: {
                     nameSelect: 'Grado',
                     nameEvent: '',
                     nameDependencie: '',
@@ -37,7 +41,7 @@
                     rows: []
                 },
                 /* Información del componente */
-                outObject: {
+                outObjectSelect: {
                     selectedId: 0,
                     selectedRow: {}
                 }
@@ -47,8 +51,8 @@
 
         },
         mounted() {
-            this.inObject = this.object
-            //console.log(this.inObject.rows)
+
+
         },
         updated() {
 
@@ -56,8 +60,7 @@
         methods: {
 
             eventChange(){
-                this.outObject.selectedId = this.outObject.selectedRow.id
-                console.log(this.outObject.selectedRow)
+                this.outObjectSelect.selectedId = this.outObjectSelect.selectedRow.id
             }
         }
     }
