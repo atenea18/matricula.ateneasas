@@ -20,7 +20,8 @@
             return {
                 valuenote: 0,
                 evaluationperiodid: 0,
-                percent: ""
+                percent: "",
+                beforevalue:0
             }
         },
         created() {
@@ -63,9 +64,12 @@
         },
         methods: {
             writingNotes() {
+                if(this.beforevalue != this.valuenote){
+                    let referencia = this.refsInputEvaluation
+                    this.$bus.$emit('set-dirty-' + referencia, this.refsr)
+                    this.beforevalue = this.valuenote
+                }
 
-                let referencia = this.refsInputEvaluation
-                this.$bus.$emit('set-dirty-' + referencia, this.refsr)
                 //
             },
 
@@ -79,9 +83,9 @@
                     })
                 }
                 this.valuenote = value
-
-
+                this.beforevalue = value
             },
+
             sendDataNotes(key) {
 
                 let data = {

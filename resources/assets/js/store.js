@@ -13,6 +13,7 @@ const store = new Vuex.Store({
         teachers: [],
         parameters: [],
         asignature: Object,
+        grade: Object,
         periodsworkingday: Object,
         periodSelected: 0,
         collectionNotes: [],
@@ -33,8 +34,8 @@ const store = new Vuex.Store({
         decrement(state) {
             state.counter--
         },
-        setInstitutionOfTeacher(state, payload){
-          state.institutionOfTeacher = payload.institutionOfTeacher || []
+        setInstitutionOfTeacher(state, payload) {
+            state.institutionOfTeacher = payload.institutionOfTeacher || []
         },
         setGrades(state, payload) {
             state.grades = payload.grades || []
@@ -47,6 +48,9 @@ const store = new Vuex.Store({
         },
         setAsignatureById(state, payload) {
             state.asignature = payload.asignature || []
+        },
+        setGradeById(state, payload) {
+            state.grade = payload.grade || []
         },
         setSubjectsType(state, payload) {
             state.subjectsType = payload.subjectsType || []
@@ -102,9 +106,15 @@ const store = new Vuex.Store({
             })
         },
         asignatureById(context, payload = {}) {
-            axios.get('/teacher/evaluation/getAsignatureById/' + payload.asignatureid).then(res => {
+            axios.get('/teacher/evaluation/getAsignatureById/' + payload.asignatureid +'/' + payload.grade_id).then(res => {
                 payload.asignature = res.data;
                 context.commit('setAsignatureById', payload)
+            })
+        },
+        gradeById(context, payload = {}) {
+            axios.get('/teacher/evaluation/getGradeById/' + payload.grade_id).then(res => {
+                payload.grade = res.data;
+                context.commit('setGradeById', payload)
             })
         },
         subjectsType(context, payload = {}) {
@@ -144,7 +154,7 @@ const store = new Vuex.Store({
                     + payload.asignatureid + '/'
                     + payload.periodid
                 ).then(res => {
-                    if(typeof res.data == 'object'){
+                    if (typeof res.data == 'object') {
                         t.state.isCollection = true
                         payload.collectionNotes = res.data
                         //console.log(res.data)
