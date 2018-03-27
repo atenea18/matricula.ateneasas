@@ -38,7 +38,7 @@
 					<tbody>
 						@foreach($periods as $key => $period)
 						<tr>
-							<td>{{ $period->period->period }}</td>
+							<td>{{ $period->period->name }}</td>
 							<td>{{ $period->percent }}</td>
 							<td>{{ $period->workingday->name }}</td>
 							<td>{{ $period->schoolyear->year }}</td>
@@ -95,7 +95,7 @@
             "columns": [
                 {
                     "render": function(data, type, full, meta){
-                        return "Periodo "+full.period.period;
+                        return "Periodo "+full.period.name;
                     }
                 },
                 {
@@ -105,7 +105,7 @@
                 },
                 {
                     "render": function(data, type, full, meta){
-                    	if(full.period_state_id == 1)
+                    	if(full.periods_state_id == 1)
                     	{
                     		return "<input type='checkbox' value='"+full.id+"' checked><div class='hide' style='float:right;'>Cargando..<i class='fas fa-spinner fa-pulse'></i></div>";
                     	}

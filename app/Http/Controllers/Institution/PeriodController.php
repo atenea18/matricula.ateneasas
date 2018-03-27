@@ -34,6 +34,7 @@ class PeriodController extends ApiController
         ->with('workingday')
         ->get();
 
+        // return response()->json($periods);
         $periodsPluck = $periods
         ->pluck('period')
         ->unique()
@@ -68,9 +69,9 @@ class PeriodController extends ApiController
     public function create()
     {
         $schoolyears = Schoolyear::orderBy('id', 'ASC')->pluck('year', 'id');
-        $periods = Period::orderBy('period', 'ASC')->pluck('period', 'id');
+        $periods = Period::orderBy('name', 'ASC')->pluck('name', 'id');
         $journeys = Workingday::orderBy('name', 'ASC')->get();
-        $period_states = PeriodState::orderBy('state', 'ASC')->pluck('state', 'id');
+        $period_states = PeriodState::orderBy('name', 'ASC')->pluck('name', 'id');
 
         return View('institution.partials.period.create')
         ->with('schoolyears',$schoolyears)
@@ -96,7 +97,7 @@ class PeriodController extends ApiController
             $period = new PeriodWorkingday($request->all());
             $period->institution_id = $institution->id;
             $period->working_day_id = $workingday_id;
-            $period->period_state_id = 2;
+            $period->periods_state_id = 2;
             $period->save();
         }
 
@@ -166,9 +167,9 @@ class PeriodController extends ApiController
     {
 
         $schoolyears = Schoolyear::orderBy('id', 'ASC')->pluck('year', 'id');
-        $periods = Period::orderBy('period', 'ASC')->pluck('period', 'id');
+        $periods = Period::orderBy('name', 'ASC')->pluck('name', 'id');
         $journeys = Workingday::orderBy('name', 'ASC')->pluck('name', 'id');
-        $period_states = PeriodState::orderBy('state', 'ASC')->pluck('state', 'id');
+        $period_states = PeriodState::orderBy('name', 'ASC')->pluck('name', 'id');
 
         return View('institution.partials.period.edit')
         ->with('period',$period)
@@ -202,7 +203,7 @@ class PeriodController extends ApiController
         if($request->ajax())
         {
             $period = PeriodWorkingday::findOrFail($request->value);
-            $period->period_state_id = ($request->checked == "true") ? 1 : 2;
+            $period->periods_state_id = ($request->checked == "true") ? 1 : 2;
             $period->save();
 
             return response()->json($period);

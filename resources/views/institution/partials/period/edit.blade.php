@@ -27,8 +27,8 @@
 				  			<div class="row">
 				  				<div class="col-md-2">
 				  					<div class="form-group">
-				  						{!! Form::label('period_id', 'Periodo') !!}
-				  						{!! Form::select('period_id', $periods, $period->period_id, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciona un periodo']) !!}
+				  						{!! Form::label('periods_id', 'Periodo') !!}
+				  						{!! Form::select('periods_id', $periods, $period->periods_id, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciona un periodo']) !!}
 				  					</div>
 				  				</div>
 				  				<div class="col-md-2">

@@ -12,6 +12,6 @@ class Period extends Model
 
     public function periods()
     {
-        return $this->hasMany(PeriodWorkingday::class, 'period_id');
+        return $this->hasMany(PeriodWorkingday::class, 'periods_id');
     }
 }
