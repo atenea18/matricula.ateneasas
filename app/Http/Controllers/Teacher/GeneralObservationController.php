@@ -114,7 +114,6 @@ class GeneralObservationController extends ApiController
         $observation->observation = $request->observation_edit;
         $observation->save();
 
-        sleep(2);
         return response()->json($observation);
     }
 

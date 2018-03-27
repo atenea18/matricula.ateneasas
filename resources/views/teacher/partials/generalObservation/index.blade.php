@@ -175,7 +175,7 @@
 
 						var html = "<option>- Seleciona un periodo -</option>";
 						$.each(data.data, function(indx, el){
-							html += "<option value='"+el.id+"'>"+el.period.period+"</option>";
+							html += "<option value='"+el.id+"'>"+el.period.name+"</option>";
 						});
 
 						$("#period_working_day_id").html(html);

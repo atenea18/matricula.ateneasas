@@ -24,7 +24,7 @@ class CreatePeriodRequest extends FormRequest
     public function rules()
     {
         return [
-            'period_id'         =>  'required',
+            'periods_id'         =>  'required',
             'working_day_id.item'  =>  'required',
             'school_year_id'    =>  'required',
             'percent'           =>  'integer',
@@ -36,7 +36,7 @@ class CreatePeriodRequest extends FormRequest
     public function messages()
     {
         return [
-            'period_id.required'         =>  'El periodo es requerido',
+            'periods_id.required'         =>  'El periodo es requerido',
             'working_day_id.item.required'  =>  'La jornada es requerida',
             'school_year_id.required'    =>  'El año lectivo es requerido',
             'percent.integer'            =>  'El porcentaje debe ser númerico',

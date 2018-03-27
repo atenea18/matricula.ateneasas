@@ -13,21 +13,21 @@ class AddTriggerPeriodWorkingDayTable extends Migration
      */
     public function up()
     {
-        Schema::table('period_working_day', function (Blueprint $table) {
+        Schema::table('working_day_periods', function (Blueprint $table) {
             
             \Illuminate\Support\Facades\DB::unprepared('
-                DROP PROCEDURE IF EXISTS insert_code_period_working_day;
-                CREATE TRIGGER insert_code_period_working_day BEFORE INSERT ON `period_working_day` FOR EACH ROW
+                DROP PROCEDURE IF EXISTS insert_code_working_day_periods;
+                CREATE TRIGGER insert_code_working_day_periods BEFORE INSERT ON `working_day_periods` FOR EACH ROW
                 BEGIN
-                SET NEW.code = CONCAT(NEW.working_day_id,NEW.period_id,NEW.period_state_id,NEW.institution_id,NEW.school_year_id);
+                SET NEW.code_working_day_periods = CONCAT(NEW.working_day_id,NEW.periods_id,NEW.periods_state_id,NEW.institution_id,NEW.school_year_id);
                 END;
                 
             ');
                 \Illuminate\Support\Facades\DB::unprepared('
-              DROP PROCEDURE IF EXISTS update_code_period_working_day;
-                CREATE TRIGGER update_code_period_working_day BEFORE UPDATE ON `period_working_day` FOR EACH ROW
+              DROP PROCEDURE IF EXISTS update_code_working_day_periods;
+                CREATE TRIGGER update_code_working_day_periods BEFORE UPDATE ON `working_day_periods` FOR EACH ROW
                 BEGIN
-                SET NEW.code = CONCAT(NEW.working_day_id,NEW.period_id,NEW.period_state_id,NEW.institution_id,NEW.school_year_id);
+                SET NEW.code_working_day_periods = CONCAT(NEW.working_day_id,NEW.periods_id,NEW.periods_state_id,NEW.institution_id,NEW.school_year_id);
                 END;
                 
             ');
@@ -41,9 +41,9 @@ class AddTriggerPeriodWorkingDayTable extends Migration
      */
     public function down()
     {
-        Schema::table('period_working_day', function (Blueprint $table) {
-            \Illuminate\Support\Facades\DB::unprepared('DROP TRIGGER `insert_code_period_working_day`');
-            \Illuminate\Support\Facades\DB::unprepared('DROP TRIGGER `update_code_period_working_day`');
+        Schema::table('working_day_periods', function (Blueprint $table) {
+            \Illuminate\Support\Facades\DB::unprepared('DROP TRIGGER `insert_code_working_day_periods`');
+            \Illuminate\Support\Facades\DB::unprepared('DROP TRIGGER `update_code_working_day_periods`');
         });
     }
 }

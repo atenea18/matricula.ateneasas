@@ -19,8 +19,11 @@ class PeriodController extends ApiController
 
     public function byGroup(Group $group)
     {
+        $institution = $group->headquarter->institution;
+
     	$periods = $group->workingday->periods()
     	->with('period')
+        ->where('institution_id', '=', $institution->id)
     	->get();
 
     	return $this->showAll($periods);
