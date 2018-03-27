@@ -6,7 +6,9 @@
             <h5>{{group.name}}</h5>
         </div>
         <div class="col-md-3">
-           <performances-manager :objectPerformances="params"></performances-manager>
+            <div v-if="periodSelected">
+                <performances-manager></performances-manager>
+            </div>
         </div>
         <div class="col-md-3">
             <label for="">Seleccionar Periodo</label>
@@ -50,22 +52,25 @@
         },
         created() {
 
+            this.getGradeById(this.group.grade_id)
+            this.getAsignatureById(this.asignatureid,this.group.grade_id)
             this.getParameters()
-            this.getAsignatureId(this.asignatureid)
+            this.getGrades()
             this.getPeriodsByWorkingDay(this.group.working_day_id);
             this.getInstitutionOfTeacher()
-            this.getGrades()
+
 
         },
         computed: {
             ...mapState([
-                'grades',
+                'grade',
                 'asignature',
                 'periodsworkingday',
                 'periodSelected',
                 'isCollection',
                 'institutionOfTeacher'
             ]),
+            /*
             params() {
                 return {
                     grade_id: this.group.grade_id,
@@ -73,15 +78,22 @@
                     period_id: this.$store.state.periodSelected
                 }
             }
+            */
 
         },
         methods: {
             getParameters() {
                 this.$store.dispatch('parameters')
             },
-            getAsignatureId(asignatureid) {
+            getAsignatureById(asignatureid, grade_id) {
                 this.$store.dispatch('asignatureById', {
-                    asignatureid: this.asignatureid
+                    asignatureid: asignatureid,
+                    grade_id:grade_id
+                })
+            },
+            getGradeById(grade_id) {
+                this.$store.dispatch('gradeById', {
+                    grade_id: grade_id
                 })
             },
             getEvaluationsByPeriod() {
@@ -120,7 +132,7 @@
     }
 
     .modal-dialog {
-        width: 80%;
+        width: 88%;
         margin: 30px auto;
     }
 

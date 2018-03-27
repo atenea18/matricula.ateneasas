@@ -243,9 +243,12 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 
     Route::get('evaluation/evaluationParameter', 'Teacher\EvaluationController@evaluationParameter');
 
-    Route::get('evaluation/getAsignatureById/{asignature_id}', 'Teacher\EvaluationController@getAsignatureById');
+    Route::get('evaluation/getAsignatureById/{asignature_id}/{grade_id}', 'Teacher\EvaluationController@getAsignatureById');
+    Route::get('evaluation/getGradeById/{grade_id}', 'Teacher\EvaluationController@getGradeById');
     Route::get('evaluation/getPeriodsByWorkingDay/{working_day_id}', 'Teacher\EvaluationController@getPeriodsByWorkingDay');
     Route::get('evaluation/getCollectionsNotes/{group_id}/{asignature_id}/{period_id}', 'Teacher\EvaluationController@getCollectionsNotes');
+    Route::get('evaluation/searchPerformances', 'Teacher\EvaluationController@searchPerformances');
+
 
     Route::post('evaluation/storeEvaluationPeriods', 'Teacher\EvaluationController@storeEvaluationPeriods');
     Route::post('evaluation/storeFinalNotes', 'Teacher\EvaluationController@storeFinalNotes');
