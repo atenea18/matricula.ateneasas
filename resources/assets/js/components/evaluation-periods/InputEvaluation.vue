@@ -64,7 +64,6 @@
         },
         methods: {
             writingNotes() {
-                console.log(parseFloat(this.valuenote))
                 if(this.beforevalue != this.valuenote){
                     let referencia = this.refsInputEvaluation
                     this.$bus.$emit('set-dirty-' + referencia, this.refsr)
