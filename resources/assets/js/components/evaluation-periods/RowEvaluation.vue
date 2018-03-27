@@ -127,36 +127,39 @@
                 });
             },
 
-            sendDataEvaluationPeriods(keyRef) {
+            sendDataEvaluationPeriods: _.debounce(function (keyRef) {
 
-                let data = {
-                    enrollment_id: this.setting.enrollment.id,
-                    periods_id: this.$store.state.periodSelected,
-                    asignatures_id: this.$store.state.asignature.id
-                }
-                let _this = this
+                    let data = {
+                        enrollment_id: this.setting.enrollment.id,
+                        periods_id: this.$store.state.periodSelected,
+                        asignatures_id: this.$store.state.asignature.id
+                    }
+                    let _this = this
 
-                if (this.isSend) {
-                    let nameEvent = '' +
-                        _this.setting.enrollment.id +
-                        _this.$store.state.asignature.id +
-                        _this.$store.state.periodSelected
+                    if (this.isSend) {
+                        let nameEvent = '' +
+                            _this.setting.enrollment.id +
+                            _this.$store.state.asignature.id +
+                            _this.$store.state.periodSelected
 
-                    axios.post('/teacher/evaluation/storeEvaluationPeriods', {data})
-                        .then(function (response) {
+                        axios.post('/teacher/evaluation/storeEvaluationPeriods', {data})
+                            .then(function (response) {
 
-                            if (response.status == 200) {
-                                _this.evaluationperiodid = response.data.id
-                                _this.sendDataFinalNotes()
-                            }
-                            _this.$bus.$emit('i-can-save-note-' + keyRef, response.data.id)
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-                }
+                                if (response.status == 200) {
+                                    _this.evaluationperiodid = response.data.id
+                                    _this.sendDataFinalNotes()
+                                }
+                                _this.$bus.$emit('i-can-save-note-' + keyRef, response.data.id)
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    }
 
-            },
+                },
+                // Este es el número de milisegundos que esperamos
+                // a que el usuario termine de tipear.
+                800),
 
 
             sendDataFinalNotes() {

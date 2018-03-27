@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Teacher;
 use App\Asignature;
 use App\Enrollment;
 use App\EvaluationPeriod;
+use App\Grade;
 use App\Group;
 use App\Institution;
 use App\Note;
@@ -155,11 +156,22 @@ class EvaluationController extends Controller
     }
 
 
-    public function getAsignatureById($asignatures_id)
+    public function getAsignatureById($asignatures_id, $grade_id)
     {
-        $asignatures = Asignature::where('id', '=', $asignatures_id)->get();
+        $asignatures = Asignature::select('asignatures.id', 'asignatures.name','pensum.areas_id', 'pensum.grade_id', 'pensum.id as pensum_id')
+            ->join('pensum', 'pensum.asignatures_id', '=', 'asignatures.id')
+            ->where('pensum.grade_id','=', $grade_id)
+            ->where('asignatures.id', '=', $asignatures_id)
+            ->get();
         return $asignatures[0];
     }
+
+    public function getGradeById($grade_id)
+    {
+        $grade = Grade::where('id', '=', $grade_id)->get();
+        return $grade[0];
+    }
+
 
     public function getPeriodsByWorkingDay($working_day_id)
     {
@@ -222,6 +234,18 @@ class EvaluationController extends Controller
         if ($request->ajax()) {
             return $institution[0];
         }
+    }
+
+    public function  searchPerformances(Request $request){
+        $pensum = DB::table('performances')
+            ->select('performances.id', 'messages_expressions.name')
+            ->join('messages_expressions', 'messages_expressions.id', '=', 'performances.messages_expressions_id')
+            ->where('performances.pensum_id', '=', $request->pensum_id)
+            ->where('performances.periods_id', '=', $request->periods_id)
+            ->where('performances.evaluation_parameters_id', '=', $request->evaluation_parameters_id)
+            ->get();
+
+        return $pensum;
     }
 
     public function evaluationParameter(Request $request)
