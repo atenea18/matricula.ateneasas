@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePeriodsStateTable extends Migration
+class AddCodeFieldGeneralObservationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreatePeriodsStateTable extends Migration
      */
     public function up()
     {
-        Schema::create('periods_state', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->timestamps();
+        Schema::table('general_observations', function (Blueprint $table) {
+            $table->string('code')->unique()->after('id');
         });
     }
 
@@ -27,6 +25,8 @@ class CreatePeriodsStateTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('periods_state');
+        Schema::table('general_observations', function (Blueprint $table) {
+            //
+        });
     }
 }

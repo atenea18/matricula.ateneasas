@@ -256,7 +256,7 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 	Route::resource('generalReport', 'Teacher\GeneralReportController');
 	
 	// Rutas para las Observaciones Generales
-	Route::resource('generalObservation', 'Teacher\GeneralObservationController');
+	Route::resource('generalObservation', 'Teacher\GeneralObservationController', ['except'=>'show']);
 
 
 });

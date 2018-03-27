@@ -36,4 +36,9 @@ class PeriodWorkingday extends Model
     {
     	return $this->belongsTo(Workingday::class, 'working_day_id');
     }
+
+    public function generalObservations()
+    {
+        return $this->belongsTo(GeneralObservation::class, 'period_working_day_id');
+    }
 }

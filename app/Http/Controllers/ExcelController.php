@@ -484,7 +484,7 @@ class ExcelController extends Controller
                     $student->name = $row->primer_nombre." ".$row->segundo_nombre;
                     $student->last_name = $row->primer_apellido." ".$row->segundo_apellido;
                     $student->username = $row->numero_documento;
-                    $student->password = $row->numero_documento;
+                    $student->password = bcrypt($row->numero_documento);
                     $student->state_id = 2;
                     $student->identification_id = $identification->id;   
                     $student->address_id = $address->id;

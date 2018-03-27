@@ -16,7 +16,7 @@ class AddColumnPeriodsStateIdToWorkingDayPeriodsTable extends Migration
         Schema::table('working_day_periods', function (Blueprint $table) {
             $table->unsignedInteger('periods_state_id');
             $table->foreign('periods_state_id')
-                ->references('id')->on('periods_state');
+                ->references('id')->on('period_states');
         });
     }
 
