@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddForeignToEvaluationParameters extends Migration
+class CreateMessagesExpressionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,17 @@ class AddForeignToEvaluationParameters extends Migration
      */
     public function up()
     {
-        Schema::table('evaluation_parameters', function (Blueprint $table) {
+        Schema::create('messages_expressions', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->text('name');
+            $table->text('reinforcement');
+            $table->text('recommendation');
+
+            $table->unsignedBigInteger('institution_id');
             $table->foreign('institution_id')
                 ->references('id')->on('institution');
 
-            // Relacion año lectivo
-            $table->foreign('school_year_id')
-                ->references('id')->on('schoolyears');
-
+            $table->timestamps();
         });
     }
 
@@ -31,9 +34,6 @@ class AddForeignToEvaluationParameters extends Migration
      */
     public function down()
     {
-        Schema::table('evaluation_parameters', function (Blueprint $table) {
-            $table->dropForeign(['institution_id']);
-            $table->dropForeign(['school_year_id']);
-        });
+        Schema::dropIfExists('messages_expressions');
     }
 }

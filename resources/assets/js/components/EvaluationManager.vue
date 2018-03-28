@@ -65,10 +65,11 @@
             ...mapState([
                 'grade',
                 'asignature',
-                'periodsworkingday',
                 'periodSelected',
+                'institutionOfTeacher',
+                'periodsworkingday',
                 'isCollection',
-                'institutionOfTeacher'
+
             ]),
             /*
             params() {

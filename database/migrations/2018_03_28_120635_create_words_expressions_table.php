@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddForeignToCriterias extends Migration
+class CreateWordsExpressionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class AddForeignToCriterias extends Migration
      */
     public function up()
     {
-        Schema::table('criterias', function (Blueprint $table) {
-            $table->foreign('evaluation_parameter_id')
-                ->references('id')->on('evaluation_parameters');
+        Schema::create('words_expressions', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
         });
     }
 
@@ -26,8 +27,6 @@ class AddForeignToCriterias extends Migration
      */
     public function down()
     {
-        Schema::table('criterias', function (Blueprint $table) {
-            $table->dropForeign(['evaluation_parameter_id']);
-        });
+        Schema::dropIfExists('words_expressions');
     }
 }
