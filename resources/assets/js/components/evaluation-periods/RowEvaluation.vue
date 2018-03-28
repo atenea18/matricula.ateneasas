@@ -17,7 +17,7 @@
             </td>
             <input-parameter :ref="refsInputParameter" :setting="setting" :parameter="parameter"/>
         </template>
-        <td style="padding-top:16px;width:15px">
+        <td style="padding-top:13px;width:15px">
             <label v-show="valuenote">{{valuenote.toFixed(2)}} </label>
         </td>
     </tr>

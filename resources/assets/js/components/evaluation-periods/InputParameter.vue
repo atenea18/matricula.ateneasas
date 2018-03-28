@@ -1,5 +1,5 @@
 <template>
-    <td style="padding-top:16px;width:15px">
+    <td style="padding-top:13px;padding-left: 3px;padding-right: 2px; width:41px !important;">
         <label v-show="value">{{value.toFixed(2)}} </label>
     </td>
 </template>

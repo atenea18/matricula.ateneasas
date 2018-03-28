@@ -253,6 +253,8 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
     Route::post('evaluation/storeEvaluationPeriods', 'Teacher\EvaluationController@storeEvaluationPeriods');
     Route::post('evaluation/storeFinalNotes', 'Teacher\EvaluationController@storeFinalNotes');
     Route::post('evaluation/storeNotes', 'Teacher\EvaluationController@storeNotes');
+    Route::post('evaluation/storePerformances', 'Teacher\EvaluationController@storePerformances');
+
 
 
 	// Rutas para el Informe General de Periodo

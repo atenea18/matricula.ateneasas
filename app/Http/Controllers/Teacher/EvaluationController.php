@@ -8,8 +8,10 @@ use App\EvaluationPeriod;
 use App\Grade;
 use App\Group;
 use App\Institution;
+use App\MessagesExpressions;
 use App\Note;
 use App\NotesFinal;
+use App\Performances;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -158,9 +160,9 @@ class EvaluationController extends Controller
 
     public function getAsignatureById($asignatures_id, $grade_id)
     {
-        $asignatures = Asignature::select('asignatures.id', 'asignatures.name','pensum.areas_id', 'pensum.grade_id', 'pensum.id as pensum_id')
+        $asignatures = Asignature::select('asignatures.id', 'asignatures.name', 'pensum.areas_id', 'pensum.grade_id', 'pensum.id as pensum_id')
             ->join('pensum', 'pensum.asignatures_id', '=', 'asignatures.id')
-            ->where('pensum.grade_id','=', $grade_id)
+            ->where('pensum.grade_id', '=', $grade_id)
             ->where('asignatures.id', '=', $asignatures_id)
             ->get();
         return $asignatures[0];
@@ -236,7 +238,8 @@ class EvaluationController extends Controller
         }
     }
 
-    public function  searchPerformances(Request $request){
+    public function searchPerformances(Request $request)
+    {
         $pensum = DB::table('performances')
             ->select('performances.id', 'messages_expressions.name')
             ->join('messages_expressions', 'messages_expressions.id', '=', 'performances.messages_expressions_id')
@@ -246,6 +249,38 @@ class EvaluationController extends Controller
             ->get();
 
         return $pensum;
+    }
+
+    public function storePerformances(Request $request)
+    {
+        $params = $request->data;
+        $messageExpressions = new MessagesExpressions();
+        try{
+            $messageExpressions->name = $params['message']['textHigher'];
+            $messageExpressions->reinforcement = $params['message']['textRecommendationBasic'];
+            $messageExpressions->recommendation = $params['message']['textRecommendationLow'];
+            $messageExpressions->institution_id = $params['institution']['id'] ;
+            $messageExpressions->save();
+
+        } catch (\Exception $e) {
+            $messageExpressions->id = 0;
+        }
+
+        $performances = new Performances();
+        if($messageExpressions->id != 0){
+            try{
+                $performances->pensum_id = $params['performances']['pensum_id'];
+                $performances->evaluation_parameters_id = $params['performances']['evaluation_parameters_id'];
+                $performances->periods_id = $params['performances']['periods_id'];
+                $performances->messages_expressions_id = $messageExpressions->id;
+                $performances->save();
+            }
+            catch (\Exception $e) {
+                $performances->id = 0;
+            }
+
+        }
+        return $performances ;
     }
 
     public function evaluationParameter(Request $request)

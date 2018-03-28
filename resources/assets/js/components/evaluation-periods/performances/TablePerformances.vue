@@ -29,12 +29,19 @@
             }
         },
         created(){
-            this.$bus.$off("get-param-of-row-selects")
             this.$bus.$on("get-param-of-row-selects", params => {
                 this.params = params
                 this.searchPerformances(params)
             })
+            this.$bus.$on("reload-table-performances", params => {
+                this.params = params
+                this.searchPerformances(params)
+            })
 
+
+        },
+        beforeDestroy(){
+            this.$bus.$off("get-param-of-row-selects")
         },
         methods:{
             searchPerformances(params){
