@@ -54,3 +54,6 @@ Route::get('periodByGroup/{group}', 'Teacher\PeriodController@byGroup');
 
 // RUTA PARA LAS OBSERVACIONES GENERALES
 Route::resource('generalObservation', 'Teacher\GeneralObservationController', ['only'=>['show']]);
+
+// RUTA PARA EL INFORME GENERAL DE PERIODO
+Route::resource('generalReport', 'Teacher\GeneralReportController', ['only'=>['show']]);
