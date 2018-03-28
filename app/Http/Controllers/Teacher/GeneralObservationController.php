@@ -41,7 +41,7 @@ class GeneralObservationController extends ApiController
         return View('teacher.partials.generalObservation.index')
         ->with('teacher',$teacher)
         ->with('groups',$groups)
-        ->with('enrollments',$observations );
+        ->with('enrollments',$observations);
     }
 
     /**
