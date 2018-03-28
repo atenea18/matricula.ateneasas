@@ -23,12 +23,14 @@
 
         <div class="row" v-show="!isActive">
             <div class="col-md-12">
-                <hr>
+                <br>
                 <!-- Lista los desempeños, de acuerdo al filtro -->
-                <table-performances></table-performances>
+                <table-performances/>
             </div>
         </div>
-        <div class="row">
+        <div class="row" v-show="isActive">
+            <!-- Componente para crear desempeños -->
+            <create-performances/>
         </div>
     </div>
 
@@ -38,11 +40,12 @@
     import {mapState} from 'vuex'
     import RowSelects from './RowSelects'
     import TablePerformances from './TablePerformances'
+    import CreatePerformances from './CreatePerformances'
 
     export default {
         name: "body-modal-performances",
         components: {
-            RowSelects, TablePerformances
+            RowSelects, TablePerformances, CreatePerformances
         },
         data() {
             return {
