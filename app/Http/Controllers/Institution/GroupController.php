@@ -29,9 +29,22 @@ class GroupController extends ApiController
     	->with('student.identification.identification_type')
     	->with('student.address')
     	->get()
-    	->pluck('student');
+        ->sortBy('student.last_name')
+        ->pluck('student');
 
     	return $this->showAll($students);
+    }
+
+    public function enrollments(Group $group)
+    {
+        $enrollments = $group->enrollments()
+        ->with('student')
+        ->with('student.identification.identification_type')
+        ->with('student.address')
+        ->get()
+        ->sortBy('student.last_name');
+
+        return $this->showAll($enrollments);
     }
 
     public function pensums(Group $group)

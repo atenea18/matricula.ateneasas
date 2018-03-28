@@ -24,7 +24,7 @@ class CreateGeneralObservationsTable extends Migration
             // Relacion con el periodo
             $table->unsignedBigInteger('period_working_day_id');
             $table->foreign('period_working_day_id')
-                  ->references('id')->on('period_working_day');
+                  ->references('id')->on('working_day_periods');
 
             $table->text('observation');
             $table->timestamps();

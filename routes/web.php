@@ -258,10 +258,10 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 
 
 	// Rutas para el Informe General de Periodo
-	Route::resource('generalReport', 'Teacher\GeneralReportController');
+	Route::resource('generalReport', 'Teacher\GeneralReportController', ['except'=>'show']);
 	
 	// Rutas para las Observaciones Generales
-	Route::resource('generalObservation', 'Teacher\GeneralObservationController');
+	Route::resource('generalObservation', 'Teacher\GeneralObservationController', ['except'=>'show']);
 
 
 });

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePeriodsTable extends Migration
+class AddFieldCodeGeneralReportsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreatePeriodsTable extends Migration
      */
     public function up()
     {
-        Schema::create('periods', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('name');
-            $table->integer('period');
-            $table->timestamps();
+        Schema::table('general_reports', function (Blueprint $table) {
+            $table->string('code')->unique()->after('id');
         });
     }
 
@@ -28,6 +25,8 @@ class CreatePeriodsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('periods');
+        Schema::table('general_reports', function (Blueprint $table) {
+            //
+        });
     }
 }

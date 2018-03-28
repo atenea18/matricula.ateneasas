@@ -67,6 +67,16 @@ class Enrollment extends Model
         return $this->group()->attach($group_id, ['created_at' => \Illuminate\Support\Carbon::now()]);   
     }
 
+    public function observations()
+    {
+        return $this->hasMany(GeneralObservation::class, 'enrollment_id');
+    }
+
+    public function generalReport()
+    {
+        return $this->hasMany(GeneralReport::class, 'enrollment_id');
+    }
+
     /**
      *
      *

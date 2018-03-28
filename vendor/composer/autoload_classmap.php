@@ -83,6 +83,7 @@ return array(
     'App\\Http\\Controllers\\Teacher\\GeneralObservationController' => $baseDir . '/app/Http/Controllers/Teacher/GeneralObservationController.php',
     'App\\Http\\Controllers\\Teacher\\GeneralReportController' => $baseDir . '/app/Http/Controllers/Teacher/GeneralReportController.php',
     'App\\Http\\Controllers\\Teacher\\PensumController' => $baseDir . '/app/Http/Controllers/Teacher/PensumController.php',
+    'App\\Http\\Controllers\\Teacher\\PeriodController' => $baseDir . '/app/Http/Controllers/Teacher/PeriodController.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\AuthenticateAdmin' => $baseDir . '/app/Http/Middleware/AuthenticateAdmin.php',
     'App\\Http\\Middleware\\AuthenticateInstitution' => $baseDir . '/app/Http/Middleware/AuthenticateInstitution.php',

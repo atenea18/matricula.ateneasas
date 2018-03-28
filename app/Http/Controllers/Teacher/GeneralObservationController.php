@@ -3,9 +3,15 @@
 namespace App\Http\Controllers\Teacher;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 
-class GeneralObservationController extends Controller
+use Auth;
+
+use App\Teacher;
+use App\Enrollment;
+use App\GeneralObservation;
+
+class GeneralObservationController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +20,28 @@ class GeneralObservationController extends Controller
      */
     public function index()
     {
-        //
+        $teacher = Auth::guard('teachers')->user()->teachers()->first();
+
+        $groups = $teacher->groupDirector()
+        ->get()
+        ->pluck('name', 'id');
+
+        $observations = $teacher->groupDirector()
+        ->with([
+            'enrollments.student', 
+            'enrollments.observations',
+            'enrollments.observations.periodWorkingday.period',
+            'enrollments.group'
+        ])
+        ->get()
+        ->pluck('enrollments')
+        ->collapse();
+
+        // return response()->json($observations);  
+        return View('teacher.partials.generalObservation.index')
+        ->with('teacher',$teacher)
+        ->with('groups',$groups)
+        ->with('enrollments',$observations);
     }
 
     /**
@@ -35,7 +62,18 @@ class GeneralObservationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $data = array();
+        foreach($request->enrollments as $key => $enrollment)
+        {
+            $observation = new GeneralObservation($request->all());
+            $observation->enrollment_id = $enrollment;   
+            
+            if($observation->save())
+                array_push($data, $observation);
+        }
+
+        return response()->json($data);
     }
 
     /**
@@ -44,9 +82,12 @@ class GeneralObservationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+    public function show(GeneralObservation $generalObservation)
+    {   
+        $generalObservation->enrollment->student;
+
+        // return response()->json($generalObservation);
+        return $this->showOne($generalObservation);
     }
 
     /**
@@ -69,7 +110,11 @@ class GeneralObservationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $observation = GeneralObservation::findOrFail($id);
+        $observation->observation = $request->observation_edit;
+        $observation->save();
+
+        return response()->json($observation);
     }
 
     /**
@@ -78,8 +123,11 @@ class GeneralObservationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(GeneralObservation $generalObservation)
     {
-        //
+
+        $generalObservation->delete();
+
+        return response()->json($generalObservation);
     }
 }

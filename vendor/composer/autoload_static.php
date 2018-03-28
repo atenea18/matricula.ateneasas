@@ -503,6 +503,7 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         'App\\Http\\Controllers\\Teacher\\GeneralObservationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Teacher/GeneralObservationController.php',
         'App\\Http\\Controllers\\Teacher\\GeneralReportController' => __DIR__ . '/../..' . '/app/Http/Controllers/Teacher/GeneralReportController.php',
         'App\\Http\\Controllers\\Teacher\\PensumController' => __DIR__ . '/../..' . '/app/Http/Controllers/Teacher/PensumController.php',
+        'App\\Http\\Controllers\\Teacher\\PeriodController' => __DIR__ . '/../..' . '/app/Http/Controllers/Teacher/PeriodController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\AuthenticateAdmin' => __DIR__ . '/../..' . '/app/Http/Middleware/AuthenticateAdmin.php',
         'App\\Http\\Middleware\\AuthenticateInstitution' => __DIR__ . '/../..' . '/app/Http/Middleware/AuthenticateInstitution.php',

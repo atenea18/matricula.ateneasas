@@ -38,6 +38,7 @@ Route::get('institution/{institution}/grades', 'Institution\GradeController@inde
 // RUTA PARA LOS ESTUDIANTES DE UNA GRUPO
 Route::get('group/{group}/students', 'Institution\GroupController@students');
 Route::get('group/{group}/pensums', 'Institution\GroupController@pensums');
+Route::get('group/{group}/enrollments', 'Institution\GroupController@enrollments');
 
 // RUTA PARA LOS CRITERIOS DE EVALUACIÓN
 Route::resource('criteria', 'Institution\CriteriaController',['only'=>['show']]);
@@ -49,3 +50,10 @@ Route::get('teacher/{teacher}/asignatures/{year}', 'Teacher\AsignatureController
 Route::get('periods/{institution}', 'Institution\PeriodController@all')->name('institution.periods.all');
 Route::get('periodsByWorkingday/{institution}/{workingday_id}/{year?}', 'Institution\PeriodController@showByWorkingday')->name('institution.period.showByWorkingday');
 Route::get('periodsByPeriod/{institution}/{period_id}/{year?}', 'Institution\PeriodController@showByPeriod')->name('institution.period.showByPeriod');
+Route::get('periodByGroup/{group}', 'Teacher\PeriodController@byGroup');
+
+// RUTA PARA LAS OBSERVACIONES GENERALES
+Route::resource('generalObservation', 'Teacher\GeneralObservationController', ['only'=>['show']]);
+
+// RUTA PARA EL INFORME GENERAL DE PERIODO
+Route::resource('generalReport', 'Teacher\GeneralReportController', ['only'=>['show']]);

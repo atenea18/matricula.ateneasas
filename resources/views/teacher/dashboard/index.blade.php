@@ -18,6 +18,7 @@
 
         <!-- Scripts -->
         <script src="{{asset('plugin/fontawesome5/svg-with-js/js/fontawesome-all.js')}}"></script>
+        <script src="{{asset('plugin/ckeditor/ckeditor.js')}}"></script>
         <script>
             window.Laravel = <?php echo json_encode([
                 'csrfToken' => csrf_token(),
@@ -53,6 +54,7 @@
         <script src="{{asset('js/app.js')}}"></script>
         <script src="{{asset('plugin/DataTables/datatables.min.js')}}"></script>
         <script src="{{asset('plugin/DataTables/dataTables.bootstrap.min.js')}}"></script>
+        <script src="{{asset('plugin/multiSelect/multiselect.js')}}"></script>
         @yield('js')
 
     </body>
