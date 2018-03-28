@@ -90,7 +90,7 @@
 
             this.$bus.$on("get-param-of-row-selects", params => {
                 this.params = params
-                console.log(params)
+                //console.log(params)
             })
         },
         mounted(){
@@ -149,7 +149,7 @@
                                     showConfirmButton: false,
                                     timer: 2000
                                 })
-                                console.log(response.data)
+                                //console.log(response.data)
                             }else{
                                 _this.$swal({
                                     position: 'top-end',
