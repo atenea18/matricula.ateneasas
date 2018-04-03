@@ -6,7 +6,8 @@
         <div class="form-group">
             <div for="" style="font-size: 12px; text-align: center">IHS</div>
             <select v-on:change="" class="form-control" v-model="valueIhs">
-                <option :value="0"></option>
+                <option value="-1" selected></option>
+                <option value="0">0</option>
                 <option v-for="n in 12">
                     {{ n }}
                 </option>
@@ -14,7 +15,8 @@
             <hr style="margin: 6px;">
             <div for="" style="font-size: 12px; text-align: center">%</div>
             <select v-on:change="" class="form-control" v-model="valuePercent">
-                <option :value="0"></option>
+                <option value="-1" selected></option>
+                <option value="0">0</option>
                 <option v-for="n in 100">
                     {{ n }}
                 </option>
@@ -31,8 +33,8 @@
         },
         data() {
             return {
-                valueIhs: 0,
-                valuePercent: 0,
+                valueIhs: -1,
+                valuePercent: -1,
                 idGrade:this.grade.id,
             }
         },
