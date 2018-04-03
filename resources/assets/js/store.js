@@ -20,7 +20,10 @@ const store = new Vuex.Store({
         isCollection: false,
         institutionOfTeacher: 0,
         isConexion: true,
-        groupPensum:{}
+        groupPensum:{},
+        counterInput:1,
+        counterParameter:0,
+        totalInput:0,
 
     },
 

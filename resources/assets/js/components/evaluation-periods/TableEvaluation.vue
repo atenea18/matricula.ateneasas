@@ -83,7 +83,11 @@
 
         },
         mounted(){
+            this.parameters.forEach(parameter => {
+                this.$store.state.counterParameter = this.$store.state.counterParameter + parameter.notes_parameter.length
+            })
 
+            this.$store.state.totalInput = this.$store.state.counterParameter * this.$store.state.collectionNotes.length
 
         },
         computed: {
@@ -91,7 +95,9 @@
                 'parameters',
                 'asignature',
                 'periodSelected',
-                'collectionNotes'
+                'collectionNotes',
+                'counterParameter',
+                'totalInput'
             ]),
         }
     }

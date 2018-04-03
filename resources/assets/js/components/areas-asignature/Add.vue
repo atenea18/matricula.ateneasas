@@ -139,8 +139,8 @@
                     })
                 })
                 this.arrayDirtyBoxGrade.forEach((grade) => {
-                    grade.valuePercent = 0;
-                    grade.valueIhs = 0;
+                    grade.valuePercent = -1;
+                    grade.valueIhs = -1;
                 })
 
                 //console.log(this.arrayDataPensum);
