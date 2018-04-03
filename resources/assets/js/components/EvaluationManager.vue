@@ -4,6 +4,8 @@
         <div class="col-md-6">
             <h5>{{asignature.name}}</h5>
             <h5>{{group.name}}</h5>
+
+            <span>{{isConexion?'':'Usted no tiene conexión a internet'}}</span>
         </div>
         <div class="col-md-3">
             <div v-if="periodSelected">
@@ -30,7 +32,7 @@
 
 <script>
 
-    import {mapState, mapMutations, mapGetters} from 'vuex'
+    import {mapState} from 'vuex'
     import RowEvaluation from './evaluation-periods/RowEvaluation';
     import TableEvaluation from './evaluation-periods/TableEvaluation';
     import PerformancesManager from './evaluation-periods/performances/PerformancesManager';
@@ -51,15 +53,17 @@
             }
         },
         created() {
-
             this.getGradeById(this.group.grade_id)
-            this.getAsignatureById(this.asignatureid,this.group.grade_id)
+            this.getAsignatureById(this.asignatureid, this.group.grade_id)
             this.getParameters()
             this.getGrades()
+            this.getGroupPensum(this.group.id, this.asignatureid, 1)
             this.getPeriodsByWorkingDay(this.group.working_day_id);
             this.getInstitutionOfTeacher()
+        },
 
-
+        updated() {
+            this.getConexion()
         },
         computed: {
             ...mapState([
@@ -69,17 +73,9 @@
                 'institutionOfTeacher',
                 'periodsworkingday',
                 'isCollection',
-
+                'isConexion',
+                'groupPensum'
             ]),
-            /*
-            params() {
-                return {
-                    grade_id: this.group.grade_id,
-                    asignature_id: this.asignatureid,
-                    period_id: this.$store.state.periodSelected
-                }
-            }
-            */
 
         },
         methods: {
@@ -89,7 +85,14 @@
             getAsignatureById(asignatureid, grade_id) {
                 this.$store.dispatch('asignatureById', {
                     asignatureid: asignatureid,
-                    grade_id:grade_id
+                    grade_id: grade_id
+                })
+            },
+            getGroupPensum(group_id, asignatures_id, school_year_id){
+                this.$store.dispatch('groupPensum', {
+                    group_id: group_id,
+                    asignatures_id: asignatures_id,
+                    school_year_id: school_year_id
                 })
             },
             getGradeById(grade_id) {
@@ -121,6 +124,10 @@
             getInstitutionOfTeacher() {
                 this.$store.dispatch('institutionOfTeacher')
             },
+
+            getConexion() {
+                this.$store.dispatch('verifyConexion')
+            }
 
         }
 
