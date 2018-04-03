@@ -1,6 +1,7 @@
 <template>
     <div>
-        <input @keyup="writingNotes" class="form-control" style="padding:2px 2px" type="text" v-model="valuenote"
+        <input @keyup="writingNotes" :id="'input'+count" class="form-control" style="padding:2px 2px" type="text"
+               v-model="valuenote"
         >
     </div>
 
@@ -21,11 +22,11 @@
                 valuenote: 0,
                 evaluationperiodid: 0,
                 percent: "",
-                beforevalue: 0
+                beforevalue: 0,
+                count: 0
             }
         },
         created() {
-
 
             this.percent = parseFloat(this.noteparameter.percent)
             this.valuenote = parseFloat(this.valuenote).toFixed(2)
@@ -36,20 +37,24 @@
             this.$bus.$off("i-can-save-note-" + referencia);
             this.$bus.$on("i-can-save-note-" + referencia, keyEvaluationPeriodId => {
                 this.evaluationperiodid = keyEvaluationPeriodId
-                //console.log(this.evaluationperiodid)
                 this.sendDataNotes(keyEvaluationPeriodId)
             });
 
 
         },
         mounted() {
+            this.count = this.$store.state.counterInput
+            this.$store.state.counterInput++
 
         },
 
         computed: {
             ...mapState([
                 'asignature',
-                'periodSelected'
+                'periodSelected',
+                'counterInput',
+                'counterParameter',
+                'totalInput'
             ]),
             refsInputParameter() {
                 return "" + this.objectInput.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id + this.noteparameter.id
@@ -63,14 +68,41 @@
 
         },
         methods: {
+            setFocusElement(nextInput){
+                if(nextInput > 0 && nextInput <= this.$store.state.totalInput){
+                    let element = document.getElementById('input' + nextInput)
+                    element.focus()
+                }
+            },
             writingNotes(e) {
                 if (this.beforevalue != this.valuenote) {
                     let referencia = this.refsInputEvaluation
                     this.$bus.$emit('set-dirty-' + referencia, this.refsr)
                     this.beforevalue = this.valuenote
                 }
-                console.log(e)
-                //
+                //rigth
+                if (e.keyCode == 39) {
+                    let nextInput = this.count + 1
+                    this.setFocusElement(nextInput)
+                }
+
+                //left
+                if (e.keyCode == 37) {
+                    let nextInput = this.count - 1
+                    this.setFocusElement(nextInput)
+                }
+                //down
+                if (e.keyCode == 40) {
+                    let nextInput = this.count + this.$store.state.counterParameter
+                    this.setFocusElement(nextInput)
+                }
+                //up
+                if (e.keyCode == 38) {
+                    let nextInput = this.count - this.$store.state.counterParameter
+                    this.setFocusElement(nextInput)
+                }
+                
+
             },
 
             search(idnoteparameter) {
@@ -94,7 +126,7 @@
                     evaluation_periods_id: key,
                     notes_parameters_id: this.noteparameter.id
                 }
-                //console.log(data)
+
                 axios.post('/teacher/evaluation/storeNotes', {data})
                     .then(function (response) {
                         if (response.status == 200) {
