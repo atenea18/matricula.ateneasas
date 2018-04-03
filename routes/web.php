@@ -248,14 +248,14 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
     Route::get('evaluation/getPeriodsByWorkingDay/{working_day_id}', 'Teacher\EvaluationController@getPeriodsByWorkingDay');
     Route::get('evaluation/getCollectionsNotes/{group_id}/{asignature_id}/{period_id}', 'Teacher\EvaluationController@getCollectionsNotes');
     Route::get('evaluation/searchPerformances', 'Teacher\EvaluationController@searchPerformances');
-
+    Route::get('evaluation/getGroupPensum', 'Teacher\EvaluationController@getGroupPensum');
+    Route::get('evaluation/getRelationPerformances', 'Teacher\EvaluationController@getRelationPerformances');
 
     Route::post('evaluation/storeEvaluationPeriods', 'Teacher\EvaluationController@storeEvaluationPeriods');
     Route::post('evaluation/storeFinalNotes', 'Teacher\EvaluationController@storeFinalNotes');
     Route::post('evaluation/storeNotes', 'Teacher\EvaluationController@storeNotes');
     Route::post('evaluation/storePerformances', 'Teacher\EvaluationController@storePerformances');
-
-
+    Route::post('evaluation/storeRelationPerformances', 'Teacher\EvaluationController@storeRelationPerformances');
 
 	// Rutas para el Informe General de Periodo
 	Route::resource('generalReport', 'Teacher\GeneralReportController', ['except'=>'show']);

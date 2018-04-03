@@ -11,7 +11,7 @@
         name: "input-parameter",
 
         props: {
-            setting: {type: Object},
+            objectInput: {type: Object},
             parameter: {type: Object}
         },
 
@@ -23,20 +23,24 @@
                 percentZero: 0,
                 promedioZero: 0,
                 promedioWith: 0,
-                countPercentZero: 0
+                countPercentZero: 0,
+                objectToParameter: {
+                    index: 0,
+                    enrollment: {}
+                }
             };
+        },
+
+        created() {
+            this.objectToParameter = this.objectInput
         },
 
         computed: {
             ...mapState(["asignature", "periodSelected"]),
 
             refsInputEvaluation() {
-                return "" + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id
+                return "" + this.objectToParameter.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id
             },
-        },
-
-        created() {
-
         },
 
         mounted() {
@@ -88,7 +92,7 @@
             createEventSearchInputEvaluation() {
                 let nameInputEvent =
                     "" +
-                    this.setting.enrollment.id +
+                    this.objectToParameter.enrollment.id +
                     this.$store.state.asignature.id +
                     this.$store.state.periodSelected;
                 this.$bus.$emit("set-note-" + nameInputEvent, nameInputEvent);

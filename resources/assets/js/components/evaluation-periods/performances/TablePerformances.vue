@@ -3,6 +3,8 @@
         <thead>
         <tr style="font-size: 11px">
             <th>#</th>
+            <th>ACCIÓN</th>
+            <th>CÓDIGO</th>
             <th>DESEMPEÑO</th>
         </tr>
         </thead>
@@ -11,6 +13,11 @@
             <td>
                 {{index+1}}
             </td>
+            <th>
+                <button class="btn btn-success btn-group-sm" @click="selectPerformances(performance)">Seleccionar
+                </button>
+            </th>
+            <th>{{performance.id}}</th>
             <td>
                 {{performance.name}}
             </td>
@@ -20,15 +27,17 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex';
+
     export default {
         name: "table-performances",
-        data(){
-            return{
+        data() {
+            return {
                 performances: [],
-                params:{}
+                params: {}
             }
         },
-        created(){
+        created() {
             this.$bus.$on("get-param-of-row-selects", params => {
                 this.params = params
                 this.searchPerformances(params)
@@ -40,14 +49,22 @@
 
 
         },
-        beforeDestroy(){
+        beforeDestroy() {
             this.$bus.$off("get-param-of-row-selects")
         },
-        methods:{
-            searchPerformances(params){
+        computed: {
+            ...
+                mapState(["parameters", "asignature", "periodSelected"]),
+        },
+        methods: {
+            searchPerformances(params) {
                 axios.get('/teacher/evaluation/searchPerformances', {params}).then(res => {
                     this.performances = res.data;
                 })
+            },
+            selectPerformances(codePerformances) {
+                //console.log(this.params)
+                this.$bus.$emit(""+this.params.evaluation_parameters_id,codePerformances);
             }
         }
     }
