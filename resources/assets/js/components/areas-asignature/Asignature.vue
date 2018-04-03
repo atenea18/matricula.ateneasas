@@ -8,10 +8,10 @@
             <small>{{dataAsignature.subjects_type_name}}</small>
         </td>
         <td v-show="isNotEdit">
-            <small>PESO: {{dataAsignature.percent}}</small>
+            <small>PESO: {{dataAsignature.percent=="-1"?' 0':dataAsignature.percent}}</small>
         </td>
         <td v-show="isNotEdit">
-            <small>IHS: {{dataAsignature.ihs}}</small>
+            <small>IHS: {{dataAsignature.ihs=="-1"?' 0':dataAsignature.ihs}}</small>
         </td>
         <td v-show="isNotEdit">
             <small>ORDER: {{dataAsignature.order}}</small>

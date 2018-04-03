@@ -322,6 +322,16 @@ class EvaluationController extends Controller
         return $notesPerformances;
     }
 
+    public function deleteRelationPerformances(Request $request)
+    {
+        $params = $request->data;
+        $notesPerformances = NotesParametersPerformances::
+        where('id', '=', $params['id'])
+            ->delete();
+
+        return $notesPerformances;
+    }
+
 
     public function evaluationParameter(Request $request)
     {

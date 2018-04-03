@@ -118,7 +118,7 @@
 
                 this.$refs.boxGrade.forEach((component) => {
 
-                    if (component._data.valueIhs != "0" || component._data.valuePercent != "0") {
+                    if (component._data.valueIhs != "-1" || component._data.valuePercent != "-1") {
                         this.arrayDirtyBoxGrade.push(component._data);
                     }
                 });

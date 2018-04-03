@@ -73,7 +73,22 @@
             },
 
             deleteRelationPerformances() {
-                console.log(this.meObject.id)
+                let data = {
+                    id: this.meObject.id
+                }
+
+                let _this = this
+                axios.post('/teacher/evaluation/deleteRelationPerformances', {data})
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            _this.meObject.id = 0
+                            _this.meObject.state = false
+                            _this.meObject.codePerformance = 0
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
             storeRelationPerformances() {
                 let data = {
@@ -83,12 +98,12 @@
                     group_pensum_id: this.$store.state.groupPensum.id
                 }
 
-
+                let _this = this
                 axios.post('/teacher/evaluation/storeRelationPerformances', {data})
                     .then(function (response) {
 
                         if (response.status == 200) {
-                            this.meObject.id = response.data.id
+                            _this.meObject.id = response.data.id
                         }
                     })
                     .catch(function (error) {
