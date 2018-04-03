@@ -11,6 +11,7 @@ use App\Institution;
 use App\MessagesExpressions;
 use App\Note;
 use App\NotesFinal;
+use App\NotesParametersPerformances;
 use App\Performances;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -251,15 +252,26 @@ class EvaluationController extends Controller
         return $pensum;
     }
 
+    public function getGroupPensum(Request $request)
+    {
+        $pensum = DB::table('group_pensum')
+            ->where('group_pensum.group_id', '=', $request->group_id)
+            ->where('group_pensum.asignatures_id', '=', $request->asignatures_id)
+            ->where('group_pensum.schoolyear_id', '=', $request->school_year_id)
+            ->get();
+
+        return $pensum;
+    }
+
     public function storePerformances(Request $request)
     {
         $params = $request->data;
         $messageExpressions = new MessagesExpressions();
-        try{
+        try {
             $messageExpressions->name = $params['message']['textHigher'];
             $messageExpressions->reinforcement = $params['message']['textRecommendationBasic'];
             $messageExpressions->recommendation = $params['message']['textRecommendationLow'];
-            $messageExpressions->institution_id = $params['institution']['id'] ;
+            $messageExpressions->institution_id = $params['institution']['id'];
             $messageExpressions->save();
 
         } catch (\Exception $e) {
@@ -267,21 +279,49 @@ class EvaluationController extends Controller
         }
 
         $performances = new Performances();
-        if($messageExpressions->id != 0){
-            try{
+        if ($messageExpressions->id != 0) {
+            try {
                 $performances->pensum_id = $params['performances']['pensum_id'];
                 $performances->evaluation_parameters_id = $params['performances']['evaluation_parameters_id'];
                 $performances->periods_id = $params['performances']['periods_id'];
                 $performances->messages_expressions_id = $messageExpressions->id;
                 $performances->save();
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $performances->id = 0;
             }
 
         }
-        return $performances ;
+        return $performances;
     }
+
+    public function storeRelationPerformances(Request $request)
+    {
+        $params = $request->data;
+        $performancesRelation = new NotesParametersPerformances();
+        try {
+            $performancesRelation->notes_parameters_id = $params['notes_parameters_id'];
+            $performancesRelation->performances_id = $params['performances_id'];
+            $performancesRelation->periods_id = $params['periods_id'];
+            $performancesRelation->group_pensum_id = $params['group_pensum_id'];
+            $performancesRelation->save();
+
+        } catch (\Exception $e) {
+            $performancesRelation->id = 0;
+        }
+
+        return $performancesRelation;
+    }
+
+    public function getRelationPerformances(Request $request)
+    {
+        $notesPerformances = NotesParametersPerformances::where('notes_parameters_id', '=', $request->notes_parameters_id)
+            ->where('periods_id', '=', $request->periods_id)
+            ->where('group_pensum_id', '=', $request->group_pensum_id)
+            ->get();
+
+        return $notesPerformances;
+    }
+
 
     public function evaluationParameter(Request $request)
     {

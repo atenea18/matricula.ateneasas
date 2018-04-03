@@ -7,12 +7,12 @@
 </template>
 
 <script>
-    import {mapState, mapMutations, mapGetters} from 'vuex';
+    import {mapState} from 'vuex';
 
     export default {
         name: "input-evaluation",
         props: {
-            setting: {type: Object},
+            objectInput: {type: Object},
             noteparameter: {type: Object},
             parameter: {type: Object}
         },
@@ -21,7 +21,7 @@
                 valuenote: 0,
                 evaluationperiodid: 0,
                 percent: "",
-                beforevalue:0
+                beforevalue: 0
             }
         },
         created() {
@@ -52,31 +52,31 @@
                 'periodSelected'
             ]),
             refsInputParameter() {
-                return "" + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id + this.noteparameter.id
+                return "" + this.objectInput.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id + this.noteparameter.id
             },
             refsInputEvaluation() {
-                return "" + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id + this.noteparameter.id
+                return "" + this.objectInput.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id + this.noteparameter.id
             },
             refsr() {
-                return "" + this.setting.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id
+                return "" + this.objectInput.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id
             },
 
         },
         methods: {
-            writingNotes() {
-                if(this.beforevalue != this.valuenote){
+            writingNotes(e) {
+                if (this.beforevalue != this.valuenote) {
                     let referencia = this.refsInputEvaluation
                     this.$bus.$emit('set-dirty-' + referencia, this.refsr)
                     this.beforevalue = this.valuenote
                 }
-
+                console.log(e)
                 //
             },
 
             search(idnoteparameter) {
                 let value = "";
-                if (this.setting.enrollment.notes.length != 0) {
-                    this.setting.enrollment.notes.forEach((note) => {
+                if (this.objectInput.enrollment.notes.length != 0) {
+                    this.objectInput.enrollment.notes.forEach((note) => {
                         if (idnoteparameter == note.notes_parameters_id) {
                             value = note.value
                         }

@@ -65,7 +65,7 @@
 </template>
 
 <script>
-    import {mapState, mapMutations, mapGetters} from 'vuex'
+    import {mapState} from 'vuex'
 
     export default {
         name: "create-performances",
@@ -149,7 +149,7 @@
                                     showConfirmButton: false,
                                     timer: 2000
                                 })
-                                //console.log(response.data)
+
                             }else{
                                 _this.$swal({
                                     position: 'top-end',

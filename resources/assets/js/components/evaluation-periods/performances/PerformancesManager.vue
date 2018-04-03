@@ -31,6 +31,7 @@
 
 <script>
     import {mapState} from 'vuex';
+
     import BodyModalPerformances from './BodyModalPerformances'
 
     export default {

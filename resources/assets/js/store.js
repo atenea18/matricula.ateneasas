@@ -18,7 +18,9 @@ const store = new Vuex.Store({
         periodSelected: 0,
         collectionNotes: [],
         isCollection: false,
-        institutionOfTeacher: 0
+        institutionOfTeacher: 0,
+        isConexion: true,
+        groupPensum:{}
 
     },
 
@@ -49,6 +51,9 @@ const store = new Vuex.Store({
         setAsignatureById(state, payload) {
             state.asignature = payload.asignature || []
         },
+        setGroupPensum(state, payload) {
+            state.groupPensum = payload.group_pensum[0] || {}
+        },
         setGradeById(state, payload) {
             state.grade = payload.grade || []
         },
@@ -66,7 +71,6 @@ const store = new Vuex.Store({
         },
         setCollectionNotes(state, payload) {
             state.collectionNotes = payload.collectionNotes || []
-
         }
 
     },
@@ -106,9 +110,20 @@ const store = new Vuex.Store({
             })
         },
         asignatureById(context, payload = {}) {
-            axios.get('/teacher/evaluation/getAsignatureById/' + payload.asignatureid +'/' + payload.grade_id).then(res => {
+            axios.get('/teacher/evaluation/getAsignatureById/' + payload.asignatureid + '/' + payload.grade_id).then(res => {
                 payload.asignature = res.data;
                 context.commit('setAsignatureById', payload)
+            })
+        },
+        groupPensum(context, payload = {}) {
+            let params = {
+                group_id: payload.group_id,
+                asignatures_id: payload.asignatures_id,
+                school_year_id: payload.school_year_id
+            }
+            axios.get('/teacher/evaluation/getGroupPensum', {params}).then(res => {
+                payload.group_pensum = res.data;
+                context.commit('setGroupPensum', payload)
             })
         },
         gradeById(context, payload = {}) {
@@ -145,7 +160,7 @@ const store = new Vuex.Store({
             });
         },
         collectionNotes(context, payload = {}) {
-            let t = this
+            let _this = this
             if (payload.periodid != 0) {
 
                 axios.get(
@@ -155,18 +170,23 @@ const store = new Vuex.Store({
                     + payload.periodid
                 ).then(res => {
                     if (typeof res.data == 'object') {
-                        t.state.isCollection = true
+                        _this.state.isCollection = true
                         payload.collectionNotes = res.data
                         //console.log(res.data)
                         context.commit('setCollectionNotes', payload)
                         //console.log('I am an object')
                     }
                 });
-
-
             }
+        },
 
-        }
+        verifyConexion(context, payload) {
+            if (navigator.onLine) {
+                this.state.isConexion = true
+            } else {
+                this.state.isConexion = false
+            }
+        },
 
     }
 })
