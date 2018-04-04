@@ -47,11 +47,15 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12 text-center">
+				<button type="button" class="btn btn-default" data-toggle="modal" data-target="#configSheetModal">
+				  Configuración
+				</button>
 				<button type="submit" class="btn btn-primary">
 					Imprimir planillas
 				</button>
 			</div>
 		</div>
 	</div>
+	@include('institution.partials.sheet.configSheet')
 	{!! Form::close() !!}
 </div>

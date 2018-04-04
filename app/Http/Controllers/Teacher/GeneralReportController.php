@@ -37,6 +37,7 @@ class GeneralReportController extends ApiController
         ->pluck('enrollments')
         ->collapse();
 
+        // dd($reports);
         // return response()->json($reports[0]->generalReport);
         return View('teacher.partials.generalReport.index')
         ->with('teacher',$teacher)
@@ -123,8 +124,10 @@ class GeneralReportController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(GeneralReport $generalReport)
     {
-        //
+        $generalReport->delete();
+
+        return response()->json($generalReport);
     }
 }
