@@ -81,10 +81,11 @@
 														{{$enrollment->group->first()->name}}
 													</td>
 													<td>
-														{{$enrollment->generalReport->first()->periodWorkingday->period->period}}
+														{{$enrollment->generalReport->first()->periodWorkingday->period->name}}
 													</td>
 													<td>
-														{{ substr(strip_tags($enrollment->generalReport->first()->report), 0, 20) }}
+														{!! substr(strip_tags(utf8_decode($enrollment->generalReport->first()->report)), 0, 20) !!}
+														
 													</td>
 													<td>
 														<a href="{{route('generalReport.show', $enrollment->generalReport->first()->id)}}" class="btn btn-primary btn-sm" data-reporte="{{$enrollment->generalReport->first()->id}}">
@@ -111,7 +112,7 @@
 </div>
 @include('teacher.partials.generalReport.create')
 @include('teacher.partials.generalReport.edit')
-{{-- @include('teacher.partials.generalReport.delete') --}}
+@include('teacher.partials.generalReport.delete')
 @endsection
 
 @section('js')
@@ -301,45 +302,45 @@
 			});
 
 			// // Obtenemos la oobservación a eliminar
-			// $("a[data-observationd]").click(function(e){
+			$("a[data-reportd]").click(function(e){
 
-			// 	e.preventDefault();
+				e.preventDefault();
 
-			// 	var btn = $(this),
-			// 		form = $("#formDelGO");
+				var btn = $(this),
+					form = $("#formDelGR");
 
-			// 	$("#modalDelObservation").modal({
-			// 		keyboard: false,
-			// 		backdrop: 'static'
-			// 	});
+				$("#modalDelReport").modal({
+					keyboard: false,
+					backdrop: 'static'
+				});
 
-			// 	form.find("#id").val(btn.data('observationd'));
-			// 	form.find("#textStudent").text("¿Esta seguro de eliminar esta observación ?");
-			// });
+				form.find("#id").val(btn.data('reportd'));
+				form.find("#textStudent").text("¿Esta seguro de eliminar este informe general ?");
+			});
 
-			// $("#formDelGO").submit(function(e){
+			$("#formDelGR").submit(function(e){
 
-			// 	e.preventDefault();
+				e.preventDefault();
 
-			// 	var form = $(this);
+				var form = $(this);
 
-			// 	$.ajax({
-			// 		url: "{{url('teacher/generalObservation')}}/"+form.find("#id").val(),
-			// 		method: form.attr('method'),
-			// 		data: form.serialize(),
-			// 		beforeSend:function(){
-			// 			form.find('button').prop('disabled',true);
-			// 		},
-			// 		success:function(data){
-			// 			form.find('button').prop('disabled',false);
-			// 			window.location.reload();
-			// 		},
-			// 		error:function(xhr){
-			// 			form.find('button').prop('disabled',false);
+				$.ajax({
+					url: "{{url('teacher/generalReport')}}/"+form.find("#id").val(),
+					method: form.attr('method'),
+					data: form.serialize(),
+					beforeSend:function(){
+						form.find('button').prop('disabled',true);
+					},
+					success:function(data){
+						form.find('button').prop('disabled',false);
+						window.location.reload();
+					},
+					error:function(xhr){
+						form.find('button').prop('disabled',false);
 						
-			// 		}
-			// 	});
-			// })
+					}
+				});
+			})
 		})
 	</script>
 @endsection

@@ -81,10 +81,10 @@
 														{{$enrollment->group->first()->name}}
 													</td>
 													<td>
-														{{$enrollment->observations->first()->periodWorkingday->period->period}}
+														{{$enrollment->observations->first()->periodWorkingday->period->name}}
 													</td>
 													<td>
-														{{ substr(strip_tags($enrollment->observations->first()->observation), 0, 20) }}
+														{!! substr(strip_tags($enrollment->observations->first()->observation), 0, 20) !!}
 													</td>
 													<td>
 														<a href="{{route('generalObservation.show', $enrollment->observations->first()->id)}}" class="btn btn-primary btn-sm" data-observatione="{{$enrollment->observations->first()->id}}">
