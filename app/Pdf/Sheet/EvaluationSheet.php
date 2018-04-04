@@ -101,7 +101,7 @@ class EvaluationSheet extends Fpdf
 	    $this->Cell($this->_first_place_header, 4, '', 0,0);
 	    $this->Cell($this->_second_place_header, 4, 'GRUPO: '.$this->group->name, 0, 0, 'L');
 	    // Título
-	    $this->Cell($this->_third_place_header,4, ($this->group->director()->first() != null) ? 'DIRECTOR DE GRUPO: '.strtoupper($this->group->director()->first()->manager->fullName) : 'DIRECTOR DE GRUPO:', 0, 0, 'L');
+	    $this->Cell($this->_third_place_header,4, ($this->group->director()->first() != null) ? 'DIRECTOR DE GRUPO: '.strtoupper(utf8_decode($this->group->director()->first()->manager->fullName)) : 'DIRECTOR DE GRUPO:', 0, 0, 'L');
 	    // Movernos a la derecha
 	    $this->Cell(0, 4, utf8_decode('AÑO LECTIVO ').date('Y'), 0,0);
 	    // Salto de línea
