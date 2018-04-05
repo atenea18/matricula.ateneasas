@@ -83,13 +83,13 @@ class PdfController extends Controller
             mkdir($path);
         }
 
-        $attendance = new StudentAttendance($request->orientation, 'mm', $request->papper);
+        $attendance = new StudentAttendance('l', 'mm', 'letter');
         $attendance->institution = $institution;
         $attendance->group = $group;
         $attendance->create($students);
         $attendance->Output($path.$group_id.".pdf", "F");
 
-        $this->merge($path, 'lista de asistencia - '.$group->name, $request->orientation);
+        $this->merge($path, 'lista de asistencia - '.$group->name, 'l');
     }
 
     public function attendances(Request $request)
@@ -117,14 +117,14 @@ class PdfController extends Controller
             ->pluck('student')
             ->sortBy('last_name');
 
-            $attendance = new StudentAttendance($request->orientation, 'mm', $request->papper);
+            $attendance = new StudentAttendance('l', 'mm', 'letter');
             $attendance->institution = $institution;
             $attendance->group = $group;
             $attendance->create($students);
             $attendance->Output($path.$group_id.".pdf", "F");
 
         }
-        $this->merge($path, 'lista de asistencia_'.time()."_".$request->institution_id, $request->orientation);
+        $this->merge($path, 'lista de asistencia_'.time()."_".$request->institution_id, 'l');
     }
 
     public function evaluationPdf(Request $request)
@@ -171,7 +171,7 @@ class PdfController extends Controller
 
         }
 
-        $this->merge($path, 'Planilla-Evaluacion', $request->orientation);        
+        $this->merge($path, 'Planilla-Evaluacion'.time()."_".$request->institution_id, $request->orientation);        
     }
 
     public function constancyStudy(Request $request)
