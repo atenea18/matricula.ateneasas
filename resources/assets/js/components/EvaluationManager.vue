@@ -5,14 +5,14 @@
             <h5>{{asignature.name}}</h5>
             <h5>{{group.name}}</h5>
 
-            <span>{{isConexion?'':'Usted no tiene conexión a internet'}}</span>
+            <span style="color:red;font-weight: bold ">{{isConexion?'':'Usted no tiene conexión a internet'}}</span>
         </div>
         <div class="col-md-3">
             <div v-if="periodSelected">
                 <performances-manager></performances-manager>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label for="">Seleccionar Periodo</label>
             <select v-on:change="getEvaluationsByPeriod" class="form-control" name="" v-model="periodid">
                 <option :value="0">Seleccionar</option>
