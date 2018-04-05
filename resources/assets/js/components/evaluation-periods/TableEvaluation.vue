@@ -8,11 +8,11 @@
             <th rowspan="2"> Nombres Y Apellidos</th>
             <th rowspan="2"> FAA</th>
             <template v-for="para in parameters">
-                <th :colspan="para.notes_parameter.length+1">
+                <th :colspan="para.notes_parameter.length+1" style="text-align: center">
                     {{para.parameter}}
                 </th>
             </template>
-            <th rowspan="2"> Nota Final</th>
+            <th rowspan="2"> Val</th>
         </tr>
         <tr>
             <!--
@@ -51,29 +51,29 @@
         name: "table-evaluation",
         data() {
             return {
-                codePerformance:0
+                codePerformance: 0
             }
         },
         components: {
             RowEvaluation, RelationPerformances
         },
-        created(){
+        created() {
             this.parameters.forEach(parameter => {
                 let refsEvent = parameter.id
                 this.$bus.$off("" + refsEvent)
                 this.$bus.$on("" + refsEvent, performance => {
 
-                    let elements = this.$refs["parameter"+refsEvent];
+                    let elements = this.$refs["parameter" + refsEvent];
 
 
-                    let s = elements.filter( element => {
-                        if(!element.meObject.state){
+                    let s = elements.filter(element => {
+                        if (!element.meObject.state) {
                             return element
                         }
                     })
 
-                    if(s.length != 0){
-                        this.$bus.$emit(""+parameter.id + s[0].objectToParameter.id, performance);
+                    if (s.length != 0) {
+                        this.$bus.$emit("" + parameter.id + s[0].objectToParameter.id, performance);
                     }
 
                 })
@@ -82,7 +82,11 @@
 
 
         },
-        mounted(){
+        mounted() {
+            this.$store.state.counterParameter = 0
+            this.$store.state.totalInput = 0
+            this.$store.state.counterInput = 1
+
             this.parameters.forEach(parameter => {
                 this.$store.state.counterParameter = this.$store.state.counterParameter + parameter.notes_parameter.length
             })
@@ -103,6 +107,12 @@
     }
 </script>
 
-<style scoped>
+<style>
+    .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+        padding: 5px;
+        line-height: 1.42857143;
+        vertical-align: top;
+        border-top: 1px solid #ddd;
+    }
 
 </style>

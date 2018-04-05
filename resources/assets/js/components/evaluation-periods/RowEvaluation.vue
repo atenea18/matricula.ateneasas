@@ -138,7 +138,7 @@
                 this.$bus.$emit("set-notes-to-parameter-" + refsEvent, notesBelongToParameter);
             },
 
-            sendDataEvaluationPeriods: _.debounce(function (keyRef) {
+            sendDataEvaluationPeriods(keyRef){
 
                     let data = {
                         enrollment_id: this.objectToEvaluation.enrollment.id,
@@ -165,9 +165,6 @@
                     }
 
                 },
-                // Este es el número de milisegundos que esperamos
-                // a que el usuario termine de tipear.
-                800),
 
 
             sendDataFinalNotes() {
