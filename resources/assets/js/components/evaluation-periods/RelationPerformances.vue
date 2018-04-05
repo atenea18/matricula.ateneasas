@@ -1,5 +1,5 @@
 <template>
-    <th @click="deleteRelationPerformances">
+    <th @click="deleteRelationPerformances" style="width: 44px !important;">
         <a href="#" title="Eliminar">{{ meObject.codePerformance?meObject.codePerformance:'' }}</a>
     </th>
 </template>

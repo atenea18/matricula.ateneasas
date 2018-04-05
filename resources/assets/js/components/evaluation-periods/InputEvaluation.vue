@@ -1,14 +1,16 @@
 <template>
     <div>
-        <input @keyup="writingNotes" :id="'input'+count" class="form-control" style="padding:2px 2px" type="text"
-               v-model="valuenote"
-        >
+        <input v-debounce="delay" :class="isSend?'send':'not-send'" @keypress="displacement" :id="'input'+count"
+               class="form-control"
+               style="padding:2px 2px" type="text" v-model.lazy="valuenote">
     </div>
 
 </template>
 
 <script>
+    import debounce from '../../v-debounce/index'
     import {mapState} from 'vuex';
+    import _ from 'lodash'
 
     export default {
         name: "input-evaluation",
@@ -19,17 +21,21 @@
         },
         data() {
             return {
-                valuenote: 0,
+                valuenote: '',
                 evaluationperiodid: 0,
                 percent: "",
-                beforevalue: 0,
-                count: 0
+                beforevalue: '',
+                count: 0,
+                isSend: true,
+                delay: 2000,
+                isFirst: true
             }
         },
+        directives: {debounce},
         created() {
 
             this.percent = parseFloat(this.noteparameter.percent)
-            this.valuenote = parseFloat(this.valuenote).toFixed(2)
+            this.valuenote = ''
             this.search(this.noteparameter.id)
 
             let referencia = this.refsInputEvaluation
@@ -42,6 +48,9 @@
 
 
         },
+        updated() {
+            this.isFirst = false
+        },
         mounted() {
             this.count = this.$store.state.counterInput
             this.$store.state.counterInput++
@@ -52,6 +61,7 @@
             ...mapState([
                 'asignature',
                 'periodSelected',
+                'isCollection',
                 'counterInput',
                 'counterParameter',
                 'totalInput'
@@ -67,19 +77,22 @@
             },
 
         },
+        watch: {
+            valuenote: function () {
+                if (!this.isFirst) {
+                    this.isSend = false
+                }
+                this.writingNotes()
+            }
+        },
         methods: {
-            setFocusElement(nextInput){
-                if(nextInput > 0 && nextInput <= this.$store.state.totalInput){
+            setFocusElement(nextInput) {
+                if (nextInput > 0 && nextInput <= this.$store.state.totalInput) {
                     let element = document.getElementById('input' + nextInput)
                     element.focus()
                 }
             },
-            writingNotes(e) {
-                if (this.beforevalue != this.valuenote) {
-                    let referencia = this.refsInputEvaluation
-                    this.$bus.$emit('set-dirty-' + referencia, this.refsr)
-                    this.beforevalue = this.valuenote
-                }
+            displacement(e) {
                 //rigth
                 if (e.keyCode == 39) {
                     let nextInput = this.count + 1
@@ -101,7 +114,29 @@
                     let nextInput = this.count - this.$store.state.counterParameter
                     this.setFocusElement(nextInput)
                 }
-                
+                this.writingNotes()
+                //console.log(e)
+
+            },
+
+            writingNotes() {
+                this.getConexion()
+                let val = parseFloat(this.valuenote)
+                if (!isNaN(val)) {
+                    this.sendEvent()
+                } else {
+                    if (this.valuenote == '') {
+                        this.sendEvent()
+                    }
+                }
+            },
+
+            sendEvent() {
+                if (this.beforevalue != this.valuenote && this.$store.state.isConexion) {
+                    let referencia = this.refsInputEvaluation
+                    this.$bus.$emit('set-dirty-' + referencia, this.refsr)
+                    this.beforevalue = this.valuenote
+                }
 
             },
 
@@ -114,8 +149,8 @@
                         }
                     })
                 }
-                this.valuenote = value
-                this.beforevalue = value
+                this.valuenote = value == null ? '' : value
+                this.beforevalue = value == null ? '' : value
             },
 
             sendDataNotes(key) {
@@ -126,22 +161,33 @@
                     evaluation_periods_id: key,
                     notes_parameters_id: this.noteparameter.id
                 }
-
+                let _this = this
                 axios.post('/teacher/evaluation/storeNotes', {data})
                     .then(function (response) {
                         if (response.status == 200) {
-
+                            console.log("guardo notas")
+                            _this.isSend = true
                         }
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
+            },
+            getConexion() {
+                this.$store.dispatch('verifyConexion')
             }
 
         }
     }
 </script>
 
-<style scoped>
+<style>
+    .send {
+        background-color: #96f590;
+    }
+
+    .not-send {
+        background-color: #ff9794;
+    }
 
 </style>
