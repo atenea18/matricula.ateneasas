@@ -1,8 +1,8 @@
 <template>
     <tr>
-        <td>{{objectToEvaluation.index+1}}</td>
-        <td style="width:320px"> {{fullName}}</td>
-        <td>
+        <td style="width:30px">{{objectToEvaluation.index+1}}</td>
+        <td > {{fullName}}</td>
+        <td style="width:30px">
 
         </td>
         <template v-for="(parameter,i) in parameters">
@@ -14,7 +14,7 @@
             </td>
             <input-parameter :ref="refsInputParameter" :objectInput="objectToEvaluation" :parameter="parameter"/>
         </template>
-        <td style="padding-top:13px;width:15px">
+        <td style="padding-top:9px;width:15px">
             <label v-show="meObject.value">{{meObject.value.toFixed(2)}}</label>
         </td>
     </tr>
@@ -206,5 +206,6 @@
     .error-conexion{
         background-color: #e0e2e5;
     }
+
 
 </style>

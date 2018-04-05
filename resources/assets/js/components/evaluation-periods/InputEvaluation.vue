@@ -10,7 +10,6 @@
 <script>
     import debounce from '../../v-debounce/index'
     import {mapState} from 'vuex';
-    import _ from 'lodash'
 
     export default {
         name: "input-evaluation",
@@ -79,9 +78,7 @@
         },
         watch: {
             valuenote: function () {
-                if (!this.isFirst) {
-                    this.isSend = false
-                }
+                this.style()
                 this.writingNotes()
             }
         },
@@ -119,6 +116,13 @@
 
             },
 
+            style(){
+                if (!this.isFirst) {
+                    if (this.beforevalue != this.valuenote) {
+                        this.isSend = false
+                    }
+                }
+            },
             writingNotes() {
                 this.getConexion()
                 let val = parseFloat(this.valuenote)
@@ -128,6 +132,7 @@
                     if (this.valuenote == '') {
                         this.sendEvent()
                     }
+
                 }
             },
 
@@ -135,7 +140,6 @@
                 if (this.beforevalue != this.valuenote && this.$store.state.isConexion) {
                     let referencia = this.refsInputEvaluation
                     this.$bus.$emit('set-dirty-' + referencia, this.refsr)
-                    this.beforevalue = this.valuenote
                 }
 
             },
@@ -165,8 +169,9 @@
                 axios.post('/teacher/evaluation/storeNotes', {data})
                     .then(function (response) {
                         if (response.status == 200) {
-                            console.log("guardo notas")
+                            //console.log("guardo notas")
                             _this.isSend = true
+                            _this.beforevalue = _this.valuenote
                         }
                     })
                     .catch(function (error) {
@@ -189,5 +194,7 @@
     .not-send {
         background-color: #ff9794;
     }
+
+
 
 </style>
