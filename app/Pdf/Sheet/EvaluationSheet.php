@@ -153,7 +153,7 @@ class EvaluationSheet extends Fpdf
 		// show Parameter
 		foreach($this->parameters as $parameter)
 		{
-			if(strtolower($parameter->abbreviation) == 'aee')
+			if(strstr(strtolower($parameter->abbreviation), 'aee'))
 			{
 				$this->Cell($this->_width_VG_VRA, 8, 'AEE', 1,0, 'C', true);
 			}
@@ -180,7 +180,7 @@ class EvaluationSheet extends Fpdf
 
 			$withCellCriteria = (count($parameter->criterias) > 0) ? (  $this->_with_C_H / (count($parameter->criterias)) ) : $this->_with_C_H;
 
-			if(strtolower($parameter->abbreviation) != 'aee')
+			if(!strstr(strtolower($parameter->abbreviation), 'aee'))
 			{
 				if(count($parameter->criterias) == 0)
 				{
@@ -231,7 +231,7 @@ class EvaluationSheet extends Fpdf
 
 				$withCellCriteria = (count($parameter->criterias) > 0) ? (  $this->_with_C_H / (count($parameter->criterias)) ) : $this->_with_C_H;
 
-				if(strtolower($parameter->abbreviation) != 'aee')
+				if(!strstr(strtolower($parameter->abbreviation), 'aee'))
 				{
 					if(count($parameter->criterias) == 0)
 					{
