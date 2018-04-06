@@ -41,10 +41,8 @@
 								<a href="" class="btn btn-sm btn-danger" onclick="event.preventDefault();if(confirm('¿Desea eliminar este Parametro de Evaluación?')){document.getElementById('formDelEvalParameter{{$parameter->id}}').submit();}">
 									<i class="fa fa-trash"></i>
 								</a>
-								<form action="{{route('evaluationParameter.destroy',$parameter)}}" id="formDelEvalParameter{{$parameter->id}}">
-									{{csrf_field()}}
-                                    {{method_field('DELETE')}}
-								</form>
+								{!! Form::open(['route'=>['evaluationParameter.destroy', $parameter], 'method'=>'DELETE', 'id'=>"formDelEvalParameter{$parameter->id}"] ) !!}
+								{!! Form::close() !!}
 							</td>
 						</tr>
 			  			@endforeach
