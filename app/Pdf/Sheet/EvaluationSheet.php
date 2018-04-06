@@ -25,6 +25,9 @@ class EvaluationSheet extends Fpdf
 	private $_width_VG_VRA = 8; //Ancho de las celdas (VRA y VG)
 	private $_with_title = 187; //Ancho de la celda del nombre de la institución
 	private $_font_tittle = 14; //Tamaño de fuente del nombre de la institución
+	private $_font_parameter = 9; //Tamaño de fuente del nombre de la institución
+	private $_font_criteria = 6;
+	private $_font_student = 7;
 	private $_first_place_header = 25;
 	private $_second_place_header = 75;
 	private $_third_place_header = 100;
@@ -32,10 +35,46 @@ class EvaluationSheet extends Fpdf
 	private function _configMargin()
 	{
 		if($this->DefOrientation == 'P')
-		{
+		{	
+			// Anchos
 			$this->_width_mark = 190;
+			$this->_with_C_N_E = 7;
+			$this->_with_C_H = 42;
+			$this->_with_CE = 65;
+			$this->_width_VG_VRA = 7;
+			// Fuentes
+			$this->_font_criteria = 5;
+			$this->_font_parameter = 7;
+
 			if(count($this->institution->headquarters) > 1){
 		    	$this->_height_mark = 25;
+		    }
+
+		    if(count($this->parameters) == 1 && !$this->fieldExistiByName('aee'))
+		    {
+		    	$this->_with_C_H = 68;
+		    	$this->_width_VG_VRA = 9;
+		    	$this->_with_C_N_E = 10;
+		    	$this->_with_CE = 75;
+
+		    	$this->_font_criteria = 7;
+				$this->_font_parameter = 8;
+
+		    }else if(count($this->parameters) == 2 && $this->fieldExistiByName('aee') )
+		    {
+		    	$this->_with_C_H = 68;
+		    	$this->_width_VG_VRA = 9;
+		    	$this->_with_C_N_E = 8;
+		    	$this->_with_CE = 70;
+
+		    	$this->_font_criteria = 7;
+				$this->_font_parameter = 8;
+
+		    }else if(count($this->parameters) == 2 && !$this->fieldExistiByName('aee') )
+		    {
+		    	$this->_with_C_H = 42.4;
+		    	$this->_with_CE = 70;
+		    	$this->_font_criteria = 5;
 		    }
 
 			$this->_font_tittle = 12;
@@ -43,6 +82,18 @@ class EvaluationSheet extends Fpdf
 			$this->_first_place_header = 20;
 			$this->_second_place_header = 50;
 			$this->_third_place_header = 90;
+		}
+		else
+		{
+			if(count($this->institution->headquarters) > 1){
+		    	$this->_height_mark = 25;
+		    }
+
+		    if(count($this->parameters) == 3 && !$this->fieldExistiByName('aee'))
+		    {
+		    	$this->_with_CE = 77;	
+		    	$this->_font_student = 8;
+		    }
 		}
 	}
 
@@ -130,7 +181,7 @@ class EvaluationSheet extends Fpdf
 		// 
 		$this->SetFillColor(225, 249, 255);
 		// 
-		$this->SetFont('Arial','B',9);
+		// $this->SetFont('Arial','B',9);
 
 		// Show EvaluationSheet Parameters
 		$this->showEvaluationParameters();
@@ -148,6 +199,9 @@ class EvaluationSheet extends Fpdf
 
 	private function showEvaluationParameters()
 	{
+
+		$this->SetFont('Arial','B', $this->_font_parameter);
+
 		$this->Cell( (($this->_with_C_N_E * 2) + $this->_with_CE ), 4, '', 1,0, 'C', true);
 
 		// show Parameter
@@ -173,7 +227,7 @@ class EvaluationSheet extends Fpdf
 	private function showCriteria()
 	{
 
-		$this->SetFont('Arial','B',7);
+		$this->SetFont('Arial','B', $this->_font_criteria);
 
 		// show Criteria
 		foreach($this->parameters as $parameter){
@@ -204,7 +258,7 @@ class EvaluationSheet extends Fpdf
 	public function create($students)
 	{
 		$this->AddPage();
-		$this->SetFont('Arial','',7);
+		$this->SetFont('Arial','',$this->_font_student);
 
 		$cont = 1;
 		foreach ($students as $key => $student) {
@@ -280,6 +334,19 @@ class EvaluationSheet extends Fpdf
 
 		$this->SetFont('Arial','I',6);
 		$this->MultiCell(0, 4, utf8_decode($content), 0, 'L');	
+	}
+
+	private function fieldExistiByName($name)
+	{
+		foreach($this->parameters as $key => $parameter)
+		{
+			if( strstr(strtolower($parameter->abbreviation), strtolower($name)) )
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public function Footer()
