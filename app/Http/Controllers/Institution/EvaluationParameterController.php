@@ -116,8 +116,12 @@ class EvaluationParameterController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(EvaluationParameter $evaluationParameter)
     {
-        //
+        $evaluationParameter->delete();
+
+        flash("Parameto de evaluación eliminado")->success();
+
+        return redirect()->back();
     }
 }
