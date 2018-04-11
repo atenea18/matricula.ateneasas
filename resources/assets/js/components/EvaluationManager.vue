@@ -5,14 +5,14 @@
             <h5>{{asignature.name}}</h5>
             <h5>{{group.name}}</h5>
 
-            <span>{{isConexion?'':'Usted no tiene conexión a internet'}}</span>
+            <span style="color:red;font-weight: bold ">{{isConexion?'':'Usted no tiene conexión a internet'}}</span>
         </div>
         <div class="col-md-3">
             <div v-if="periodSelected">
                 <performances-manager></performances-manager>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label for="">Seleccionar Periodo</label>
             <select v-on:change="getEvaluationsByPeriod" class="form-control" name="" v-model="periodid">
                 <option :value="0">Seleccionar</option>
@@ -144,9 +144,14 @@
         margin: 30px auto;
     }
 
-    .form-control {
-        border-radius: 0px;
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 3px;
+        padding-top: 3px;
+        padding-right: 3px;
+        padding-left: 3px;
+        line-height: 1.42857143;
+        vertical-align: middle !important;
+        border-top: 1px solid #ddd;
     }
-
 
 </style>
