@@ -1,7 +1,7 @@
 <template>
     <div>
         <input v-debounce="delay" :class="isSend?'send':'not-send'" @keypress="displacement" :id="'input'+count"
-               class="form-control"
+               class="form-controll"
                style="padding:2px 2px" type="text" v-model.lazy="valuenote">
     </div>
 

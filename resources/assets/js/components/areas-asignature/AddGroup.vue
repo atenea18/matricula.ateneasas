@@ -43,7 +43,7 @@
                     <label for="">Enumerar</label>
                     <select v-on:change="" class="form-control" name="" v-model="order">
                         <option :value="false">Seleccionar</option>
-                        <option v-for="n in 20" :value="n">
+                        <option v-for="n in 50" :value="n">
                             {{ n }}
                         </option>
                     </select>
