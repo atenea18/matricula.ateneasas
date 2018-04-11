@@ -4,15 +4,15 @@
         <!-- Fila de titulos -->
         <thead>
         <tr style="font-size: 11px">
-            <th scope="col" rowspan="2">#</th>
-            <th rowspan="2"> Nombres Y Apellidos</th>
+            <th scope="col" rowspan="2">No.</th>
+            <th rowspan="2"> NOMBRES Y APELLIDOS</th>
             <th rowspan="2"> FAA</th>
             <template v-for="para in parameters">
                 <th :colspan="para.notes_parameter.length+1" style="text-align: center">
                     {{para.parameter}}
                 </th>
             </template>
-            <th rowspan="2"> Val</th>
+            <th rowspan="2"> VAL </th>
         </tr>
         <tr>
             <!--
@@ -109,10 +109,11 @@
 
 <style>
     .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-        padding: 5px;
+        padding: 3px !important;
         line-height: 1.42857143;
         vertical-align: top;
         border-top: 1px solid #ddd;
     }
+
 
 </style>

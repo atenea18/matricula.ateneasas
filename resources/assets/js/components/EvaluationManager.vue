@@ -144,9 +144,14 @@
         margin: 30px auto;
     }
 
-    .form-control {
-        border-radius: 0px;
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        padding: 3px;
+        padding-top: 3px;
+        padding-right: 3px;
+        padding-left: 3px;
+        line-height: 1.42857143;
+        vertical-align: middle !important;
+        border-top: 1px solid #ddd;
     }
-
 
 </style>
