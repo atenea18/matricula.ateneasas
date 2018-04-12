@@ -1,4 +1,4 @@
-<div id="sidebar-wrapper" style="background-color: #286090;">
+x<div id="sidebar-wrapper" style="background-color: #286090;">
 	<ul class="sidebar-nav nav-pills nav-stacked" id="menu">
         <!--<li class="" style="color: #ffffff; text-align: right ">
             &commat;tenea
@@ -24,12 +24,24 @@
 
         <!-- Grupo -->
         <li class="">
+            <a data-toggle="collapse" data-parent="#menu" href="#collapse-manager" aria-expanded="true" aria-controls="collapse-manager">
+                <span class="fa-stack fa-lg pull-left"><i class="fa fa-users fa-stack-1x "></i>
+                </span>
+                Grupos
+            </a>
+            <ul id="collapse-manager" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
+                <li><a href="{{route('group.index')}}">Grupos</a></li>
+                <li><a href="{{route('subgroup.index')}}">Subgrupos</a></li>
+            </ul>
+        </li>
+
+        {{-- <li class="">
             <a href="{{route('group.index')}}">
                 <span class="fa-stack fa-lg pull-left"><i class="fa fa-users fa-stack-1x "></i>
                 </span>
                 Grupos
             </a>
-        </li>
+        </li> --}}
 		
         <!-- Sede -->
         <li class="">

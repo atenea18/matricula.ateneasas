@@ -35,6 +35,14 @@ class Headquarter extends Model
     }
 
     /**
+     * Obtiene la relacion que hay entre el subgrupo y la sede
+     */
+    public function subgroups()
+    {
+        return $this->hasMany(Subgroup::class, 'headquarter_id');
+    }
+
+    /**
      * Obtiene la relacion que hay entre la matricula y la sede
      */
     public function enrollments()

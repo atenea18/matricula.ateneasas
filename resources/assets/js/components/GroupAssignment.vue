@@ -1,7 +1,5 @@
 <template>
     <div>
-
-
         <div class="row" style="text-align: center; background-color:#eee; padding-top: 10px;">
             <div class="col-md-5">
                 <div class="form-group">

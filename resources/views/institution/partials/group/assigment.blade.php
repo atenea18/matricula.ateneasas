@@ -29,21 +29,3 @@
         </div>
     </div>
 @endsection
-
-@section('js')
-    {{--
-    <script>
-        $(document).ready(function () {
-
-            $(".table").DataTable({
-                "language": {
-                    "url": "{{asset('plugin/DataTables/languaje/Spanish.json')}}"
-                },
-                "info": false,
-                // "order": [2],
-                "autoWidth": false,
-            });
-        });
-    </script>
-    --}}
-@endsection
