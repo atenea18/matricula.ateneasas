@@ -22,6 +22,15 @@ class Grade extends Model
     }
 
     /**
+     * Obtiene la relacion que hay entre el subgrupo y el grado
+     */
+    public function subgroups()
+    {
+        return $this->hasMany(Subgroup::class, 'grade_id');
+    }
+
+
+    /**
      * Obtiene la relacion que hay entre el grado y la matricula
      */
     public function enrollments()
