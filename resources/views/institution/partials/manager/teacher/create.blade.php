@@ -23,6 +23,7 @@
 			<div class="panel-body">
 
 				@include('complements.error')
+				@include('flash::message')
 
 				<div class="container-fluid">
 					<div id="identification" class="section_inscription">

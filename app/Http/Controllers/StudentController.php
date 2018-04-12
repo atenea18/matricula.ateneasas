@@ -61,17 +61,30 @@ class StudentController extends Controller
      */
     public function store(CreateStudentRequest $request)
     {
+
+        $identification = Identification::where('identification_number', '=', $request->identification_number)->first();
+
         $student = new Student();
         $address = new Address();
-        $identification = new Identification();
 
-        $identification->fill($request->all());
+        if(is_null($identification))
+        {
+            $identification = new Identification();
+            $identification->fill($request->all());
+            $identification->save();
+        
+        }else if($identification->someRelationship())
+        {
+            // dd($identification->someRelationship());
+            flash("Este número de identificación esta siendo utilizado por otra persona")->error();
+
+            return redirect()->back()->withInput();
+        }
+
         $address->fill($request->all());
-        $student->fill($request->all());
-
-        $identification->save();
         $address->save();
 
+        $student->fill($request->all());
         $student->identification_id = $identification->id;
         $student->address_id = $address->id;
         $student->username = $request->identification_number;

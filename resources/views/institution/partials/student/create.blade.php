@@ -21,6 +21,7 @@
 
 						{!! \App\Student::existStudent() !!}
 				  		@include('complements.error')
+				  		@include('flash::message')
 
 
 
