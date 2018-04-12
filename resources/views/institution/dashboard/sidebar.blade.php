@@ -1,4 +1,4 @@
-x<div id="sidebar-wrapper" style="background-color: #286090;">
+<div id="sidebar-wrapper" style="background-color: #286090;">
 	<ul class="sidebar-nav nav-pills nav-stacked" id="menu">
         <!--<li class="" style="color: #ffffff; text-align: right ">
             &commat;tenea
