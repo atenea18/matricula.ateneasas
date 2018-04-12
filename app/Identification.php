@@ -77,6 +77,21 @@ class Identification extends Model
 
     public function hasStudent()
     {
-        return ($this->student() != null);
+        return $this->student;
+    }
+
+    public function hasManager()
+    {
+        return $this->manager;
+    }
+
+    public function hasFamily()
+    {
+        return $this->family;
+    }
+
+    public function someRelationship()
+    {
+        return (!is_null($this->hasStudent()) || !is_null($this->hasManager()) || !is_null($this->hasFamily()));
     }
 }
