@@ -114,6 +114,7 @@ return array(
     'App\\Note' => $baseDir . '/app/Note.php',
     'App\\NotesFinal' => $baseDir . '/app/NotesFinal.php',
     'App\\NotesParameters' => $baseDir . '/app/NotesParameters.php',
+    'App\\NotesParametersPerformances' => $baseDir . '/app/NotesParametersPerformances.php',
     'App\\Notifications\\InstitutionResetPasswordNotification' => $baseDir . '/app/Notifications/InstitutionResetPasswordNotification.php',
     'App\\Pdf\\Constancy\\Study' => $baseDir . '/app/Pdf/Constancy/Study.php',
     'App\\Pdf\\Sheet\\EvaluationSheet' => $baseDir . '/app/Pdf/Sheet/EvaluationSheet.php',

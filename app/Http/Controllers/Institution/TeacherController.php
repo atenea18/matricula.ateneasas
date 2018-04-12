@@ -119,14 +119,29 @@ class TeacherController extends ApiController
      */
     public function store(CreateTeacherRequest $request)
     {
+
+        $identification = Identification::where('identification_number', '=', $request->identification_number)->first();
+
+        // dd($identification->someRelationship());
+
         $manager = new Manager();
         $address = new Address();
-        $identification = new Identification();
 
-        $identification->fill($request->all());
+        if(is_null($identification))
+        {
+            $identification = new Identification();
+            $identification->fill($request->all());
+            $identification->save();
+        }
+        else if($identification->someRelationship())
+        {
+            // dd($identification->someRelationship());
+            flash("Este número de identificación esta siendo utilizado por otra persona")->error();
+
+            return redirect()->back()->withInput();
+        }
+
         $address->fill($request->all());
-        
-        $identification->save();
         $address->save();
 
         $manager->fill($request->all());

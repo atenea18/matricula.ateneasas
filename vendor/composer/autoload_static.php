@@ -534,6 +534,7 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         'App\\Note' => __DIR__ . '/../..' . '/app/Note.php',
         'App\\NotesFinal' => __DIR__ . '/../..' . '/app/NotesFinal.php',
         'App\\NotesParameters' => __DIR__ . '/../..' . '/app/NotesParameters.php',
+        'App\\NotesParametersPerformances' => __DIR__ . '/../..' . '/app/NotesParametersPerformances.php',
         'App\\Notifications\\InstitutionResetPasswordNotification' => __DIR__ . '/../..' . '/app/Notifications/InstitutionResetPasswordNotification.php',
         'App\\Pdf\\Constancy\\Study' => __DIR__ . '/../..' . '/app/Pdf/Constancy/Study.php',
         'App\\Pdf\\Sheet\\EvaluationSheet' => __DIR__ . '/../..' . '/app/Pdf/Sheet/EvaluationSheet.php',
