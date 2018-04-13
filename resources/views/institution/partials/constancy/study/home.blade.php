@@ -40,6 +40,33 @@
 			</div>
 		</div>
 		<div class="row">
+			<div class="col-md-offset-3 col-md-3">
+				<div class="form-group">
+					{!! Form::label('orientation', 'Orientación', []) !!}
+					{!! Form::select('orientation', 
+						[
+							'p'=> 'Vertical',
+							'l'=> 'Horizontal'
+						], 
+					'l', ['class'=>'form-control']) !!}
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="form-group">
+					{!! Form::label('papper', 'Tamaño de papel', []) !!}
+					{!! Form::select('papper', 
+					[
+						'letter'=> 'Carta',
+						'legal'	=> 'Oficio',
+						'a3'	=> 'A3',
+						'a4'	=> 'A4',
+						'a5'	=> 'A5',
+					], 
+					'letter', ['class'=>'form-control']) !!}
+				</div>
+			</div>
+		</div>
+		<div class="row">
 			<div class="col-md-12 text-center">
 				<button type="submit" class="btn btn-primary">
 					Imprimir Constancia
