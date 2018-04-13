@@ -24,12 +24,12 @@
 
         <!-- Grupo -->
         <li class="">
-            <a data-toggle="collapse" data-parent="#menu" href="#collapse-manager" aria-expanded="true" aria-controls="collapse-manager">
+            <a data-toggle="collapse" data-parent="#menu" href="#collapse-group" aria-expanded="true" aria-controls="collapse-group">
                 <span class="fa-stack fa-lg pull-left"><i class="fa fa-users fa-stack-1x "></i>
                 </span>
                 Grupos
             </a>
-            <ul id="collapse-manager" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
+            <ul id="collapse-group" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
                 <li><a href="{{route('group.index')}}">Grupos</a></li>
                 <li><a href="{{route('subgroup.index')}}">Subgrupos</a></li>
             </ul>
