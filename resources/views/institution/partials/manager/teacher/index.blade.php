@@ -50,7 +50,6 @@
 				"info":     false,
 				// "order": [2],
 				"autoWidth": false,
-				"autoWidth": false,
                 "ajax": {
                     "method": "GET",
                     "url": "{{route('institution.teachers', [$institution->id, '2018'])}}"

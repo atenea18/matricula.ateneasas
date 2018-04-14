@@ -148,7 +148,10 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	Route::resource('group', 'GroupController');
     Route::get('group-assignment', 'GroupController@assigment')->name('group.assignment');
     Route::resource('subgroup', 'Institution\SubgroupController');
-    Route::get('subgroup/assignment', 'SubgroupController@assigment')->name('subgroup.assignment');
+    Route::get('subgroup/{subgroup}/assignment', 'Institution\SubgroupController@assigment')->name('subgroup.assignment');
+    Route::post('subgroup/addEnrollment', 'Institution\SubgroupController@addEnrollment')->name('subgroup.addEnrollment');
+    Route::post('subgroup/deleteEnrollment', 'Institution\SubgroupController@deleteEnrollment')->name('subgroup.deleteEnrollment');
+
 
     //Rutas para request Ajax
     Route::get('enrollmentByGroup/{group_id}', 'GroupController@getEnrollmentsByGroup');

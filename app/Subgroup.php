@@ -27,4 +27,12 @@ class Subgroup extends Model
     {
         return $this->belongsTo(Grade::class, 'grade_id');
     }
+
+     /**
+     * Obtiene la relacion que hay entre el subgrupo y la matricula
+     */
+    public function enrollments()
+    {
+        return $this->belongsToMany(Enrollment::class, 'sub_group_assignments', 'subgroup_id', 'enrollment_id');
+    }
 }
