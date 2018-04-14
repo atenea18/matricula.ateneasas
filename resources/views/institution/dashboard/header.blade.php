@@ -21,7 +21,7 @@
 			<ul class="nav navbar-nav">
 				<li class="active" >
 	         	<button class="navbar-toggle collapse in" data-toggle="collapse" id="menu-toggle-2"> 
-	            	<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+	            	<span class="fa fa-th-large" aria-hidden="true"></span>
 	          	</button>
 	        </li>
 			</ul>

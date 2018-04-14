@@ -28,6 +28,14 @@ class Enrollment extends Model
     }
 
     /**
+     * Obtiene la relacion que hay entre el subgrupo y la matricula
+     */
+    public function subgroups()
+    {
+        return $this->belongsToMany(Subgroup::class, 'sub_group_assignments', 'enrollment_id', 'subgroup_id');
+    }
+
+    /**
      * Obtiene la relacion que hay entre el grado y la matricula
      */
     public function grade()
