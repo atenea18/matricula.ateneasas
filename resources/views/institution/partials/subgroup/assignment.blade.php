@@ -26,7 +26,7 @@
                             <tr>
                                 <th>#</th>
                                 <th><input type="checkbox" id="allCheckbox"></th>
-                                <th>Asginar</th>
+                                <th>Asignar</th>
                                 <th>Nombres y Apellidos</th>
                                 <th>Novedad</th>
                             </tr>
