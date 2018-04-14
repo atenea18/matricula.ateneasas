@@ -157,7 +157,8 @@ class SubgroupController extends Controller
         $institution = Auth::guard('web_institution')->user();
 
         $students_with_subgroup = $institution->headquarters()
-        ->with('subgroups')
+        ->with('subgroups.enrollments.student.identification.identification_type')
+        // ->with('subgroups.enrollments.group')
         ->get()
         ->pluck('subgroups')
         ->collapse()
@@ -165,7 +166,7 @@ class SubgroupController extends Controller
         ->first()
         ->enrollments;
 
-        // return response()->json($students_with_subgroup);
+        // return response()->json($students_with_subgroup->first());
 
         $allEnrollments = $institution->headquarters()
         ->with('groups.enrollments.student')
