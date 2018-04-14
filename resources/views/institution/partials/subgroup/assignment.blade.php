@@ -21,9 +21,10 @@
             		<h4>SUBGRUPO - {{ strtoupper($subgroup->name) }} - GRADO {{ strtoupper($subgroup->grade->name) }}°</h4>
             	</div>
                 <div class="panel-body">
-                    <table class="table">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
+                                <th>#</th>
                                 <th><input type="checkbox" id="allCheckbox"></th>
                                 <th>Asginar</th>
                                 <th>Nombres y Apellidos</th>
@@ -32,17 +33,18 @@
                         </thead>
                         <tbody>
                         <?php $cont = 0; ?>
-                        @foreach($allEnrollments as $key => $enrollment)   
-                        <?php $hasAssignment = false; ?>
-                        @foreach($students_with_subgroup as $key => $studentWS)
-                            
-                            @if($enrollment->id == $studentWS->id)
-                                <?php $hasAssignment = true; ?>
-                            @endif
+                        @foreach($allEnrollments->sortBy('student.last_name') as $key => $enrollment)   
+                            <?php $hasAssignment = false; ?>
+                            @foreach($students_with_subgroup as $key2 => $studentWS)
+                                
+                                @if($enrollment->id == $studentWS->id)
+                                    <?php $hasAssignment = true; ?>
+                                @endif
 
-                        @endforeach
+                            @endforeach
                         @if(!$hasAssignment)
                         <tr>
+                            <td> {{ (++$cont) }} </td>
                             <td>
                                 {!! Form::checkbox('assignmentCheck[]', $enrollment->id, false, []) !!}
                             </td>
@@ -82,9 +84,9 @@
                     "url": "{{asset('plugin/DataTables/languaje/Spanish.json')}}"
                 },
                 // "info":     false,
-                "order": [
-                    [2, "asc"]
-                ],
+                // "order": [
+                //     [2, "asc"]
+                // ],
                 "autoWidth": false,
             });
 

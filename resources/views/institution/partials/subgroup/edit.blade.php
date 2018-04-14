@@ -82,9 +82,10 @@
     				<h4>Listado de Estudiantes</h4>
     			</div>
     			<div class="panel-body">
-    				<table class="table">
+    				<table class="table table-hover">
     					<thead>
     						<tr>
+    							<th>#</th>
     							<th>Apellidos y Nombres</th>
     							<th>Tipo Doc.</th>
     							<th>Num. Doc.</th>
@@ -93,8 +94,9 @@
     						</tr>
     					</thead>
     					<tbody>
-    					@foreach($enrollments as $key => $enrollment)
+    					@foreach($enrollments->sortBy('last_name') as $key => $enrollment)
 						<tr>
+							<td>{{ (++$key) }}</td>
 							<td> {{ $enrollment->student->fullNameInverse }} </td>
 							<td> {{ $enrollment->student->identification->identification_type->name }} </td>
 							<td> {{ $enrollment->student->identification->identification_number }} </td>
@@ -124,7 +126,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            
+
 	        $('.chosen-select').chosen({width: "100%"});
 	        $('.chosen-select-deselect').chosen({ allow_single_deselect: true });
 
@@ -133,9 +135,9 @@
                     "url": "{{asset('plugin/DataTables/languaje/Spanish.json')}}"
                 },
                 // "info":     false,
-                "order": [
-                    [0, "asc"]
-                ],
+                // "order": [
+                //     [0, "asc"]
+                // ],
                 "autoWidth": false,
             });
 
