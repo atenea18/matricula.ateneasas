@@ -43,7 +43,7 @@
 													document.getElementById('formDelsg{{$subgroup->id}}').submit();">
 											<i class="fa fa-trash"></i>
 										</a>
-										<a href="{{route('subgroup.assignment', $subgroup)}}" class="btn btn-sm btn-info" title="Asginar">
+										<a href="{{route('subgroup.assignment', $subgroup)}}" class="btn btn-sm btn-info" title="Asignar">
 											<i class="fa fa-user-plus"></i>
 										</a>
 										{!! Form::open(['route'=>['subgroup.destroy', $subgroup->id], 'method'=>'DELETE', 'id'=>"formDelsg{$subgroup->id}"]) !!}
