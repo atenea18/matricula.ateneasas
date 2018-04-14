@@ -74,14 +74,100 @@
 			{!! Form::close()!!}
     	</div>
     </div>
+
+    <div class="row">
+    	<div class="col-md-12">
+    		<div class="panel panel-default">
+    			<div class="panel-heading">
+    				<h4>Listado de Estudiantes</h4>
+    			</div>
+    			<div class="panel-body">
+    				<table class="table">
+    					<thead>
+    						<tr>
+    							<th>Apellidos y Nombres</th>
+    							<th>Tipo Doc.</th>
+    							<th>Num. Doc.</th>
+    							<th>Grupo</th>
+    							<th>Remover</th>
+    						</tr>
+    					</thead>
+    					<tbody>
+    					@foreach($enrollments as $key => $enrollment)
+						<tr>
+							<td> {{ $enrollment->student->fullNameInverse }} </td>
+							<td> {{ $enrollment->student->identification->identification_type->name }} </td>
+							<td> {{ $enrollment->student->identification->identification_number }} </td>
+							<td> {{ $enrollment->group->first()->name }} </td>
+							<td>
+								<a href="" class="btn btn-danger btn-sm" data-enrollment="{{$enrollment->id}}" data-subgroup="{{$subgroup->id}}" data-method="delete">
+                                    <i class="fa fa-user-times"></i>
+                                </a>
+							</td>
+						</tr>
+    					@endforeach	
+    					</tbody>
+    				</table>
+    			</div>
+    		</div>
+    	</div>
+    </div>
 @endsection
 
 @section('js')
 	<script src="{{asset('js/chosen.jquery.js')}}"></script>
 	<script>
     	$(function() {
+
+    		$.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            
 	        $('.chosen-select').chosen({width: "100%"});
 	        $('.chosen-select-deselect').chosen({ allow_single_deselect: true });
+
+	        $(".table").DataTable( {
+                "language": {
+                    "url": "{{asset('plugin/DataTables/languaje/Spanish.json')}}"
+                },
+                // "info":     false,
+                "order": [
+                    [0, "asc"]
+                ],
+                "autoWidth": false,
+            });
+
+            // 
+            $("a[data-method=delete]").click(function(e){
+
+                e.preventDefault();
+
+                var btn = $(this),
+                    enrollment_id = btn.data('enrollment'),
+                    subgroup_id = btn.data('subgroup');
+
+                $.ajax({
+                    url: "{{route('subgroup.deleteEnrollment')}}",
+                    method: "POST",
+                    data: { enrollment_id, subgroup_id},
+                    beforeSend: function(){
+                        btn.empty().html("<i class='fas fa-spinner fa-pulse'></i>");
+                    },
+                    success:function(data){
+                        btn.empty().html("<i class='fa fa-user-times'></i>");
+
+                        btn.parent().parent().remove();
+                        toastr.success(data.message);
+                    },  
+                    error:function(xhr)
+                    {
+                        btn.empty().html("<i class='fa fa-user-times'></i>");
+                        console.log(xhr);
+                    }
+                });
+            });
     	});
 	</script>
 @endsection
