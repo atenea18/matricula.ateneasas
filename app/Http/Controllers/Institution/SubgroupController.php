@@ -100,9 +100,22 @@ class SubgroupController extends Controller
 
         $grades = Grade::orderBy('id', 'ASC')->pluck('name', 'id');
 
+        $enrollments = $institution->headquarters()
+        ->with('subgroups.enrollments.student.identification.identification_type')
+        ->with('subgroups.enrollments.group')
+        ->get()
+        ->pluck('subgroups')
+        ->collapse()
+        ->where('id', '=', $subgroup->id)
+        ->first()
+        ->enrollments;
+
+        // return response()->json($enrollments);
+
         return View('institution.partials.subgroup.edit')
         ->with('subgroup',$subgroup)
         ->with('headquarters',$headquarters)
+        ->with('enrollments',$enrollments)
         ->with('grades',$grades);
     }
 

@@ -18,59 +18,45 @@
         <div class="col-md-12">
             <div class="panel panel-default">
             	<div class="panel-heading" style="text-align: center; background-color:#eee; padding-top: 10px;">
-            		<h4>Subgrupo - {{ $subgroup->name}}</h4>
+            		<h4>SUBGRUPO - {{ strtoupper($subgroup->name) }} - GRADO {{ strtoupper($subgroup->grade->name) }}°</h4>
             	</div>
                 <div class="panel-body">
                     <table class="table">
                         <thead>
                             <tr>
                                 <th><input type="checkbox" id="allCheckbox"></th>
-                                {{-- <th>#</th> --}}
+                                <th>Asginar</th>
                                 <th>Nombres y Apellidos</th>
                                 <th>Novedad</th>
-                                <th>Asginar / Remover</th>
                             </tr>
                         </thead>
                         <tbody>
                         <?php $cont = 0; ?>
                         @foreach($allEnrollments as $key => $enrollment)   
+                        <?php $hasAssignment = false; ?>
+                        @foreach($students_with_subgroup as $key => $studentWS)
+                            
+                            @if($enrollment->id == $studentWS->id)
+                                <?php $hasAssignment = true; ?>
+                            @endif
+
+                        @endforeach
+                        @if(!$hasAssignment)
                         <tr>
                             <td>
                                 {!! Form::checkbox('assignmentCheck[]', $enrollment->id, false, []) !!}
                             </td>
-                            {{-- <td>
-                                {{ ++$cont }}
-                            </td> --}}
+                            <td class="text-center" width="1%">
+                                <a href="" class="btn btn-primary btn-sm" data-enrollment="{{$enrollment->id}}" data-subgroup="{{$subgroup->id}}" data-method="store">
+                                    <i class="fa fa-user-plus"></i>
+                                </a>
+                            </td>
                             <td>
                                 {{ $enrollment->student->fullNameInverse }}
                             </td>
                             <td></td>
-                            <td class="text-center" width="1%">
-                                <?php $hasAssignment = false; ?>
-                                @foreach($students_with_subgroup as $key => $studentWS)
-                                    
-                                    @if($enrollment->id == $studentWS->id)
-                                        <?php $hasAssignment = true; ?>
-                                    @endif
-
-                                @endforeach
-                                @if(!$hasAssignment)
-                                <a href="" class="btn btn-primary btn-sm" data-enrollment="{{$enrollment->id}}" data-subgroup="{{$subgroup->id}}" data-method="store">
-                                    <i class="fa fa-user-plus"></i>
-                                </a>
-                                <a href="" class="btn btn-danger btn-sm hide" data-enrollment="{{$enrollment->id}}" data-subgroup="{{$subgroup->id}}" data-method="delete">
-                                    <i class="fa fa-user-times"></i>
-                                </a>
-                                @else
-                                <a href="" class="btn btn-primary btn-sm hide" data-enrollment="{{$enrollment->id}}" data-subgroup="{{$subgroup->id}}" data-method="store">
-                                    <i class="fa fa-user-plus"></i>
-                                </a>
-                                <a href="" class="btn btn-danger btn-sm" data-enrollment="{{$enrollment->id}}" data-subgroup="{{$subgroup->id}}" data-method="delete">
-                                    <i class="fa fa-user-times"></i>
-                                </a>
-                                @endif
-                            </td>
                         </tr>
+                        @endif
     
                         @endforeach
                         </tbody>
@@ -119,10 +105,8 @@
                     },
                     success:function(data){
                         btn.empty().html("<i class='fa fa-user-plus'></i>");
-                        console.log(data);
 
-                        btn.addClass('hide');
-                        btn.next().removeClass('hide');
+                        btn.parent().parent().remove();
                         toastr.success(data.message);
                     },  
                     error:function(xhr)
@@ -133,36 +117,36 @@
                 });
             });
 
-            $("a[data-method=delete]").click(function(e){
+            // $("a[data-method=delete]").click(function(e){
 
-                e.preventDefault();
+            //     e.preventDefault();
 
-                var btn = $(this),
-                    enrollment_id = btn.data('enrollment'),
-                    subgroup_id = btn.data('subgroup');
+            //     var btn = $(this),
+            //         enrollment_id = btn.data('enrollment'),
+            //         subgroup_id = btn.data('subgroup');
 
-                $.ajax({
-                    url: "{{route('subgroup.deleteEnrollment')}}",
-                    method: "POST",
-                    data: { enrollment_id, subgroup_id},
-                    beforeSend: function(){
-                        btn.empty().html("<i class='fas fa-spinner fa-pulse'></i>");
-                    },
-                    success:function(data){
-                        btn.empty().html("<i class='fa fa-user-times'></i>");
-                        console.log(data);
+            //     $.ajax({
+            //         url: "{{route('subgroup.deleteEnrollment')}}",
+            //         method: "POST",
+            //         data: { enrollment_id, subgroup_id},
+            //         beforeSend: function(){
+            //             btn.empty().html("<i class='fas fa-spinner fa-pulse'></i>");
+            //         },
+            //         success:function(data){
+            //             btn.empty().html("<i class='fa fa-user-times'></i>");
+            //             console.log(data);
 
-                        btn.addClass('hide');
-                        btn.prev().removeClass('hide');
-                        toastr.success(data.message);
-                    },  
-                    error:function(xhr)
-                    {
-                        btn.empty().html("<i class='fa fa-user-times'></i>");
-                        console.log(xhr);
-                    }
-                });
-            });
+            //             btn.addClass('hide');
+            //             btn.prev().removeClass('hide');
+            //             toastr.success(data.message);
+            //         },  
+            //         error:function(xhr)
+            //         {
+            //             btn.empty().html("<i class='fa fa-user-times'></i>");
+            //             console.log(xhr);
+            //         }
+            //     });
+            // });
         });
     </script>
 @endsection
