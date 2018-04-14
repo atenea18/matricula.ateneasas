@@ -12,9 +12,8 @@
     	<div class="col-md-12">
     		<div class="panel panel-default">
 			  	<div class="panel-heading clearfix">
-					<a class="btn btn-success btn-sm" style="margin-right: 3px" href="{{route('subgroup.assignment')
-					}}">Asignar Subgrupos</a>
-
+					
+					<h4 class="pull-left">Subgrupos</h4>
 					<a class="btn btn-primary btn-sm pull-right" href="{{route('subgroup.create')}}">Crear Subrupo</a>
 			  	</div>
 			  	<div class="panel-body">
@@ -22,18 +21,18 @@
 			  		<table class="table">
 			  			<thead>
 			  				<tr>
-								<th>Sede</th>
-								<th>Grado</th>
 			  					<th>Subgrupo</th>
+								{{-- <th>Sede</th> --}}
+								<th>Grado</th>
 			  					<th></th>
 			  				</tr>
 			  			</thead>
 			  			<tbody>
 			  				@foreach($subgroups as $key => $subgroup)
 								<tr>
-									<td>{{ $subgroup->headquarter->name }}</td>
-									<td>{{ $subgroup->grade->name}}</td>
 									<td>{{ $subgroup->name }}</td>
+									{{-- <td>{{ $subgroup->headquarter->name }}</td> --}}
+									<td>{{ $subgroup->grade->name}}</td>
 									<td>
 										<a href="{{route('subgroup.edit', $subgroup)}}" class="btn btn-primary btn-sm">
 											<i class="fa fa-edit"></i>
@@ -43,6 +42,9 @@
 											onclick="event.preventDefault();
 													document.getElementById('formDelsg{{$subgroup->id}}').submit();">
 											<i class="fa fa-trash"></i>
+										</a>
+										<a href="{{route('subgroup.assignment', $subgroup)}}" class="btn btn-sm btn-info" title="Asginar">
+											<i class="fa fa-user-plus"></i>
 										</a>
 										{!! Form::open(['route'=>['subgroup.destroy', $subgroup->id], 'method'=>'DELETE', 'id'=>"formDelsg{$subgroup->id}"]) !!}
 										{!! Form::close() !!}
@@ -65,7 +67,7 @@
 				"language": {
 				    "url": "{{asset('plugin/DataTables/languaje/Spanish.json')}}"
 				},
-				"info":     false,
+				// "info":     false,
 				// "order": [2],
 				"autoWidth": false,
 		    });

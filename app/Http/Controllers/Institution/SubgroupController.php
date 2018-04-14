@@ -13,6 +13,7 @@ use App\Institution;
 use App\Subgroup;
 use App\Headquarter;
 use App\Grade;
+use App\Enrollment;
 
 class SubgroupController extends Controller
 {
@@ -137,8 +138,65 @@ class SubgroupController extends Controller
         return redirect()->back();
     }
 
-    public function assigment()
+    public function assigment(Subgroup $subgroup)
     {
+        
+        $institution = Auth::guard('web_institution')->user();
 
+        $students_with_subgroup = $institution->headquarters()
+        ->with('subgroups')
+        ->get()
+        ->pluck('subgroups')
+        ->collapse()
+        ->where('id', '=', $subgroup->id)
+        ->first()
+        ->enrollments;
+
+        // return response()->json($students_with_subgroup);
+
+        $allEnrollments = $institution->headquarters()
+        ->with('groups.enrollments.student')
+        ->get()
+        ->pluck('groups')
+        ->collapse()
+        ->pluck('enrollments')
+        ->collapse()
+        ->where('grade_id', '=', $subgroup->grade_id);
+
+        // dd(count($allEnrollments[1]->subgroups));
+        return View('institution.partials.subgroup.assignment')
+        ->with('subgroup',$subgroup)
+        ->with('students_with_subgroup',$students_with_subgroup)
+        ->with('allEnrollments',$allEnrollments);
+    }
+
+    public function addEnrollment(Request $request)
+    {
+        $enrollment = Enrollment::findOrFail($request->enrollment_id);
+
+        $enrollment->subgroups()->attach($request->subgroup_id);
+
+        return response()->json(
+            [
+                'state' =>  true,
+                'message'   =>  'Se ha agregado exitosamente',
+                'data'      =>  $enrollment->subgroups
+            ]
+        );
+    }
+
+    public function deleteEnrollment(Request $request)
+    {
+        $enrollment = Enrollment::findOrFail($request->enrollment_id);
+
+        $enrollment->subgroups()->detach($request->subgroup_id);
+
+        return response()->json(
+            [
+                'state' =>  true,
+                'message'   =>  'Se ha removido del subgrupo exitosamente',
+                'data'      =>  $enrollment->subgroups
+            ]
+        );   
     }
 }
