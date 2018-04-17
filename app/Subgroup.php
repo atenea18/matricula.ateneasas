@@ -35,4 +35,13 @@ class Subgroup extends Model
     {
         return $this->belongsToMany(Enrollment::class, 'sub_group_assignments', 'subgroup_id', 'enrollment_id');
     }
+
+    /**
+     * Obtiene la relacion que hay entre el sungrupo y el director de subgrupo
+     */
+    public function director()
+    {
+        return $this->belongsToMany(Teacher::class, 'sub_group_directors', 'sub_group_id', 'teacher_id')
+                ->withPivot('created_at', 'updated_at');
+    }
 }
