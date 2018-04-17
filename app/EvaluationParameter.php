@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class EvaluationParameter extends Model
 {
     protected $fillable = [
-		'parameter', 'abbreviation', 'percent', 'institution_id', 'school_year_id'    	
+		'parameter', 'abbreviation', 'percent', 'institution_id', 'school_year_id', 'group_type'    	
     ];
 
     public function institution()

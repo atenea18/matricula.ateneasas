@@ -28,7 +28,7 @@
 									']) !!}
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									{!! Form::label('abbreviation', 'Abreviación', []) !!}
 									
@@ -36,7 +36,7 @@
 									']) !!}
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									{!! Form::label('percent', 'Porcentaje (%)', []) !!}
 									
@@ -44,11 +44,21 @@
 									']) !!}
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									{!! Form::label('school_year_id', 'Año lectivo', []) !!}
 									
 									{!! Form::select('school_year_id', $schoolyears, $parameter->school_year_id, ['class'=>'form-control', 'placeholder'=>'- Año lectivo -']) !!}
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									{!! Form::label('group_type', 'Tipo de grupo', []) !!}
+									
+									{!! Form::select('group_type', [
+										'group'	=> 'Grupo',
+										'subgroup'	=>	'Subgrupo'
+										], $parameter->group_type, ['class'=>'form-control']) !!}
 								</div>
 							</div>
 						</div>

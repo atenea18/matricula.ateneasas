@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 Route::resource('enrollment', 'Institution\EnrollmentController', ['only'=>['index','show']]);
 Route::get('Institution/{institution}/enrollments/{year}', 'Institution\EnrollmentController@enrollments')->name('institution.enrollments');
 Route::get('headquarter/{headquarter}/{workingDay}/{grade}/getGroup', 'Headquarter\GroupController@getGroup')->name('api.headquarter.getGroup');
+Route::get('headquarter/{headquarter}/{grade}/getSubgroups', 'Headquarter\SubgroupController@getSubgroups')->name('api.headquarter.getSubgroups');
 
 // RUTA PARA DOCENTES
 Route::resource('teacher', 'Institution\TeacherController', ['only'=>['index','show']]);
@@ -32,7 +33,10 @@ Route::resource('area', 'Administrator\AreaController', ['only'=>['index','show'
 // RUTA PARA LOS GRUPOS DE UNA  INSTITUCION
 Route::get('institution/{institution}/groups', 'Institution\GroupController@index');
 
-// RUTA PARA LOS GRUPOS DE UNA  INSTITUCION
+// RUTA PARA LOS SUBGRUPOS DE UNA INSTITUCIÓN
+Route::get('institution/{institution}/getSubgroups', 'Institution\SubgroupController@getSubgroups');
+
+// RUTA PARA LOS GRADOS DE UNA  INSTITUCION
 Route::get('institution/{institution}/grades', 'Institution\GradeController@index');
 
 // RUTA PARA LOS ESTUDIANTES DE UNA GRUPO

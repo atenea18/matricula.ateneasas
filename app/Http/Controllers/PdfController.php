@@ -10,6 +10,7 @@ use App\Group;
 use App\Grade;
 use App\Schoolyear;
 use App\Institution;
+use App\Subgroup;
 
 use PDF;
 use Auth;
@@ -135,7 +136,10 @@ class PdfController extends Controller
         $parameters = $institution->evaluationParameters()
                         ->with('criterias')
                         ->with('schoolYear')
-                        ->where('school_year_id', '=', '1')
+                        ->where([
+                            ['school_year_id', '=', '1'],
+                            ['group_type', '=', $request->group_type]
+                        ])
                         ->get();
 
         // return response()->json($parameters);
@@ -147,10 +151,10 @@ class PdfController extends Controller
 
         foreach($request->groups as $key => $group_id)
         {
-            $group = Group::findOrFail($group_id);
+            $group_type = ($request->group_type == 'group') ? Group::findOrFail($group_id) : Subgroup::findOrFail($group_id) ;
 
             // dd(count($institution->headquarters));
-            $students = $group->enrollments()
+            $students = $group_type->enrollments()
             ->with('student')
             ->with('student.state')
             ->where('school_year_id', '=', $schoolYear->id)
@@ -162,7 +166,7 @@ class PdfController extends Controller
 
                 $evaluationSheet = new EvaluationSheet($request->orientation, 'mm', $request->papper);
                 $evaluationSheet->institution = $institution;
-                $evaluationSheet->group = $group;
+                $evaluationSheet->group = $group_type;
                 $evaluationSheet->parameters = $parameters;
                 $evaluationSheet->create($students);
                 $evaluationSheet->Output($path.$group_id.$i.".pdf", "F");

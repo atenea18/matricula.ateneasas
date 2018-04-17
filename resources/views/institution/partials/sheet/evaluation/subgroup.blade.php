@@ -4,19 +4,13 @@
 		<div class="col-md-4">
 			<div class="form-group">
 				<label for="">Sede</label>
-				{!! Form::select('headquarter_id_ev', $headquarters, null, ['class'=>'form-control', 'placeholder'=>'- Seleccione una sede -','id'=>'headquarter_id_ev']) !!}
-			</div>
-		</div>
-		<div class="col-md-3">
-			<div class="form-group">
-				<label for="">Jornada</label>
-				{!! Form::select('working_day_id_ev', $journeys, null, ['class'=>'form-control', 'id'=>'working_day_id_ev', 'placeholder'=> '- Slecciones una jornada -']) !!}
+				{!! Form::select('headquarter_id_evsg', $headquarters, null, ['class'=>'form-control', 'placeholder'=>'- Seleccione una sede -','id'=>'headquarter_id_evsg']) !!}
 			</div>
 		</div>
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="">Grado</label>
-				{!! Form::select('grade_id_ev', $grades, null, ['class'=>'form-control', 'id'=>'grade_id_ev', 'placeholder'=> '- Seleccione un grado -']) !!}
+				{!! Form::select('grade_id_evsg', $grades, null, ['class'=>'form-control', 'id'=>'grade_id_evsg', 'placeholder'=> '- Seleccione un grado -']) !!}
 			</div>
 		</div>
 		<div class="col-md-2">
@@ -29,18 +23,18 @@
 	<div class="row">
 		<div class="col-md-5">
 			<div class="form-group">
-				{!! Form::select('sheet_ev', [], null, ['id'=>'sheet_ev','class'=>'form-control', 'multiple'=>true, 'size'=>8]) !!}
+				{!! Form::select('sheet_evsg', [], null, ['id'=>'sheet_evsg','class'=>'form-control', 'multiple'=>true, 'size'=>8]) !!}
 			</div>
 		</div>
 		<div class="col-md-2">
-			<button type="button" class="btn btn-default btn-block" id="sheet_ev_rightAll"><i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
-			<button type="button" id="sheet_ev_rightSelected" class="btn btn-default btn-block"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
-			<button type="button" id="sheet_ev_leftSelected" class="btn btn-default btn-block"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
-			<button type="button" id="sheet_ev_leftAll" class="btn btn-default btn-block"><i class="fa fa-angle-double-left" aria-hidden="true"></i></button>
+			<button type="button" class="btn btn-default btn-block" id="sheet_evsg_rightAll"><i class="fa fa-angle-double-right" aria-hidden="true"></i></button>
+			<button type="button" id="sheet_evsg_rightSelected" class="btn btn-default btn-block"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
+			<button type="button" id="sheet_evsg_leftSelected" class="btn btn-default btn-block"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
+			<button type="button" id="sheet_evsg_leftAll" class="btn btn-default btn-block"><i class="fa fa-angle-double-left" aria-hidden="true"></i></button>
 		</div>
 		<div class="col-md-5">
 			<div class="form-group">
-				{!! Form::select('groups[]', [], null, ['id'=>'sheet_ev_to','class'=>'form-control', 'multiple'=>true, 'size'=>8]) !!}
+				{!! Form::select('groups[]', [], null, ['id'=>'sheet_evsg_to','class'=>'form-control', 'multiple'=>true, 'size'=>8]) !!}
 				{!! Form::hidden('year', date('Y'), []) !!}
 				{!! Form::hidden('institution_id', $institution->id, []) !!}
 			</div>
@@ -69,7 +63,7 @@
 						'a5'	=> 'A5',
 					], 
 					'letter', ['class'=>'form-control']) !!}
-					{!! Form::hidden('group_type', 'group', []) !!}
+					{!! Form::hidden('group_type', 'subgroup', []) !!}
 				</div>
 			</div>
 		</div>

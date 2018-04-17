@@ -56,6 +56,7 @@ return array(
     'App\\Http\\Controllers\\GroupController' => $baseDir . '/app/Http/Controllers/GroupController.php',
     'App\\Http\\Controllers\\HeadquarterController' => $baseDir . '/app/Http/Controllers/HeadquarterController.php',
     'App\\Http\\Controllers\\Headquarter\\GroupController' => $baseDir . '/app/Http/Controllers/Headquarter/GroupController.php',
+    'App\\Http\\Controllers\\Headquarter\\SubgroupController' => $baseDir . '/app/Http/Controllers/Headquarter/SubgroupController.php',
     'App\\Http\\Controllers\\HomeController' => $baseDir . '/app/Http/Controllers/HomeController.php',
     'App\\Http\\Controllers\\InscriptionController' => $baseDir . '/app/Http/Controllers/InscriptionController.php',
     'App\\Http\\Controllers\\InstitutionAuth\\ForgotPasswordController' => $baseDir . '/app/Http/Controllers/InstitutionAuth/ForgotPasswordController.php',

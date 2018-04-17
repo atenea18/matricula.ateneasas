@@ -13,7 +13,7 @@
     	<div class="col-md-12">
     		<div class="panel panel-default">
 			  	<div class="panel-heading clearfix">
-
+					<h4>Crear Parametro de Evaluación</h4>
 			  	</div>
 			  	<div class="panel-body">
 					<div class="container-fluid">
@@ -28,7 +28,7 @@
 									']) !!}
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									{!! Form::label('abbreviation', 'Abreviacón', []) !!}
 									
@@ -36,7 +36,7 @@
 									']) !!}
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									{!! Form::label('percent', 'Porcentaje (%)', []) !!}
 									
@@ -44,11 +44,21 @@
 									']) !!}
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									{!! Form::label('school_year_id', 'Año lectivo', []) !!}
 									
 									{!! Form::select('school_year_id', $schoolyears, null, ['class'=>'form-control', 'placeholder'=>'- Año lectivo -']) !!}
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									{!! Form::label('group_type', 'Tipo de grupo', []) !!}
+									
+									{!! Form::select('group_type', [
+										'group'	=> 'Grupo',
+										'subgroup'	=>	'Subgrupo'
+										], null, ['class'=>'form-control']) !!}
 								</div>
 							</div>
 						</div>
