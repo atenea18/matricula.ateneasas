@@ -47,6 +47,15 @@ class Teacher extends Model
     }
 
     /**
+     * Obtiene la relacion que hay entre el grupo y el director de grupo
+     */
+    public function subGroupDirector()
+    {
+        return $this->belongsToMany(Subgroup::class, 'sub_group_directors', 'teacher_id', 'sub_group_id')
+                ->withPivot('created_at', 'updated_at');    
+    }
+
+    /**
      * Obtiene la relacion que hay entre el docente y los grupos la asignatura (Pensum)
      */
     public function pensums()

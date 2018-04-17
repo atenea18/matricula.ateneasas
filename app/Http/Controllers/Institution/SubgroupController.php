@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Institution;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 
 use App\Http\Requests\CreateSubgroupRequest;
 
@@ -15,7 +15,7 @@ use App\Headquarter;
 use App\Grade;
 use App\Enrollment;
 
-class SubgroupController extends Controller
+class SubgroupController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -38,6 +38,11 @@ class SubgroupController extends Controller
 
         return View('institution.partials.subgroup.index')
         ->with('subgroups',$subgroups);
+    }
+
+    public function getSubgroups()
+    {
+
     }
 
     /**
