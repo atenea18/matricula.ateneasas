@@ -85,6 +85,11 @@ class Enrollment extends Model
         return $this->hasMany(GeneralReport::class, 'enrollment_id');
     }
 
+    public function evaluationPeriod()
+    {
+        return $this->hasMany(EvaluationPeriod::class,'enrollment_id');
+    }
+
     /**
      *
      *
@@ -156,11 +161,6 @@ class Enrollment extends Model
         ])->first();
 
         return $enrollment;
-    }
-
-    public function evaluationPeriod()
-    {
-        return $this->hasMany(EvaluationPeriod::class,'enrollment_id');
     }
 
 }

@@ -477,6 +477,7 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         'App\\Http\\Controllers\\GroupController' => __DIR__ . '/../..' . '/app/Http/Controllers/GroupController.php',
         'App\\Http\\Controllers\\HeadquarterController' => __DIR__ . '/../..' . '/app/Http/Controllers/HeadquarterController.php',
         'App\\Http\\Controllers\\Headquarter\\GroupController' => __DIR__ . '/../..' . '/app/Http/Controllers/Headquarter/GroupController.php',
+        'App\\Http\\Controllers\\Headquarter\\SubgroupController' => __DIR__ . '/../..' . '/app/Http/Controllers/Headquarter/SubgroupController.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\InscriptionController' => __DIR__ . '/../..' . '/app/Http/Controllers/InscriptionController.php',
         'App\\Http\\Controllers\\InstitutionAuth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/InstitutionAuth/ForgotPasswordController.php',

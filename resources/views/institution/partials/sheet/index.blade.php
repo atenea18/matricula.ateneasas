@@ -22,6 +22,9 @@
 					    <li role="presentation">
 					    	<a href="#evaluation_sheet" aria-controls="evaluation_sheet" role="tab" data-toggle="tab">Planilla Auxiliar de Evaluación</a>
 					    </li>
+					    <li role="presentation">
+					    	<a href="#evaluation_sheet_subgroup" aria-controls="evaluation_sheet_subgroup" role="tab" data-toggle="tab">Planilla Auxiliar Subgrupos</a>
+					    </li>
 			        </ul>
 			  	</div>
 			</div>
@@ -38,6 +41,9 @@
 							    </div>
 							    <div role="tabpanel" class="tab-pane" id="evaluation_sheet">
 							    	@include('institution.partials.sheet.evaluation.home')
+							    </div>
+							    <div role="tabpanel" class="tab-pane" id="evaluation_sheet_subgroup">
+							    	@include('institution.partials.sheet.evaluation.subgroup')
 							    </div>
 							</div>
 						</div>
@@ -69,7 +75,7 @@
 							options += '<option value="'+el.id+'">' + el.name + '</option>';
 						});
 
-						console.log(options);
+						
 						$( '#sheet_as' ).html( options );
 
 					}, "json");
@@ -93,15 +99,37 @@
 							options += '<option value="'+el.id+'">' + el.name + '</option>';
 						});
 
-						console.log(options);
+						
 						$( '#sheet_ev' ).html( options );
 
 					}, "json");
 				}	
 			});
 
+			// Planillas de evaluacion
+			$("#headquarter_id_evsg, #grade_id_evsg").change(function(){
+
+				var headquarter = $("#headquarter_id_evsg").val(),
+					grade = $("#grade_id_evsg").val();
+
+				if(headquarter != '' && grade != '')
+				{
+					$.get("{{env('APP_URL')}}/api/headquarter/"+headquarter+"/"+grade+"/getSubgroups", function(data){
+						
+						var options = '';
+						$.each(data.data, function(indx, el){
+							
+							options += '<option value="'+el.id+'">' + el.name +' </option>';
+						});
+
+						$( '#sheet_evsg' ).html( options );
+
+					}, "json");
+				}	
+			});
+
 			// Multi Select
-			$('#sheet_as, #sheet_ev').multiselect({
+			$('#sheet_as, #sheet_ev, #sheet_evsg').multiselect({
 				search: {
 					left: '<input type="text" name="q" class="form-control" placeholder="Buscar..." style="margin-bottom:5px;"/>',
 						 

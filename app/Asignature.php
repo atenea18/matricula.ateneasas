@@ -18,4 +18,9 @@ class Asignature extends Model
     {
         return $this->belongsTo(GroupPensum::class, 'asignature_id'); 
     }
+
+    public function evaluationPeriods()
+    {
+        return $this->hasMany(EvaluationPeriod::class, 'asignatures_id');
+    }
 }

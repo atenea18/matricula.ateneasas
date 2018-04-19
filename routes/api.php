@@ -20,7 +20,8 @@ use Illuminate\Http\Request;
 // RUTA PARA MATRICULAS
 Route::resource('enrollment', 'Institution\EnrollmentController', ['only'=>['index','show']]);
 Route::get('Institution/{institution}/enrollments/{year}', 'Institution\EnrollmentController@enrollments')->name('institution.enrollments');
-Route::get('headquarter/{headquarter}/{workingDay}/{grade}/getGroup', 'Headquarter\GroupController@getGroup')->name('api.headquarter.getGroup');
+
+
 
 // RUTA PARA DOCENTES
 Route::resource('teacher', 'Institution\TeacherController', ['only'=>['index','show']]);
@@ -31,8 +32,14 @@ Route::resource('area', 'Administrator\AreaController', ['only'=>['index','show'
 
 // RUTA PARA LOS GRUPOS DE UNA  INSTITUCION
 Route::get('institution/{institution}/groups', 'Institution\GroupController@index');
+Route::get('headquarter/{headquarter}/{workingDay}/{grade}/getGroup', 'Headquarter\GroupController@getGroup')->name('api.headquarter.getGroup');
+Route::get('headquarter/{headquarter}/groups', 'Headquarter\GroupController@byHeadquarter')->name('headquarter.groups');
 
-// RUTA PARA LOS GRUPOS DE UNA  INSTITUCION
+// RUTA PARA LOS SUBGRUPOS DE UNA INSTITUCIÓN
+Route::get('institution/{institution}/getSubgroups', 'Institution\SubgroupController@getSubgroups');
+Route::get('headquarter/{headquarter}/{grade}/getSubgroups', 'Headquarter\SubgroupController@getSubgroups')->name('api.headquarter.getSubgroups');
+
+// RUTA PARA LOS GRADOS DE UNA  INSTITUCION
 Route::get('institution/{institution}/grades', 'Institution\GradeController@index');
 
 // RUTA PARA LOS ESTUDIANTES DE UNA GRUPO
@@ -51,6 +58,7 @@ Route::get('periods/{institution}', 'Institution\PeriodController@all')->name('i
 Route::get('periodsByWorkingday/{institution}/{workingday_id}/{year?}', 'Institution\PeriodController@showByWorkingday')->name('institution.period.showByWorkingday');
 Route::get('periodsByPeriod/{institution}/{period_id}/{year?}', 'Institution\PeriodController@showByPeriod')->name('institution.period.showByPeriod');
 Route::get('periodByGroup/{group}', 'Teacher\PeriodController@byGroup');
+Route::get('headquarter/{headquarter}/periods', 'Headquarter\PeriodController@index')->name('headquarter.periods');
 
 // RUTA PARA LAS OBSERVACIONES GENERALES
 Route::resource('generalObservation', 'Teacher\GeneralObservationController', ['only'=>['show']]);
