@@ -62,6 +62,7 @@ class StudentController extends Controller
     public function store(CreateStudentRequest $request)
     {
 
+        // dd($request->all());
         $identification = Identification::where('identification_number', '=', $request->identification_number)->first();
 
         $student = new Student();

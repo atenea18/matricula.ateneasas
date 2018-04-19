@@ -35,13 +35,13 @@
 			<div class="col-md-3">
 				<div class="form-group">
 					{!! Form::label('city_expedition_dis', 'Ciudad de expedicción') !!}
-					{!! Form::text('city_expedition', $student->identification->city_expedition->name, ['class'=>'form-control', 'disabled']) !!}
+					{!! Form::text('city_expedition', (!is_null($student->identification->city_expedition)) ? $student->identification->city_expedition->name : null, ['class'=>'form-control', 'disabled']) !!}
 				</div>
 			</div>
 			<div class="col-md-3">
 				<div class="form-group">
 					{!! Form::label('city_birth_dis', 'Ciudad de nacimiento') !!}
-					{!! Form::text('city_birth', $student->identification->city_birth->name, ['class'=>'form-control', 'disabled']) !!}
+					{!! Form::text('city_birth', (!is_null($student->identification->city_birth)) ? $student->identification->city_birth->name : null, ['class'=>'form-control', 'disabled']) !!}
 				</div>
 			</div>
 			<div class="col-md-3">
