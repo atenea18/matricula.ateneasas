@@ -223,6 +223,10 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 	Route::resource('period', 'Institution\PeriodController');
 	Route::post('period/changeState', 'Institution\PeriodController@changeState')->name('period.changeState');
 
+	// Boletines
+	Route::get('notebook/index', 'Institution\NotebookController@index')->name('notebook.index');
+	Route::post('notebook/create', 'Institution\NotebookController@create')->name('notebook.create');
+
 	// PDF's
 		// LISTAS DE ASISTENCIAS
 	Route::get('pdf/studentAttendance/{group_id}/{year}', 'PdfController@attendance')->name('student.attendance.pdf');

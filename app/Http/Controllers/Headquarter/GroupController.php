@@ -23,8 +23,14 @@ class GroupController extends ApiController
     				->get();
 
 
-    	// dd($groups);
     	return $this->showAll($groups);
+    }
+
+    public function byHeadquarter(Headquarter $headquarter)
+    {
+        $groups = $headquarter->groups()->get();
+
+        return $this->showAll($groups);
     }
 
 }
