@@ -9,11 +9,11 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class AreasAndAsignatureController extends Controller
+class AcademicAssignmentController extends Controller
 {
-    public function index()
+    public function viewSubgroup()
     {
-        return view('institution.partials.areas-asignature.index');
+        return view('institution.partials.assignment.subgroup');
     }
 
     public function getAreas($institution_id = 6, $grade_id = 4)
@@ -26,6 +26,20 @@ class AreasAndAsignatureController extends Controller
             return $areas;
         }
         return [];
+    }
+
+    public function getSubgroupsByGrade(Request $request)
+    {
+
+        $institution_id = Auth::guard('web_institution')->user()->id;
+
+        $subgroups = DB::table('sub_group')
+            ->join('headquarter', 'headquarter.id', '=', 'sub_group.headquarter_id')
+            ->select('sub_group.id', 'sub_group.name', 'headquarter.name as headquarter_name', 'sub_group.grade_id')
+            ->where('sub_group.grade_id', '=', $request->grade_id)
+            ->where('headquarter.institution_id', '=', $institution_id)
+            ->get();
+        return $subgroups;
     }
 
     public function getAsignatures()

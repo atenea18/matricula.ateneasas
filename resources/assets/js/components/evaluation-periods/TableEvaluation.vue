@@ -51,7 +51,7 @@
         name: "table-evaluation",
         data() {
             return {
-                codePerformance: 0
+
             }
         },
         components: {
@@ -64,8 +64,6 @@
                 this.$bus.$on("" + refsEvent, performance => {
 
                     let elements = this.$refs["parameter" + refsEvent];
-
-
                     let s = elements.filter(element => {
                         if (!element.meObject.state) {
                             return element
@@ -91,7 +89,7 @@
                 this.$store.state.counterParameter = this.$store.state.counterParameter + parameter.notes_parameter.length
             })
 
-            this.$store.state.totalInput = this.$store.state.counterParameter * this.$store.state.collectionNotes.length
+            this.$store.state.totalInput = this.$store.state.counterParameter * this.$store.state.collectionNotes.length + this.$store.state.collectionNotes.length
 
         },
         computed: {

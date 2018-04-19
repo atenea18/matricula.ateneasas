@@ -98,6 +98,7 @@ const store = new Vuex.Store({
             axios.get('/ajax/allgrades').then(res => {
                 payload.grades = res.data;
                 context.commit('setGrades', payload)
+
             })
         },
         areas(context, payload = {}) {
@@ -189,6 +190,7 @@ const store = new Vuex.Store({
             } else {
                 this.state.isConexion = false
             }
+            //console.log(window.navigator)
         },
 
     }
