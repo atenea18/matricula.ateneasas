@@ -20,4 +20,5 @@ class Pensum extends Model
     {
         return $this->belongsToMany(Group::class, 'group_pensum', 'pensum_id', 'group_id');
     }
+
 }

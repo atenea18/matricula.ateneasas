@@ -64,6 +64,11 @@ class GroupPensum extends Model
 
     }
 
+    public function noteParameterPerformance()
+    {
+        return $this->hasMany(NotesParametersPerformances::class, 'group_pensum_id');
+    }
+    
     public static function getByGroup($group_id){
 
         $pensum = DB::table('group_pensum')

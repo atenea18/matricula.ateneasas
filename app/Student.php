@@ -161,23 +161,26 @@ class Student extends Model
              if (isset(\App\Identification::where('identification_number', '=', old('identification_number'))->get()[0])) {
                  $identification_id = Identification::where('identification_number', '=', old('identification_number'))->get()[0]->id;
 
-                 $student_id = Student::where('identification_id', '=', $identification_id)->get()[0]->id;
+                 $student = Student::where('identification_id', '=', $identification_id)->first();
 
 
-                 if (isset(Enrollment::where('student_id', '=', $student_id)->get()[0])) {
+                 if(!is_null($student))
+                 {
 
-                     return '<h4 style="text-align: center"> El estudiante con número de identificación 
-                         <b>' . old('identification_number') . '</b> ya está matriculado en '. '
-                         <a href="' . route('enrollment.create', $student_id) . '"> ver estudiante</a></h4>';
+                     if (isset(Enrollment::where('student_id', '=', $student->id)->get()[0])) {
 
-                 }
+                         return '<h4 style="text-align: center"> El estudiante con número de identificación 
+                             <b>' . old('identification_number') . '</b> ya está matriculado en '. '
+                             <a href="' . route('enrollment.create', $student->id) . '"> ver estudiante</a></h4>';
+
+                     }
 
 
-                 return '
-                 <h4 style="text-align: center"> El estudiante con número de identificación <b>' . old('identification_number')
-                     . '</b> ya existe, pero <b>NO ESTA MATRICULADO.</b>
-                 <a href="' . route('enrollment.create', $student_id) . '">Completar Matrícula</a></h4>';
-
+                     return '
+                     <h4 style="text-align: center"> El estudiante con número de identificación <b>' . old('identification_number')
+                         . '</b> ya existe, pero <b>NO ESTA MATRICULADO.</b>
+                     <a href="' . route('enrollment.create', $student->id) . '">Completar Matrícula</a></h4>';
+                }
 
              }
 
