@@ -125,8 +125,7 @@
                 'subjectsType',
                 'teachers'
             ]),
-        }
-        ,
+        },
         created() {
             this.listiningChild();
             this.setting();
@@ -135,8 +134,6 @@
                 this.setStorePensum(arrayD)
             })
         },
-
-
         methods: {
 
             listiningChild() {

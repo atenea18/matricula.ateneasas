@@ -1,14 +1,12 @@
 <template>
     <tr>
         <td style="width:30px">{{objectToEvaluation.index+1}}</td>
-        <td > {{fullName}}</td>
-        <td style="width:30px">
-
-        </td>
-        <template v-for="(parameter,i) in parameters">
+        <td> {{fullName}}</td>
+        <input-no-attendance :objectInput="objectToEvaluation"></input-no-attendance>
+        <template v-for="parameter in parameters">
             <td v-for="noteParameter in parameter.notes_parameter">
                 <input-evaluation
-                        :ref="refsInputEvaluation+parameter.id"
+                        :ref="referenceEvaluationPeriodsId+parameter.id"
                         :objectInput="objectToEvaluation" :noteparameter="noteParameter"
                         :parameter="parameter"></input-evaluation>
             </td>
@@ -24,10 +22,14 @@
     import {mapState, mapMutations, mapGetters} from "vuex";
     import InputEvaluation from "./InputEvaluation";
     import InputParameter from "./InputParameter";
+    import InputNoAttendance from "./InputNoAttendance";
 
     export default {
         name: "row-evaluation",
-        components: {InputEvaluation, InputParameter},
+        components: {
+            InputNoAttendance,
+            InputEvaluation, InputParameter
+        },
         props: {
             objectInput: {type: Object}
         },
@@ -39,21 +41,25 @@
                     index: 0,
                     enrollment: {},
                 },
-                meObject:{
-                    value:0,
-                    isInit:false,
-                    evaluationPeriodId:0,
-                }
+                meObject: {
+                    value: 0,
+                    isInit: false,
+                    evaluationPeriodId: 0,
+                    isloaded: false
+                },
+
             }
         },
 
         created() {
             this.objectToEvaluation = this.objectInput;
+
         },
         mounted() {
             this.onEventDirtyInputEvaluation()
             this.emitNotesBelongToParameters()
             this.calculateSumForNoteFinal()
+
         },
 
         updated() {
@@ -61,7 +67,12 @@
         },
 
         computed: {
-            ...mapState(["parameters", "asignature", "periodSelected"]),
+            ...mapState([
+                "parameters",
+                "asignature",
+                "periodSelected,",
+                "isConexion"
+            ]),
 
             fullName() {
                 return this.objectToEvaluation.enrollment.student_last_name + " " + this.objectToEvaluation.enrollment.student_name
@@ -69,7 +80,7 @@
             refsInputParameter() {
                 return "" + this.objectToEvaluation.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected
             },
-            refsInputEvaluation() {
+            referenceEvaluationPeriodsId() {
                 return "" + this.objectToEvaluation.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected
             },
             parametersAll() {
@@ -78,6 +89,105 @@
         },
 
         methods: {
+
+            emitNotesBelongToParameters() {
+                // Emite un evento para que cada componente input-parameter pueda conocer
+                // los componentes input-evaluation que le corresponde
+                this.parameters.forEach(parameter => {
+                    let refEvaluationPeriodsMoreParameter = this.referenceEvaluationPeriodsId + parameter.id
+                    this.emitNotes(refEvaluationPeriodsMoreParameter)
+                })
+            },
+            /*
+              onEventDirtyInputEvaluation
+             */
+            onEventDirtyInputEvaluation() {
+
+                this.onEventOfKeyUpInputNoAttendance()
+                this.assignmentEventToInputEachNotesParameter()
+                this.meObject.isInit = true;
+
+
+            },
+
+            onEventOfKeyUpInputNoAttendance() {
+
+                let refEvaluationPeriodsId = this.referenceEvaluationPeriodsId
+
+                this.$bus.$off("dirty-input-no-attendance-" + refEvaluationPeriodsId)
+                this.$bus.$on("dirty-input-no-attendance-" + refEvaluationPeriodsId, object => {
+
+                    this.saveNoAttendance(object)
+                });
+
+            },
+
+            saveNoAttendance(object) {
+                let _this = this
+                let evaluation_periods_id = object._props.objectInput.enrollment.evaluation_periods_id
+
+
+                if (evaluation_periods_id == 0) {
+                    this.saveEvaluationPeriods(null, null, this.callbackSaveNoAttendance, object)
+                } else {
+                    this.callbackSaveNoAttendance(object)
+                }
+
+
+                /*
+
+                    */
+            },
+
+            callbackSaveNoAttendance(object) {
+                let data = {
+                    quantity: object.quantity,
+                    evaluation_periods_id: this.objectToEvaluation.enrollment.evaluation_periods_id,
+                }
+                let _this = this
+                let refEvaluationPeriodsId = this.referenceEvaluationPeriodsId
+
+
+                axios.post('/teacher/evaluation/storeNoAttendance', {data})
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            _this.$bus.$emit("no-attendance-saved" + refEvaluationPeriodsId);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                //console.log(data)
+
+            },
+
+            assignmentEventToInputEachNotesParameter() {
+                this.parameters.forEach(parameter => {
+                    parameter.notes_parameter.forEach(noteParameter => {
+                        let refEnrollmentMoreNotesParameter = this.referenceEvaluationPeriodsId + parameter.id + noteParameter.id
+                        this.onEventOfKeyUpInputEvaluation(refEnrollmentMoreNotesParameter)
+                    })
+                });
+            },
+
+            onEventOfKeyUpInputEvaluation(refEnrollmentMoreNotesParameter) {
+                this.$bus.$off("set-dirty-" + refEnrollmentMoreNotesParameter)
+                this.$bus.$on("set-dirty-" + refEnrollmentMoreNotesParameter, (refEvaluationPeriodsMoreParameter) => {
+
+                    this.emitNotes(refEvaluationPeriodsMoreParameter)
+                    this.calculateSumForNoteFinal()
+                    this.sendDataEvaluationPeriods(refEnrollmentMoreNotesParameter)
+                });
+            },
+
+            emitNotes(refEvaluationPeriodsMoreParameter) {
+                // Recibe un estring que identifica el conjunto de input-evaluation
+                // Y emite el evento para que cada input-parameter pueda conocer a sus correspondientes
+                // input-evaluation
+                let notesBelongToParameter = this.$refs[refEvaluationPeriodsMoreParameter];
+                //console.log(notesBelongToParameter[0].valuenote)
+                this.$bus.$emit("set-notes-to-parameter-" + refEvaluationPeriodsMoreParameter, notesBelongToParameter);
+            },
 
             calculateSumForNoteFinal() {
                 // Calcula la suma de todos los input-parameter
@@ -88,87 +198,52 @@
                 })
             },
 
-            emitNotesBelongToParameters() {
-                // Emite un evento para que cada componente input-parameter pueda conocer
-                // los componentes input-evaluation que le corresponde
-                this.parameters.forEach(parameter => {
-                    let refsEvent = this.refsInputEvaluation + parameter.id
-                    this.emitNotes(refsEvent)
-                })
+            sendDataEvaluationPeriods(refEnrollmentMoreNotesParameter) {
+                // Evita que se ejecute la petición al crearse el componente
+                if (this.meObject.isInit) {
+
+                    if (this.objectToEvaluation.enrollment.evaluation_periods_id != 0 &&  typeof this.objectToEvaluation.enrollment.evaluation_periods_id != 'undefined') {
+                        //console.log(this.objectToEvaluation.enrollment.evaluation_periods_id)
+                        this.saveNotes(refEnrollmentMoreNotesParameter, this.objectToEvaluation.enrollment.evaluation_periods_id)
+                    } else {
+                        this.saveEvaluationPeriods(refEnrollmentMoreNotesParameter, this.saveNotes)
+                    }
+                }
             },
 
-            /*
-             *  onEventDirtyInputEvaluation
-             */
-            onEventDirtyInputEvaluation() {
+            saveEvaluationPeriods(refEnrollmentMoreNotesParameter, callbackSaveNotes, callbackSaveNoAttendance = null, object = null) {
+                let _this = this
 
-                this.parameters.forEach(parameter => {
+                let data = {
+                    enrollment_id: this.objectToEvaluation.enrollment.id,
+                    periods_id: this.$store.state.periodSelected,
+                    asignatures_id: this.$store.state.asignature.id
+                }
+                axios.post('/teacher/evaluation/storeEvaluationPeriods', {data})
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            _this.objectToEvaluation.enrollment.evaluation_periods_id = response.data.id
+                            if (callbackSaveNotes != null) {
+                                callbackSaveNotes(refEnrollmentMoreNotesParameter, _this.objectToEvaluation.enrollment.evaluation_periods_id)
+                            } else {
+                                callbackSaveNoAttendance(object)
+                            }
 
-                    parameter.notes_parameter.forEach(noteParameter => {
-                        let refsEvent = this.refsInputEvaluation + parameter.id + noteParameter.id
 
-
-                        this.$bus.$off("set-dirty-" + refsEvent)
-                        this.$bus.$on("set-dirty-" + refsEvent, keyToSearch => {
-                            //
-                            let ref = this.refsInputEvaluation + parameter.id + 1
-
-                            let notesBelongToParameter = this.$refs[ref];
-                            //console.log(notesBelongToParameter)
-                            //
-                            this.emitNotes(keyToSearch)
-
-                            this.calculateSumForNoteFinal()
-
-                            this.sendDataEvaluationPeriods(refsEvent)
-                        });
+                        }
                     })
-
-
-                });
-                this.meObject.isInit = true;
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
 
-            emitNotes(refsEvent) {
-                // Recibe un estring que identifica el conjunto de input-evaluation
-                // Y emite el evento para que cada input-parameter pueda conocer a sus correspondientes
-                // input-evaluation
-                let notesBelongToParameter = this.$refs[refsEvent];
-                //console.log(notesBelongToParameter[0].valuenote)
-                this.$bus.$emit("set-notes-to-parameter-" + refsEvent, notesBelongToParameter);
+            saveNotes(refEnrollmentMoreNotesParameter, evaluationPeriodsId) {
+                this.meObject.evaluationPeriodId = evaluationPeriodsId
+                this.sendDataFinalNotes()
+                this.$bus.$emit('i-can-save-note-' + refEnrollmentMoreNotesParameter, evaluationPeriodsId)
             },
-
-            sendDataEvaluationPeriods(keyRef){
-
-                    let data = {
-                        enrollment_id: this.objectToEvaluation.enrollment.id,
-                        periods_id: this.$store.state.periodSelected,
-                        asignatures_id: this.$store.state.asignature.id
-                    }
-                    let _this = this
-
-                    // Evita que se ejecute la petición al crearse el componente
-                    if (this.meObject.isInit) {
-
-                        axios.post('/teacher/evaluation/storeEvaluationPeriods', {data})
-                            .then(function (response) {
-
-                                if (response.status == 200) {
-                                    _this.meObject.evaluationPeriodId = response.data.id
-                                    _this.sendDataFinalNotes()
-                                }
-                                _this.$bus.$emit('i-can-save-note-' + keyRef, response.data.id)
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });
-                    }
-
-                },
-
 
             sendDataFinalNotes() {
-
                 let data = {
                     value: this.meObject.value.toFixed(2),
                     overcoming: null,
@@ -177,16 +252,16 @@
                 axios.post('/teacher/evaluation/storeFinalNotes', {data})
                     .then(function (response) {
                         if (response.status == 200) {
-                            //console.log(response.data)
                         }
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
             },
-            getConexion(){
+
+            getConexion() {
                 this.$store.dispatch('verifyConexion')
-                if(!this.$store.state.isConexion){
+                if (!this.$store.state.isConexion) {
                     this.$swal({
                         position: 'top-end',
                         type: 'error',
@@ -203,7 +278,7 @@
 </script>
 
 <style>
-    .error-conexion{
+    .error-conexion {
         background-color: #e0e2e5;
     }
 
@@ -219,11 +294,11 @@
         background-color: #fff;
         background-image: none;
         border: 1px solid #ccc;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-        -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-        transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
     }
 
 

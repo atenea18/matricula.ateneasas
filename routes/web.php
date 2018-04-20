@@ -38,6 +38,8 @@ Route::group(['prefix'=>'ajax'], function(){
     Route::get('/areasByGrade', 'Teacher\AreasController@areasByGrade');
     Route::get('/getInstitutionOfTeacher', 'Teacher\EvaluationController@getInstitutionOfTeacher');
 
+    Route::get('/getSubgroupsByGrade', 'AcademicAssignmentController@getSubgroupsByGrade');
+
 });
 
 Route::group(['middleware'=>'admin_guest'], function(){
@@ -197,8 +199,9 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
     Route::post('copyPensumByGrade', 'AreasAndAsignatureController@copyPensumByGrade');
 
 
-    //Rutas áreas y asignaturas
+    //Asignación Académica
     Route::get('areas-and-asignature', 'AreasAndAsignatureController@index')->name('areaasignature.index');
+    Route::get('assignment-subgroup', 'AcademicAssignmentController@viewSubgroup')->name('assignment.subgroup.index');
 
 
 	// Ruta para las sedes
@@ -265,6 +268,7 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
     Route::post('evaluation/storeNotes', 'Teacher\EvaluationController@storeNotes');
     Route::post('evaluation/storePerformances', 'Teacher\EvaluationController@storePerformances');
     Route::post('evaluation/storeRelationPerformances', 'Teacher\EvaluationController@storeRelationPerformances');
+    Route::post('evaluation/storeNoAttendance', 'Teacher\EvaluationController@storeNoAttendance');
     Route::post('evaluation/deleteRelationPerformances', 'Teacher\EvaluationController@deleteRelationPerformances');
 
 
@@ -279,7 +283,6 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 
 
 Route::group(['prefix' => 'excel'], function() {
-   
    	Route::post('upload/identification', 'ExcelController@importIdentification')->name('import.identification');
    	Route::post('upload/address', 'ExcelController@importAddress')->name('import.address');
    	Route::post('upload/students', 'ExcelController@importStudents')->name('import.students');
