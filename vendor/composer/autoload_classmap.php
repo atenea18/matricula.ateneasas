@@ -38,6 +38,7 @@ return array(
     'App\\Headquarter' => $baseDir . '/app/Headquarter.php',
     'App\\Helpers\\GenerateEnrollmentCard' => $baseDir . '/app/Helpers/GenerateEnrollmentCard.php',
     'App\\Helpers\\helpsRoute' => $baseDir . '/app/Helpers/helpsRoute.php',
+    'App\\Http\\Controllers\\AcademicAssignmentController' => $baseDir . '/app/Http/Controllers/AcademicAssignmentController.php',
     'App\\Http\\Controllers\\AdministratorAuth\\LoginController' => $baseDir . '/app/Http/Controllers/AdministratorAuth/LoginController.php',
     'App\\Http\\Controllers\\Administrator\\AreaController' => $baseDir . '/app/Http/Controllers/Administrator/AreaController.php',
     'App\\Http\\Controllers\\Administrator\\AsignatureController' => $baseDir . '/app/Http/Controllers/Administrator/AsignatureController.php',

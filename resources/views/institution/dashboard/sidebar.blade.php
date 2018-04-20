@@ -69,12 +69,18 @@
             </ul>
         </li>
 
+        <!-- Asignación Académica -->
         <li class="">
-            <a href="{{route('areaasignature.index')}}">
+            <a data-toggle="collapse" data-parent="#menu" href="#collapse-manager2" aria-expanded="true" aria-controls="collapse-manager2">
                 <span class="fa-stack fa-lg pull-left"><i class="fas fa-plus fa-stack-1x"></i>
                 </span>
                 Asignación Académ.
             </a>
+            <ul id="collapse-manager2" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
+                <li><a href="{{route('areaasignature.index')}}">Grupos</a></li>
+                <li><a href="{{route('assignment.subgroup.index')}}">Subgrupos</a></li>
+
+            </ul>
         </li>
 
         <!-- Documentos -->
