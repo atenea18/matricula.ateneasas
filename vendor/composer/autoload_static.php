@@ -458,6 +458,7 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         'App\\Headquarter' => __DIR__ . '/../..' . '/app/Headquarter.php',
         'App\\Helpers\\GenerateEnrollmentCard' => __DIR__ . '/../..' . '/app/Helpers/GenerateEnrollmentCard.php',
         'App\\Helpers\\helpsRoute' => __DIR__ . '/../..' . '/app/Helpers/helpsRoute.php',
+        'App\\Http\\Controllers\\AcademicAssignmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/AcademicAssignmentController.php',
         'App\\Http\\Controllers\\AdministratorAuth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/AdministratorAuth/LoginController.php',
         'App\\Http\\Controllers\\Administrator\\AreaController' => __DIR__ . '/../..' . '/app/Http/Controllers/Administrator/AreaController.php',
         'App\\Http\\Controllers\\Administrator\\AsignatureController' => __DIR__ . '/../..' . '/app/Http/Controllers/Administrator/AsignatureController.php',

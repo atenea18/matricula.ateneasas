@@ -88,7 +88,7 @@
                     grade_id: grade_id
                 })
             },
-            getGroupPensum(group_id, asignatures_id, school_year_id){
+            getGroupPensum(group_id, asignatures_id, school_year_id) {
                 this.$store.dispatch('groupPensum', {
                     group_id: group_id,
                     asignatures_id: asignatures_id,

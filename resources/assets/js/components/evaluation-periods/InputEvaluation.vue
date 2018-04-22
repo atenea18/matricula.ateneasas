@@ -60,10 +60,12 @@
             ...mapState([
                 'asignature',
                 'periodSelected',
-                'isCollection',
+                'isConexion',
                 'counterInput',
                 'counterParameter',
                 'totalInput'
+
+
             ]),
             refsInputParameter() {
                 return "" + this.objectInput.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id + this.noteparameter.id
@@ -71,7 +73,7 @@
             refsInputEvaluation() {
                 return "" + this.objectInput.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id + this.noteparameter.id
             },
-            refsr() {
+            refEvaluationPeriodsMoreParameter() {
                 return "" + this.objectInput.enrollment.id + this.$store.state.asignature.id + this.$store.state.periodSelected + this.parameter.id
             },
 
@@ -103,15 +105,15 @@
                 }
                 //down
                 if (e.keyCode == 40) {
-                    let nextInput = this.count + this.$store.state.counterParameter
+                    let nextInput = this.count + this.$store.state.counterParameter + 1
                     this.setFocusElement(nextInput)
                 }
                 //up
                 if (e.keyCode == 38) {
-                    let nextInput = this.count - this.$store.state.counterParameter
+                    let nextInput = this.count - this.$store.state.counterParameter - 1
                     this.setFocusElement(nextInput)
                 }
-                this.writingNotes()
+                //this.writingNotes()
                 //console.log(e)
 
             },
@@ -139,7 +141,7 @@
             sendEvent() {
                 if (this.beforevalue != this.valuenote && this.$store.state.isConexion) {
                     let referencia = this.refsInputEvaluation
-                    this.$bus.$emit('set-dirty-' + referencia, this.refsr)
+                    this.$bus.$emit('set-dirty-' + referencia, this.refEvaluationPeriodsMoreParameter)
                 }
 
             },
