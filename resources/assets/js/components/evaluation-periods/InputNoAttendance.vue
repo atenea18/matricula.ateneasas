@@ -1,7 +1,7 @@
 <template>
     <td style="width:44px">
 
-        <input v-debounce="delay" :class="isSend?'sendAttendance':'not-send'" @keypress="displacement"
+        <input v-debounce="delay" :class="isSend?'sendAttendance':'not-send'" @keydown="displacement"
                :id="'input'+count"
                class="form-controll"
                style="padding:2px 2px" type="text" v-model.lazy="quantity">
@@ -132,11 +132,9 @@
 
             sendEvent() {
                 if (this.beforeQuantity != this.quantity && this.$store.state.isConexion) {
-
                     let referencia = this.refEvaluationPeriodId
                     this.$bus.$emit('dirty-input-no-attendance-' + referencia, this)
                     this.beforeQuantity = this.quantity
-
                 }
             },
 
