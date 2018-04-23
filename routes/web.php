@@ -39,6 +39,11 @@ Route::group(['prefix'=>'ajax'], function(){
     Route::get('/getInstitutionOfTeacher', 'Teacher\EvaluationController@getInstitutionOfTeacher');
 
     Route::get('/getSubgroupsByGrade', 'AcademicAssignmentController@getSubgroupsByGrade');
+    Route::get('/getGroupsByGrade', 'Teacher\StatisticsController@getGroupsByGrade');
+    Route::get('/getConsolidated', 'Teacher\StatisticsController@getConsolidated');
+    Route::get('/getAsignaturesGroupPensum', 'Teacher\StatisticsController@getAsignaturesGroupPensum');
+
+
 
 });
 
@@ -250,6 +255,7 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 	Route::post('/logout', 'TeacherAuth\LoginController@logout');
 
 	Route::get('evaluation', 'Teacher\EvaluationController@index')->name('teacher.evaluation');
+    Route::get('statistics', 'Teacher\StatisticsController@index')->name('teacher.statistics');
 
     Route::get('evaluation/periods/{group_id}/{asignatures_id}', 'Teacher\EvaluationController@evaluationPeriods')->name('teacher.evaluation.periods');
 
