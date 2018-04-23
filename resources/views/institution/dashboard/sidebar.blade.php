@@ -107,7 +107,7 @@
             <ul id="collapse-config" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
                 <li><a href="{{route('evaluationParameter.index')}}">Parametros de Eval.</a></li>
                 <li><a href="{{route('period.index')}}">Periodos</a></li>
-                {{-- <li><a href="">Escala Valorativa</a></li> --}}
+                <li><a href="{{route('scaleEvaluation.index')}}">Escala Valorativa</a></li>
             </ul>
         </li>
 
