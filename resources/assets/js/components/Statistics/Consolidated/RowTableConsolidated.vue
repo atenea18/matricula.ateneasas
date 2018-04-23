@@ -2,7 +2,7 @@
     <tr>
         <td>{{objectInput.index+1}}</td>
         <td> {{ fullname }}</td>
-        <td>{{getTav()}}</td>
+        <td>{{(getTav()==0)?'':getTav()}}</td>
         <td v-for="asignature in objectInput.asignatures">
             {{ getValueFinal(asignature)}}
         </td>
@@ -48,7 +48,7 @@
                         count++
                     }
                 })
-
+                count = count==0?"":count;
                 return count
             }
 
