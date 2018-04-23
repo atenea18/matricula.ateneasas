@@ -100,13 +100,13 @@
 			<div class="col-md-3">
 				<div class="form-group">
 					{!! Form::label('city', 'Ciudad') !!}
-					{!! Form::text('city_dis', $student->address->city->name, ['class' => 'form-control', 'disabled']) !!}
+					{!! Form::text('city_dis', (!is_null($student->address->city)) ? $student->address->city->name : null, ['class' => 'form-control', 'disabled']) !!}
 				</div>
 			</div>
 			<div class="col-md-3">
 				<div class="form-group">
 					{!! Form::label('zone', 'Zona rural') !!}
-					{!! Form::text('zone_dis', $student->address->zone->name, ['class' => 'form-control', 'disabled']) !!}
+					{!! Form::text('zone_dis', (!is_null($student->address->zone)) ? $student->address->zone->name : null, ['class' => 'form-control', 'disabled']) !!}
 				</div>
 			</div>
 		</div>
