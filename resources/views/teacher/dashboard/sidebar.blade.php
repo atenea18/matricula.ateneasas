@@ -20,6 +20,16 @@
             </a>
         </li>
 
+        <!-- Estadísticas -->
+        <li>
+            <a href="{{route('teacher.statistics')}}">
+                <span class="fa-stack fa-lg pull-left">
+                    <i  class="far fa-chart-bar fa-stack-1x"></i>
+                </span>
+                Estadísticas
+            </a>
+        </li>
+
         <!-- Planilla -->
         <li>
             <a href="{{route('teacher.evaluation')}}"> 
