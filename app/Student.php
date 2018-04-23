@@ -167,11 +167,16 @@ class Student extends Model
                  if(!is_null($student))
                  {
 
-                     if (isset(Enrollment::where('student_id', '=', $student->id)->get()[0])) {
+                    $enrollment = Enrollment::where([
+                        ['student_id', '=', $student->id],
+                        ['school_year_id', '=', 1]
+                    ])->first();
+
+                    if (!is_null($enrollment)) {
 
                          return '<h4 style="text-align: center"> El estudiante con número de identificación 
                              <b>' . old('identification_number') . '</b> ya está matriculado en '. '
-                             <a href="' . route('enrollment.create', $student->id) . '"> ver estudiante</a></h4>';
+                             <a href="' . route('enrollment.edit', $enrollment->id) . '"> ver estudiante</a></h4>';
 
                      }
 
