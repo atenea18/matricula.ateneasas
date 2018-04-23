@@ -1,6 +1,6 @@
 <template>
     <div>
-        <input v-debounce="delay" :class="isSend?'send':'not-send'" @keypress="displacement" :id="'input'+count"
+        <input v-debounce="delay" :class="isSend?'send':'not-send'" @keydown="displacement" :id="'input'+count"
                class="form-controll"
                style="padding:2px 2px" type="text" v-model.lazy="valuenote">
     </div>
@@ -92,6 +92,8 @@
                 }
             },
             displacement(e) {
+                //console.log(e)
+                //console.log(e.keyCode)
                 //rigth
                 if (e.keyCode == 39) {
                     let nextInput = this.count + 1

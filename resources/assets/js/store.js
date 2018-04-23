@@ -5,25 +5,28 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
+
         counter: 0,
-        grades: [],
+        totalInput:0,
+        counterInput:1,
+        periodSelected: 0,
+        counterParameter:0,
+        institutionOfTeacher: 0,
+        currentView:"",
+        isConexion: true,
+        isCollection: false,
         areas: [],
-        asignatures: [],
-        subjectsType: [],
+        grades: [],
         teachers: [],
         parameters: [],
-        asignature: Object,
-        grade: Object,
-        periodsworkingday: Object,
-        periodSelected: 0,
+        asignatures: [],
+        subjectsType: [],
         collectionNotes: [],
-        isCollection: false,
-        institutionOfTeacher: 0,
-        isConexion: true,
-        groupPensum:{},
-        counterInput:1,
-        counterParameter:0,
-        totalInput:0,
+        grade: Object,
+        asignature: Object,
+        groupPensum: Object,
+        periodsworkingday: Object,
+
 
     },
 
@@ -98,7 +101,6 @@ const store = new Vuex.Store({
             axios.get('/ajax/allgrades').then(res => {
                 payload.grades = res.data;
                 context.commit('setGrades', payload)
-
             })
         },
         areas(context, payload = {}) {

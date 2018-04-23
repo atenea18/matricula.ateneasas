@@ -317,7 +317,6 @@ class EvaluationController extends Controller
             array_push($collection, $enrollment);
         }
 
-
         return $collection;
     }
 
