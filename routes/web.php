@@ -284,6 +284,12 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 	// Rutas para las Observaciones Generales
 	Route::resource('generalObservation', 'Teacher\GeneralObservationController', ['except'=>'show']);
 
+	// Ruta para la recuperacion de asignaturas
+	Route::get('recovery/{group}/{asignature}/group', 'Teacher\RecoveryController@byGroup')->name('group.recovery');
+	Route::resource('recovery', 'Teacher\RecoveryController', ['only'=>['index', 'update','store']]);
+
+	// Ruta para la evaluación de periodo pendiente
+	Route::get('periodPending/{group}/{asignature}/group', 'Teacher\PeriodPendingController@byGroup')->name('group.pendingPeriod');
 
 });
 

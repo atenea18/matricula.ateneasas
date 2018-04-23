@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+use App\Period;
+use App\Asignature;
+
 class Group extends Model
 {
 
@@ -178,6 +181,32 @@ class Group extends Model
             ->select('group.id','group.name', 'headquarter.name as headquarter_name')
             ->where('headquarter.institution_id','=',$institution_id)
             ->where('grade_id', '=', $grade_id)->get();
+    }
+
+    public function recovery(Asignature $asignature, Period $period, ScaleEvaluation $scale)
+    {
+        return $this->select(DB::raw('CONCAT(student.last_name, " ", student.name) AS name_student'), 'notes_final.overcoming', 'notes_final.value', 'notes_final.id AS note_final_id')
+                ->join('group_assignment', 'group.id', '=', 'group_assignment.group_id')
+                ->join('enrollment', 'group_assignment.enrollment_id', '=', 'enrollment.id')
+                ->join('student', 'student.id', '=', 'enrollment.student_id')
+                ->join('evaluation_periods', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
+                ->join('notes_final', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
+                ->where([
+                    ['enrollment.school_year_id', '=', 1],
+                    ['group.id', '=', $this->id],
+                    ['evaluation_periods.asignatures_id', '=', $asignature->id],
+                    ['evaluation_periods.periods_id', '=', $period->id],
+                ])
+                ->where([
+                    ['notes_final.value', '>=', $scale->rank_start],
+                    ['notes_final.value', '<=', $scale->rank_end]
+                ])
+                ->get();
+    }
+
+    public function pendingPeriod(Asignature $asignature, Period $period, ScaleEvaluation $scale)
+    {
+
     }
 
 }
