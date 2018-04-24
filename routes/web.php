@@ -183,6 +183,9 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
     Route::get('getPensumByGrade/{grade_id}', 'AreasAndAsignatureController@getAreasByGrade');
     Route::get('getPensumByGroup/{group_id}', 'AreasAndAsignatureController@getAreasByGroup');
 
+
+
+
     Route::get('getAsignaturesPensumByGrade/{grade_id}/{area_id}', 'AreasAndAsignatureController@getAsignaturesPensumByGrade');
     Route::get('getAsignaturesPensumByGroup/{group_id}/{area_id}', 'AreasAndAsignatureController@getAsignaturesPensumByGroup');
 
@@ -207,6 +210,8 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
     //Asignación Académica
     Route::get('areas-and-asignature', 'AreasAndAsignatureController@index')->name('areaasignature.index');
     Route::get('assignment-subgroup', 'AcademicAssignmentController@viewSubgroup')->name('assignment.subgroup.index');
+    Route::post('storeSubGroupPensumByGroup', 'AcademicAssignmentController@storeSubGroupPensumByGroup');
+    Route::get('getSubgroupPensum', 'AcademicAssignmentController@getSubgroupPensum');
 
 
 	// Ruta para las sedes

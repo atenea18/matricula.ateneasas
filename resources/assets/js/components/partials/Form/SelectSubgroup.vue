@@ -1,41 +1,37 @@
 <template>
     <div class="form-group padding-at">
-        <label>Seleccionar Subgrupo</label>
-        <select v-on:change="selected" class="form-control" v-if="objectSetting.isCreated"
-                v-model="objectToSelect.gradeSelected">
-            <option :value="{}">Seleccionar</option>
-            <option v-for="row in grades" :value="row">
-                {{ row.name }}
-            </option>
-        </select>
+        <label>{{title}}</label>
+        <!-- Emit Event: -->
+        <form-select v-if="objectForSelectForm.arrayData" :objectInput="objectForSelectForm"></form-select>
     </div>
 </template>
 
 <script>
     import {mapState} from 'vuex'
+    import FormSelect from "./Generic/Form/FormSelect";
 
     export default {
+        components: {FormSelect},
         name: "select-subgroup",
-        props: {},
+        props: {
+            /*
+                referenceChangeFormSelect: 'get-event-change-of-form-select@'+this.identification+'.subgroup',
+                referenceGetObjectSelected: 'get-object-selected@'+this.identification+'.subgroup',
+                referenceEmitObjectGradeSelected: 'set-emit-object-grade-selected@'+this.identification+'.subgroup',
+            */
+            objectInput: {type: Object}
+        },
         data() {
             return {
-                objectSetting: {
-                    isCreated: false,
-                },
-                objectToSelect: {
-                    grades: [],
-                    gradeSelected: {}
+                title:"Seleccionar un Subgrupo",
+                objectForSelectForm:{
+                    arrayData: [],
+                    referenceChangeFormSelect: this.objectInput.referenceChangeFormSelect
                 }
             }
         },
         created() {
-
-            this.objectToSelect.grades = this.$store.state.grades
-
             this.managerEvents()
-
-            // Objetos inicializados
-            this.objectSetting.isCreated = true
         },
         mounted() {
 
@@ -44,28 +40,28 @@
 
         },
         computed: {
-            ...mapState([
-                'grades',
-            ]),
 
         },
         methods: {
             managerEvents() {
-                this.$bus.$on("to-receive-grade-selected", objectGrade => {
+                this.$bus.$on(this.objectInput.referenceEmitObjectGradeSelected, objectGrade => {
                     this.getSubgroupsByGrade(objectGrade)
                 })
+
+                //Escucha el evento de change del componente form-select
+                this.$bus.$on(this.objectInput.referenceChangeFormSelect, objectGrade => {
+                    //Dispara el acción después del evento change con el objeto seleccionado
+                    this.$bus.$emit(this.objectInput.referenceGetObjectSelected, objectGrade);
+                })
             },
-            selected() {
-                console.log(this.objectToSelect.gradeSelected)
-            },
-            getSubgroupsByGrade(objectGrade){
+            getSubgroupsByGrade(objectGrade) {
 
                 let params = {
                     grade_id: objectGrade.id
                 }
 
-                axios.get('/ajax/getSubgroupsByGrade',{params}).then(res => {
-                    console.log(res.data);
+                axios.get('/ajax/getSubgroupsByGrade', {params}).then(res => {
+                    this.objectForSelectForm.arrayData = res.data;
                 })
             }
 
