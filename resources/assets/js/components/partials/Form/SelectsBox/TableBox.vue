@@ -51,7 +51,6 @@
             getSubgroupsByGrade(objectGrade) {
 
                 let params = {grade_id: objectGrade.id}
-
                 axios.get('/ajax/getSubgroupsByGrade', {params}).then(res => {
                     this.objectToTableBox.subgroups = res.data;
                     this.state = true
@@ -66,8 +65,8 @@
                         this.arrayDirtyBoxData.push(component._data);
                     }
                 });
-                console.log(this.arrayDirtyBoxData)
-                //this.$bus.$emit('set-send-at-box', this.arrayDirtyBoxData)
+                //console.log(this.arrayDirtyBoxData)
+                this.$bus.$emit('i-can-to-receive-subgroups', this.arrayDirtyBoxData)
 
             },
         },

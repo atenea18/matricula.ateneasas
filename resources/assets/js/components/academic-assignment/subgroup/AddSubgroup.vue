@@ -1,12 +1,12 @@
 <template>
-    <form  @submit="checkForm" action="">
+    <form @submit="checkForm" action="">
 
         <div class="row">
             <div class="col-md-6">
                 <select-grade :objectInput="objectToSelectGrade"></select-grade>
             </div>
             <div class="col-md-6">
-                <select-subgroup></select-subgroup>
+
             </div>
         </div>
 
@@ -18,8 +18,9 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <multi-select :type="{name:'Asignatura', nameEv:'asignature-add', tby:'null', validate:true}"
-                                   :data="asignatures"></multi-select>
+                    <multi-select
+                            :type="{name:'Asignatura', nameEv:'asignature-add-subgroup', tby:'null', validate:true}"
+                            :data="asignatures"></multi-select>
                 </div>
             </div>
         </div>
@@ -28,11 +29,10 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <select-teacher :objectInput="objectToSelectTeachers"></select-teacher>
-                    <!--<at-select :type="{name:'un Docente', nameEv:'teacher-add', tby:'null'}" :data="teachers"></at-select>-->
                 </div>
             </div>
             <div class="col-md-3">
-                <at-select :type="{name:'Tipo', nameEv:'subjetcType-add', tby:'null', id:1, validate:true}"
+                <at-select :type="{name:'Tipo', nameEv:'subjetcType-add', tby:'null', id:2, validate:true}"
                            :data="subjectsType"></at-select>
             </div>
             <div class="col-md-3">
@@ -46,7 +46,6 @@
                     </select>
                 </div>
             </div>
-
         </div>
 
         <div class="row">
@@ -58,21 +57,12 @@
                     <input type="submit" value="Submit" class="btn btn-primary btn-block">
                 </div>
             </div>
-            <!--<div v-show="isSend" class="col-md-12 alert-info" style="text-align: center; padding: 5px;">
-                <p>CARGANDO</p>
-            </div>
-            <div v-show="isResponse" class="col-md-12 alert-info" style="text-align: center; padding: 5px;">
-                <p>{{message}}</p>
-            </div>
-            -->
         </div>
     </form>
 </template>
 
 <script>
     import {mapState} from 'vuex'
-
-
     import SelectGrade from "../../partials/Form/SelectGrade"
     import SelectSubgroup from "../../partials/Form/SelectSubgroup";
     import TableBox from "../../partials/Form/SelectsBox/TableBox";
@@ -95,10 +85,14 @@
         data() {
             return {
                 objectToSubgroup: {
-                    grade_id:0,
-                    areas_id:0,
-                    teacher_id:0,
-                    order:0
+                    grade_id: 0,
+                    areas_id: 0,
+                    teacher_id: 0,
+                    subgroup_type_id:2,
+                    order: 0,
+                    asignatures: [],
+                    subgroups: [],
+                    data: []
                 },
                 objectToSelectGrade: {
                     referenceChangeFormSelect: 'get-event-change-of-form-select@subgroup.grades',
@@ -113,17 +107,20 @@
                     referenceGetObjectSelected: 'get-object-area-selected@subgroup.teachers'
                 },
                 objectToTableBox: {
-                    name:"SUBGRUPOS"
+                    name: "SUBGRUPOS"
+                },
+                objectToAsignatures: {
+                    asignatures: []
                 }
             }
         },
-        created(){
-          this.managerEvents()
+        created() {
+            this.managerEvents()
         },
-        mounted(){
+        mounted() {
 
         },
-        computed:{
+        computed: {
             ...mapState([
                 'grades',
                 'areas',
@@ -132,23 +129,32 @@
                 'teachers'
             ]),
         },
-        methods:{
-            managerEvents(){
+        methods: {
+            managerEvents() {
 
                 this.$bus.$on(this.objectToSelectGrade.referenceGetObjectSelected, object => {
-                    //to-receive-grade-selected: Evento emitido para que table-box liste los subgrupos
                     this.$bus.$emit("to-receive-grade-selected", object);
                     this.objectToSubgroup.grade_id = object.id
                 })
 
                 this.$bus.$on(this.objectToSelectAreas.referenceGetObjectSelected, object => {
-                    console.log(object)
                     this.objectToSubgroup.areas_id = object.id
                 })
 
                 this.$bus.$on(this.objectToSelectTeachers.referenceGetObjectSelected, object => {
-                    console.log(object)
-                    this.objectToSubgroup.areas_id = object.id
+                    this.objectToSubgroup.teacher_id = object.id
+                })
+
+                this.$bus.$on('selected-values-asignature-add-subgroup', (values) => {
+                    this.objectToSubgroup.asignatures = values
+                })
+
+                this.$bus.$on('i-can-to-receive-subgroups', (subgroups) => {
+                    this.setStorePensum(subgroups)
+                })
+
+                this.$bus.$on('selected-id-subjetcType-add', (id) => {
+                    this.objectToSubgroup.subgroup_type_id = id
                 })
 
             },
@@ -156,12 +162,23 @@
 
                 if (this.objectToSubgroup.grade_id) {
                     if (this.objectToSubgroup.areas_id) {
-                        this.$bus.$emit('i-can-search-dirtybox')
+                        if (this.objectToSubgroup.asignatures.length > 0) {
+                            this.$bus.$emit('i-can-search-dirtybox')
+                        } else {
+                            this.$swal({
+                                position: 'top-end',
+                                type: 'info',
+                                title: 'Seleccione una asignatura',
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                        }
+
                     } else {
                         this.$swal({
                             position: 'top-end',
                             type: 'info',
-                            title: 'Seleccione una asignatura',
+                            title: 'Seleccione un area',
                             showConfirmButton: false,
                             timer: 2000
                         })
@@ -177,6 +194,71 @@
                     })
                 }
                 e.preventDefault();
+            },
+
+            setStorePensum(arrayDirtys) {
+
+                this.data = [];
+                this.objectToSubgroup.subgroups = []
+                this.objectToSubgroup.subgroups = arrayDirtys
+
+                this.objectToSubgroup.asignatures.forEach((asignature) => {
+
+                    this.objectToSubgroup.subgroups.forEach((row) => {
+
+                        this.data.push(
+                            {
+                                percent: row.valuePercent,
+                                ihs: row.valueIhs,
+                                order: this.objectToSubgroup.order,
+                                sub_group_id: row.id,
+                                teacher_id: this.objectToSubgroup.teacher_id == 0 ? null : this.objectToSubgroup.teacher_id,
+                                areas_id: this.objectToSubgroup.areas_id,
+                                subjects_type_id: this.objectToSubgroup.subgroup_type_id,
+                                asignatures_id: asignature.id
+                            }
+                        );
+                    })
+                })
+
+                if (this.data.length != 0) {
+                    this.objectToSubgroup.subgroups.forEach((grade) => {
+                        grade.valuePercent = -1;
+                        grade.valueIhs = -1;
+                    })
+
+                    this.sendData(this.data)
+                }
+            },
+
+            sendData(dataSubgroup) {
+                let data = dataSubgroup
+                let _this = this
+                axios.post('storeSubGroupPensumByGroup', {data})
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            if (response.data != 0) {
+                                _this.$swal({
+                                    position: 'top-end',
+                                    type: 'success',
+                                    title: 'LISTO',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                })
+                            } else {
+                                _this.$swal({
+                                    position: 'top-end',
+                                    type: 'error',
+                                    title: 'Error',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                })
+                            }
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
         }
     }
