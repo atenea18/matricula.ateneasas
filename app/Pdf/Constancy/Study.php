@@ -114,7 +114,7 @@ class Study extends Fpdf
 		$this->Ln(20);
 
 		$this->SetFont('Arial','B',12);
-		$this->Cell(0, 4, "HACER CONSTAR", 0, 0, 'C');
+		$this->Cell(0, 4, "HACE CONSTAR", 0, 0, 'C');
 		
 		$this->Ln(20);
 

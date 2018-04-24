@@ -41,7 +41,7 @@ class LoginController extends Controller
         if ( $this->attempLogin($request) ) {
             return $this->sendLoginResponse($request);
         }
-        return redirect()->route('login')->withInput( $request->only('username', 'remember') );
+        return redirect()->route('teacher.login')->withInput( $request->only('username', 'remember') );
     }
 
     public function validateLogin(Request $request)
@@ -49,6 +49,9 @@ class LoginController extends Controller
         $this->validate($request, [
             'username'  => 'required',
             'password'  => 'required'
+        ],[
+            'username.required' =>  'El usuario es requerido',
+            'password.required' =>  'La cotraseña es requerida',
         ]);
     }
 

@@ -22,7 +22,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
 
 
 // RUTAS AJAX
@@ -71,7 +71,7 @@ Route::group(['middleware' => 'institution_guest'], function() {
 
 Route::group(['middleware'=>'teacher_guest'], function(){
 	Route::post('teacher_logout', 'TeacherAuth\LoginController@logout');
-	Route::get('teacher_login', 'TeacherAuth\LoginController@showLoginForm');
+	Route::get('teacher_login', 'TeacherAuth\LoginController@showLoginForm')->name('teacher.login');
 	Route::post('teacher_login', 'TeacherAuth\LoginController@login');
 });
 
@@ -290,6 +290,12 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 
 	// Ruta para la evaluación de periodo pendiente
 	Route::get('periodPending/{group}/{asignature}/group', 'Teacher\PeriodPendingController@byGroup')->name('group.pendingPeriod');
+
+	// Ruta para la configuración
+	Route::get('setting', 'Teacher\SettingController@index')->name('teacher.setting');
+	Route::get('setting/security', 'Teacher\SettingController@security')->name('teacher.setting.security');
+	Route::put('setting/{manager}/updateAccount', 'Teacher\SettingController@updateAccount')->name('setting.updateAccount');
+	Route::put('setting/{manager}/updatePassword', 'Teacher\SettingController@updatePassword')->name('setting.updatePassword');
 
 });
 
