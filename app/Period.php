@@ -10,6 +10,11 @@ class Period extends Model
     	'name', 'period',
     ];
 
+    public function getFullNameAttribute()
+    {
+    	return "Periodo {$this->name}";
+    }
+
     public function periods()
     {
         return $this->hasMany(PeriodWorkingday::class, 'periods_id');

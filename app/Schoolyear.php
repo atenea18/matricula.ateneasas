@@ -45,4 +45,12 @@ class Schoolyear extends Model
     {
         return $this->hasMany(PeriodWorkingday::class, 'school_year_id');
     }
+
+    /**
+     * Obtiene la relacion que hay entre la escala valorativa y el año lectivo
+     */
+    public function scaleEvaluations()
+    {
+        return $this->hasMany(ScaleEvaluation::class, 'school_year_id');
+    }
 }

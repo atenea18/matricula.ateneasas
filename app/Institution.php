@@ -62,9 +62,20 @@ class Institution extends Authenticatable
         return $this->hasMany(PeriodWorkingday::class, 'institution_id');
     }
 
+    /**
+     * Obtiene la relacion que hay entre los parametros de evaluación y la institución
+     */
     public function evaluationParameters()
     {
         return $this->hasMany(EvaluationParameter::class, 'institution_id');
+    }
+
+    /**
+     * Obtiene la relacion que hay entre la escala valorativa y el año lectivo
+     */
+    public function scaleEvaluations()
+    {
+        return $this->hasMany(ScaleEvaluation::class, 'institution_id');
     }
 
     public function hasConstancyStudy()

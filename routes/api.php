@@ -65,3 +65,9 @@ Route::resource('generalObservation', 'Teacher\GeneralObservationController', ['
 
 // RUTA PARA EL INFORME GENERAL DE PERIODO
 Route::resource('generalReport', 'Teacher\GeneralReportController', ['only'=>['show']]);
+
+// Ruta para las superaciones
+Route::get('recovery/{group}/{asignature}/{period}/students', 'Teacher\RecoveryController@index')->name('recovery.group.students');
+
+// Ruta para la evaluación de periodos pendientes
+Route::get('pendingPeriod/{group}/{asignature}/{period}/students', 'Teacher\PeriodPendingController@index')->name('pendingPeriod.group.students');

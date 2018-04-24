@@ -34,11 +34,11 @@
 											</a>
 										</li>
 										<li>
-											<a href=''>Superaciones
+											<a href="{{route('group.recovery', [$pensum->group_id, $pensum->asignatures_id])}}">Superaciones
 											</a>
 										</li>
 										<li>
-											<a href=''>Evaluar Periodo Pendiente
+											<a href="{{route('group.pendingPeriod', [$pensum->group_id, $pensum->asignatures_id])}}">Evaluar Periodo Pendiente
 											</a>
 										</li>
 										<li><a href=''>Refuerzo Academico</a></li>
