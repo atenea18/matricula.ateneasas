@@ -1,13 +1,12 @@
 <template>
     <div class="row">
-        <!--
         <div class="col-md-12">
             <div>
                 <tabs>
                     <tab name="Ver">
                         <div class="row">
                             <div class="col-md-12">
-
+                                <table-subgroup-pensum></table-subgroup-pensum>
                             </div>
                         </div>
                     </tab>
@@ -21,7 +20,6 @@
                 </tabs>
             </div>
         </div>
-        -->
     </div>
 
 </template>
@@ -29,11 +27,12 @@
 <script>
     import {mapState} from 'vuex'
     import AddSubgroup from './academic-assignment/subgroup/AddSubgroup'
+    import TableSubgroupPensum from './academic-assignment/subgroup/TableSubgroupPensum'
 
     export default {
         name: "subgroup-manager",
         components: {
-            AddSubgroup
+            AddSubgroup, TableSubgroupPensum
         },
         created() {
             this.getGrades()
