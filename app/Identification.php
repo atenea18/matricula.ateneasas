@@ -92,6 +92,6 @@ class Identification extends Model
 
     public function someRelationship()
     {
-        return (!is_null($this->hasStudent()) || !is_null($this->hasManager()) || !is_null($this->hasFamily()));
+        return (!is_null($this->hasStudent()) || !is_null($this->hasManager()));
     }
 }
