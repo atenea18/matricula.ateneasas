@@ -49,15 +49,6 @@
 			<div role="tabpanel" class="tab-pane active" id="evaluationTab">
 				@include('teacher.partials.evaluation.home')
 			</div>
-
-			{{-- @if($teacher->isDirector())
-			<div role="tabpanel" class="tab-pane" id="generalReportTab">
-				@include('teacher.partials.generalReport.index')
-			</div>
-			<div role="tabpanel" class="tab-pane" id="generalObservationTab">
-				@include('teacher.partials.generalObservation.index')
-			</div>
-			@endif --}}
 		</div>
 	</div>
 </div>
