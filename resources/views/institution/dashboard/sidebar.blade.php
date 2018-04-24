@@ -68,6 +68,14 @@
                 {{-- <li><a href="{{route('headquarter.index')}}">Ver Sedes</a></li> --}}
             </ul>
         </li>
+        <!-- Estadísticas -->
+        <li class="">
+            <a  href="">
+                <span class="fa-stack fa-lg pull-left"><i class="fa fa-archive fa-stack-1x "></i>
+                </span>
+                Estadísticas
+            </a>
+        </li>
 
         <!-- Asignación Académica -->
         <li class="">
