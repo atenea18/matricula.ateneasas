@@ -113,7 +113,7 @@ const store = new Vuex.Store({
                 context.commit('setGrades', payload)
             })
         },
-        areas(context, payload = {}) { 
+        areas(context, payload = {}) {
             axios.get('getAreas').then(res => {
                 payload.areas = res.data;
                 context.commit('setAreas', payload)

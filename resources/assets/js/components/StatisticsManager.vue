@@ -35,6 +35,7 @@
         },
         created() {
             this.getGrades()
+            this.getInstitutionOfTeacher()
             /*
             this.getGradeById(this.group.grade_id)
             this.getAsignatureById(this.asignatureid, this.group.grade_id)
@@ -68,6 +69,9 @@
         methods: {
             getGrades() {
                 this.$store.dispatch('grades')
+            },
+            getInstitutionOfTeacher() {
+                this.$store.dispatch('institutionOfTeacher')
             },
 
             /*
@@ -110,9 +114,7 @@
                     periodid: periodid
                 })
             },
-            getInstitutionOfTeacher() {
-                this.$store.dispatch('institutionOfTeacher')
-            },
+
 
             getConexion() {
                 this.$store.dispatch('verifyConexion')
