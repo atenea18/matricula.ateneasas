@@ -7,12 +7,12 @@ const store = new Vuex.Store({
     state: {
 
         counter: 0,
-        totalInput:0,
-        counterInput:1,
+        totalInput: 0,
+        counterInput: 1,
         periodSelected: 0,
-        counterParameter:0,
+        counterParameter: 0,
         institutionOfTeacher: 0,
-        currentView:"",
+        currentView: "",
         isConexion: true,
         isCollection: false,
         areas: [],
@@ -73,13 +73,11 @@ const store = new Vuex.Store({
         setParameters(state, payload) {
             let parameters = []
 
-            if(payload.parameters.length > 0 ){
-                parameters = payload.parameters.filter(element =>{
+            if (payload.parameters.length > 0) {
+                parameters = payload.parameters.filter(element => {
                     return element.group_type == payload.group_type
                 })
             }
-
-            console.log(parameters)
             state.parameters = parameters || []
         },
         setPeriodsWD(state, payload) {
@@ -126,8 +124,8 @@ const store = new Vuex.Store({
             })
         },
         asignatureById(context, payload = {}) {
-            axios.get('/teacher/evaluation/getAsignatureById/' + payload.asignatureid + '/' + payload.grade_id).then(res => {
-                console.log(payload.isGroup)
+            let params = payload
+            axios.get('/teacher/evaluation/getAsignatureById',{params}).then(res => {
                 payload.asignature = res.data;
                 context.commit('setAsignatureById', payload)
             })
@@ -170,7 +168,8 @@ const store = new Vuex.Store({
         },
 
         periodsByWorkingDay(context, payload = {}) {
-            axios.get('/teacher/evaluation/getPeriodsByWorkingDay/' + payload.workingdayid).then(res => {
+            let params = payload
+            axios.get('/teacher/evaluation/getPeriodsByWorkingDay', {params}).then(res => {
                 payload.periodsWD = res.data;
                 context.commit('setPeriodsWD', payload)
 
@@ -178,14 +177,11 @@ const store = new Vuex.Store({
         },
         collectionNotes(context, payload = {}) {
             let _this = this
+            let params = payload
             if (payload.periodid != 0) {
 
                 axios.get(
-                    '/teacher/evaluation/getCollectionsNotes/'
-                    + payload.groupid + '/'
-                    + payload.asignatureid + '/'
-                    + payload.periodid
-                ).then(res => {
+                    '/teacher/evaluation/getCollectionsNotes', {params} ).then(res => {
                     if (typeof res.data == 'object') {
                         _this.state.isCollection = true
                         payload.collectionNotes = res.data
