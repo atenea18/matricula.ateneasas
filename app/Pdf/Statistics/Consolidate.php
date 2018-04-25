@@ -93,7 +93,7 @@ class Consolidate extends Fpdf
 	    // Movernos a la derecha
 	    $this->Cell(0,4, 'FECHA: '.date('d-m-Y'), 0, 0, 'L');
 	    // Salto de línea
-	    $this->Ln(5);
+	    (count($this->institution->headquarters) > 1) ? $this->Ln(4) : $this->Ln(7) ;
 
 	    // 
 	    $this->subheader();
@@ -106,7 +106,7 @@ class Consolidate extends Fpdf
 		// 
 		$this->SetFillColor(172, 220, 240);
 		// 
-		$this->SetFont('Arial','B',9);
+		$this->SetFont('Arial','B',7);
 
 		$this->Cell(5, 4, '#', 1, 0, 'C', true);
 		$this->Cell($this->_with_CE, 4, 'APELLIDOS Y NOMBRES DE ESTUDIANTE', 1,0, 'C', true);
@@ -115,7 +115,7 @@ class Consolidate extends Fpdf
 		// 
 		foreach($this->asignatures as $key => $asignature)
 		{
-			$this->Cell(17, 4, $asignature->abbreviation, 1, 0, 'C', true);	
+			$this->Cell(10, 4, substr(utf8_decode($asignature->abbreviation), 0, 3), 1, 0, 'C', true);	
 		}
 
 		$this->Ln(4);
@@ -124,7 +124,7 @@ class Consolidate extends Fpdf
 	public function create()
 	{
 		$this->AddPage();
-		$this->SetFont('Arial','',8);
+		$this->SetFont('Arial','',7);
 
 		foreach($this->content as $key => $student)
 		{
@@ -163,13 +163,11 @@ class Consolidate extends Fpdf
 	{
 		
 		foreach($this->asignatures as $keyA => $asignature)
-			$this->Cell(17, 4, $this->getNote($student, $asignature), 1, 0, 'C', false);
+			$this->Cell(10, 4, $this->getNote($student, $asignature), 1, 0, 'C', false);
 	}
 
 	private function getNote($student, $asignature)
 	{
-		// $found  = false;
-		// $value = " ";
 		foreach ($student->notes_final as $key => $note) 
 			if($note->asignatures_id == $asignature->asignatures_id)
 				return $note->value;
