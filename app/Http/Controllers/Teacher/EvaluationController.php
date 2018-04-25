@@ -353,14 +353,7 @@ class EvaluationController extends Controller
         return $collection;
     }
 
-    public function getInstitutionOfTeacher(Request $request)
-    {
-        $teacher = Auth::guard('teachers')->user()->teachers()->first();
-        $institution = Institution::where('id', '=', $teacher->institution_id)->get();
-        if ($request->ajax()) {
-            return $institution[0];
-        }
-    }
+
 
     public function searchPerformances(Request $request)
     {
