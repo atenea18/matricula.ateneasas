@@ -68,6 +68,14 @@ class StatisticsController extends Controller
         return $periodsWorkingDay;
     }
 
+    public function getInstitutionOfTeacher(Request $request)
+    {
+        $institution = Institution::where('id', '=',$this->institution->id)->get();
+        if ($request->ajax()) {
+            return $institution[0];
+        }
+    }
+
     public function index()
     {
         return View('teacher.partials.statistics.index');

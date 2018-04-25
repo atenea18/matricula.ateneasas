@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-12">
                 <form class="navbar-form navbar-left">
-                    <button type="submit" class="btn btn-default" @click="printConsolidated">PDF</button>
+                    <a v-if="data.periods_id" type="submit" class="btn btn-default"  target="_blank" :href="urlPdf">PDF</a>
                 </form>
             </div>
         </div>
@@ -41,7 +41,8 @@
                     enrollments: []
                 },
                 state: false,
-                data: {}
+                data: {},
+                urlPdf:""
             }
         },
         created() {
@@ -69,9 +70,13 @@
                         institution_id: this.$store.state.institutionOfTeacher.id
                      }
 
-
+                    let _this = this
                     axios.get(url, {params}).then(res => {
-
+                        var blob = new Blob([this.res], {type: 'application/pdf'});
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = "report.pdf";
+                        link.click();
                     })
 
                 }
@@ -90,7 +95,8 @@
                 let params = {
                     grade_id: object.grade_id,
                     group_id: object.group_id,
-                    periods_id: object.periods_id
+                    periods_id: object.periods_id,
+                    institution_id: this.$store.state.institutionOfTeacher.id
                 }
 
                 axios.get(url, {params}).then(res => {
@@ -104,8 +110,13 @@
                 let params = {
                     grade_id: object.grade_id,
                     group_id: object.group_id,
-                    periods_id: object.periods_id
+                    periods_id: object.periods_id,
+                    institution_id: this.$store.state.institutionOfTeacher.id
                 }
+
+                this.urlPdf ="/pdf/consolidateByGroup?grade_id="+params.grade_id+
+                    "&group_id="+params.group_id+
+                    "&period_id="+params.periods_id+"&institution_id="+params.institution_id
 
                 this.data = params
                 let url = '/ajax/getConsolidated'

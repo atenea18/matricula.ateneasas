@@ -36,7 +36,7 @@ Route::group(['prefix'=>'ajax'], function(){
     Route::get('/allgrades', 'GradeController@getAllGrades');
     Route::get('/asignaturesByGrade', 'Teacher\AsignatureController@asignaturesByGrade');
     Route::get('/areasByGrade', 'Teacher\AreasController@areasByGrade');
-    Route::get('/getInstitutionOfTeacher', 'Teacher\EvaluationController@getInstitutionOfTeacher');
+
 
     Route::get('/getSubgroupsByGrade', 'AcademicAssignmentController@getSubgroupsByGrade');
     Route::get('/getGroupsByGrade', 'StatisticsController@getGroupsByGrade');
@@ -45,6 +45,7 @@ Route::group(['prefix'=>'ajax'], function(){
     Route::get('/getPeriodsByWorkingDay/{working_day_id}', 'StatisticsController@getPeriodsByWorkingDay');
 
     Route::get('/printConsolidated', 'StatisticsController@printConsolidated');
+    Route::get('/getInstitutionOfTeacher', 'StatisticsController@getInstitutionOfTeacher');
 
 
 });
