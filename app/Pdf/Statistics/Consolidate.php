@@ -170,7 +170,7 @@ class Consolidate extends Fpdf
 	{
 		foreach ($student->notes_final as $key => $note) 
 			if($note->asignatures_id == $asignature->asignatures_id)
-				return $note->value;
+				return round($note->value);
 
 		return "";
 	}
