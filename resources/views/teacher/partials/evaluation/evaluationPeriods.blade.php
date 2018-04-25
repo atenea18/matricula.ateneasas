@@ -17,10 +17,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading clearfix">
                     <h2 class="panel-title pull-left">Evaluación de Periodo</h2>
+
                 </div>
                 <div class="panel-body">
                     <div id="app">
-                        <evaluation-manager :group="{{$group}}" :asignatureid="{{$asignature_id}}">
+                        <evaluation-manager :group="{{$group}}"  :asignatureid="{{$asignature_id}}">
                         </evaluation-manager>
                     </div>
                 </div>

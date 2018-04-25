@@ -63,6 +63,11 @@ class Teacher extends Model
         return $this->hasMany(GroupPensum::class, 'teacher_id'); 
     }
 
+    public function sub_pensums()
+    {
+        return $this->hasMany(SubGroupPensum::class, 'teacher_id');
+    }
+
     public function isDirector()
     {
         return ( count($this->groupDirector()->get()) > 0 );
