@@ -404,7 +404,7 @@ class EvaluationController extends Controller
                 ->where('evaluation_periods.periods_id', '=', $request->periodid)
                 ->get();
 
-            
+
 
         }
 
