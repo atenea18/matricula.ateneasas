@@ -235,8 +235,6 @@ class PdfController extends Controller
         $consolidate->content = $notes;
         $consolidate->create();
 
-        $consolidate->Output();
-
-        // return response()->json($pensum);
+        $consolidate->Output("Consolidado-".time().".pdf", "D");
     }
 }
