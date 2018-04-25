@@ -264,7 +264,7 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 	Route::get('evaluation', 'Teacher\EvaluationController@index')->name('teacher.evaluation');
     Route::get('statistics', 'StatisticsController@index')->name('teacher.statistics');
 
-    Route::get('evaluation/periods/{group_id}/{asignatures_id}', 'Teacher\EvaluationController@evaluationPeriods')->name('teacher.evaluation.periods');
+    Route::get('evaluation/periods/{group_id}/{type}/{asignatures_id}', 'Teacher\EvaluationController@evaluationPeriods')->name('teacher.evaluation.periods');
 
     Route::get('evaluation/evaluationParameter', 'Teacher\EvaluationController@evaluationParameter');
 

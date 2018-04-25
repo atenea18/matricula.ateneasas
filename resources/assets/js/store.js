@@ -70,7 +70,16 @@ const store = new Vuex.Store({
             state.teachers = payload.teachers || []
         },
         setParameters(state, payload) {
-            state.parameters = payload.parameters || []
+            let parameters = []
+
+            if(payload.parameters.length > 0 ){
+                parameters = payload.parameters.filter(element =>{
+                    return element.group_type == payload.group_type
+                })
+            }
+
+            console.log(parameters)
+            state.parameters = parameters || []
         },
         setPeriodsWD(state, payload) {
             state.periodsworkingday = payload.periodsWD || []
