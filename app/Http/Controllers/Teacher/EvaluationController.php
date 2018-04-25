@@ -225,6 +225,16 @@ class EvaluationController extends Controller
         return $asignatures[0];
     }
 
+    public function getSubAsignatureById($asignatures_id, $grade_id)
+    {
+        $asignatures = Asignature::select('asignatures.id', 'asignatures.name', 'sub_group_pensum.areas_id', 'sub_group_pensum.grade_id', 'sub_group_pensum.id as sub_group_pensum_id')
+            ->join('sub_group_pensum', 'sub_group_pensum.asignatures_id', '=', 'asignatures.id')
+            ->where('sub_group_pensum.grade_id', '=', $grade_id)
+            ->where('asignatures.id', '=', $asignatures_id)
+            ->get();
+        return $asignatures[0];
+    }
+
     public function getGradeById($grade_id)
     {
         $grade = Grade::where('id', '=', $grade_id)->get();

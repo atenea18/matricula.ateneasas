@@ -88,5 +88,17 @@ class GroupPensum extends Model
             ->where('schoolyear_id', '=', 1)
             ->get();
         return $pensum;
-        }
+    }
+
+    public static function find($group_id)
+    {
+        return self::select(
+                'asignatures.abbreviation', 'asignatures.name',
+                'group_pensum.asignatures_id', 'group_pensum.ihs', 'group_pensum.order', 'group_pensum.percent')
+            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
+            ->where('group_pensum.group_id', '=', $group_id)
+            ->get();
+
+        // return $asignatures;
+    }
 }

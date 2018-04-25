@@ -11,6 +11,8 @@ use App\Grade;
 use App\Schoolyear;
 use App\Institution;
 use App\Subgroup;
+use App\GroupPensum;
+use App\NotesFinal;
 
 use PDF;
 use Auth;
@@ -21,6 +23,7 @@ use setasign\Fpdi\Fpdi;
 use App\Pdf\Sheet\StudentAttendance;
 use App\Pdf\Constancy\Study as ConstancyStudy;
 use App\Pdf\Sheet\EvaluationSheet;
+use App\Pdf\Statistics\Consolidate;
 
 
 class PdfController extends Controller
@@ -185,6 +188,7 @@ class PdfController extends Controller
         $constancy = $institution->constancies()->where('type_id', '=', 1)->first();
         
         $constancy_Study = new ConstancyStudy($request->orientation, 'mm', $request->papper);
+        $constancy_Study->SetMargins(30, 25 , 30); 
         $constancy_Study->constancy = $constancy;
         $constancy_Study->institution = $institution;
 
@@ -215,5 +219,22 @@ class PdfController extends Controller
         $constancy_Study->Output($path.$institution->id."constancia.pdf", "F");
         
         $this->merge($path, 'Constancias', $request->orientation);
+    }
+
+    public function printConsolidate(Request $request)
+    {
+
+        $pensum = GroupPensum::find($request->group_id);
+        $notes = NotesFinal::getConsolidate($request);
+
+
+        $consolidate = new Consolidate('l', 'mm', 'letter');
+        $consolidate->institution = Institution::findOrFail($request->institution_id);
+        $consolidate->group = Group::findOrFail($request->group_id);
+        $consolidate->asignatures = $pensum;
+        $consolidate->content = $notes;
+        $consolidate->create();
+
+        $consolidate->Output("Consolidado-".time().".pdf", "D");
     }
 }

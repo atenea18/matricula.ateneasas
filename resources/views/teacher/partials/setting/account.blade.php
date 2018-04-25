@@ -27,7 +27,7 @@
 					</li>
 					<li role="presentation">
 						<a href="{{route('teacher.setting.security')}}">
-							<i class="fa fa-shield-alt"></i> Seguridad
+							<i class="fa fa-shield-alt"></i> Seguridad e inicio de sesión
 						</a>
 					</li>
 				</ul>

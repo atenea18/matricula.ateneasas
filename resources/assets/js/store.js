@@ -113,7 +113,7 @@ const store = new Vuex.Store({
                 context.commit('setGrades', payload)
             })
         },
-        areas(context, payload = {}) {
+        areas(context, payload = {}) { 
             axios.get('getAreas').then(res => {
                 payload.areas = res.data;
                 context.commit('setAreas', payload)
@@ -127,6 +127,7 @@ const store = new Vuex.Store({
         },
         asignatureById(context, payload = {}) {
             axios.get('/teacher/evaluation/getAsignatureById/' + payload.asignatureid + '/' + payload.grade_id).then(res => {
+                console.log(payload.isGroup)
                 payload.asignature = res.data;
                 context.commit('setAsignatureById', payload)
             })
