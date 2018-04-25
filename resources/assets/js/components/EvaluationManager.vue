@@ -54,18 +54,17 @@
             }
         },
         created() {
-            this.$store.state.isTypeGroup = this.filter=="group"?true:false
-            if(this.$store.state.isTypeGroup){
-                this.getGradeById(this.group.grade_id)
-                this.getAsignatureById(this.asignatureid, this.group.grade_id, this.$store.state.isTypeGroup)
-                this.getParameters()
-                this.getGrades()
-                this.getGroupPensum(this.group.id, this.asignatureid, 1)
-                this.getPeriodsByWorkingDay(this.group.working_day_id);
-                this.getInstitutionOfTeacher()
-            }else{
+            this.$store.state.isTypeGroup = this.filter == "group" ? true : false
 
-            }
+
+            this.getGradeById()
+            this.getAsignatureById()
+            this.getParameters()
+            this.getGrades()
+            this.getGroupPensum()
+            this.getPeriodsByWorkingDay();
+            this.getInstitutionOfTeacher()
+
 
         },
 
@@ -86,55 +85,66 @@
 
         },
         methods: {
+
             getParameters() {
                 this.$store.dispatch('parameters', {group_type: this.filter})
             },
-            getAsignatureById(asignatureid, grade_id, isGroup) {
+            getAsignatureById() {
                 this.$store.dispatch('asignatureById', {
-                    asignatureid: asignatureid,
-                    grade_id: grade_id,
-                    isGroup: isGroup
+                    asignatureid: this.asignatureid,
+                    grade_id: this.group.grade_id,
+                    isGroup: this.$store.state.isTypeGroup
                 })
             },
-            getGroupPensum(group_id, asignatures_id, school_year_id) {
+            getGroupPensum() {
                 this.$store.dispatch('groupPensum', {
-                    group_id: group_id,
-                    asignatures_id: asignatures_id,
-                    school_year_id: school_year_id
+                    group_id: this.group.id,
+                    asignatures_id: this.asignatureid,
+                    school_year_id: 1,
+                    isGroup: this.$store.state.isTypeGroup
                 })
             },
-            getGradeById(grade_id) {
+            getGradeById() {
                 this.$store.dispatch('gradeById', {
-                    grade_id: grade_id
+                    grade_id: this.group.grade_id,
+                    isGroup: this.$store.state.isTypeGroup
                 })
             },
             getEvaluationsByPeriod() {
                 this.$store.state.isCollection = false
                 this.$store.state.periodSelected = this.periodid
-                this.getCollectionNotes(this.group.id, this.asignatureid, this.$store.state.periodSelected)
+                this.getCollectionNotes()
             },
-            getPeriodsByWorkingDay(workingdayid) {
+            getPeriodsByWorkingDay() {
                 this.$store.dispatch('periodsByWorkingDay', {
-                    workingdayid: workingdayid
+                    workingdayid: this.group.working_day_id || this.group.section_id,
+                    isGroup: this.$store.state.isTypeGroup
                 })
             },
 
-            getCollectionNotes(groupid, asignatureid, periodid) {
+            getCollectionNotes() {
                 this.$store.dispatch('collectionNotes', {
-                    groupid: groupid,
-                    asignatureid: asignatureid,
-                    periodid: periodid
+                    groupid: this.group.id,
+                    asignatureid: this.asignatureid,
+                    periodid: this.$store.state.periodSelected,
+                    isGroup: this.$store.state.isTypeGroup
                 })
             },
             getGrades() {
-                this.$store.dispatch('grades')
+                this.$store.dispatch('grades', {
+                    isGroup: this.$store.state.isTypeGroup
+                })
             },
             getInstitutionOfTeacher() {
-                this.$store.dispatch('institutionOfTeacher')
+                this.$store.dispatch('institutionOfTeacher', {
+                    isGroup: this.$store.state.isTypeGroup
+                })
             },
 
             getConexion() {
-                this.$store.dispatch('verifyConexion')
+                this.$store.dispatch('verifyConexion', {
+                    isGroup: this.$store.state.isTypeGroup
+                })
             }
 
         }

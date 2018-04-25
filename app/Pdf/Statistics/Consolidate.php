@@ -29,13 +29,11 @@ class Consolidate extends Fpdf
 	{
 		// To be implemented in your own inherited class
 		// Logo
-        
 		if($this->institution->picture != NULL)
 			$this->Image(
 				Storage::disk('uploads')->url(
 					$this->institution->picture
 				), 12, 14, 17, 17, "PNG");
-
 
 		//Marco
 	    $this->Cell($this->_width_mark,24, '', 1,0);
