@@ -306,7 +306,13 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 
 });
 
+// Rutas para archivos PDF
+Route::group(['prefix' => 'pdf'], function() {
+    
+    Route::get('consolidateByGroup', 'PdfController@printConsolidate');
+});
 
+// Rutas para archivos excel
 Route::group(['prefix' => 'excel'], function() {
    	Route::post('upload/identification', 'ExcelController@importIdentification')->name('import.identification');
    	Route::post('upload/address', 'ExcelController@importAddress')->name('import.address');
