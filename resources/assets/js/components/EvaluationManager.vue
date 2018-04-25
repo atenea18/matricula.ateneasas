@@ -80,7 +80,7 @@
         },
         methods: {
             getParameters() {
-                this.$store.dispatch('parameters')
+                this.$store.dispatch('parameters', {group_type:"subgroup"})
             },
             getAsignatureById(asignatureid, grade_id) {
                 this.$store.dispatch('asignatureById', {

@@ -1,4 +1,4 @@
-@extends('teacher.dashboard.index')
+@extends('institution.dashboard.index')
 
 @section('css')
 	<link rel="stylesheet" href="{{asset('css/bootstrap-chosen.css')}}">
@@ -6,7 +6,7 @@
 
 @section('breadcrums')
 	<ol class="breadcrumb">
-		<li><a href="{{route('teacher.home')}}">Inicio</a></li>
+		<li><a href="">Inicio</a></li>
 		<li class="active">Estadísticas</li>
 	</ol>
 @endsection

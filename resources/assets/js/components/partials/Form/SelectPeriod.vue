@@ -58,7 +58,7 @@
 
             getPeriodsByGroup(object) {
 
-                let url = '/teacher/evaluation/getPeriodsByWorkingDay/' + object.working_day_id
+                let url = '/ajax/getPeriodsByWorkingDay/' + object.working_day_id
 
                 axios.get(url).then(res => {
                     this.objectToSelectPeriods.arrayData = res.data;

@@ -37,20 +37,33 @@ class EvaluationController extends Controller
             ->with('schoolYear')
             ->get();
 
+        $sub_pemsun = $teacher->sub_pensums()
+            ->where('schoolyear_id', '=', 1)
+            ->with('asignature')
+            ->with('area')
+            ->with('subgroup')
+            ->with('subjectType')
+            ->with('schoolYear')
+            ->get();
 
-        // dd($pemsun);
+
         return View('teacher.partials.evaluation.index')
             ->with('teacher', $teacher)
-            ->with('pemsun', $pemsun);
+            ->with('pemsun', $pemsun)
+            ->with('sub_pensum', $sub_pemsun)
+            ;
+
     }
 
-    public function evaluationPeriods($group_id, $asignatures_id)
+    public function evaluationPeriods($group_id, $type, $asignatures_id)
     {
         $group = Group::where('id', '=', $group_id)->get();
 
         return View('teacher.partials.evaluation.evaluationPeriods')
             ->with('group', $group[0])
-            ->with('asignature_id', $asignatures_id);
+            ->with('asignature_id', $asignatures_id)
+            ->with('filter', $type)
+            ;
     }
 
 
