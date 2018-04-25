@@ -27,7 +27,7 @@
 					</li>
 					<li role="presentation" class="active">
 						<a href="#security" aria-controls="security" role="tab" data-toggle="tab">
-							<i class="fa fa-shield-alt"></i> Seguridad
+							<i class="fa fa-shield-alt"></i> Seguridad e inicio de sesión
 						</a>
 					</li>
 				</ul>

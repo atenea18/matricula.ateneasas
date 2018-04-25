@@ -185,6 +185,7 @@ class PdfController extends Controller
         $constancy = $institution->constancies()->where('type_id', '=', 1)->first();
         
         $constancy_Study = new ConstancyStudy($request->orientation, 'mm', $request->papper);
+        $constancy_Study->SetMargins(30, 25 , 30); 
         $constancy_Study->constancy = $constancy;
         $constancy_Study->institution = $institution;
 

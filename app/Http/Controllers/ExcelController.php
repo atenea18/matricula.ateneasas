@@ -522,19 +522,6 @@ class ExcelController extends Controller
                     $ter->student_id = $student->id;
                     $ter->save();
 
-                    // Matricual antigüa
-                    /*if(isset($row->grado_igreso))
-                    {
-                        $enrollment_2017 = new Enrollment();
-                        $enrollment_2017->code = ($row->grado_igreso != null) ? "2017".$request->institution_id."17".$student->id  : ''; 
-                        $enrollment_2017->school_year_id = 2;
-                        $enrollment_2017->student_id = $student->id;
-                        $enrollment_2017->grade_id = ($row->grado_igreso == null) ? 17 : $row->grado_igreso;
-                        $enrollment_2017->enrollment_state_id = 3;
-                        $enrollment_2017->institution_id = $request->institution_id;
-                        $enrollment_2017->save();
-                    }*/
-                    
                     if(isset($row->id_grado_matricular))
                     {   
                         // Matricula nueva

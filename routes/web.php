@@ -253,9 +253,7 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 
 Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 
-	Route::get('/', function(){
-		return View('teacher.partials.home');
-	})->name('teacher.home');
+	Route::get('/', 'Teacher\HomeController@index')->name('teacher.home');
 
 	Route::post('/logout', 'TeacherAuth\LoginController@logout');
 
@@ -301,6 +299,8 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 	Route::get('setting/security', 'Teacher\SettingController@security')->name('teacher.setting.security');
 	Route::put('setting/{manager}/updateAccount', 'Teacher\SettingController@updateAccount')->name('setting.updateAccount');
 	Route::put('setting/{manager}/updatePassword', 'Teacher\SettingController@updatePassword')->name('setting.updatePassword');
+	Route::get('setting/{manager}/checkEmail', 'Teacher\SettingController@checkEmail')->name('teacher.checkEmail');
+	Route::put('setting/{manager}/saveEmail', 'Teacher\SettingController@saveEmail')->name('teacher.setting.saveEmail');
 
 });
 

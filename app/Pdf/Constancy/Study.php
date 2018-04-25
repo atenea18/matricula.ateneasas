@@ -23,28 +23,27 @@ class Study extends Fpdf
 	
 	public $constancy;
 	public $institution;
+	public $group;
 
 	function Header()
 	{
+
 		if($this->institution->picture != NULL)
 			$this->Image(
 				Storage::disk('uploads')->url(
 					$this->institution->picture
-				), 12, 14, 17, 17, "PNG");
+				), 30, 30, 17, 17, "PNG");
 
 
 		// PRIMERA LINEA
-	    $this->SetFont('Arial','B',14);
+	    $this->SetFont('Arial','B',12);
 	    // Título
 	    $this->Cell(0, 6, utf8_decode($this->institution->name), 0, 0, 'C');
-	    $this->Ln(6);
+	    $this->Ln(10);
 
 	    // Título
 	    $this->SetFont('Arial','B',9);
-	    if(count($this->institution->headquarters) > 1){
-	    	$this->Cell(0,4, $this->group->headquarter->name, 0, 0, 'C');
-	    	$this->Ln(4);	
-	    }
+	    
 
 
 	    // Título
@@ -122,7 +121,7 @@ class Study extends Fpdf
 
 	private function showBody(Enrollment $enrollment)
 	{
-		$this->SetFont('Arial','',9);
+		$this->SetFont('Arial','',11);
 		$body = "Que {$enrollment->student->fullNameInverse} identificado con {$enrollment->student->identification->identification_type->abbreviation} {$enrollment->student->identification->identification_number} se encuentra matriculado en el grado ({$enrollment->grade->name_letter} {$enrollment->grade->name}° ) y asiste a clases en el grupo {$enrollment->group()->first()->name}, año lectivo {$enrollment->schoolYear->year} , Jornada de la {$enrollment->group()->first()->workingday->name}
 		";
 
