@@ -26,6 +26,7 @@ const store = new Vuex.Store({
         asignature: Object,
         groupPensum: Object,
         periodsworkingday: Object,
+        isTypeGroup: true,
 
 
     },
@@ -126,6 +127,7 @@ const store = new Vuex.Store({
         },
         asignatureById(context, payload = {}) {
             axios.get('/teacher/evaluation/getAsignatureById/' + payload.asignatureid + '/' + payload.grade_id).then(res => {
+                console.log(payload.isGroup)
                 payload.asignature = res.data;
                 context.commit('setAsignatureById', payload)
             })

@@ -19,8 +19,10 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex'
     import ManagerGroupSelect from "../../partials/Form/GroupSelect/ManagerGroupSelect";
     import TableConsolidated from "./TableConsolidated";
+
 
     export default {
         components: {
@@ -45,30 +47,33 @@
         created() {
             this.managerEvents()
         },
+        computed: {
+            ...mapState([
+                'institutionOfTeacher',
+            ]),
+
+        },
         methods: {
 
 
             printConsolidated() {
-                console.log(this.data)
-                if (this.data.length > 0) {
-                    //Aquí va la ruta para imprimir el consolidado, los parametos se los paso por la variable
-                    //Request... los llama así $request->grade_id
+                //console.log(this.data)
+                if (this.data.periods_id) {
 
-                    // Ruta
-                    // /pdf/consolidateByGroup?group_id=878&grade_id=16&period_id=1&institution_id=8
-                    let url = '/ajax/ruta.... ' 
+                    let url = '/pdf/consolidateByGroup'
 
-                    /*
                     let params = {
-                        grade_id: "",
-                        group_id: "",
-                        periods_id: ""
+                        grade_id: this.data.grade_id,
+                        group_id: this.data.group_id,
+                        period_id: this.data.periods_id,
+                        institution_id: this.$store.state.institutionOfTeacher.id
                      }
-                    * */
-                    let params = this.data
+
+
                     axios.get(url, {params}).then(res => {
 
                     })
+
                 }
             },
 

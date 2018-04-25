@@ -44,6 +44,8 @@ Route::group(['prefix'=>'ajax'], function(){
     Route::get('/getAsignaturesGroupPensum', 'StatisticsController@getAsignaturesGroupPensum');
     Route::get('/getPeriodsByWorkingDay/{working_day_id}', 'StatisticsController@getPeriodsByWorkingDay');
 
+    Route::get('/printConsolidated', 'StatisticsController@printConsolidated');
+
 
 });
 
