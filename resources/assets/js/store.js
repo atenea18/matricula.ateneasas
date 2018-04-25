@@ -26,6 +26,7 @@ const store = new Vuex.Store({
         asignature: Object,
         groupPensum: Object,
         periodsworkingday: Object,
+        isTypeGroup: true,
 
 
     },

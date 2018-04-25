@@ -53,7 +53,7 @@
                 if (this.data.length > 0) {
                     //Aquí va la ruta para imprimir el consolidado, los parametos se los paso por la variable
                     //Request... los llama así $request->grade_id
-                    let url = '/ajax/ruta.... '
+                    let url = '/ajax/printConsolidated'
 
                     /*
                     let params = {

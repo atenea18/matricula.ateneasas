@@ -21,7 +21,8 @@
                 </div>
                 <div class="panel-body">
                     <div id="app">
-                        <evaluation-manager :group="{{$group}}"  :asignatureid="{{$asignature_id}}">
+
+                        <evaluation-manager :group="{{$itemGroup}}" filter="{{$filter}}" :asignatureid="{{$asignature_id}}">
                         </evaluation-manager>
                     </div>
                 </div>

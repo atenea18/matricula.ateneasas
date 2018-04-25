@@ -14,6 +14,7 @@ use App\Note;
 use App\NotesFinal;
 use App\NotesParametersPerformances;
 use App\Performances;
+use App\Subgroup;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -57,13 +58,22 @@ class EvaluationController extends Controller
 
     public function evaluationPeriods($group_id, $type, $asignatures_id)
     {
-        $group = Group::where('id', '=', $group_id)->get();
+        $itemGroup = null;
+
+
+        if($type == "group"){
+            $group = Group::where('id', '=', $group_id)->get();
+            $itemGroup = $group[0];
+        }else{
+            $sub_group = Subgroup::where('id', '=', $group_id)->get();
+            $itemGroup = $sub_group[0];
+        }
+
 
         return View('teacher.partials.evaluation.evaluationPeriods')
-            ->with('group', $group[0])
+            ->with('itemGroup', $itemGroup)
             ->with('asignature_id', $asignatures_id)
-            ->with('filter', $type)
-            ;
+            ->with('filter', $type);
     }
 
 
