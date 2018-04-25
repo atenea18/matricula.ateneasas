@@ -26,6 +26,7 @@ const store = new Vuex.Store({
         asignature: Object,
         groupPensum: Object,
         periodsworkingday: Object,
+        isTypeGroup: true,
 
 
     },
@@ -70,7 +71,16 @@ const store = new Vuex.Store({
             state.teachers = payload.teachers || []
         },
         setParameters(state, payload) {
-            state.parameters = payload.parameters || []
+            let parameters = []
+
+            if(payload.parameters.length > 0 ){
+                parameters = payload.parameters.filter(element =>{
+                    return element.group_type == payload.group_type
+                })
+            }
+
+            console.log(parameters)
+            state.parameters = parameters || []
         },
         setPeriodsWD(state, payload) {
             state.periodsworkingday = payload.periodsWD || []
@@ -117,6 +127,7 @@ const store = new Vuex.Store({
         },
         asignatureById(context, payload = {}) {
             axios.get('/teacher/evaluation/getAsignatureById/' + payload.asignatureid + '/' + payload.grade_id).then(res => {
+                console.log(payload.isGroup)
                 payload.asignature = res.data;
                 context.commit('setAsignatureById', payload)
             })

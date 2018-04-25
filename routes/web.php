@@ -39,10 +39,12 @@ Route::group(['prefix'=>'ajax'], function(){
     Route::get('/getInstitutionOfTeacher', 'Teacher\EvaluationController@getInstitutionOfTeacher');
 
     Route::get('/getSubgroupsByGrade', 'AcademicAssignmentController@getSubgroupsByGrade');
-    Route::get('/getGroupsByGrade', 'Teacher\StatisticsController@getGroupsByGrade');
-    Route::get('/getConsolidated', 'Teacher\StatisticsController@getConsolidated');
-    Route::get('/getAsignaturesGroupPensum', 'Teacher\StatisticsController@getAsignaturesGroupPensum');
+    Route::get('/getGroupsByGrade', 'StatisticsController@getGroupsByGrade');
+    Route::get('/getConsolidated', 'StatisticsController@getConsolidated');
+    Route::get('/getAsignaturesGroupPensum', 'StatisticsController@getAsignaturesGroupPensum');
+    Route::get('/getPeriodsByWorkingDay/{working_day_id}', 'StatisticsController@getPeriodsByWorkingDay');
 
+    Route::get('/printConsolidated', 'StatisticsController@printConsolidated');
 
 
 });
@@ -206,6 +208,8 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 
     Route::post('copyPensumByGrade', 'AreasAndAsignatureController@copyPensumByGrade');
 
+    Route::get('statistics', 'StatisticsController@indexInstitution')->name('institution.statistics');
+
 
     //Asignación Académica
     Route::get('areas-and-asignature', 'AreasAndAsignatureController@index')->name('areaasignature.index');
@@ -253,16 +257,14 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 
 Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 
-	Route::get('/', function(){
-		return View('teacher.partials.home');
-	})->name('teacher.home');
+	Route::get('/', 'Teacher\HomeController@index')->name('teacher.home');
 
 	Route::post('/logout', 'TeacherAuth\LoginController@logout');
 
 	Route::get('evaluation', 'Teacher\EvaluationController@index')->name('teacher.evaluation');
-    Route::get('statistics', 'Teacher\StatisticsController@index')->name('teacher.statistics');
+    Route::get('statistics', 'StatisticsController@index')->name('teacher.statistics');
 
-    Route::get('evaluation/periods/{group_id}/{asignatures_id}', 'Teacher\EvaluationController@evaluationPeriods')->name('teacher.evaluation.periods');
+    Route::get('evaluation/periods/{group_id}/{type}/{asignatures_id}', 'Teacher\EvaluationController@evaluationPeriods')->name('teacher.evaluation.periods');
 
     Route::get('evaluation/evaluationParameter', 'Teacher\EvaluationController@evaluationParameter');
 
@@ -301,10 +303,18 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 	Route::get('setting/security', 'Teacher\SettingController@security')->name('teacher.setting.security');
 	Route::put('setting/{manager}/updateAccount', 'Teacher\SettingController@updateAccount')->name('setting.updateAccount');
 	Route::put('setting/{manager}/updatePassword', 'Teacher\SettingController@updatePassword')->name('setting.updatePassword');
+	Route::get('setting/{manager}/checkEmail', 'Teacher\SettingController@checkEmail')->name('teacher.checkEmail');
+	Route::put('setting/{manager}/saveEmail', 'Teacher\SettingController@saveEmail')->name('teacher.setting.saveEmail');
 
 });
 
+// Rutas para archivos PDF
+Route::group(['prefix' => 'pdf'], function() {
+    
+    Route::get('consolidateByGroup', 'PdfController@printConsolidate');
+});
 
+// Rutas para archivos excel
 Route::group(['prefix' => 'excel'], function() {
    	Route::post('upload/identification', 'ExcelController@importIdentification')->name('import.identification');
    	Route::post('upload/address', 'ExcelController@importAddress')->name('import.address');

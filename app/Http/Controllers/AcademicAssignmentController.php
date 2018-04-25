@@ -124,6 +124,7 @@ class AcademicAssignmentController extends Controller
 
 
         $institution_id = Auth::guard('web_institution')->user()->id;
+
         try {
             $sub_group_pensum = DB::table('sub_group_pensum')
                 ->select('sub_group_pensum.areas_id', 'areas.name as name_area', 'subjects_type.name as subjects_type_name')

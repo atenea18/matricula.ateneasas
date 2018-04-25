@@ -58,6 +58,7 @@
             RowEvaluation, RelationPerformances
         },
         created() {
+
             this.parameters.forEach(parameter => {
                 let refsEvent = parameter.id
                 this.$bus.$off("" + refsEvent)

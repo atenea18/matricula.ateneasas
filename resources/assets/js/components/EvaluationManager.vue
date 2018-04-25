@@ -42,6 +42,7 @@
         props: {
             group: {type: Object},
             asignatureid: {type: Number},
+            filter: {type: String}
         },
         components: {
             RowEvaluation, TableEvaluation, PerformancesManager
@@ -53,13 +54,19 @@
             }
         },
         created() {
-            this.getGradeById(this.group.grade_id)
-            this.getAsignatureById(this.asignatureid, this.group.grade_id)
-            this.getParameters()
-            this.getGrades()
-            this.getGroupPensum(this.group.id, this.asignatureid, 1)
-            this.getPeriodsByWorkingDay(this.group.working_day_id);
-            this.getInstitutionOfTeacher()
+            this.$store.state.isTypeGroup = this.filter=="group"?true:false
+            if(this.$store.state.isTypeGroup){
+                this.getGradeById(this.group.grade_id)
+                this.getAsignatureById(this.asignatureid, this.group.grade_id, this.$store.state.isTypeGroup)
+                this.getParameters()
+                this.getGrades()
+                this.getGroupPensum(this.group.id, this.asignatureid, 1)
+                this.getPeriodsByWorkingDay(this.group.working_day_id);
+                this.getInstitutionOfTeacher()
+            }else{
+
+            }
+
         },
 
         updated() {
@@ -80,12 +87,13 @@
         },
         methods: {
             getParameters() {
-                this.$store.dispatch('parameters')
+                this.$store.dispatch('parameters', {group_type: this.filter})
             },
-            getAsignatureById(asignatureid, grade_id) {
+            getAsignatureById(asignatureid, grade_id, isGroup) {
                 this.$store.dispatch('asignatureById', {
                     asignatureid: asignatureid,
-                    grade_id: grade_id
+                    grade_id: grade_id,
+                    isGroup: isGroup
                 })
             },
             getGroupPensum(group_id, asignatures_id, school_year_id) {

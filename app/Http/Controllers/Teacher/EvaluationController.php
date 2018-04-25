@@ -14,6 +14,7 @@ use App\Note;
 use App\NotesFinal;
 use App\NotesParametersPerformances;
 use App\Performances;
+use App\Subgroup;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -37,20 +38,42 @@ class EvaluationController extends Controller
             ->with('schoolYear')
             ->get();
 
+        $sub_pemsun = $teacher->sub_pensums()
+            ->where('schoolyear_id', '=', 1)
+            ->with('asignature')
+            ->with('area')
+            ->with('subgroup')
+            ->with('subjectType')
+            ->with('schoolYear')
+            ->get();
 
-        // dd($pemsun);
+
         return View('teacher.partials.evaluation.index')
             ->with('teacher', $teacher)
-            ->with('pemsun', $pemsun);
+            ->with('pemsun', $pemsun)
+            ->with('sub_pensum', $sub_pemsun)
+            ;
+
     }
 
-    public function evaluationPeriods($group_id, $asignatures_id)
+    public function evaluationPeriods($group_id, $type, $asignatures_id)
     {
-        $group = Group::where('id', '=', $group_id)->get();
+        $itemGroup = null;
+
+
+        if($type == "group"){
+            $group = Group::where('id', '=', $group_id)->get();
+            $itemGroup = $group[0];
+        }else{
+            $sub_group = Subgroup::where('id', '=', $group_id)->get();
+            $itemGroup = $sub_group[0];
+        }
+
 
         return View('teacher.partials.evaluation.evaluationPeriods')
-            ->with('group', $group[0])
-            ->with('asignature_id', $asignatures_id);
+            ->with('itemGroup', $itemGroup)
+            ->with('asignature_id', $asignatures_id)
+            ->with('filter', $type);
     }
 
 
@@ -197,6 +220,16 @@ class EvaluationController extends Controller
         $asignatures = Asignature::select('asignatures.id', 'asignatures.name', 'pensum.areas_id', 'pensum.grade_id', 'pensum.id as pensum_id')
             ->join('pensum', 'pensum.asignatures_id', '=', 'asignatures.id')
             ->where('pensum.grade_id', '=', $grade_id)
+            ->where('asignatures.id', '=', $asignatures_id)
+            ->get();
+        return $asignatures[0];
+    }
+
+    public function getSubAsignatureById($asignatures_id, $grade_id)
+    {
+        $asignatures = Asignature::select('asignatures.id', 'asignatures.name', 'sub_group_pensum.areas_id', 'sub_group_pensum.grade_id', 'sub_group_pensum.id as sub_group_pensum_id')
+            ->join('sub_group_pensum', 'sub_group_pensum.asignatures_id', '=', 'asignatures.id')
+            ->where('sub_group_pensum.grade_id', '=', $grade_id)
             ->where('asignatures.id', '=', $asignatures_id)
             ->get();
         return $asignatures[0];

@@ -1,5 +1,12 @@
 <template>
     <div>
+        <div class="row">
+            <div class="col-md-12">
+                <form class="navbar-form navbar-left">
+                    <button type="submit" class="btn btn-default" @click="printConsolidated">PDF</button>
+                </form>
+            </div>
+        </div>
         <manager-group-select :objectInput="objectToManagerGroupSelect"></manager-group-select>
         <div class="row">
             <div class="col-md-12">
@@ -12,13 +19,16 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex'
     import ManagerGroupSelect from "../../partials/Form/GroupSelect/ManagerGroupSelect";
     import TableConsolidated from "./TableConsolidated";
+
 
     export default {
         components: {
             TableConsolidated,
-            ManagerGroupSelect},
+            ManagerGroupSelect
+        },
         name: "consolidated",
         data() {
             return {
@@ -30,13 +40,43 @@
                     asignatures: [],
                     enrollments: []
                 },
-                state: false
+                state: false,
+                data: {}
             }
         },
         created() {
             this.managerEvents()
         },
+        computed: {
+            ...mapState([
+                'institutionOfTeacher',
+            ]),
+
+        },
         methods: {
+
+
+            printConsolidated() {
+                //console.log(this.data)
+                if (this.data.periods_id) {
+
+                    let url = '/pdf/consolidateByGroup'
+
+                    let params = {
+                        grade_id: this.data.grade_id,
+                        group_id: this.data.group_id,
+                        period_id: this.data.periods_id,
+                        institution_id: this.$store.state.institutionOfTeacher.id
+                     }
+
+
+                    axios.get(url, {params}).then(res => {
+
+                    })
+
+                }
+            },
+
             managerEvents() {
                 this.$bus.$on(this.objectToManagerGroupSelect.referenceToReciveObjectSelected, object => {
                     this.getAsignaturesConsolidated(object)
@@ -66,6 +106,8 @@
                     group_id: object.group_id,
                     periods_id: object.periods_id
                 }
+
+                this.data = params
                 let url = '/ajax/getConsolidated'
 
                 axios.get(url, {params}).then(res => {

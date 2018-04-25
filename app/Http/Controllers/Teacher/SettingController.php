@@ -96,4 +96,26 @@ class SettingController extends Controller
 
     	return response()->json($manager);
     }
+
+    public function checkEmail(Manager $manager)
+    {
+        $response = ($manager->address->email != null);
+
+        return response()->json($response);
+    }
+
+    public function saveEmail(Request $request, Manager $manager)
+    {
+        $request->validate([
+            'email' =>  'required|unique:address|email'
+        ],[
+            'email.required'    =>  'El correo es requediro',
+            'email.unique'      =>  'Este dirección de correo electronico ya esta en uso por otra cuenta',
+            'email.email'       =>  'Ingrese una dirección de correo electronico valida'
+        ]);
+
+        $manager->address()->update($request->all());
+
+        return response()->json($manager->address);
+    }
 }
