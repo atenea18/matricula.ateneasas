@@ -33,7 +33,7 @@ class Consolidate extends Fpdf
 			$this->Image(
 				Storage::disk('uploads')->url(
 					$this->institution->picture
-				), 12, 14, 17, 17, "PNG");
+				), 12, 14, 17, 17);
 
 		//Marco
 	    $this->Cell($this->_width_mark,24, '', 1,0);
@@ -170,7 +170,7 @@ class Consolidate extends Fpdf
 	{
 		foreach ($student->notes_final as $key => $note) 
 			if($note->asignatures_id == $asignature->asignatures_id)
-				return $note->value;
+				return round($note->value);
 
 		return "";
 	}
