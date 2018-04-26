@@ -14,6 +14,23 @@ use App\Enrollment;
 
 class NotebookController extends Controller
 {
+    private $institution = null;
+
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+
+            if (Auth::guard('web_institution')->check()) {
+
+                $this->institution = Auth::guard('web_institution')->user();
+
+            }
+
+            return $next($request);
+
+        });
+    }
+
     public function index()
     {
     	$institution = Auth::guard('web_institution')->user();
@@ -32,32 +49,10 @@ class NotebookController extends Controller
     	foreach($request->enrollments as $key => $enrollment)
     	{
 
-    		$notebook = new Notebook($request);
-    		$enrollment_obj = Enrollment::where('id', '=', $enrollment)
-    		->with('student.identification.identification_type')
-    		->with('student.address')
-    		->with('group.headquarter.institution')
-    		->with([
-    			'evaluationPeriod.noteFinal',
-    			'evaluationPeriod.asignature',
-    			// 'evaluationPeriod.notes.noteParameter.notePerformances.performance.message'
-    		])
-    		->with(['evaluationPeriod.notes.noteParameter.notePerformances' => function($q){
-    				$q->with(['groupPensum' => function($q1){
-    						$q1->with('group')
-    						// ->where('group_id', '=', 877)
-    						->get();
-    				}])
-    				->with('performance.message')
-    				->where('group_pensum_id', '=', 1278)
-    				->get();
-    			}])
-    		->first()
-    		->evaluationPeriod->pluck('notes');
+            // dd($request->all());
+            $notebook = new Notebook($request, $this->institution);
+            dd($notebook->create(Enrollment::findOrFail($enrollment)));
 
-    		return ($enrollment_obj);
-
-    		dd( $notebook->create($enrollment) );
     	
     	}
 
