@@ -42,7 +42,7 @@ class CreateNotesParametersPerformancesTable extends Migration
                 DROP PROCEDURE IF EXISTS insert_codenpp;
                 CREATE TRIGGER insert_codenpp BEFORE INSERT ON `notes_parameters_performances` FOR EACH ROW
                 BEGIN
-                SET NEW.code = CONCAT(NEW.notes_parameters_id,NEW.group_pensum_id,NEW.periods_id);
+                SET NEW.code = CONCAT(NEW.group_pensum_id,"-",NEW.periods_id,"-",NEW.notes_parameters_id);
                 END;
                 
             ');
@@ -50,7 +50,7 @@ class CreateNotesParametersPerformancesTable extends Migration
               DROP PROCEDURE IF EXISTS update_codenpp;
                 CREATE TRIGGER update_codenpp BEFORE UPDATE ON `notes_parameters_performances` FOR EACH ROW
                 BEGIN
-                SET NEW.code = CONCAT(NEW.notes_parameters_id,NEW.group_pensum_id,NEW.periods_id);
+                SET NEW.code = CONCAT(NEW.group_pensum_id,"-",NEW.periods_id,"-",NEW.notes_parameters_id);
                 END;                
             ');
         });
@@ -63,11 +63,6 @@ class CreateNotesParametersPerformancesTable extends Migration
      */
     public function down()
     {
-        Schema::table('notes_parameters_performances', function (Blueprint $table) {
-            \Illuminate\Support\Facades\DB::unprepared('DROP TRIGGER `insert_codenpp`');
-            \Illuminate\Support\Facades\DB::unprepared('DROP TRIGGER `update_codenpp`');
-        });
-
         Schema::dropIfExists('notes_performances');
     }
 }
