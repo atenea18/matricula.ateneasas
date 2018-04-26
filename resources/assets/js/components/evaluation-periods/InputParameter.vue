@@ -71,7 +71,7 @@
                     this.percentWith += element.percent;
                 }
                 //Se le asigna el porcentaje restante a las notas sin porcentajes
-                this.percentZero = 1 - this.percentWith;
+                this.percentZero = (this.parameter.percent / 100) - this.percentWith;
                 if (this.countPercentZero != 0) {
                     this.promedioZero = (this.sumaZero / this.countPercentZero) * this.percentZero;
                 }
@@ -83,7 +83,7 @@
              */
             calculateValoration() {
 
-                this.value = (this.promedioZero + this.promedioWith) * (this.parameter.percent / 100);
+                this.value = (this.promedioZero + this.promedioWith);
             },
 
             /*
@@ -110,8 +110,7 @@
                     notes.forEach(note => {
                         let noteElement = {
                             value: parseFloat(note.valuenote) || 0,
-                            percent: (parseFloat(note.percent) / 100)
-
+                            percent: (parseFloat(note.percent)) / 100
                         }
                         //console.log(noteElement)
                         this.calculate(noteElement)
