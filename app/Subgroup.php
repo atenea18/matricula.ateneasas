@@ -33,7 +33,7 @@ class Subgroup extends Model
      */
     public function enrollments()
     {
-        return $this->belongsToMany(Enrollment::class, 'sub_group_assignmentss', 'subgroup_id', 'enrollment_id');
+        return $this->belongsToMany(Enrollment::class, 'sub_group_assignments', 'subgroup_id', 'enrollment_id');
     }
 
     /**
