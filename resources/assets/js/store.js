@@ -131,11 +131,8 @@ const store = new Vuex.Store({
             })
         },
         groupPensum(context, payload = {}) {
-            let params = {
-                group_id: payload.group_id,
-                asignatures_id: payload.asignatures_id,
-                school_year_id: payload.school_year_id
-            }
+            let params = payload
+
             axios.get('/teacher/evaluation/getGroupPensum', {params}).then(res => {
                 payload.group_pensum = res.data;
                 context.commit('setGroupPensum', payload)

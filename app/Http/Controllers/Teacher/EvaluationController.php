@@ -15,6 +15,7 @@ use App\NotesFinal;
 use App\NotesParametersPerformances;
 use App\Performances;
 use App\Subgroup;
+use App\NotesParametersPerformancesSub;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -458,12 +459,19 @@ class EvaluationController extends Controller
 
     public function getGroupPensum(Request $request)
     {
-        $pensum = DB::table('group_pensum')
-            ->where('group_pensum.group_id', '=', $request->group_id)
-            ->where('group_pensum.asignatures_id', '=', $request->asignatures_id)
-            ->where('group_pensum.schoolyear_id', '=', $request->school_year_id)
-            ->get();
-
+        if($request->isGroup == "true") {
+            $pensum = DB::table('group_pensum')
+                ->where('group_pensum.group_id', '=', $request->group_id)
+                ->where('group_pensum.asignatures_id', '=', $request->asignatures_id)
+                ->where('group_pensum.schoolyear_id', '=', $request->school_year_id)
+                ->get();
+        }else{
+            $pensum = DB::table('sub_group_pensum')
+                ->where('sub_group_pensum.sub_group_id', '=', $request->group_id)
+                ->where('sub_group_pensum.asignatures_id', '=', $request->asignatures_id)
+                ->where('sub_group_pensum.schoolyear_id', '=', $request->school_year_id)
+                ->get();
+        }
         return $pensum;
     }
 
@@ -501,37 +509,63 @@ class EvaluationController extends Controller
     public function storeRelationPerformances(Request $request)
     {
         $params = $request->data;
-        $performancesRelation = new NotesParametersPerformances();
-        try {
-            $performancesRelation->notes_parameters_id = $params['notes_parameters_id'];
-            $performancesRelation->performances_id = $params['performances_id'];
-            $performancesRelation->periods_id = $params['periods_id'];
-            $performancesRelation->group_pensum_id = $params['group_pensum_id'];
-            $performancesRelation->save();
+        if($request->isGroup == "true") {
+            $performancesRelation = new NotesParametersPerformances();
+            try {
+                $performancesRelation->notes_parameters_id = $params['notes_parameters_id'];
+                $performancesRelation->performances_id = $params['performances_id'];
+                $performancesRelation->periods_id = $params['periods_id'];
+                $performancesRelation->group_pensum_id = $params['group_pensum_id'];
+                $performancesRelation->save();
 
-        } catch (\Exception $e) {
-            $performancesRelation->id = 0;
+            } catch (\Exception $e) {
+                $performancesRelation->id = 0;
+            }
+        }else{
+            $performancesRelation = new NotesParametersPerformancesSub();
+            try {
+                $performancesRelation->notes_parameters_id = $params['notes_parameters_id'];
+                $performancesRelation->performances_id = $params['performances_id'];
+                $performancesRelation->periods_id = $params['periods_id'];
+                $performancesRelation->sub_group_pensum_id = $params['group_pensum_id'];
+                $performancesRelation->save();
+
+            } catch (\Exception $e) {
+                $performancesRelation->id = 0;
+            }
+
         }
-
         return $performancesRelation;
     }
 
     public function getRelationPerformances(Request $request)
     {
-        $notesPerformances = NotesParametersPerformances::where('notes_parameters_id', '=', $request->notes_parameters_id)
-            ->where('periods_id', '=', $request->periods_id)
-            ->where('group_pensum_id', '=', $request->group_pensum_id)
-            ->get();
-
+        if($request->isGroup == "true") {
+            $notesPerformances = NotesParametersPerformances::where('notes_parameters_id', '=', $request->notes_parameters_id)
+                ->where('periods_id', '=', $request->periods_id)
+                ->where('group_pensum_id', '=', $request->group_pensum_id)
+                ->get();
+        }else{
+            $notesPerformances = NotesParametersPerformancesSub::where('notes_parameters_id', '=', $request->notes_parameters_id)
+                ->where('periods_id', '=', $request->periods_id)
+                ->where('sub_group_pensum_id', '=', $request->group_pensum_id)
+                ->get();
+        }
         return $notesPerformances;
     }
 
     public function deleteRelationPerformances(Request $request)
     {
         $params = $request->data;
-        $notesPerformances = NotesParametersPerformances::
-        where('id', '=', $params['id'])
-            ->delete();
+        if($request->isGroup == "true") {
+            $notesPerformances = NotesParametersPerformances::
+            where('id', '=', $params['id'])
+                ->delete();
+        }else{
+            $notesPerformances = NotesParametersPerformancesSub::
+            where('id', '=', $params['id'])
+                ->delete();
+        }
 
         return $notesPerformances;
     }
