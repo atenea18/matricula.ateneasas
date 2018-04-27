@@ -80,7 +80,8 @@
                 'periodsworkingday',
                 'isCollection',
                 'isConexion',
-                'groupPensum'
+                'groupPensum',
+                'isTypeGroup'
             ]),
 
         },

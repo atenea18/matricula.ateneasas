@@ -56,7 +56,8 @@
                 let params = {
                     notes_parameters_id: this.objectToParameter.id,
                     periods_id: this.$store.state.periodSelected,
-                    group_pensum_id: this.$store.state.groupPensum.id
+                    group_pensum_id: this.$store.state.groupPensum.id,
+                    isGroup: this.$store.state.isTypeGroup
                 }
 
                 axios.get('/teacher/evaluation/getRelationPerformances', {params}).then(res => {
@@ -74,7 +75,8 @@
 
             deleteRelationPerformances() {
                 let data = {
-                    id: this.meObject.id
+                    id: this.meObject.id,
+                    isGroup: this.$store.state.isTypeGroup
                 }
 
                 let _this = this
@@ -95,7 +97,8 @@
                     notes_parameters_id: this.objectToParameter.id,
                     performances_id: this.meObject.codePerformance,
                     periods_id: this.$store.state.periodSelected,
-                    group_pensum_id: this.$store.state.groupPensum.id
+                    group_pensum_id: this.$store.state.groupPensum.id,
+                    isGroup: this.$store.state.isTypeGroup
                 }
 
                 let _this = this

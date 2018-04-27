@@ -102,6 +102,7 @@
         },
 
         created() {
+            console.log(this.$store.state.asignature)
             this.objectSelectGrade.id = this.$store.state.grade.id
             this.objectSelectAsignature.id = this.$store.state.asignature.id
             this.objectSelectAreas.id = this.$store.state.asignature.areas_id
@@ -123,7 +124,8 @@
                 'periodsworkingday',
                 'periodSelected',
                 'institutionOfTeacher',
-                'parameters'
+                'parameters',
+                'isTypeGroup'
             ]),
 
 
@@ -160,7 +162,8 @@
                 let params = {
                     institution_id: this.$store.state.institutionOfTeacher.id,
                     grade_id: this.objectSelectGrade.id,
-                    areas_id: this.objectSelectAreas.id
+                    areas_id: this.objectSelectAreas.id,
+                    isGroup: this.$store.state.isTypeGroup
                 }
                 axios.get('/ajax/asignaturesByGrade', {params}).then(res => {
                     this.asignatures = res.data;
@@ -169,11 +172,14 @@
                         this.emitRowSelectsData()
                     }
                 })
+                console.log(params.isGroup)
             },
             getAreas() {
                 let params = {
                     institution_id: this.$store.state.institutionOfTeacher.id,
-                    grade_id: this.objectSelectGrade.id
+                    grade_id: this.objectSelectGrade.id,
+                    isGroup: this.$store.state.isTypeGroup
+
                 }
                 axios.get('/ajax/areasByGrade', {params}).then(res => {
                     this.areas = res.data;
