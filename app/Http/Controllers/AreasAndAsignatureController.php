@@ -346,6 +346,7 @@ class AreasAndAsignatureController extends Controller
         $data = $request->data;
         $pensumGrade = DB::table('pensum')
             ->where('pensum.grade_id', '=', $data['grade_id'])
+            ->where('pensum.subjects_type_id', '=', 1)
             ->where('pensum.institution_id', '=', $institution_id)
             ->get();
 
