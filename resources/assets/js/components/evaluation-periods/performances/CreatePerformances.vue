@@ -5,69 +5,27 @@
             <div class="checkbox">
                 <button type="button" class="btn btn-success" @click="setEstorePerformances">Guardar Desempeño</button>
                 <label style="margin-left: 30px;">
-                    <input type="checkbox" v-model="objectCreate.isCopy"> Deseas desactivar copiado automático?
+                    <input type="checkbox" v-model="objectCreate.isCopy" @click="checkCopy"> Deseas desactivar copiado
+                    automático?
                 </label>
             </div>
-
         </div>
         <br>
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Superior</label>
-                    <textarea id="higher" class="form-control" rows="3" @keyup="setValues"
-                              v-model="objectCreate.textHigher"></textarea>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Alto</label>
-                    <textarea ref="textarea" class="form-control" rows="3" @keyup="setValues"
-                              v-model="objectCreate.textHigh"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Básico</label>
-                    <textarea ref="textarea" class="form-control" rows="3" @keyup="setValues"
-                              v-model="objectCreate.textBasic"></textarea>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Recomendación de Mejoramiento</label>
-                    <textarea class="form-control" rows="3" @keyup="setValues"
-                              v-model="objectCreate.textRecommendationBasic"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Bajo</label>
-                    <textarea ref="textarea" class="form-control" rows="3" @keyup="setValues"
-                              v-model="objectCreate.textLow"></textarea>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="control-label">Recomendación de Superación</label>
-                    <textarea class="form-control" rows="3" @keyup="setValues"
-                              v-model="objectCreate.textRecommendationLow"></textarea>
-                </div>
-            </div>
+            <template v-if="objectMessages" v-for="scale in scaleEvaluation">
+                <scale-evaluation-column ref="levelPerformances" :objectInputMax="objectMessages"
+                                         :objectInput="scale"></scale-evaluation-column>
+            </template>
         </div>
     </div>
 </template>
 
 <script>
     import {mapState} from 'vuex'
+    import ScaleEvaluationColumn from "./ScaleEvaluationColumn";
 
     export default {
+        components: {ScaleEvaluationColumn},
         name: "create-performances",
         data() {
             return {
@@ -83,17 +41,29 @@
                     wordBasic: "ALGUNAS VECES",
                     wordLow: "POCAS VECES",
                     isCopy: false
-                }
+                },
+                objectMessages: {}
             }
         },
         created() {
-
             this.$bus.$on("get-param-of-row-selects", params => {
                 this.params = params
-                //console.log(params)
             })
+
+            //Identifica la escal superior
+            let object = {}
+            let max = 0
+            this.$store.state.scaleEvaluation.map((element, i) => {
+                if (element.rank_end > max) {
+                    object = this.$store.state.scaleEvaluation[i]
+                    max = element.rank_end
+                }
+            })
+
+            this.objectMessages = object
+
         },
-        mounted(){
+        mounted() {
 
         },
         beforeDestroy() {
@@ -102,69 +72,72 @@
         computed: {
             ...mapState([
                 'institutionOfTeacher',
+                'scaleEvaluation'
             ]),
         },
         methods: {
-            clear(){
-                this.objectCreate.textHigher = ""
-                this.objectCreate.textRecommendationBasic = ""
-                this.objectCreate.textRecommendationLow = ""
-                this.objectCreate.textHigh = ""
-                this.objectCreate.textBasic = ""
-                this.objectCreate.textLow = ""
 
+            checkCopy() {
+                let isCopy = !this.objectCreate.isCopy
+                console.log(isCopy)
+                this.$bus.$emit("is-event-copy", isCopy)
             },
-            setValues(e) {
-                this.objectCreate.textHigher = this.objectCreate.textHigher.toUpperCase()
-                this.objectCreate.textRecommendationBasic = this.objectCreate.textRecommendationBasic.toUpperCase()
-                this.objectCreate.textRecommendationLow = this.objectCreate.textRecommendationLow.toUpperCase()
 
-                if (e.target.id == "higher" && !this.objectCreate.isCopy) {
-                    this.objectCreate.textHigh = (e.target.value.length ? this.objectCreate.wordHigh : '') + " " + this.objectCreate.textHigher
-                    this.objectCreate.textBasic = (e.target.value.length ? this.objectCreate.wordBasic : '') + " " + this.objectCreate.textHigher
-                    this.objectCreate.textLow = (e.target.value.length ? this.objectCreate.wordLow : '') + " " + this.objectCreate.textHigher
-                } else {
-                    this.objectCreate.textHigh = this.objectCreate.textHigh.toUpperCase()
-                    this.objectCreate.textBasic = this.objectCreate.textBasic.toUpperCase()
-                    this.objectCreate.textLow = this.objectCreate.textLow.toUpperCase()
-                }
-            },
             setEstorePerformances() {
-                let data = {
-                    message: this.objectCreate,
-                    institution: this.$store.state.institutionOfTeacher,
-                    performances: this.params
-                }
-                let _this = this
-                axios.post('/teacher/evaluation/storePerformances', {data})
-                    .then(function (response) {
-                        if (response.status == 200) {
-                            if(response.data.id != 0){
-                                _this.clear()
-                                _this.$bus.$emit("reload-table-performances", _this.params)
-                                _this.$swal({
-                                    position: 'top-end',
-                                    type: 'success',
-                                    title: 'LISTO',
-                                    showConfirmButton: false,
-                                    timer: 2000
-                                })
 
-                            }else{
-                                _this.$swal({
-                                    position: 'top-end',
-                                    type: 'error',
-                                    title: 'Error',
-                                    showConfirmButton: false,
-                                    timer: 2000
-                                })
-                            }
-
-                        }
+                let textLevel = this.$refs.levelPerformances
+                let dataText = []
+                textLevel.forEach(element => {
+                    dataText.push({
+                        name: element.objectExpression.text,
+                        recommendation: element.objectExpression.recommendation,
+                        scale_id: element.objectExpression.scaleId,
+                        perfor: element.objectExpression.isPerformances
                     })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+                })
+
+                let data = {
+                    institution: this.$store.state.institutionOfTeacher,
+                    performances: this.params,
+                    data: dataText
+                }
+
+
+                if (this.params.pensum_id) {
+                    let _this = this
+                    axios.post('/teacher/evaluation/storePerformances', {data})
+                        .then(function (response) {
+                            if (response.status == 200) {
+                                console.log(response.data)
+                                if (response.data.id != 0) {
+                                    _this.$bus.$emit("reload-table-performances", _this.params)
+                                    _this.$swal({
+                                        position: 'top-end',
+                                        type: 'success',
+                                        title: 'LISTO',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    })
+
+                                } else {
+                                    _this.$swal({
+                                        position: 'top-end',
+                                        type: 'error',
+                                        title: 'Error',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    })
+                                }
+
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                }
+
+
+
             }
         }
     }

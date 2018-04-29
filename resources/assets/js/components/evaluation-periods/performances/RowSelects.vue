@@ -200,7 +200,10 @@
                     periods_id: this.objectSelectPeriod.id,
                     evaluation_parameters_id: this.objectSelectParameter.id
                 }
-                this.$bus.$emit("get-param-of-row-selects", performance);
+                if(this.pensum_id != 0){
+                    this.$bus.$emit("get-param-of-row-selects", performance);
+                }
+
             }
         }
     }
