@@ -20,6 +20,11 @@ class EvaluationPeriod extends Model
     	return $this->hasMany(Note::class, 'evaluation_periods_id');
     }
 
+    public function noAttendances()
+    {
+        return $this->hasMany(NoAttendance::class, 'evaluation_periods_id');
+    }
+
     public function noteFinal()
     {
     	return $this->hasOne(NotesFinal::class, 'evaluation_periods_id');
