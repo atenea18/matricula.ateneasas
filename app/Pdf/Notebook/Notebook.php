@@ -333,7 +333,7 @@ class Notebook extends Fpdf
 
 		if($this->data['config']['showFaces'] == true):
 
-			$this->Image($pahtImage.strtolower($asignature['valoration']).'.png', 185, $this->GetY()+1, 9, 9);
+			$this->Image($pahtImage.strtolower($asignature['final_note']['valoration']['name']).'.png', 185, $this->GetY()+1, 9, 9);
 			$this->Cell(0, $height, '', 'R', 0, 'C');
 
 		else:
