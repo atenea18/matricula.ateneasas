@@ -113,8 +113,6 @@ class NotebookController extends Controller
 
         ob_clean();
 
-        unlink(public_path($path));
-
         $pdi->Output('I',$fileName.'.pdf');
 
     }
