@@ -149,7 +149,7 @@ class Notebook extends Fpdf
 		endif;
 
 		// MOSTRAMOS LAS INASISTENCIA EN CASO DE QUE SEA UN CURSO INFERIOR A 6°
-		if($this->data['grade']['id'] >= 10):
+		if($this->data['grade']['id'] < 10):
 
 			$this->showTotalAttendanceByPeriod();
 
