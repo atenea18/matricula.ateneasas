@@ -111,7 +111,6 @@ class NotebookController extends Controller
             }
         }
 
-
         $pdi->Output('I',$fileName.'.pdf');
 
     }
