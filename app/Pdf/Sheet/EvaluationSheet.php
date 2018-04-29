@@ -112,7 +112,6 @@ class EvaluationSheet extends Fpdf
 					$this->institution->picture
 				), 12, 12, 17, 17);
 
-
 		//Marco
 	    $this->Cell($this->_width_mark, $this->_height_mark, '', 1,0);
 	    $this->Ln(2);

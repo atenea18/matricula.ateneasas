@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 
 use App\Helpers\Notebook;
 
+use App\Pdf\Notebook\Notebook as NotebookPDF;
+
 use Auth;
 
 use App\Institution;
@@ -44,16 +46,23 @@ class NotebookController extends Controller
     public function create(Request $request)
     {
 
-    	// dd($request->all());
+    	$scale = $this->institution->scaleEvaluations()
+        ->with('wordExpresion')
+        ->get();
 
     	foreach($request->enrollments as $key => $enrollment)
     	{
 
-            // dd($request->all());
             $notebook = new Notebook($request, $this->institution);
-            dd($notebook->create(Enrollment::findOrFail($enrollment)));
+            $notebook->setScaleEvaluation($scale);
+            $data = $notebook->create(Enrollment::findOrFail($enrollment));
 
-    	
+            $pdf = new NotebookPDF('p', 'mm', 'letter');
+            $pdf->setData($data);
+            $pdf->create();
+            $pdf->Output();
+            // dd ($data);
+
     	}
 
     }
