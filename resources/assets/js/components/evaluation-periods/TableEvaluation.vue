@@ -79,6 +79,7 @@
 
             })
 
+            console.log(this.$store.state.scaleEvaluation)
 
         },
         mounted() {
@@ -100,8 +101,12 @@
                 'periodSelected',
                 'collectionNotes',
                 'counterParameter',
-                'totalInput'
+                'totalInput',
+                'scaleEvaluation'
             ]),
+        },
+        methods:{
+
         }
     }
 </script>

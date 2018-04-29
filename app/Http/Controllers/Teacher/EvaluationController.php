@@ -9,6 +9,7 @@ use App\Grade;
 use App\Group;
 use App\Institution;
 use App\MessagesExpressions;
+use App\MessagesScale;
 use App\NoAttendance;
 use App\Note;
 use App\NotesFinal;
@@ -259,7 +260,7 @@ class EvaluationController extends Controller
         $teacher = Auth::guard('teachers')->user()->teachers()->first();
         $institution_id = $teacher->institution_id;
 
-        if($request->isGroup == "true"){
+        if ($request->isGroup == "true") {
             $periodsWorkingDay = DB::table('working_day_periods')
                 ->select(
                     'periods.name as periods_name', 'periods.id as periods_id',
@@ -273,7 +274,7 @@ class EvaluationController extends Controller
                 ->get();
 
             return $periodsWorkingDay;
-        }else{
+        } else {
             $periodsWorkingDay = DB::table('section_periods')
                 ->select(
                     'periods.name as periods_name', 'periods.id as periods_id',
@@ -296,7 +297,7 @@ class EvaluationController extends Controller
         $teacher = Auth::guard('teachers')->user()->teachers()->first();
         //$enrollments = Group::enrollmentsByGroup($teacher->institution_id, $request->groupid);
 
-        if($request->isGroup == "true") {
+        if ($request->isGroup == "true") {
             $enrollments = Group::enrollmentsByGroup($teacher->institution_id, $request->groupid);
 
             $notes = DB::table('notes')
@@ -349,7 +350,7 @@ class EvaluationController extends Controller
                 ->where('evaluation_periods.asignatures_id', '=', $request->asignatureid)
                 ->where('evaluation_periods.periods_id', '=', $request->periodid)
                 ->get();
-        }else{
+        } else {
 
             $enrollments = Subgroup::enrollmentsBySubGroup($teacher->institution_id, $request->groupid);
 
@@ -406,7 +407,6 @@ class EvaluationController extends Controller
                 ->get();
 
 
-
         }
 
 
@@ -459,13 +459,13 @@ class EvaluationController extends Controller
 
     public function getGroupPensum(Request $request)
     {
-        if($request->isGroup == "true") {
+        if ($request->isGroup == "true") {
             $pensum = DB::table('group_pensum')
                 ->where('group_pensum.group_id', '=', $request->group_id)
                 ->where('group_pensum.asignatures_id', '=', $request->asignatures_id)
                 ->where('group_pensum.schoolyear_id', '=', $request->school_year_id)
                 ->get();
-        }else{
+        } else {
             $pensum = DB::table('sub_group_pensum')
                 ->where('sub_group_pensum.sub_group_id', '=', $request->group_id)
                 ->where('sub_group_pensum.asignatures_id', '=', $request->asignatures_id)
@@ -478,38 +478,59 @@ class EvaluationController extends Controller
     public function storePerformances(Request $request)
     {
         $params = $request->data;
+
         $messageExpressions = new MessagesExpressions();
-        try {
-            $messageExpressions->name = $params['message']['textHigher'];
-            $messageExpressions->reinforcement = $params['message']['textRecommendationBasic'];
-            $messageExpressions->recommendation = $params['message']['textRecommendationLow'];
-            $messageExpressions->institution_id = $params['institution']['id'];
-            $messageExpressions->save();
+        foreach($params['data'] as $data) {
 
-        } catch (\Exception $e) {
-            $messageExpressions->id = 0;
-        }
+            if ($data['perfor']) {
 
-        $performances = new Performances();
-        if ($messageExpressions->id != 0) {
-            try {
-                $performances->pensum_id = $params['performances']['pensum_id'];
-                $performances->evaluation_parameters_id = $params['performances']['evaluation_parameters_id'];
-                $performances->periods_id = $params['performances']['periods_id'];
-                $performances->messages_expressions_id = $messageExpressions->id;
-                $performances->save();
-            } catch (\Exception $e) {
-                $performances->id = 0;
+                try {
+                    $messageExpressions->name = $data['name'];
+                    $messageExpressions->institution_id = $params['institution']['id'];
+                    $messageExpressions->save();
+
+                } catch (\Exception $e) {
+                    $messageExpressions->id = 0;
+                }
+
+                $performances = new Performances();
+                if ($messageExpressions->id != 0) {
+                    try {
+                        $performances->pensum_id = $params['performances']['pensum_id'];
+                        $performances->evaluation_parameters_id = $params['performances']['evaluation_parameters_id'];
+                        $performances->periods_id = $params['performances']['periods_id'];
+                        $performances->messages_expressions_id = $messageExpressions->id;
+                        $performances->save();
+                    } catch (\Exception $e) {
+                        $performances->id = 0;
+                    }
+
+                }
+            }else{
+                $messageScale = new MessagesScale();
+                if ($messageExpressions->id != 0) {
+                    try {
+                        $messageScale->name = $data['name'];
+                        $messageScale->recommendation = $data['recommendation'];
+                        $messageScale->scale_evaluations_id = $data['scale_id'];
+                        $messageScale->messages_expressions_id = $messageExpressions->id;
+                        $messageScale->save();
+
+                    } catch (\Exception $e) {
+                        $messageScale->id = 0;
+                    }
+                }
             }
-
         }
+
+
         return $performances;
     }
 
     public function storeRelationPerformances(Request $request)
     {
         $params = $request->data;
-        if($request->isGroup == "true") {
+        if ($request->isGroup == "true") {
             $performancesRelation = new NotesParametersPerformances();
             try {
                 $performancesRelation->notes_parameters_id = $params['notes_parameters_id'];
@@ -521,7 +542,7 @@ class EvaluationController extends Controller
             } catch (\Exception $e) {
                 $performancesRelation->id = 0;
             }
-        }else{
+        } else {
             $performancesRelation = new NotesParametersPerformancesSub();
             try {
                 $performancesRelation->notes_parameters_id = $params['notes_parameters_id'];
@@ -540,12 +561,12 @@ class EvaluationController extends Controller
 
     public function getRelationPerformances(Request $request)
     {
-        if($request->isGroup == "true") {
+        if ($request->isGroup == "true") {
             $notesPerformances = NotesParametersPerformances::where('notes_parameters_id', '=', $request->notes_parameters_id)
                 ->where('periods_id', '=', $request->periods_id)
                 ->where('group_pensum_id', '=', $request->group_pensum_id)
                 ->get();
-        }else{
+        } else {
             $notesPerformances = NotesParametersPerformancesSub::where('notes_parameters_id', '=', $request->notes_parameters_id)
                 ->where('periods_id', '=', $request->periods_id)
                 ->where('sub_group_pensum_id', '=', $request->group_pensum_id)
@@ -557,11 +578,11 @@ class EvaluationController extends Controller
     public function deleteRelationPerformances(Request $request)
     {
         $params = $request->data;
-        if($request->isGroup == "true") {
+        if ($request->isGroup == "true") {
             $notesPerformances = NotesParametersPerformances::
             where('id', '=', $params['id'])
                 ->delete();
-        }else{
+        } else {
             $notesPerformances = NotesParametersPerformancesSub::
             where('id', '=', $params['id'])
                 ->delete();

@@ -46,6 +46,8 @@ Route::group(['prefix'=>'ajax'], function(){
 
     Route::get('/printConsolidated', 'StatisticsController@printConsolidated');
     Route::get('/getInstitutionOfTeacher', 'StatisticsController@getInstitutionOfTeacher');
+    Route::get('/getScaleEvaluation', 'ScaleEvaluationController@getScaleEvaluation');
+
 
 
 });
