@@ -544,12 +544,83 @@ class ExcelController extends Controller
                 {
                     
                     // dd($row);
-                    $student = ($ident != null) ? $ident->has('student')->first() : null;
+                    $student = (is_null($ident->student)) ? null : $ident->student;
 
                     // $student = ($ident->student != null) ? $ident->student : null;
 
+                    // dd(is_null($ident->student));
                     if($student != null)
                     {
+                        if(isset($row->id_grado_matricular) && !Enrollment::existis(1, $student->id, $request->institution_id))
+                        {   
+                            // Matricula nueva
+                            $enrollment_2018 = new Enrollment();
+                            $enrollment_2018->code = ($row->id_grado_matricular != null) ? "2018".$request->institution_id."17".$student->id : ''; 
+                            $enrollment_2018->school_year_id = 1;
+                            $enrollment_2018->student_id = $student->id;
+                            $enrollment_2018->grade_id = ($row->id_grado_matricular == null) ? 17 : $row->id_grado_matricular;
+                            $enrollment_2018->enrollment_state_id = 3;
+                            $enrollment_2018->institution_id = $request->institution_id;
+                            $enrollment_2018->save();
+
+                            if($row->id_grupo_matricular != null)
+                            {
+                                $enrollment_2018->attachGroupEnrollment($row->id_grupo_matricular);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        $address = new Address();
+                        $address->address = (isset($row->address)) ? $row->address : '';
+                        $address->neighborhood = (isset($row->barrio)) ? $row->barrio : '';
+                        $address->phone = (isset($row->telefono)) ? $row->telefono : '';
+                        $address->mobil = (isset($row->telefono)) ? $row->telefono : '';
+                        $address->zone_id = 2;
+                        $address->save();
+
+                        $student = new Student();
+                        $student->name = $row->primer_nombre." ".$row->segundo_nombre;
+                        $student->last_name = $row->primer_apellido." ".$row->segundo_apellido;
+                        $student->username = $row->numero_documento;
+                        $student->password = bcrypt($row->numero_documento);
+                        $student->state_id = 2;
+                        $student->identification_id = $ident->id;   
+                        $student->address_id = $address->id;
+                        $student->save();
+
+                        $ai = new AcademicInformation();
+                        $ai->has_subsidy = 0;
+                        $ai->student_id = $student->id;
+                        $ai->academic_character_id = 3;
+                        $ai->academic_specialty_id = 6;
+                        $ai->save();
+
+                        $mi = new MedicalInformation();
+                        $mi->ips = (isset($row->ips)) ? $row->ips : '';
+                        $mi->student_id = $student->id;
+                        $mi->eps_id = 49;
+                        $mi->blood_type_id = ($bloodType == null) ? null : $bloodType->id;
+                        $mi->save();
+
+                        $di = new Displacement();
+                        $di->student_id = $student->id;
+                        $di->victim_of_conflict_id = 5;
+                        $di->save();
+
+                        $soc = new SocioeconomicInformation();
+                        $soc->sisben_number = (isset($row->numero_carne_sisben)) ? $row->numero_carne_sisben : '';
+                        $soc->sisben_level = (isset($row->nivel_sisben)) ? $row->nivel_sisben : '';
+                        $soc->student_id = $student->id;
+                        $soc->stratum_id = (isset($row->estrato)) ? $row->estrato : null;
+                        $soc->save();
+
+                        $ter = new Territorialty();
+                        $ter->guard = (isset($row->resguardo)) ?  $row->resguardo : '' ;
+                        $ter->ethnicity = (isset($row->etnia)) ?  $row->etnia : '' ;
+                        $ter->student_id = $student->id;
+                        $ter->save();
+
                         if(isset($row->id_grado_matricular) && !Enrollment::existis(1, $student->id, $request->institution_id))
                         {   
                             // Matricula nueva

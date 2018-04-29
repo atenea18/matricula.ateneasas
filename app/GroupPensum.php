@@ -18,7 +18,7 @@ class GroupPensum extends Model
     /**
      * Obtiene la relacion que hay entre el docente y los grupos la asignatura (Pensum)
      */
-    public function teachers()
+    public function teacher()
     {
         return $this->belongsTo(Teacher::class, 'teacher_id'); 
     }
@@ -73,9 +73,9 @@ class GroupPensum extends Model
 
         $pensum = DB::table('group_pensum')
             ->select(
-                'group_pensum.id',
-                'group_pensum.asignatures_id', 'group_pensum.subjects_type_id',
-                'group_pensum.areas_id', 'group_pensum.teacher_id',
+                'group_pensum.id AS pensum_id',
+                'group_pensum.asignatures_id AS asignature_id', 'group_pensum.subjects_type_id AS subjects_type_id',
+                'group_pensum.areas_id AS area_id', 'group_pensum.teacher_id AS teacher_id',
                 'asignatures.name as name_asignatures',
                 'subjects_type.name as subjects_type_name',
                 DB::raw('CONCAT(managers.last_name," ",managers.name) as name_teachers'),
