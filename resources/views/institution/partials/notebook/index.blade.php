@@ -165,20 +165,20 @@
 
 			}, 'json');
 
-			// Se obtiene los periodos de la sede selecionada
-			$.get("{{env('APP_URL')}}/api/headquarter/"+this.value+"/periods", function(data){
+			// // Se obtiene los periodos de la sede selecionada
+			// $.get("{{env('APP_URL')}}/api/headquarter/"+this.value+"/periods", function(data){
 
-				var html = "<option>- Seleccione un periodo -</option>";
+			// 	var html = "<option>- Seleccione un periodo -</option>";
 
-				$.each(data.data, function(indx, ele){
+			// 	$.each(data.data, function(indx, ele){
 					
-					html += "<option value='"+ele.id+"'>"+ele.name+"</option>";
+			// 		html += "<option value='"+ele.id+"'>"+ele.name+"</option>";
 
-				});
+			// 	});
 
-				$("#period").empty().html(html);
+			// 	$("#period").empty().html(html);
 
-			}, 'json');
+			// }, 'json');
 		});
 
 		$("#group").change(function(){
@@ -195,6 +195,22 @@
 				});
 
 				$("#selectStudent").empty().html(html);
+
+			}, 'json');
+
+			// Se obtiene los periodos de la sede selecionada
+			$.get("{{env('APP_URL')}}/api/periodByGroup/"+this.value, function(data){
+
+				var html = "<option>- Seleccione un periodo -</option>";
+
+				$.each(data.data, function(indx, ele){
+					
+					// console.log(ele);
+					html += "<option value='"+ele.id+"'>"+ele.period.name+"</option>";
+
+				});
+
+				$("#period").empty().html(html);
 
 			}, 'json');
 		});
