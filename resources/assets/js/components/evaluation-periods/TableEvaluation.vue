@@ -79,7 +79,7 @@
 
             })
 
-            console.log(this.$store.state.scaleEvaluation)
+
 
         },
         mounted() {

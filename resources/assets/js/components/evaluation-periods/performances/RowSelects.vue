@@ -102,7 +102,7 @@
         },
 
         created() {
-            console.log(this.$store.state.asignature)
+
             this.objectSelectGrade.id = this.$store.state.grade.id
             this.objectSelectAsignature.id = this.$store.state.asignature.id
             this.objectSelectAreas.id = this.$store.state.asignature.areas_id
@@ -151,7 +151,7 @@
                         this.emitRowSelectsData()
 
                     } else {
-                        console.log('Seleccione todos los campos')
+
                     }
                 }
 
@@ -172,7 +172,7 @@
                         this.emitRowSelectsData()
                     }
                 })
-                console.log(params.isGroup)
+
             },
             getAreas() {
                 let params = {

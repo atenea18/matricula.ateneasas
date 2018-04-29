@@ -12,7 +12,7 @@
             </td>
             <input-parameter :ref="refsInputParameter" :objectInput="objectToEvaluation" :parameter="parameter"/>
         </template>
-        <td style="padding-top:9px;width:15px">
+        <td style="padding-top:9px;width:15px" :class="isFinal?'good':'bad'">
             <label v-show="meObject.value">{{meObject.value.toFixed(2)}}</label>
         </td>
     </tr>
@@ -47,6 +47,7 @@
                     evaluationPeriodId: 0,
                     isloaded: false
                 },
+                isFinal: true
 
             }
         },
@@ -196,16 +197,25 @@
                 notesParameters.forEach(e => {
                     this.meObject.value += e.value
                 })
+
+                if (typeof this.objectToEvaluation.enrollment.notes_final != 'undefined') {
+
+                    if (this.meObject.value.toFixed(2) != this.objectToEvaluation.enrollment.notes_final.value.toFixed(2)) {
+                        this.meObject.evaluationPeriodId = this.objectToEvaluation.enrollment.notes_final.evaluation_periods_id
+                        this.sendDataFinalNotes()
+                    }
+                }
             },
 
             sendDataEvaluationPeriods(refEnrollmentMoreNotesParameter) {
                 // Evita que se ejecute la petición al crearse el componente
                 if (this.meObject.isInit) {
 
-                    if (this.objectToEvaluation.enrollment.evaluation_periods_id != 0 &&  typeof this.objectToEvaluation.enrollment.evaluation_periods_id != 'undefined') {
+                    if (this.objectToEvaluation.enrollment.evaluation_periods_id != 0 && typeof this.objectToEvaluation.enrollment.evaluation_periods_id != 'undefined') {
                         //console.log(this.objectToEvaluation.enrollment.evaluation_periods_id)
                         this.saveNotes(refEnrollmentMoreNotesParameter, this.objectToEvaluation.enrollment.evaluation_periods_id)
                     } else {
+
                         this.saveEvaluationPeriods(refEnrollmentMoreNotesParameter, this.saveNotes)
                     }
                 }
@@ -244,6 +254,8 @@
             },
 
             sendDataFinalNotes() {
+                this.isFinal = false
+                let _this = this
                 let data = {
                     value: this.meObject.value.toFixed(2),
                     overcoming: null,
@@ -252,6 +264,7 @@
                 axios.post('/teacher/evaluation/storeFinalNotes', {data})
                     .then(function (response) {
                         if (response.status == 200) {
+                            _this.isFinal = true
                         }
                     })
                     .catch(function (error) {
@@ -280,6 +293,14 @@
 <style>
     .error-conexion {
         background-color: #e0e2e5;
+    }
+
+    .good {
+        color: black;
+    }
+
+    .bad {
+        color: red;
     }
 
     .form-controll {

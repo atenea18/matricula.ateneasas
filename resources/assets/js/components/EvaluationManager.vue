@@ -114,6 +114,7 @@
             getEvaluationsByPeriod() {
                 this.$store.state.isCollection = false
                 this.$store.state.periodSelected = this.periodid
+
                 this.getCollectionNotes()
             },
             getPeriodsByWorkingDay() {
@@ -125,6 +126,14 @@
 
             getCollectionNotes() {
                 this.$store.dispatch('collectionNotes', {
+                    groupid: this.group.id,
+                    asignatureid: this.asignatureid,
+                    periodid: this.$store.state.periodSelected,
+                    isGroup: this.$store.state.isTypeGroup
+                })
+            },
+            getCollectionNotesFinal(){
+                this.$store.dispatch('collectionNotesFinal', {
                     groupid: this.group.id,
                     asignatureid: this.asignatureid,
                     periodid: this.$store.state.periodSelected,
