@@ -79,7 +79,7 @@
 
             checkCopy() {
                 let isCopy = !this.objectCreate.isCopy
-                console.log(isCopy)
+
                 this.$bus.$emit("is-event-copy", isCopy)
             },
 
@@ -108,7 +108,7 @@
                     axios.post('/teacher/evaluation/storePerformances', {data})
                         .then(function (response) {
                             if (response.status == 200) {
-                                console.log(response.data)
+
                                 if (response.data.id != 0) {
                                     _this.$bus.$emit("reload-table-performances", _this.params)
                                     _this.$swal({
