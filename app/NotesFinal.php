@@ -103,4 +103,35 @@ class NotesFinal extends Model
         return $collection;
         // return $data;
     }
+
+    public static function getAverageByGroup($group_id, $school_year_id, $institution_id, $periods_id)
+    {
+        return self::select('enrollment.id AS enrollment_id', DB::raw('CONCAT(student.last_name," ",student.name) as name_student'), DB::raw('ROUND(SUM(notes_final.`value`)/SUM(notes_final.`value`>0), 0) AS average'), DB::raw('SUM(notes_final.`value`>0) AS tav'))
+            ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
+            ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
+            ->join('student', 'student.id', '=', 'enrollment.student_id')
+            ->join('institution', 'institution.id', '=', 'enrollment.institution_id')
+            ->join('schoolyears', 'schoolyears.id', '=', 'enrollment.school_year_id')
+            ->join('group_assignment', 'group_assignment.enrollment_id', '=', 'enrollment.id')
+            ->join('group', 'group.id', '=', 'group_assignment.group_id')
+            ->join('headquarter', function($join){
+                $join->on('headquarter.id', '=', 'group.headquarter_id')
+                    ->on('headquarter.institution_id', '=', 'institution.id');
+            })
+            ->join('group_pensum', function($join){
+                $join->on('group_pensum.group_id', '=', 'group.id')
+                    ->on('group_pensum.asignatures_id', '=', 'evaluation_periods.asignatures_id');
+            })
+            ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
+            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
+            ->where([
+                ['group.id', '=', $group_id],
+                ['institution.id', '=', $institution_id],
+                ['schoolyears.id', '=', $school_year_id ],
+                ['evaluation_periods.periods_id', '=', $periods_id]
+            ])
+            ->groupBy('enrollment.id')
+            ->orderBy('average', 'desc')
+            ->get();
+    }
 }

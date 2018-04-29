@@ -13,6 +13,7 @@ use Auth;
 
 use App\Institution;
 use App\Enrollment;
+use App\NotesFinal;
 
 class NotebookController extends Controller
 {
@@ -45,7 +46,17 @@ class NotebookController extends Controller
 
     public function create(Request $request)
     {
+        // $finalNote = \App\EvaluationPeriod::with('noteFinal')
+        // ->with('noAttendances')
+        // ->where([
+        //     'enrollment_id'     =>  8527, 
+        //     'periods_id'        =>  1, 
+        //     'asignatures_id'    =>  4
+        // ])
+        // ->first();
 
+        // dd($finalNote->noteFinal->value);
+        
     	$scale = $this->institution->scaleEvaluations()
         ->with('wordExpresion')
         ->get();
