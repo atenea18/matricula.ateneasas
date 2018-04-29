@@ -7,14 +7,14 @@ use setasign\Fpdi\Fpdi;
 /**
 * 
 */
-class ClassName extends Fpdi
+class Merge extends Fpdi
 {
 	
 	private $path;
 	private $fileName;
 	private $orientation;
 
-	function __construct($path, $fileName = 'merge' ,$orientation='p')
+	function __construct($path, $fileName = 'merge' , $orientation='p')
 	{
 		$this->path = $path;
 		$this->fileName = $fileName;
@@ -23,7 +23,11 @@ class ClassName extends Fpdi
 
 	public function merge()
 	{
+		$files = $this->getFiles();
 
+		$this->setFiles($files);
+
+		return $this;
 	}
 
 	private function getFiles()
@@ -61,6 +65,7 @@ class ClassName extends Fpdi
 
 	private function download()
 	{
+		ob_clean();
 		$this->Output('D',$this->fileName.'.pdf');
 	}
 }

@@ -104,7 +104,7 @@ class Notebook
 			'tittle_if' 			=> 	'INFORME DE EVALUACIÓN FINAL DEL PROCESO FORMATIVO',
 			'current_period' 		=> 	$this->current_period,
 			'date' 					=> 	date('Y-m-d'),
-			'student' 				=> 	$enrollment->student->toArray(),
+			'student' 				=> 	$enrollment->student,
 			'group'					=>	$this->group->toArray(),
 			'director'				=>	$this->group->director()->first()->manager,
 			'grade' 				=> 	$this->group->grade->toArray(),
