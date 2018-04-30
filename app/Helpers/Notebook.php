@@ -316,9 +316,9 @@ class Notebook
 		$notes = EvaluationPeriod::with([
 			'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id){
 				$pensum->where('group_pensum_id', '=', $pensum_id)
-				->with('performance.message')
+				->with('performance.message.messageScale')
 				->get()
-				->pluck('performance.message');
+				->pluck('performance.message.messageScale');
 			}])
 		->where([
 			'enrollment_id'		=>	$enrollment->id, 
@@ -336,16 +336,26 @@ class Notebook
 			
 			foreach($note->noteParameter->notePerformances as $keyNP => $notePerformances)
 			{
-				array_push(
-					$response, 
-					[
-						'expression'		=>	$this->getScaleByNote($note->value),
-						'message'			=>	$notePerformances->performance->message->name,
-						'reinforcement'		=>	$notePerformances->performance->message->reinforcement,
-						'reinforcement'		=>	$notePerformances->performance->message->reinforcement,
-						'recommendation'	=>	$notePerformances->performance->message->recommendation,
-					]
-				);
+				try {
+					$message = $notePerformances->performance->message;
+				 	$scale = $this->getScaleByNote($note->value);
+
+				 	$messageScale = null;
+				 	$messageScale = (strtolower($scale->abbreviation) == 'sup') ? $message : $message->messageScale()->where('scale_evaluations_id', '=', $scale->id)->first();
+
+				 	array_push($response, $messageScale);
+				} catch (\Exception $e) {
+					
+				}
+				// array_push(
+				// 	$response, 
+				// 	[
+				// 		'expression'		=>	$scale,
+				// 		'message'			=>	$messageScale->name,
+				// 		'reinforcement'		=>	$message->reinforcement,
+				// 		'recommendation'	=>	$messageScale->recommendation,
+				// 	]
+				// );
 			}
 		}
 
@@ -357,9 +367,9 @@ class Notebook
 		$notes = EvaluationPeriod::with([
 			'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id){
 				$pensum->where('group_pensum_id', '=', $pensum_id)
-				->with('performance.message')
+				->with('performance.message.messageScale')
 				->get()
-				->pluck('performance.message');
+				->pluck('performance.message.messageScale');
 			}])
 		->where([
 			'enrollment_id'		=>	$enrollment->id, 
@@ -377,16 +387,27 @@ class Notebook
 			
 			foreach($note->noteParameter->notePerformances as $keyNP => $notePerformances)
 			{
-				array_push(
-					$response, 
-					[
-						'expression'		=>	$this->getScaleByNote($noteAsig),
-						'message'			=>	$notePerformances->performance->message->name,
-						'reinforcement'		=>	$notePerformances->performance->message->reinforcement,
-						'reinforcement'		=>	$notePerformances->performance->message->reinforcement,
-						'recommendation'	=>	$notePerformances->performance->message->recommendation,
-					]
-				);
+				try
+				{
+
+					$message = $notePerformances->performance->message;
+					$scale = $this->getScaleByNote($noteAsig);
+
+					$messageScale = null;
+				 	$messageScale = (strtolower($scale->abbreviation) == 'sup') ? $message : $message->messageScale()->where('scale_evaluations_id', '=', $scale->id)->first();
+
+				 	array_push($response, $messageScale);
+
+				}catch(\Exception $e){}
+				// array_push(
+				// 	$response, 
+				// 	[
+				// 		'expression'		=>	$this->getScaleByNote($noteAsig),
+				// 		'message'			=>	$notePerformances->performance->message->messageScale()->first()->name,
+				// 		'reinforcement'		=>	$notePerformances->performance->message->reinforcement,
+				// 		'recommendation'	=>	$notePerformances->performance->message->messageScale()->first()->recommendation,
+				// 	]
+				// );
 			}
 		}
 
@@ -409,11 +430,7 @@ class Notebook
 			
 			if($note >= $scale->rank_start && $note <= $scale->rank_end)
 			{
-				return [
-					'name'				=>	$scale->name,
-					'abbreviation'		=>	$scale->abbreviation,
-					'word_expression'	=>	$scale->wordExpresion->name,
-				];
+				return $scale;
 			}
 		}
 	}

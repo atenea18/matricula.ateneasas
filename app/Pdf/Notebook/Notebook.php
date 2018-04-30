@@ -355,11 +355,13 @@ class Notebook extends Fpdf
 	private function showPerformance($performances = array())
 	{
 		foreach($performances as $key => $performance):
-					
-			$this->determineCell(
-				utf8_decode('   * '.strtoupper($performance['expression']['word_expression'].", ".$performance['message'])
-				), 
-			'LR');
+			
+			if(isset($performance->name))
+			{
+				$this->determineCell(
+					utf8_decode('   * '.strtoupper($performance->name)), 
+				'LR');
+			}
 		
 		endforeach;
 	}
@@ -864,7 +866,7 @@ class Notebook extends Fpdf
 	function footer()
 	{
 		// Posición: a 1,5 cm del final
-	    $this->SetY(-20);
+	    $this->SetY(-15);
 	    
 	    // Arial italic 8
 	    $this->SetFont('Arial','I',8);
