@@ -16,4 +16,9 @@ class MessagesExpressions extends Model
     {
     	return $this->hasMany(Performances::class, 'messages_expressions_id');
     }
+
+    public function messageScale()
+    {
+    	return $this->hasMany(MessagesScale::class, 'messages_expressions_id');
+    }
 }

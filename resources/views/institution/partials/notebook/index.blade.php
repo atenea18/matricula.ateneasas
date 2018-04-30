@@ -100,7 +100,7 @@
 										<input type="checkbox" name="showFaces"> Imprimir caritas
 									</label>
 									<label class="radio-inline">
-										<input type="checkbox" name="CombinedEvaluation" checked> Valoraciones Acomuladas
+										<input type="checkbox" name="CombinedEvaluation" checked> Valoraciones Acumuladas
 									</label>
 									<label class="radio-inline">
 										<input type="checkbox" name="NumberValoration" checked> Valoración Numérica
@@ -108,12 +108,12 @@
 									<label class="radio-inline">
 										<input type="checkbox" name="performanceRating" checked> Clasificar Desempeños
 									</label>
-									<label class="radio-inline">
+									{{-- <label class="radio-inline">
 										<input type="checkbox" name="tableDetail" checked> Cuadro Detallado
-									</label>
-									<label class="radio-inline" title="Incluir Informe final">
+									</label> --}}
+									{{-- <label class="radio-inline" title="Incluir Informe final">
 										<input type="checkbox" name="includeIF"> Incluir IF
-									</label>
+									</label> --}}
 								</div>
 								<div class="form-group">
 									<label class="radio-inline" title="Incluir Informe final">

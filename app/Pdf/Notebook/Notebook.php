@@ -25,10 +25,16 @@ class Notebook extends Fpdf
 	{
 		// Logo
 		if($this->data['institution']['picture'] != NULL)
+		{
+			try{
+
 			$this->Image(
 				Storage::disk('uploads')->url(
-					$this->data['institution']['picture']
+					$this->data['institution']->picture
 				), 12, 12, 17, 17);
+
+			}catch(\Exception $e){}
+		}
 
 		//Marco
 	    $this->Cell(0, 24, '', 1,0);
@@ -36,13 +42,13 @@ class Notebook extends Fpdf
 
 	    // NOMBRE DE LA INSTITUCIÓN
 	    $this->SetFont('Arial','B',12);
-	    $this->Cell(0, 6, utf8_decode($this->data['institution']['name']), 0, 0, 'C');
+	    $this->Cell(0, 6, utf8_decode($this->data['institution']->name), 0, 0, 'C');
 	    $this->Ln(6);
 
 	    $this->SetFont('Arial','B',9);
 	    // NOMBRE DE LA SEDE
 	    if(!empty($this->data['headquarter'])):
-		    $this->Cell(0,4, 'SEDE: '.strtoupper(($this->data['headquarter']['name'])), 0, 0, 'C');
+		    $this->Cell(0,4, 'SEDE: '.strtoupper(($this->data['headquarter']->name)), 0, 0, 'C');
 		    
 	    endif;
 
@@ -55,19 +61,17 @@ class Notebook extends Fpdf
 	    // NOMBRE DEL GRUPO
 	    $this->SetFont('Arial','',8);
 	    $this->Cell(20, 4, '', 0,0);
-	    $this->Cell(90, 4, 'GRUPO: '.$this->data['group']['name'], 0, 0, 'L');
+	    $this->Cell(90, 4, 'GRUPO: '.$this->data['group']->name, 0, 0, 'L');
 
 	    // DIRECTOR DE GRUPO
 	     $this->Cell(0,4, utf8_decode('DIR. DE GRUPO: '.
-	     	    	$this->data['director']['last_name']." ".
-	     	    	$this->data['director']['name']), 0, 0, 'L');
+	     	    	$this->data['director']->fullName), 0, 0, 'L');
 	    $this->Ln();
 
 	    // NOMBRE DEL ESTUDIANTE
 	    $this->Cell(20, 4, '', 0,0);
 	    $this->Cell(90, 4, 'ESTUDIANTE: '.utf8_decode(
-	    	$this->data['student']['last_name']." ".
-	    	$this->data['student']['name']
+	    	$this->data['student']->fullNameInverse
 	    ), 0, 0, 'L');
 
 	    // FECHA
@@ -156,7 +160,7 @@ class Notebook extends Fpdf
 		endif;
 
 		// MOSTRAMOS LAS OBSERVACIONES GENERALES
-		$this->showGeneralObservation($this->data['general_obsservation']);
+		$this->showGeneralObservation();
 
 		// Activanos el doble cara
 		if($this->data['config']['doubleFace']	):
@@ -351,11 +355,13 @@ class Notebook extends Fpdf
 	private function showPerformance($performances = array())
 	{
 		foreach($performances as $key => $performance):
-					
-			$this->determineCell(
-				utf8_decode('   * '.strtoupper($performance['expression']['word_expression'].", ".$performance['message'])
-				), 
-			'LR');
+			
+			if(isset($performance->name))
+			{
+				$this->determineCell(
+					utf8_decode('   * '.strtoupper($performance->name)), 
+				'LR');
+			}
 		
 		endforeach;
 	}
@@ -773,7 +779,7 @@ class Notebook extends Fpdf
 	*
 	*
 	*/
-	private function showGeneralObservation($observations)
+	private function showGeneralObservation()
 	{
 
 		$this->Ln($this->_h_c*2);
@@ -781,7 +787,7 @@ class Notebook extends Fpdf
 		$this->SetFont('Arial','B',8);
 		$this->Cell(0, $this->_h_c, 'OBSERVACIONES GENERALES:', 0,0, 'L');
 
-		if(empty($observations)):	
+		if(is_null($this->data['general_observation'])):	
 			// MOSTRAMOS LAS LINEAS
 			$this->Ln($this->_h_c * 1.5);
 			$this->Cell(190, $this->_h_c, '', 'B',0, 'L');
@@ -793,18 +799,15 @@ class Notebook extends Fpdf
 			$this->Cell(190, $this->_h_c, '', 'B',0, 'L');
 		else:
 
-			foreach($observations as $observation):
-				$this->Ln();
-				$this->determineCell($this->hideTilde($observation->observation), 0);
-				// $this->determineCell($observation->observation, 0);
-
-			endforeach;
+			$this->Ln();
+			$this->determineCell($this->hideTilde($this->data['general_observation']->observation), 0);
 
 		endif;
 
 		$this->Ln($this->_h_c * 4);
 		// DIRECTOR DE GRUPO
-	     $this->Cell(0,4, $this->data['director']->fullNameInverse, 0, 0, 'L');
+		$this->SetFont('Arial','B',8);
+	     $this->Cell(0,4, $this->data['director']->fullName, 0, 0, 'L');
 
 	    $this->Ln();
 
@@ -828,7 +831,8 @@ class Notebook extends Fpdf
 
 				foreach ($period['areas'] as $keyArea => $area) {
 					foreach ($area['asignatures'] as $keyAsignature => $asignature) {
-						$noAttendace += $asignature['final_note']['noAttendances'];
+						if(isset($asignature['final_note']['noAttendances']))
+							$noAttendace += $asignature['final_note']['noAttendances'];
 					}
 				}
 			endif;
@@ -862,7 +866,7 @@ class Notebook extends Fpdf
 	function footer()
 	{
 		// Posición: a 1,5 cm del final
-	    $this->SetY(-20);
+	    $this->SetY(-15);
 	    
 	    // Arial italic 8
 	    $this->SetFont('Arial','I',8);
