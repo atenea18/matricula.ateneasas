@@ -22,9 +22,13 @@ class Notebook
 	private $institution = array();
 	private $config = array();
 	private $scaleEvaluation = array();
+	private $evaluation_parameters = array();
 	private $pensums = array();
 	private $group = array();
 	private $current_period = array();
+	private $general_observation = array();
+	private $general_report = array();
+
 
 	// 
 	public $noteBook;
@@ -94,6 +98,30 @@ class Notebook
 			];
 	}
 
+	public function setScaleEvaluation($scaleEvaluation)
+	{	
+		$this->scaleEvaluation = $scaleEvaluation;
+	}
+
+	public function setEvaluationParameters($evalParameters)
+	{	
+		$this->evaluation_parameters = $evalParameters;
+	}
+
+	public function setGeneralObservation(Enrollment $enrollment)
+	{
+		return $this->general_observation = $enrollment->observations()->where(
+			'period_working_day_id', '=', $this->request->period
+		)->first();
+	}
+
+	public function setGeneralReport(Enrollment $enrollment)
+	{
+		return $this->general_report = $enrollment->generalReport()->where(
+			'period_working_day_id', '=', $this->request->period
+		)->first();
+	}
+
 	public function create($enrollment)
 	{
 
@@ -102,19 +130,21 @@ class Notebook
 		$this->noteBook = array(
 			'tittle'				=>	'INFORME DESCRIPTIVO Y VALORATIVO',
 			'tittle_if' 			=> 	'INFORME DE EVALUACIÓN FINAL DEL PROCESO FORMATIVO',
+			'tittle_general_report'	=>	'INFORME GENERAL DE PERIODO',
 			'current_period' 		=> 	$this->current_period,
 			'date' 					=> 	date('Y-m-d'),
 			'student' 				=> 	$enrollment->student,
-			'group'					=>	$this->group->toArray(),
+			'group'					=>	$this->group,
 			'director'				=>	$this->group->director()->first()->manager,
-			'grade' 				=> 	$this->group->grade->toArray(),
-			'headquarter'			=>	$this->group->headquarter->toArray(),
-			'institution'			=>	$this->institution->toArray(),
+			'grade' 				=> 	$this->group->grade,
+			'headquarter'			=>	$this->group->headquarter,
+			'institution'			=>	$this->institution,
 			'periods'				=> 	array(),
 			'config'				=>	$this->config,
-			'parameters'			=> 	array(),
-			'general_obsservation'	=>	$enrollment->observations()->where('period_working_day_id', '=', $this->request->period)->get(),
+			'general_observation'	=>	$this->setGeneralObservation($enrollment),
+			'general_report'		=>	$this->setGeneralReport($enrollment),
 			'valueScale'			=>	$this->scaleEvaluation,
+			'evaluation_parameters'	=>	$this->evaluation_parameters,
 		);
 
 		// Resolvemos las areas, asignaturas y notas de todos los periodos
@@ -149,20 +179,18 @@ class Notebook
 
 	private function resolveAveragePeriod(Enrollment $enrollment, $school_year_id, $period)
 	{
-		$averages = $this->averageStudents(
-			NotesFinal::getAverageByGroup($this->group->id, $school_year_id, $this->institution->id, $period)
+		$average = $this->averageStudents(
+			NotesFinal::getAverageByGroup($this->group->id, $school_year_id, $this->institution->id, $period),
+			$enrollment
 		);
 
-		foreach ($averages as $key => $average) {
-			
-			if($average['id'] == $enrollment->id)
-			{
-				return [
-					'average'	=>	$average['average'],
-					'tav'		=>	$average['tav'],
-					'position'	=>	$average['rating'],
-				];
-			}
+		if(!empty($average))
+		{
+			return [
+				'average'	=>	$average['average'],
+				'tav'		=>	$average['tav'],
+				'position'	=>	$average['rating'],
+			];
 		}
 
 		return 	[];
@@ -391,66 +419,66 @@ class Notebook
 	}
 
 	// Funciones Públicas
-	
 
-	public function setScaleEvaluation($scaleEvaluation)
-	{	
-		$this->scaleEvaluation = $scaleEvaluation;
-	}
-
-	public function averageStudents($arryStudentAverage){
-	
-		#
-		$count=0;
-
-		#Array donde se va almacenar objetos de estudiantes de arrayStudentAverage, pero con una estructra un poco modificada
-		$vectorOfStudents = array();
-
-		#En este vector se va a guardar el número de asignaras evaluada por cada estudiante
-		$vectorNumberAsignatures = array();
-
-		foreach ($arryStudentAverage as $key => $value) {
-			$vectorStudent = array(
-				'id' => $value['enrollment_id'], 				
-				'average' => $value['average'],
-				'tav' => $value['tav']
-			);
-
-			#Se guarda la nueva estructura en el vector por cada estudiante
-			$vectorOfStudents[$count] = $vectorStudent;
-			
-			# Se guarda el tav de asignatura del estudiante i o count.. 
-			$vectorNumberAsignatures[$count]= $value['tav'];
-
-			$count++;
-		}
-
-		#Obtengo y almaceno el número maximo de asignaturas evaluadas
-		$numberMaxOfAsignatures = $this->getMaxValue($vectorNumberAsignatures);
-
+	public function averageStudents($arryStudentAverage, $enrollment){
 		
-		#Este es un nuevo vector donde se va a guardar los mismo estudiantes pero con el promedio levemente modificado
-		$vectorOfStudentsAux = array();
-		foreach ($vectorOfStudents as $value) {
+		try
+		{
+			#
+			$count=0;
 
-			#Esta formula da como resultado un promedio auxiliar, 
-			#Nos soluciona el problema de aquellos estudiantes que tienen un promedio alto pero con menor 
-			#asignaturas evaluadas
-			$averageAux = (($value['average']*$value['tav'])/$numberMaxOfAsignatures);
+			#Array donde se va almacenar objetos de estudiantes de arrayStudentAverage, pero con una estructra un poco modificada
+			$vectorOfStudents = array();
 
-			$vectorStudent = array(
-				'id' => $value['id'], 
-				'averageAux' => $averageAux,
-				'average' => $value['average'],
-				'tav' => $value['tav']
-			);
-			#usamos el id de estudiante como el indice del vector
-			$vectorOfStudentsAux[$value['id']] = $vectorStudent;			
+			#En este vector se va a guardar el número de asignaras evaluada por cada estudiante
+			$vectorNumberAsignatures = array();
+
+			foreach ($arryStudentAverage as $key => $value) {
+				$vectorStudent = array(
+					'id' => $value['enrollment_id'], 				
+					'average' => $value['average'],
+					'tav' => $value['tav']
+				);
+
+				#Se guarda la nueva estructura en el vector por cada estudiante
+				$vectorOfStudents[$count] = $vectorStudent;
+				
+				# Se guarda el tav de asignatura del estudiante i o count.. 
+				$vectorNumberAsignatures[$count]= $value['tav'];
+
+				$count++;
+			}
+
+			#Obtengo y almaceno el número maximo de asignaturas evaluadas
+			$numberMaxOfAsignatures = $this->getMaxValue($vectorNumberAsignatures);
+
+			#Este es un nuevo vector donde se va a guardar los mismo estudiantes pero con el promedio levemente modificado
+			$vectorOfStudentsAux = array();
+			foreach ($vectorOfStudents as $value) {
+
+				#Esta formula da como resultado un promedio auxiliar, 
+				#Nos soluciona el problema de aquellos estudiantes que tienen un promedio alto pero con menor 
+				#asignaturas evaluadas
+				$averageAux = (($value['average']*$value['tav'])/$numberMaxOfAsignatures);
+
+				$vectorStudent = array(
+					'id' => $value['id'], 
+					'averageAux' => $averageAux,
+					'average' => $value['average'],
+					'tav' => $value['tav']
+				);
+				#usamos el id de estudiante como el indice del vector
+				$vectorOfStudentsAux[$value['id']] = $vectorStudent;
+
+			}
+
+
+			$vectorOfStudentsAux = $this->orderMultiDimensionalArray($vectorOfStudentsAux, 'averageAux', true);
+			return $this->generateRating($vectorOfStudentsAux)[$enrollment->id];
+
+		}catch(\Exception $e){
+
 		}
-
-
-		$vectorOfStudentsAux = $this->orderMultiDimensionalArray($vectorOfStudentsAux, 'averageAux', true);
-		return $this->generateRating($vectorOfStudentsAux);
 
 		// $vectorOfStudentsAux = self::orderMultiDimensionalArray($vectorOfStudentsAux, 'averageAux', true);
 		// return self::generateRating($vectorOfStudentsAux);
@@ -476,7 +504,7 @@ class Notebook
 		return $returnArray;
 	}
 
-	private function generateRating($vectorOfStudentsAux){
+	public function generateRating($vectorOfStudentsAux){
 		#variable con la que voy asignar el puesto de cada estudiante	
 		$countAux=1;
 
