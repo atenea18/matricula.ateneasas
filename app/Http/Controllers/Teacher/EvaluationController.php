@@ -614,8 +614,11 @@ class EvaluationController extends Controller
     public function storeRelationPerformances(Request $request)
     {
         $params = $request->data;
-        if ($request->isGroup == "true") {
+
+        if ($params['isGroup'] == "true") {
+
             $performancesRelation = new NotesParametersPerformances();
+
             try {
                 $performancesRelation->notes_parameters_id = $params['notes_parameters_id'];
                 $performancesRelation->performances_id = $params['performances_id'];
@@ -626,6 +629,7 @@ class EvaluationController extends Controller
             } catch (\Exception $e) {
                 $performancesRelation->id = 0;
             }
+
         } else {
             $performancesRelation = new NotesParametersPerformancesSub();
             try {
@@ -662,7 +666,7 @@ class EvaluationController extends Controller
     public function deleteRelationPerformances(Request $request)
     {
         $params = $request->data;
-        if ($request->isGroup == "true") {
+        if ($params['isGroup'] == "true") {
             $notesPerformances = NotesParametersPerformances::
             where('id', '=', $params['id'])
                 ->delete();
