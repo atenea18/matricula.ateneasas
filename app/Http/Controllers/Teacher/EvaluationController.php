@@ -9,6 +9,7 @@ use App\Grade;
 use App\Group;
 use App\Institution;
 use App\MessagesExpressions;
+use App\MessagesScale;
 use App\NoAttendance;
 use App\Note;
 use App\NotesFinal;
@@ -259,7 +260,7 @@ class EvaluationController extends Controller
         $teacher = Auth::guard('teachers')->user()->teachers()->first();
         $institution_id = $teacher->institution_id;
 
-        if($request->isGroup == "true"){
+        if ($request->isGroup == "true") {
             $periodsWorkingDay = DB::table('working_day_periods')
                 ->select(
                     'periods.name as periods_name', 'periods.id as periods_id',
@@ -273,7 +274,7 @@ class EvaluationController extends Controller
                 ->get();
 
             return $periodsWorkingDay;
-        }else{
+        } else {
             $periodsWorkingDay = DB::table('section_periods')
                 ->select(
                     'periods.name as periods_name', 'periods.id as periods_id',
@@ -290,13 +291,37 @@ class EvaluationController extends Controller
 
     }
 
+    public function getNotesFinalByAsignature(Request $request){
+
+        $teacher = Auth::guard('teachers')->user()->teachers()->first();
+
+        $institution = Institution::where('id', '=', $teacher->institution_id)->get();
+
+        $enrollments = Group::enrollmentsByGroup($institution[0]->id, $request->group_id);
+
+
+
+
+        $collection = [];
+
+        foreach ($enrollments as $key => $enrollment) {
+
+
+            array_push($collection, $enrollment);
+        }
+
+
+
+        return $collection;
+    }
+
     public function getCollectionsNotes(Request $request)
     {
 
         $teacher = Auth::guard('teachers')->user()->teachers()->first();
         //$enrollments = Group::enrollmentsByGroup($teacher->institution_id, $request->groupid);
 
-        if($request->isGroup == "true") {
+        if ($request->isGroup == "true") {
             $enrollments = Group::enrollmentsByGroup($teacher->institution_id, $request->groupid);
 
             $notes = DB::table('notes')
@@ -325,6 +350,31 @@ class EvaluationController extends Controller
                 ->where('evaluation_periods.periods_id', '=', $request->periodid)
                 ->get();
 
+            $notes_final = DB::table('notes_final')
+                ->select('enrollment.id as enrollment_id', 'notes_final.value', 'notes_final.overcoming',
+                    'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id', 'evaluation_periods.periods_id',
+                    'evaluation_periods.id as evaluation_periods_id')
+                ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
+                ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
+                ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
+                ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
+                ->join('group', 'group_assignment.group_id', '=', 'group.id')
+                ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
+                ->join('headquarter', 'institution.id', '=', 'headquarter.institution_id')
+                ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
+                ->whereColumn(
+                    [
+                        ['headquarter.id', '=', 'group.headquarter_id'],
+                        ['group.grade_id', '=', 'grade.id']
+                    ]
+                )
+                ->where('group.id', '=', $request->groupid)
+                ->where('institution.id', '=', $teacher->institution_id)
+                ->where('evaluation_periods.asignatures_id', '=', $request->asignatureid)
+                ->where('schoolyears.id', '=', '1')
+                ->where('evaluation_periods.periods_id', '=', $request->periodid)
+                ->get();
+
             $no_attendance = DB::table('enrollment')
                 ->select('enrollment.id as enrollment_id', 'evaluation_periods.id as evaluation_periods_id',
                     'no_attendance.id as no_attendance_id', 'no_attendance.quantity'
@@ -349,7 +399,7 @@ class EvaluationController extends Controller
                 ->where('evaluation_periods.asignatures_id', '=', $request->asignatureid)
                 ->where('evaluation_periods.periods_id', '=', $request->periodid)
                 ->get();
-        }else{
+        } else {
 
             $enrollments = Subgroup::enrollmentsBySubGroup($teacher->institution_id, $request->groupid);
 
@@ -380,6 +430,31 @@ class EvaluationController extends Controller
                 ->where('evaluation_periods.periods_id', '=', $request->periodid)
                 ->get();
 
+            $notes_final = DB::table('notes_final')
+                ->select('enrollment.id as enrollment_id', 'notes_final.value', 'notes_final.overcoming',
+                    'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id', 'evaluation_periods.periods_id',
+                    'evaluation_periods.id as evaluation_periods_id')
+                ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
+                ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
+                ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
+                ->join('sub_group_assignments', 'enrollment.id', '=', 'sub_group_assignments.enrollment_id')
+                ->join('sub_group', 'sub_group_assignments.subgroup_id', '=', 'sub_group.id')
+                ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
+                ->join('headquarter', 'institution.id', '=', 'headquarter.institution_id')
+                ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
+                ->whereColumn(
+                    [
+                        ['headquarter.id', '=', 'sub_group.headquarter_id'],
+                        ['sub_group.grade_id', '=', 'grade.id']
+                    ]
+                )
+                ->where('sub_group.id', '=', $request->groupid)
+                ->where('institution.id', '=', $teacher->institution_id)
+                ->where('evaluation_periods.asignatures_id', '=', $request->asignatureid)
+                ->where('schoolyears.id', '=', '1')
+                ->where('evaluation_periods.periods_id', '=', $request->periodid)
+                ->get();
+
             $no_attendance = DB::table('enrollment')
                 ->select('enrollment.id as enrollment_id', 'evaluation_periods.id as evaluation_periods_id',
                     'no_attendance.id as no_attendance_id', 'no_attendance.quantity'
@@ -404,7 +479,6 @@ class EvaluationController extends Controller
                 ->where('evaluation_periods.asignatures_id', '=', $request->asignatureid)
                 ->where('evaluation_periods.periods_id', '=', $request->periodid)
                 ->get();
-
 
 
         }
@@ -436,6 +510,16 @@ class EvaluationController extends Controller
                 $enrollment->evaluation_periods_id = 0;
             }
 
+            $collection_notes_final = [];
+            foreach ($notes_final as $keyNotes => $note) {
+                if ($enrollment->id == $note->enrollment_id) {
+                    $enrollment->notes_final = $note;
+                    //array_push($collection_notes_final, $note);
+                    unset($notes_final[$keyNotes]);
+                }
+            }
+
+            //$enrollment->notes_final = $collection_notes_final;
             $enrollment->notes = $collection_notes;
             array_push($collection, $enrollment);
         }
@@ -459,13 +543,13 @@ class EvaluationController extends Controller
 
     public function getGroupPensum(Request $request)
     {
-        if($request->isGroup == "true") {
+        if ($request->isGroup == "true") {
             $pensum = DB::table('group_pensum')
                 ->where('group_pensum.group_id', '=', $request->group_id)
                 ->where('group_pensum.asignatures_id', '=', $request->asignatures_id)
                 ->where('group_pensum.schoolyear_id', '=', $request->school_year_id)
                 ->get();
-        }else{
+        } else {
             $pensum = DB::table('sub_group_pensum')
                 ->where('sub_group_pensum.sub_group_id', '=', $request->group_id)
                 ->where('sub_group_pensum.asignatures_id', '=', $request->asignatures_id)
@@ -478,38 +562,59 @@ class EvaluationController extends Controller
     public function storePerformances(Request $request)
     {
         $params = $request->data;
+
         $messageExpressions = new MessagesExpressions();
-        try {
-            $messageExpressions->name = $params['message']['textHigher'];
-            $messageExpressions->reinforcement = $params['message']['textRecommendationBasic'];
-            $messageExpressions->recommendation = $params['message']['textRecommendationLow'];
-            $messageExpressions->institution_id = $params['institution']['id'];
-            $messageExpressions->save();
+        foreach($params['data'] as $data) {
 
-        } catch (\Exception $e) {
-            $messageExpressions->id = 0;
-        }
+            if ($data['perfor']) {
 
-        $performances = new Performances();
-        if ($messageExpressions->id != 0) {
-            try {
-                $performances->pensum_id = $params['performances']['pensum_id'];
-                $performances->evaluation_parameters_id = $params['performances']['evaluation_parameters_id'];
-                $performances->periods_id = $params['performances']['periods_id'];
-                $performances->messages_expressions_id = $messageExpressions->id;
-                $performances->save();
-            } catch (\Exception $e) {
-                $performances->id = 0;
+                try {
+                    $messageExpressions->name = $data['name'];
+                    $messageExpressions->institution_id = $params['institution']['id'];
+                    $messageExpressions->save();
+
+                } catch (\Exception $e) {
+                    $messageExpressions->id = 0;
+                }
+
+                $performances = new Performances();
+                if ($messageExpressions->id != 0) {
+                    try {
+                        $performances->pensum_id = $params['performances']['pensum_id'];
+                        $performances->evaluation_parameters_id = $params['performances']['evaluation_parameters_id'];
+                        $performances->periods_id = $params['performances']['periods_id'];
+                        $performances->messages_expressions_id = $messageExpressions->id;
+                        $performances->save();
+                    } catch (\Exception $e) {
+                        $performances->id = 0;
+                    }
+
+                }
+            }else{
+                $messageScale = new MessagesScale();
+                if ($messageExpressions->id != 0) {
+                    try {
+                        $messageScale->name = $data['name'];
+                        $messageScale->recommendation = $data['recommendation'];
+                        $messageScale->scale_evaluations_id = $data['scale_id'];
+                        $messageScale->messages_expressions_id = $messageExpressions->id;
+                        $messageScale->save();
+
+                    } catch (\Exception $e) {
+                        $messageScale->id = 0;
+                    }
+                }
             }
-
         }
+
+
         return $performances;
     }
 
     public function storeRelationPerformances(Request $request)
     {
         $params = $request->data;
-        if($request->isGroup == "true") {
+        if ($request->isGroup == "true") {
             $performancesRelation = new NotesParametersPerformances();
             try {
                 $performancesRelation->notes_parameters_id = $params['notes_parameters_id'];
@@ -521,7 +626,7 @@ class EvaluationController extends Controller
             } catch (\Exception $e) {
                 $performancesRelation->id = 0;
             }
-        }else{
+        } else {
             $performancesRelation = new NotesParametersPerformancesSub();
             try {
                 $performancesRelation->notes_parameters_id = $params['notes_parameters_id'];
@@ -540,12 +645,12 @@ class EvaluationController extends Controller
 
     public function getRelationPerformances(Request $request)
     {
-        if($request->isGroup == "true") {
+        if ($request->isGroup == "true") {
             $notesPerformances = NotesParametersPerformances::where('notes_parameters_id', '=', $request->notes_parameters_id)
                 ->where('periods_id', '=', $request->periods_id)
                 ->where('group_pensum_id', '=', $request->group_pensum_id)
                 ->get();
-        }else{
+        } else {
             $notesPerformances = NotesParametersPerformancesSub::where('notes_parameters_id', '=', $request->notes_parameters_id)
                 ->where('periods_id', '=', $request->periods_id)
                 ->where('sub_group_pensum_id', '=', $request->group_pensum_id)
@@ -557,11 +662,11 @@ class EvaluationController extends Controller
     public function deleteRelationPerformances(Request $request)
     {
         $params = $request->data;
-        if($request->isGroup == "true") {
+        if ($request->isGroup == "true") {
             $notesPerformances = NotesParametersPerformances::
             where('id', '=', $params['id'])
                 ->delete();
-        }else{
+        } else {
             $notesPerformances = NotesParametersPerformancesSub::
             where('id', '=', $params['id'])
                 ->delete();
@@ -583,7 +688,7 @@ class EvaluationController extends Controller
             ->get();
 
         return $parameters;
-
-
     }
+
+
 }

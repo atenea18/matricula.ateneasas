@@ -46,6 +46,10 @@ Route::group(['prefix'=>'ajax'], function(){
 
     Route::get('/printConsolidated', 'StatisticsController@printConsolidated');
     Route::get('/getInstitutionOfTeacher', 'StatisticsController@getInstitutionOfTeacher');
+    Route::get('/getScaleEvaluation', 'ScaleEvaluationController@getScaleEvaluation');
+
+
+
 
 
 });
@@ -276,6 +280,7 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
     Route::get('evaluation/searchPerformances', 'Teacher\EvaluationController@searchPerformances');
     Route::get('evaluation/getGroupPensum', 'Teacher\EvaluationController@getGroupPensum');
     Route::get('evaluation/getRelationPerformances', 'Teacher\EvaluationController@getRelationPerformances');
+    Route::get('evaluation/getNotesFinalByAsignature', 'Teacher\EvaluationController@getNotesFinalByAsignature');
 
     Route::post('evaluation/storeEvaluationPeriods', 'Teacher\EvaluationController@storeEvaluationPeriods');
     Route::post('evaluation/storeFinalNotes', 'Teacher\EvaluationController@storeFinalNotes');
@@ -284,6 +289,7 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
     Route::post('evaluation/storeRelationPerformances', 'Teacher\EvaluationController@storeRelationPerformances');
     Route::post('evaluation/storeNoAttendance', 'Teacher\EvaluationController@storeNoAttendance');
     Route::post('evaluation/deleteRelationPerformances', 'Teacher\EvaluationController@deleteRelationPerformances');
+
 
 
 	// Rutas para el Informe General de Periodo

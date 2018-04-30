@@ -80,6 +80,7 @@
             })
 
 
+
         },
         mounted() {
             this.$store.state.counterParameter = 0
@@ -100,8 +101,12 @@
                 'periodSelected',
                 'collectionNotes',
                 'counterParameter',
-                'totalInput'
+                'totalInput',
+                'scaleEvaluation'
             ]),
+        },
+        methods:{
+
         }
     }
 </script>

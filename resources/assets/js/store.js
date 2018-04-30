@@ -27,6 +27,7 @@ const store = new Vuex.Store({
         groupPensum: Object,
         periodsworkingday: Object,
         isTypeGroup: true,
+        scaleEvaluation:[]
 
 
     },
@@ -45,6 +46,9 @@ const store = new Vuex.Store({
         },
         setInstitutionOfTeacher(state, payload) {
             state.institutionOfTeacher = payload.institutionOfTeacher || []
+        },
+        setScaleEvaluation(state, payload){
+          state.scaleEvaluation = payload.scaleEvaluation || []
         },
         setGrades(state, payload) {
             state.grades = payload.grades || []
@@ -100,10 +104,29 @@ const store = new Vuex.Store({
 
         },
         institutionOfTeacher(context, payload = {}) {
+            let _this = this
             axios.get('/ajax/getInstitutionOfTeacher').then(res => {
                 payload.institutionOfTeacher = res.data;
                 context.commit('setInstitutionOfTeacher', payload)
+
+                _this.dispatch('scaleEvaluation', payload)
+
             })
+        },
+        scaleEvaluation(context, payload = {}) {
+
+            let params = {
+                institution_id: payload.institutionOfTeacher.id
+            }
+
+            let url = "/ajax/getScaleEvaluation"
+
+            axios.get(url, {params}).then(res => {
+
+                payload.scaleEvaluation = res.data;
+                context.commit('setScaleEvaluation', payload)
+            })
+
         },
         grades(context, payload = {}) {
             axios.get('/ajax/allgrades').then(res => {
@@ -125,7 +148,7 @@ const store = new Vuex.Store({
         },
         asignatureById(context, payload = {}) {
             let params = payload
-            axios.get('/teacher/evaluation/getAsignatureById',{params}).then(res => {
+            axios.get('/teacher/evaluation/getAsignatureById', {params}).then(res => {
                 payload.asignature = res.data;
                 context.commit('setAsignatureById', payload)
             })
@@ -178,7 +201,7 @@ const store = new Vuex.Store({
             if (payload.periodid != 0) {
 
                 axios.get(
-                    '/teacher/evaluation/getCollectionsNotes', {params} ).then(res => {
+                    '/teacher/evaluation/getCollectionsNotes', {params}).then(res => {
                     if (typeof res.data == 'object') {
                         _this.state.isCollection = true
                         payload.collectionNotes = res.data
