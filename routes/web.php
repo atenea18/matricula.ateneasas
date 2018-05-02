@@ -48,9 +48,7 @@ Route::group(['prefix'=>'ajax'], function(){
     Route::get('/getInstitutionOfTeacher', 'StatisticsController@getInstitutionOfTeacher');
     Route::get('/getScaleEvaluation', 'ScaleEvaluationController@getScaleEvaluation');
 
-
-
-
+    Route::get('/getConfigInstitution', 'ConfigController@getConfigInstitution');
 
 });
 

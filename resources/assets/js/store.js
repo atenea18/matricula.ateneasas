@@ -27,7 +27,8 @@ const store = new Vuex.Store({
         groupPensum: Object,
         periodsworkingday: Object,
         isTypeGroup: true,
-        scaleEvaluation:[]
+        scaleEvaluation:[],
+        configInstitution:[]
 
 
     },
@@ -43,6 +44,9 @@ const store = new Vuex.Store({
         },
         decrement(state) {
             state.counter--
+        },
+        setConfigInstitution(state, payload){
+          state.configInstitution  = payload.configInstitution || []
         },
         setInstitutionOfTeacher(state, payload) {
             state.institutionOfTeacher = payload.institutionOfTeacher || []
@@ -76,13 +80,16 @@ const store = new Vuex.Store({
         },
         setParameters(state, payload) {
             let parameters = []
-
+            if(state.asignature.subjects_type_id == 3 || state.asignature.grade_id == 4){
+                payload.group_type = "basic"
+            }
             if (payload.parameters.length > 0) {
                 parameters = payload.parameters.filter(element => {
                     return element.group_type == payload.group_type
                 })
             }
             state.parameters = parameters || []
+            console.log(state.asignature)
         },
         setPeriodsWD(state, payload) {
             state.periodsworkingday = payload.periodsWD || []
@@ -93,6 +100,7 @@ const store = new Vuex.Store({
 
     },
     actions: {
+
         incrementAsync(context, payload) {
 
             return new Promise((resolve, reject) => {
@@ -102,6 +110,14 @@ const store = new Vuex.Store({
                 }, 2000)
             })
 
+        },
+
+        configInstitution(context, payload = {}) {
+            let _this = this
+            axios.get('/ajax/getConfigInstitution').then(res => {
+                payload.configInstitution = res.data;
+                context.commit('setConfigInstitution', payload)
+            })
         },
         institutionOfTeacher(context, payload = {}) {
             let _this = this
