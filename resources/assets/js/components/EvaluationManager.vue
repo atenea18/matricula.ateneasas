@@ -5,6 +5,7 @@
             <h5>{{asignature.name}}</h5>
             <h5>{{group.name}}</h5>
 
+
             <span style="color:red;font-weight: bold ">{{isConexion?'':'Usted no tiene conexión a internet'}}</span>
         </div>
         <div class="col-md-3">
@@ -54,13 +55,13 @@
             }
         },
         created() {
-            this.$store.state.isTypeGroup = this.filter == "group" ? true : false
+            this.$store.state.isTypeGroup = (this.filter == "group" || this.filter == "basic") ? true : false
 
-
-            this.getGradeById()
             this.getAsignatureById()
-            this.getParameters()
+            this.getConfigInstitution()
+            this.getGradeById()
             this.getGrades()
+            this.getParameters()
             this.getGroupPensum()
             this.getPeriodsByWorkingDay();
             this.getInstitutionOfTeacher()
@@ -81,12 +82,16 @@
                 'isCollection',
                 'isConexion',
                 'groupPensum',
-                'isTypeGroup'
+                'isTypeGroup',
+                'configInstitution'
             ]),
 
         },
         methods: {
 
+            getConfigInstitution() {
+                this.$store.dispatch('configInstitution', {group_type: this.filter})
+            },
             getParameters() {
                 this.$store.dispatch('parameters', {group_type: this.filter})
             },

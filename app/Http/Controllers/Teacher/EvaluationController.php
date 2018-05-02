@@ -57,6 +57,7 @@ class EvaluationController extends Controller
 
     }
 
+
     public function evaluationPeriods($group_id, $type, $asignatures_id)
     {
         $itemGroup = null;
@@ -219,7 +220,8 @@ class EvaluationController extends Controller
     public function getAsignatureById(Request $request)
     {
         if ($request->isGroup == "true") {
-            $asignatures = Asignature::select('asignatures.id', 'asignatures.name', 'pensum.areas_id', 'pensum.grade_id', 'pensum.id as pensum_id')
+            $asignatures = Asignature::select('asignatures.id', 'asignatures.name', 'pensum.areas_id', 'pensum.grade_id', 'pensum.id as pensum_id',
+                'asignatures.subjects_type_id')
                 ->join('pensum', 'pensum.asignatures_id', '=', 'asignatures.id')
                 ->where('pensum.grade_id', '=', $request->grade_id)
                 ->where('asignatures.id', '=', $request->asignatureid)

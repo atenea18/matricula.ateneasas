@@ -44,7 +44,8 @@ class AsignatureController extends ApiController
         $subject_type_id =  $request->isGroup == "true"?1:2;
 
         $pensum = DB::table('pensum')
-            ->select('pensum.id as pensum_id', 'asignatures.id', 'asignatures.name', 'pensum.areas_id')
+            ->select('pensum.id as pensum_id', 'asignatures.id', 'asignatures.name', 'pensum.areas_id', 'asignatures.subjects_type_id',
+                'pensum.grade_id')
             ->join('asignatures', 'asignatures.id', '=', 'pensum.asignatures_id')
             ->where('pensum.grade_id', '=', $request->grade_id)
             ->where('pensum.areas_id', '=', $request->areas_id)
