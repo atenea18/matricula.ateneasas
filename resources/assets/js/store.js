@@ -89,7 +89,6 @@ const store = new Vuex.Store({
                 })
             }
             state.parameters = parameters || []
-            console.log(state.asignature)
         },
         setPeriodsWD(state, payload) {
             state.periodsworkingday = payload.periodsWD || []

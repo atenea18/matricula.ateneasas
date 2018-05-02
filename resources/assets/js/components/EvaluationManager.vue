@@ -4,7 +4,7 @@
         <div class="col-md-6">
             <h5>{{asignature.name}}</h5>
             <h5>{{group.name}}</h5>
-            {{configInstitution}}
+
 
             <span style="color:red;font-weight: bold ">{{isConexion?'':'Usted no tiene conexión a internet'}}</span>
         </div>
@@ -57,11 +57,11 @@
         created() {
             this.$store.state.isTypeGroup = (this.filter == "group" || this.filter == "basic") ? true : false
 
+            this.getAsignatureById()
             this.getConfigInstitution()
             this.getGradeById()
-            this.getAsignatureById()
-            this.getParameters()
             this.getGrades()
+            this.getParameters()
             this.getGroupPensum()
             this.getPeriodsByWorkingDay();
             this.getInstitutionOfTeacher()
