@@ -48,7 +48,7 @@ class Notebook
 
     private function executeAllQueryGlobal()
     {
-        $this->pensums = GroupPensum::where('group_id', '=', $this->request->group)
+        $this->pensums =  GroupPensum::where('group_id', '=', $this->request->group)
             ->with('area')
             ->with('subjectType')
             ->with('teacher.manager')
@@ -62,7 +62,6 @@ class Notebook
             ->get()
             ->unique('areas_id')
             ->values();
-
 
         $this->group = Group::findOrFail($this->request->group);
 
@@ -89,21 +88,21 @@ class Notebook
     private function config()
     {
         $this->config = [
-            'showTeacher' => (isset($this->request['showTeacher'])) ? true : false,
-            'valorationScale' => (isset($this->request['valorationScale'])) ? true : false,
-            'showPerformance' => (isset($this->request['showPerformance'])) ? 'indicators' : 'asignature',
-            'areasDisabled' => (isset($this->request['areasDisabled'])) ? true : false,
-            'doubleFace' => (isset($this->request['doubleFace'])) ? true : false,
-            'generalReportPeriod' => (isset($this->request['generalReportPeriod'])) ? true : false,
-            'showFaces' => (isset($this->request['showFaces'])) ? true : false,
-            'combinedEvaluation' => (isset($this->request['CombinedEvaluation'])) ? true : false,
-            'NumberValoration' => (isset($this->request['NumberValoration'])) ? true : false,
-            'tableDetail' => (isset($this->request['tableDetail'])) ? true : false,
-            'performanceRating' => (isset($this->request['performanceRating'])) ? true : false,
-            'includeIF' => (isset($this->request['includeIF'])) ? true : false,
-            'periodIF' => false,
-            'onlyAcademic' => (isset($this->request['academicCheck'])) ? true : false,
-            'decimals' => (isset($this->request['decimals'])) ? true : false,
+            'showTeacher'			=>	(isset($this->request['showTeacher'])) ? true : false,
+            'valorationScale'		=>	(isset($this->request['valorationScale'])) ? true : false,
+            'showPerformance'		=>	(isset($this->request['showPerformance'])) ? 'indicators' : 'asignature',
+            'areasDisabled'			=>	(isset($this->request['areasDisabled'])) ? true : false,
+            'doubleFace'			=>	(isset($this->request['doubleFace'])) ? true : false,
+            'generalReportPeriod'	=>	(isset($this->request['generalReportPeriod'])) ? true : false,
+            'showFaces'				=>	(isset($this->request['showFaces'])) ? true : false,
+            'combinedEvaluation'	=>	(isset($this->request['CombinedEvaluation'])) ? true : false,
+            'NumberValoration'		=>	(isset($this->request['NumberValoration'])) ? true : false,
+            'tableDetail'			=>	(isset($this->request['tableDetail'])) ? true : false,
+            'performanceRating'		=>	(isset($this->request['performanceRating'])) ? true : false,
+            'includeIF' 			=>	(isset($this->request['includeIF'])) ? true : false,
+            'periodIF' 				=> false,
+            'onlyAcademic'			=> (isset($this->request['academicCheck'])) ? true : false,
+            'decimals'				=> (isset($this->request['decimals'])) ? true : false,
         ];
     }
 
@@ -137,23 +136,23 @@ class Notebook
         // return $this->resolvePerformances(3, 1, $enrollment);
 
         $this->noteBook = array(
-            'tittle' => 'INFORME DESCRIPTIVO Y VALORATIVO',
-            'tittle_if' => 'INFORME DE EVALUACIÓN FINAL DEL PROCESO FORMATIVO',
-            'tittle_general_report' => 'INFORME GENERAL DE PERIODO',
-            'current_period' => $this->current_period,
-            'date' => date('Y-m-d'),
-            'student' => $enrollment->student,
-            'group' => $this->group,
-            'director' => $this->group->director()->first()->manager,
-            'grade' => $this->group->grade,
-            'headquarter' => $this->group->headquarter,
-            'institution' => $this->institution,
-            'periods' => array(),
-            'config' => $this->config,
-            'general_observation' => $this->setGeneralObservation($enrollment),
-            'general_report' => $this->setGeneralReport($enrollment),
-            'valueScale' => $this->scaleEvaluation,
-            'evaluation_parameters' => $this->evaluation_parameters,
+            'tittle'				=>	'INFORME DESCRIPTIVO Y VALORATIVO',
+            'tittle_if' 			=> 	'INFORME DE EVALUACIÓN FINAL DEL PROCESO FORMATIVO',
+            'tittle_general_report'	=>	'INFORME GENERAL DE PERIODO',
+            'current_period' 		=> 	$this->current_period,
+            'date' 					=> 	date('Y-m-d'),
+            'student' 				=> 	$enrollment->student,
+            'group'					=>	$this->group,
+            'director'				=>	$this->group->director()->first()->manager,
+            'grade' 				=> 	$this->group->grade,
+            'headquarter'			=>	$this->group->headquarter,
+            'institution'			=>	$this->institution,
+            'periods'				=> 	array(),
+            'config'				=>	$this->config,
+            'general_observation'	=>	$this->setGeneralObservation($enrollment),
+            'general_report'		=>	$this->setGeneralReport($enrollment),
+            'valueScale'			=>	$this->scaleEvaluation,
+            'evaluation_parameters'	=>	$this->evaluation_parameters,
         );
 
         // Resolvemos las areas, asignaturas y notas de todos los periodos
@@ -164,18 +163,18 @@ class Notebook
             // if( (Integer) $periodW->period->name <= (Integer) $this->request->period)
             // {
             array_push($this->noteBook['periods'], array(
-                    'code_working_day_periods' => $periodW->code_working_day_periods,
-                    'percent' => $periodW->percent,
-                    'start_date' => $periodW->start_date,
-                    'end_date' => $periodW->end_date,
-                    'working_day_id' => $periodW->working_day_id,
-                    'periods_id' => $periodW->periods_id,
-                    'periods_state_id' => $periodW->periods_state_id,
-                    'school_year_id' => $periodW->school_year_id,
-                    'areas' => $this->resolveAreas(
+                    'code_working_day_periods'	=> 	$periodW->code_working_day_periods,
+                    'percent'					=>	$periodW->percent,
+                    'start_date'				=>	$periodW->start_date,
+                    'end_date'					=>	$periodW->end_date,
+                    'working_day_id'			=>	$periodW->working_day_id,
+                    'periods_id'				=>	$periodW->periods_id,
+                    'periods_state_id'			=>	$periodW->periods_state_id,
+                    'school_year_id'			=>	$periodW->school_year_id,
+                    'areas'						=>	$this->resolveAreas(
                         $enrollment, $this->request->group, $periodW->periods_id
                     ),
-                    'average' => $this->resolveAveragePeriod($enrollment, 1, $periodW->periods_id),
+                    'average'					=>	$this->resolveAveragePeriod($enrollment, 1, $periodW->periods_id),
                 )
             );
             // }
@@ -193,15 +192,16 @@ class Notebook
             $enrollment
         );
 
-        if (!empty($average)) {
+        if(!empty($average))
+        {
             return [
-                'average' => $average['average'],
-                'tav' => $average['tav'],
-                'position' => $average['rating'],
+                'average'	=>	$average['average'],
+                'tav'		=>	$average['tav'],
+                'position'	=>	$average['rating'],
             ];
         }
 
-        return [];
+        return 	[];
     }
 
     private function resolveAreas(Enrollment $enrollment, $group_id, $period_id)
@@ -213,20 +213,19 @@ class Notebook
             array_push(
                 $response,
                 array(
-                    'pensum_id' => $pensum->id,
-                    'area_id' => $pensum->areas_id,
-                    'area' => $pensum->area->name,
-                    'abbreviation' => $pensum->abbreviation,
-                    'subjects_type_id' => $pensum->subjectType->name,
-                    'note' => 0,
-                    'valoration' => 'espera',
-                    'asignatures' => $this->resolveAsignatures(
+                    'pensum_id'			=>	$pensum->id,
+                    'area_id'			=>	$pensum->areas_id,
+                    'area'				=> 	$pensum->area->name,
+                    'abbreviation'		=>	$pensum->abbreviation,
+                    'subjects_type_id'	=> 	$pensum->subjectType->name,
+                    'note'				=> 	0,
+                    'valoration'		=>	'espera',
+                    'asignatures'		=>	$this->resolveAsignatures(
                         $pensum->areas_id, $enrollment, $period_id
                     )
                 )
             );
         }
-
 
         return $response;
 
@@ -238,22 +237,22 @@ class Notebook
 
         foreach ($this->pensums as $key => $pensum) {
 
-            if ($area_id == $pensum->areas_id)
+            if($area_id == $pensum->areas_id)
                 array_push(
                     $response,
                     array(
-                        'asignature_id' => $pensum->asignatures_id,
-                        'asignature' => $pensum->asignature->name,
-                        'abbreviation' => $pensum->asignature->abbreviation,
-                        'ihs' => $pensum->ihs,
-                        'teacher' => (!is_null($pensum->teacher)) ? $pensum->teacher : null,
-                        'final_note' => $this->resolveNote(
+                        'asignature_id'	=>	$pensum->asignatures_id,
+                        'asignature'	=>	$pensum->asignature->name,
+                        'abbreviation'	=>	$pensum->asignature->abbreviation,
+                        'ihs'			=>	$pensum->ihs,
+                        'teacher'		=>	(!is_null($pensum->teacher)) ? $pensum->teacher : null,
+                        'final_note'	=>	$this->resolveNote(
                             $pensum->asignatures_id, $period_id, $enrollment, $pensum->id
                         ),
-                        'notes' => $this->resolveNotes(
+                        'notes'			=>	$this->resolveNotes(
                             $pensum->asignatures_id, $period_id, $enrollment
                         ),
-                        'indicators' => $this->resolvePerformances(
+                        'indicators'	=>	$this->resolvePerformances(
                             $pensum->asignatures_id, $period_id, $enrollment, $pensum->id
                         ),
                     )
@@ -268,35 +267,36 @@ class Notebook
         $EvalP = EvaluationPeriod::with('noteFinal')
             ->with('noAttendances')
             ->where([
-                'enrollment_id' => $enrollment->id,
-                'periods_id' => $period_id,
-                'asignatures_id' => $asignature_id
+                'enrollment_id'		=>	$enrollment->id,
+                'periods_id'		=>	$period_id,
+                'asignatures_id'	=>	$asignature_id
             ])
             ->get();
 
         $response = array();
 
-        foreach ($EvalP as $key => $ev) {
+        foreach($EvalP as $key => $ev)
+        {
             $valueAux = 0;
             $overcomingAux = 0;
 
-            if (isset($ev->noteFinal->value)) {
+            if(isset($ev->noteFinal->value)){
                 $valueAux = $ev->noteFinal->value;
             }
 
-            if (isset($ev->noteFinal->overcoming)) {
+            if(isset($ev->noteFinal->overcoming)){
                 $overcomingAux = $ev->noteFinal->overcoming;
             }
 
             $note = $this->determineRound($valueAux, 1);
             $response = [
-                'valoration' => $this->getScaleByNote($note),
-                'value' => $note,
-                'overcoming' => $overcomingAux,
-                'performances' => $this->resolveIndicators(
+                'valoration'	=>	$this->getScaleByNote($note),
+                'value'			=>	$note,
+                'overcoming'	=>	$overcomingAux,
+                'performances'	=>	$this->resolveIndicators(
                     $asignature_id, $period_id, $enrollment, $pensum_id, $note
                 ),
-                'noAttendances' => $ev->noAttendances->sum('quantity'),
+                'noAttendances'	=>	$ev->noAttendances->sum('quantity'),
             ];
         }
 
@@ -307,9 +307,9 @@ class Notebook
     {
         $notes = EvaluationPeriod::with('notes')
             ->where([
-                'enrollment_id' => $enrollment->id,
-                'periods_id' => $period_id,
-                'asignatures_id' => $asignature_id
+                'enrollment_id'		=>	$enrollment->id,
+                'periods_id'		=>	$period_id,
+                'asignatures_id'	=>	$asignature_id
             ])
             ->get()
             ->pluck('notes')
@@ -321,8 +321,8 @@ class Notebook
             array_push(
                 $response,
                 [
-                    'value' => $this->determineRound($note->value, 1),
-                    'overcoming' => $note->overcoming,
+                    'value'			=>	$this->determineRound($note->value, 1),
+                    'overcoming'	=>	$note->overcoming,
                 ]
             );
         }
@@ -333,16 +333,16 @@ class Notebook
     private function resolvePerformances($asignature_id, $period_id, Enrollment $enrollment, $pensum_id)
     {
         $notes = EvaluationPeriod::with([
-            'notes.noteParameter.notePerformances' => function ($pensum) use ($pensum_id) {
+            'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id){
                 $pensum->where('group_pensum_id', '=', $pensum_id)
                     ->with('performance.message.messageScale')
                     ->get()
                     ->pluck('performance.message.messageScale');
             }])
             ->where([
-                'enrollment_id' => $enrollment->id,
-                'periods_id' => $period_id,
-                'asignatures_id' => $asignature_id
+                'enrollment_id'		=>	$enrollment->id,
+                'periods_id'		=>	$period_id,
+                'asignatures_id'	=>	$asignature_id
             ])
             ->get()
             ->pluck('notes')
@@ -353,7 +353,8 @@ class Notebook
 
         foreach ($notes as $key => $note) {
 
-            foreach ($note->noteParameter->notePerformances as $keyNP => $notePerformances) {
+            foreach($note->noteParameter->notePerformances as $keyNP => $notePerformances)
+            {
                 try {
                     $message = $notePerformances->performance->message;
                     $scale = $this->getScaleByNote($note->value);
@@ -383,16 +384,16 @@ class Notebook
     private function resolveIndicators($asignature_id, $period_id, Enrollment $enrollment, $pensum_id, $noteAsig)
     {
         $notes = EvaluationPeriod::with([
-            'notes.noteParameter.notePerformances' => function ($pensum) use ($pensum_id) {
+            'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id){
                 $pensum->where('group_pensum_id', '=', $pensum_id)
                     ->with('performance.message.messageScale')
                     ->get()
                     ->pluck('performance.message.messageScale');
             }])
             ->where([
-                'enrollment_id' => $enrollment->id,
-                'periods_id' => $period_id,
-                'asignatures_id' => $asignature_id
+                'enrollment_id'		=>	$enrollment->id,
+                'periods_id'		=>	$period_id,
+                'asignatures_id'	=>	$asignature_id
             ])
             ->get()
             ->pluck('notes')
@@ -403,8 +404,10 @@ class Notebook
 
         foreach ($notes as $key => $note) {
 
-            foreach ($note->noteParameter->notePerformances as $keyNP => $notePerformances) {
-                try {
+            foreach($note->noteParameter->notePerformances as $keyNP => $notePerformances)
+            {
+                try
+                {
 
                     $message = $notePerformances->performance->message;
                     $scale = $this->getScaleByNote($noteAsig);
@@ -414,8 +417,7 @@ class Notebook
 
                     array_push($response, $messageScale);
 
-                } catch (\Exception $e) {
-                }
+                }catch(\Exception $e){}
                 // array_push(
                 // 	$response,
                 // 	[
@@ -435,7 +437,7 @@ class Notebook
     private function determineRound($value, $roundNumber)
     {
 
-        if (!$this->config['decimals'])
+        if(!$this->config['decimals'])
             return number_format($value, 0);
 
         return number_format($value, $roundNumber);
@@ -445,7 +447,8 @@ class Notebook
     {
         foreach ($this->scaleEvaluation as $key => $scale) {
 
-            if ($note >= $scale->rank_start && $note <= $scale->rank_end) {
+            if($note >= $scale->rank_start && $note <= $scale->rank_end)
+            {
                 return $scale;
             }
         }
@@ -453,12 +456,12 @@ class Notebook
 
     // Funciones Públicas
 
-    public function averageStudents($arryStudentAverage, $enrollment)
-    {
+    public function averageStudents($arryStudentAverage, $enrollment){
 
-        try {
+        try
+        {
             #
-            $count = 0;
+            $count=0;
 
             #Array donde se va almacenar objetos de estudiantes de arrayStudentAverage, pero con una estructra un poco modificada
             $vectorOfStudents = array();
@@ -477,7 +480,7 @@ class Notebook
                 $vectorOfStudents[$count] = $vectorStudent;
 
                 # Se guarda el tav de asignatura del estudiante i o count..
-                $vectorNumberAsignatures[$count] = $value['tav'];
+                $vectorNumberAsignatures[$count]= $value['tav'];
 
                 $count++;
             }
@@ -492,7 +495,7 @@ class Notebook
                 #Esta formula da como resultado un promedio auxiliar,
                 #Nos soluciona el problema de aquellos estudiantes que tienen un promedio alto pero con menor
                 #asignaturas evaluadas
-                $averageAux = (($value['average'] * $value['tav']) / $numberMaxOfAsignatures);
+                $averageAux = (($value['average']*$value['tav'])/$numberMaxOfAsignatures);
 
                 $vectorStudent = array(
                     'id' => $value['id'],
@@ -509,7 +512,7 @@ class Notebook
             $vectorOfStudentsAux = $this->orderMultiDimensionalArray($vectorOfStudentsAux, 'averageAux', true);
             return $this->generateRating($vectorOfStudentsAux)[$enrollment->id];
 
-        } catch (\Exception $e) {
+        }catch(\Exception $e){
 
         }
 
@@ -517,17 +520,17 @@ class Notebook
         // return self::generateRating($vectorOfStudentsAux);
     }
 
-    public function orderMultiDimensionalArray($toOrderArray, $field, $inverse = false)
-    {
+    public function orderMultiDimensionalArray ($toOrderArray, $field, $inverse = false) {
         $position = array();
         $newRow = array();
         foreach ($toOrderArray as $key => $row) {
-            $position[$key] = $row[$field];
+            $position[$key]  = $row[$field];
             $newRow[$key] = $row;
         }
         if ($inverse) {
             arsort($position);
-        } else {
+        }
+        else {
             asort($position);
         }
         $returnArray = array();
@@ -537,50 +540,49 @@ class Notebook
         return $returnArray;
     }
 
-    public function generateRating($vectorOfStudentsAux)
-    {
+    public function generateRating($vectorOfStudentsAux){
         #variable con la que voy asignar el puesto de cada estudiante
-        $countAux = 1;
+        $countAux=1;
 
         #promedio auxiliar que comienza en cero
-        $averageAux = 0;
+        $averageAux=0;
         $vectorRating = array();
 
         #Vamos a recorrer el vector auxiliar de estudiante, ya esta ordenado segun al promdedio modificado
         foreach ($vectorOfStudentsAux as $key => $value) {
 
             #Si es mayor
-            if ($value['averageAux'] > $averageAux) {
+            if($value['averageAux']>$averageAux){
                 $vectorOfStudent = array(
                     'id' => $value['id'],
-                    'rating' => $countAux,
+                    'rating' => $countAux ,
                     'average' => $value['average'],
                     'tav' => $value['tav']
                 );
                 $averageAux = $value['averageAux'];
-                $vectorRating[$value['id']] = $vectorOfStudent;
+                $vectorRating[$value['id']]= $vectorOfStudent;
                 $countAux++;
             }
             #Si es igual
-            if ($value['averageAux'] == $averageAux) {
+            if($value['averageAux']==$averageAux){
                 $vectorOfStudent = array(
                     'id' => $value['id'],
-                    'rating' => $countAux - 1,
+                    'rating' => $countAux-1,
                     'average' => $value['average'],
                     'tav' => $value['tav']
                 );
-                $averageAux = $value['averageAux'];
+                $averageAux=$value['averageAux'];
                 $vectorRating[$value['id']] = $vectorOfStudent;
             }
             #Si es menor
-            if ($value['averageAux'] < $averageAux) {
+            if($value['averageAux']<$averageAux){
                 $vectorOfStudent = array(
                     'id' => $value['id'],
                     'rating' => $countAux,
                     'average' => $value['average'],
                     'tav' => $value['tav']
                 );
-                $averageAux = $value['averageAux'];
+                $averageAux=$value['averageAux'];
                 $vectorRating[$value['id']] = $vectorOfStudent;
                 $countAux++;
             }
@@ -596,7 +598,7 @@ class Notebook
 
         foreach ($array as $key => $value) {
 
-            if ($value > $max)
+            if($value > $max)
                 $max = $value;
         }
 

@@ -127,6 +127,7 @@ class NotebookController extends Controller
                 $pdi->useTemplate($tpl); 
             }
         }
+
         $pdi->Output('I',$fileName.'.pdf');
 
     }

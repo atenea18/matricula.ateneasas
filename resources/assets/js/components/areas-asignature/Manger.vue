@@ -3,6 +3,7 @@
         <div class="col-md-12">
             <div>
                 <tabs>
+
                     <tab name="Ver Grupos">
                         <div class="row">
                             <div class="col-md-12">
@@ -10,7 +11,7 @@
                             </div>
                         </div>
                     </tab>
-                    <tab name="AsignaciÃ³n por Grupos">
+                    <tab name="Asignaci¨®n por Grupos">
                         <div class="row">
                             <div class="col-md-12">
                                 <!--

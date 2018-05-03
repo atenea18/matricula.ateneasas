@@ -95,7 +95,7 @@ class AreasAndAsignatureController extends Controller
                         ]
                     );
                 } catch (\Exception $e) {
-                    $value = 5;
+                    $value = 0;
                 }
             }
 
