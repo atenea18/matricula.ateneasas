@@ -75,7 +75,10 @@ class NotebookController extends Controller
             $notebook->setEvaluationParameters($eval_parameter);
             $data = $notebook->create(Enrollment::findOrFail($enrollment));
 
-            // return response()->json($data);
+
+
+            //return response()->json($data);
+
 
             $fileName = str_replace(' ', '', $data['student']->fullNameInverse);
 

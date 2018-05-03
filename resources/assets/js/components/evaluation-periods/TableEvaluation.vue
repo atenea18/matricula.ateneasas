@@ -22,7 +22,12 @@
             -->
             <template v-for="para in parameters">
                 <template v-for="note in para.notes_parameter">
-                    <relation-performances :objectInput="note" :ref="'parameter'+para.id"></relation-performances>
+                    <relation-performances v-if="note.notes_type_id == 1" :objectInput="note" :ref="'parameter'+para.id"></relation-performances>
+                    <th v-else="note.notes_type_id == 1" style="width: 44px !important; font-size: 10px !important;">
+                       <span data-toggle="tooltip" data-placement="bottom" :title="note.criterias.criterias_name">
+                           {{note.criterias.criterias_abbreviation}}
+                       </span>
+                    </th>
                 </template>
                 <th></th>
             </template>
