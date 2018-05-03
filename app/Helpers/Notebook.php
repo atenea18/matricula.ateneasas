@@ -28,6 +28,7 @@ class Notebook
 	private $current_period = array();
 	private $general_observation = array();
 	private $general_report = array();
+	private $pensum_unique = array();
 
 
 	// 
@@ -52,8 +53,15 @@ class Notebook
 							->with('subjectType')
 							->with('teacher.manager')						
 							->get()
-							->unique('areas_id')
 							->values();
+							
+		$this->pensum_unique = GroupPensum::where('group_id', '=', $this->request->group)
+            ->with('area')
+            ->with('subjectType')
+            ->with('teacher.manager')
+            ->get()
+            ->unique('areas_id')
+            ->values();
 
 		$this->group = Group::findOrFail($this->request->group);
 
@@ -201,7 +209,7 @@ class Notebook
 		
 		$response = array();
 
-		foreach ($this->pensums as $key => $pensum) {
+		foreach ($this->pensum_unique as $key => $pensum) {
 			array_push(
 				$response, 
 				array(
@@ -269,11 +277,22 @@ class Notebook
 
 		foreach($EvalP as $key => $ev)
 		{
-			$note = $this->determineRound($ev->noteFinal->value, 1);
+		    $valueAux = 0;
+		    $overcomingAux = 0;
+		    
+		    if(isset($ev->noteFinal->value)){
+		      $valueAux = $ev->noteFinal->value;
+		    }
+		    
+		    if(isset($ev->noteFinal->overcoming)){
+		      $overcomingAux = $ev->noteFinal->overcoming;
+		    }
+		     
+			$note = $this->determineRound($valueAux, 1);
 			$response = [
 				'valoration'	=>	$this->getScaleByNote($note),
 				'value'			=>	$note,
-				'overcoming'	=>	$ev->noteFinal->overcoming,
+				'overcoming'	=>	$overcomingAux,
 				'performances'	=>	$this->resolveIndicators(
 					$asignature_id, $period_id, $enrollment, $pensum_id, $note
 				),
