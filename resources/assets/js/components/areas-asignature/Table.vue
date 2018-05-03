@@ -19,7 +19,7 @@
                 :lineNumbers="false"
                 :defaultSortBy="{field: 'custom_name', type: 'asc'}"
                 :globalSearch="true"
-                :paginate="true"
+                :paginate="false"
                 class="table-custom"
                 styleClass="table condensed table-bordered table-striped">
             <template slot="table-row" slot-scope="props">
