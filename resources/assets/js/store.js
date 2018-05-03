@@ -97,6 +97,8 @@ const store = new Vuex.Store({
             state.collectionNotes = payload.collectionNotes || []
         }
 
+
+
     },
     actions: {
 
