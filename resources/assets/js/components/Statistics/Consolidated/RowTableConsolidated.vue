@@ -45,7 +45,7 @@
                 let count = 0
                 this.objectInput.enrollment.notes_final.forEach( (element, i) => {
                     if(element.value!=0 && element.value != ""){
-                        console.log(element.value)
+                        //console.log(element.value)
                         count++
                     }
                 })
