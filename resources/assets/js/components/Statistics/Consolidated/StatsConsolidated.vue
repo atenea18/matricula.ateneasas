@@ -131,7 +131,8 @@
 
                 this.urlPdf = "/pdf/consolidateByGroup?grade_id=" + params.grade_id +
                     "&group_id=" + params.group_id +
-                    "&period_id=" + params.periods_id + "&institution_id=" + params.institution_id
+                    "&period_id=" + params.periods_id + "&institution_id=" + params.institution_id +
+                    "&is_subgroup=" +params.isSubGroup
 
                 this.data = params
                 //console.log(this.data.isSubGroup)
