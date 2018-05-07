@@ -27,7 +27,7 @@ class AcademicAssignmentController extends Controller
         }
         return [];
     }
-
+ 
     public function getSubgroupsByGrade(Request $request)
     {
 
