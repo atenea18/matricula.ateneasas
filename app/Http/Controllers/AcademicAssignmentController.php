@@ -35,7 +35,8 @@ class AcademicAssignmentController extends Controller
 
         $subgroups = DB::table('sub_group')
             ->join('headquarter', 'headquarter.id', '=', 'sub_group.headquarter_id')
-            ->select('sub_group.id', 'sub_group.name', 'headquarter.name as headquarter_name', 'sub_group.grade_id')
+            ->select('sub_group.id', 'sub_group.name', 'headquarter.name as headquarter_name',
+                'sub_group.grade_id','sub_group.section_id')
             ->where('sub_group.grade_id', '=', $request->grade_id)
             ->where('headquarter.institution_id', '=', $institution_id)
             ->get();
@@ -127,7 +128,8 @@ class AcademicAssignmentController extends Controller
 
         try {
             $sub_group_pensum = DB::table('sub_group_pensum')
-                ->select('sub_group_pensum.areas_id', 'areas.name as name_area', 'subjects_type.name as subjects_type_name')
+                ->select('sub_group_pensum.areas_id', 'areas.name as name_area', 'subjects_type.name as subjects_type_name',
+                    'sub_group.section_id')
                 ->join('areas', 'areas.id', '=', 'sub_group_pensum.areas_id')
                 ->join('subjects_type', 'subjects_type.id', '=', 'sub_group_pensum.subjects_type_id')
                 ->where('sub_group_pensum.sub_group_id', '=', $request->sub_group_id)

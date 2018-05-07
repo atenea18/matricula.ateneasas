@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\SubGroupPensum;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
@@ -223,14 +224,24 @@ class PdfController extends Controller
 
     public function printConsolidate(Request $request)
     {
+        if ($request->is_subgroup == "false") {
+            $pensum = GroupPensum::find($request->group_id);
+        }else{
+            $pensum = SubGroupPensum::find($request->group_id);
+        }
 
-        $pensum = GroupPensum::find($request->group_id);
         $notes = NotesFinal::getConsolidate($request);
 
 
         $consolidate = new Consolidate('l', 'mm', 'letter');
         $consolidate->institution = Institution::findOrFail($request->institution_id);
-        $consolidate->group = Group::findOrFail($request->group_id);
+
+        if ($request->is_subgroup == "false") {
+            $consolidate->group = Group::findOrFail($request->group_id);
+        }else{
+            $consolidate->group = Subgroup::findOrFail($request->group_id);
+        }
+
         $consolidate->asignatures = $pensum;
         $consolidate->content = $notes;
         $consolidate->create();

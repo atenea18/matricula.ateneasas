@@ -32,6 +32,7 @@
         },
         created() {
             this.managerEvents()
+            //console.log("hola")
         },
         mounted() {
 

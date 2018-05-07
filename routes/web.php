@@ -50,6 +50,8 @@ Route::group(['prefix'=>'ajax'], function(){
 
     Route::get('/getConfigInstitution', 'ConfigController@getConfigInstitution');
 
+    Route::get('/getPeriodsBySection/{section_id}', 'StatisticsController@getPeriodsBySection');
+
 });
 
 Route::group(['middleware'=>'admin_guest'], function(){
