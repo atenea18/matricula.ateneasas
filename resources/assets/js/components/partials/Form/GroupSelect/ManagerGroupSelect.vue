@@ -59,21 +59,25 @@
                     referenceChangeFormSelect: 'get-event-change-of-form-select@' + this.objectInput.referenceId + '.group',
                     referenceGetObjectSelected: 'get-object-selected@' + this.objectInput.referenceId + '.group',
                     referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.objectInput.referenceId + '.group',
+                    id:0
                 },
                 objectToSelectPeriod: {
                     referenceChangeFormSelect: 'get-event-change-of-form-select@' + this.objectInput.referenceId + '.periods',
                     referenceGetObjectSelected: 'get-object-selected@' + this.objectInput.referenceId + '.periods',
                     referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.objectInput.referenceId + '.periods',
+                    id:0
                 },
                 objectToSelectSubGroup: {
                     referenceChangeFormSelect: 'get-event-change-of-form-select@' + this.objectInput.referenceId + '.subgroup',
                     referenceGetObjectSelected: 'get-object-selected@' + this.objectInput.referenceId + '.subgroup',
                     referenceEmitObjectGradeSelected: 'to-receive-object-selected@' + this.objectInput.referenceId + '.subgroup',
+                    id:0,
                 },
                 objectToSelectPeriodSection: {
                     referenceChangeFormSelect: 'get-event-change-of-form-select@' + this.objectInput.referenceId + '.section',
                     referenceGetObjectSelected: 'get-object-selected@' + this.objectInput.referenceId + '.section',
                     referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.objectInput.referenceId + '.section',
+                    id:0
                 },
 
             }
@@ -81,7 +85,25 @@
         created() {
             this.managerEvents()
             this.$bus.$on("get-is-sub-group", object => {
+
                 this.objectToManagerGroupSelect.isSubGroup = object.isSubGroup
+
+                if(this.objectToManagerGroupSelect.isSubGroup){
+
+                    this.objectToManagerGroupSelect.group_id = this.objectToSelectSubGroup.id
+                    this.objectToManagerGroupSelect.type = "subgroup"
+                    this.objectToManagerGroupSelect.periods_id = this.objectToSelectPeriodSection.id
+                }else{
+                    this.objectToManagerGroupSelect.group_id = this.objectToSelectGroup.id
+                    this.objectToManagerGroupSelect.type = "group"
+                    this.objectToManagerGroupSelect.periods_id = this.objectToSelectPeriod.id
+                }
+
+                if (this.objectToManagerGroupSelect.periods_id != 0) {
+                    this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
+                }
+
+
             })
         },
         methods: {
@@ -95,17 +117,17 @@
                 })
 
                 this.$bus.$on(this.objectToSelectGroup.referenceGetObjectSelected, object => {
+                    this.objectToSelectGroup.id = object.id
                     this.objectToManagerGroupSelect.group_id = object.id
                     this.$bus.$emit(this.objectToSelectPeriod.referenceToReciveObjectSelected, object);
                     if (this.objectToManagerGroupSelect.periods_id != 0) {
                         this.objectToManagerGroupSelect.type = "group"
                         this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
                     }
-
-                    //console.log("seleccionó un grupo: " + object.name)
                 })
 
                 this.$bus.$on(this.objectToSelectSubGroup.referenceGetObjectSelected, object => {
+                    this.objectToSelectSubGroup.id = object.id
                     this.objectToManagerGroupSelect.group_id = object.id
                     this.$bus.$emit(this.objectToSelectPeriodSection.referenceToReciveObjectSelected, object)
                     if (this.objectToManagerGroupSelect.periods_id != 0) {
@@ -116,11 +138,13 @@
 
 
                 this.$bus.$on(this.objectToSelectPeriod.referenceGetObjectSelected, objectId => {
+                    this.objectToSelectPeriod.id = objectId
                     this.objectToManagerGroupSelect.periods_id = objectId
                     this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
                 })
 
                 this.$bus.$on(this.objectToSelectPeriodSection.referenceGetObjectSelected, objectId => {
+                    this.objectToSelectPeriodSection.id = objectId
                     this.objectToManagerGroupSelect.periods_id = objectId
                     this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
                 })
