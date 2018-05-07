@@ -14,6 +14,7 @@ use App\Note;
 use App\NotesFinal;
 use App\NotesParametersPerformances;
 use App\Performances;
+use App\Subgroup;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
@@ -68,9 +69,27 @@ class StatisticsController extends Controller
         return $periodsWorkingDay;
     }
 
+    public function getPeriodsBySection(Request $request)
+    {
+
+        $periodsWorkingDay = DB::table('section_periods')
+            ->select(
+                'periods.name as periods_name', 'periods.id as periods_id',
+                'section_periods.start_date', 'section_periods.end_date', 'section_periods.percent', 'section_periods.id as working_day_periods_id',
+                'periods_state.name as periods_state_name', 'periods_state.id as periods_state_id'
+            )
+            ->join('periods_state', 'periods_state.id', '=', 'section_periods.periods_state_id')
+            ->join('periods', 'periods.id', '=', 'section_periods.periods_id')
+            ->where('section_periods.section_id', '=', $request->section_id)
+            ->get();
+
+        return $periodsWorkingDay;
+
+    }
+
     public function getInstitutionOfTeacher(Request $request)
     {
-        $institution = Institution::where('id', '=',$this->institution->id)->get();
+        $institution = Institution::where('id', '=', $this->institution->id)->get();
         if ($request->ajax()) {
             return $institution[0];
         }
@@ -102,45 +121,92 @@ class StatisticsController extends Controller
 
     public function getAsignaturesGroupPensum(Request $request)
     {
+        if ($request->isSubGroup == "false") {
+            $asignatures = DB::table('group_pensum')
+                ->select(
+                    'asignatures.abbreviation', 'asignatures.name',
+                    'group_pensum.asignatures_id', 'group_pensum.ihs', 'group_pensum.order', 'group_pensum.percent')
+                ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
+                ->where('group_pensum.group_id', '=', $request->group_id)
+                ->get();
 
-        $asignatures = DB::table('group_pensum')
-            ->select(
-                'asignatures.abbreviation', 'asignatures.name',
-                'group_pensum.asignatures_id', 'group_pensum.ihs', 'group_pensum.order', 'group_pensum.percent')
-            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
-            ->where('group_pensum.group_id', '=', $request->group_id)
-            ->get();
+            return $asignatures;
+        } else {
+            $asignatures = DB::table('sub_group_pensum')
+                ->select(
+                    'asignatures.abbreviation', 'asignatures.name',
+                    'sub_group_pensum.asignatures_id', 'sub_group_pensum.ihs', 'sub_group_pensum.order', 'sub_group_pensum.percent')
+                ->join('asignatures', 'asignatures.id', '=', 'sub_group_pensum.asignatures_id')
+                ->where('sub_group_pensum.sub_group_id', '=', $request->group_id)
+                ->get();
 
-        return $asignatures;
+            return $asignatures;
+        }
+
     }
 
     public function getConsolidated(Request $request)
     {
-        $enrollments = Group::enrollmentsByGroup($this->institution->id, $request->group_id);
+        if ($request->isSubGroup == "false") {
+            $enrollments = Group::enrollmentsByGroup($this->institution->id, $request->group_id);
 
-        $notes_final = DB::table('notes_final')
-            ->select('enrollment.id as enrollment_id', 'notes_final.value', 'notes_final.overcoming',
-                'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id', 'evaluation_periods.periods_id',
-                'evaluation_periods.id as evaluation_periods_id')
-            ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
-            ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
-            ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
-            ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
-            ->join('group', 'group_assignment.group_id', '=', 'group.id')
-            ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
-            ->join('headquarter', 'institution.id', '=', 'headquarter.institution_id')
-            ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
-            ->whereColumn(
-                [
-                    ['headquarter.id', '=', 'group.headquarter_id'],
-                    ['group.grade_id', '=', 'grade.id']
-                ]
-            )
-            ->where('group.id', '=', $request->group_id)
-            ->where('institution.id', '=', $this->institution->id)
-            ->where('schoolyears.id', '=', '1')
-            ->where('evaluation_periods.periods_id', '=', $request->periods_id)
-            ->get();
+            $notes_final = DB::table('notes_final')
+                ->select('enrollment.id as enrollment_id', 'notes_final.value', 'notes_final.overcoming',
+                    'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id', 'evaluation_periods.periods_id',
+                    'evaluation_periods.id as evaluation_periods_id')
+                ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
+                ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
+                ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
+                ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
+                ->join('group', 'group_assignment.group_id', '=', 'group.id')
+                ->join('group_pensum', 'group_pensum.group_id', '=','group.id')
+                ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
+                ->join('headquarter', 'institution.id', '=', 'headquarter.institution_id')
+                ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
+                ->whereColumn(
+                    [
+                        ['headquarter.id', '=', 'group.headquarter_id'],
+                        ['group.grade_id', '=', 'grade.id'],
+                        ['group_pensum.asignatures_id', '=', 'evaluation_periods.asignatures_id']
+                    ]
+                )
+                ->where('group.id', '=', $request->group_id)
+                ->where('institution.id', '=', $this->institution->id)
+                ->where('schoolyears.id', '=', '1')
+                ->where('evaluation_periods.periods_id', '=', $request->periods_id)
+                ->get();
+        } else {
+
+            $enrollments = Subgroup::enrollmentsBySubGroup($this->institution->id, $request->group_id);
+
+            $notes_final = DB::table('notes_final')
+                ->select('enrollment.id as enrollment_id', 'notes_final.value', 'notes_final.overcoming',
+                    'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id', 'evaluation_periods.periods_id',
+                    'evaluation_periods.id as evaluation_periods_id')
+                ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
+                ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
+                ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
+                ->join('sub_group_assignments', 'enrollment.id', '=', 'sub_group_assignments.enrollment_id')
+                ->join('sub_group', 'sub_group_assignments.subgroup_id', '=', 'sub_group.id')
+                ->join('sub_group_pensum', 'sub_group_pensum.sub_group_id', '=', 'sub_group.id')
+                ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
+                ->join('headquarter', 'institution.id', '=', 'headquarter.institution_id')
+                ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
+                ->whereColumn(
+                    [
+                        ['headquarter.id', '=', 'sub_group.headquarter_id'],
+                        ['sub_group.grade_id', '=', 'grade.id'],
+                        ['sub_group_pensum.asignatures_id', '=', 'evaluation_periods.asignatures_id']
+                    ]
+                )
+                ->where('sub_group.id', '=', $request->group_id)
+                ->where('institution.id', '=', $this->institution->id)
+                ->where('schoolyears.id', '=', '1')
+                ->where('evaluation_periods.periods_id', '=', $request->periods_id)
+                ->get();
+        }
+
+
 
 
         $collection = [];

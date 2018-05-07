@@ -33,8 +33,8 @@
 
                 let value = ""
                 this.objectInput.enrollment.notes_final.forEach( (element, i) => {
-                    if(element.asignatures_id == asignature.asignatures_id && element.value!=0){
-                        value = element.value
+                    if(element.asignatures_id == asignature.asignatures_id && element.value>0){
+                        value = element.value.toFixed(2)
                     }
                 })
 
@@ -45,6 +45,7 @@
                 let count = 0
                 this.objectInput.enrollment.notes_final.forEach( (element, i) => {
                     if(element.value!=0 && element.value != ""){
+                        console.log(element.value)
                         count++
                     }
                 })

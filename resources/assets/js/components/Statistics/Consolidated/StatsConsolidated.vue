@@ -1,10 +1,18 @@
 <template>
     <div>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-3">
                 <form class="navbar-form navbar-left">
-                    <a v-if="data.periods_id" type="submit" class="btn btn-default"  target="_blank" :href="urlPdf">PDF</a>
+                    <a v-if="data.periods_id" type="submit" class="btn btn-default" target="_blank"
+                       :href="urlPdf">PDF</a>
                 </form>
+            </div>
+            <div class="col-md-3">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" @click="getIsGroup" v-model="objectToManagerGroupSelect.isSubGroup"> Subgrupo
+                    </label>
+                </div>
             </div>
         </div>
         <manager-group-select :objectInput="objectToManagerGroupSelect"></manager-group-select>
@@ -35,6 +43,7 @@
                 objectToManagerGroupSelect: {
                     referenceId: "statistics",
                     referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.referenceId + '.managerGroupSelect',
+                    isSubGroup: false
                 },
                 objectToStatsConsolidated: {
                     asignatures: [],
@@ -42,7 +51,7 @@
                 },
                 state: false,
                 data: {},
-                urlPdf:""
+                urlPdf: ""
             }
         },
         created() {
@@ -56,7 +65,10 @@
         },
         methods: {
 
-
+            getIsGroup() {
+                this.objectToManagerGroupSelect.isSubGroup = !this.objectToManagerGroupSelect.isSubGroup
+                this.$bus.$emit("get-is-sub-group",this.objectToManagerGroupSelect)
+            },
             printConsolidated() {
                 //console.log(this.data)
                 if (this.data.periods_id) {
@@ -68,7 +80,7 @@
                         group_id: this.data.group_id,
                         period_id: this.data.periods_id,
                         institution_id: this.$store.state.institutionOfTeacher.id
-                     }
+                    }
 
                     let _this = this
                     axios.get(url, {params}).then(res => {
@@ -96,7 +108,9 @@
                     grade_id: object.grade_id,
                     group_id: object.group_id,
                     periods_id: object.periods_id,
-                    institution_id: this.$store.state.institutionOfTeacher.id
+                    institution_id: this.$store.state.institutionOfTeacher.id,
+                    isSubGroup: object.isSubGroup
+
                 }
 
                 axios.get(url, {params}).then(res => {
@@ -111,20 +125,24 @@
                     grade_id: object.grade_id,
                     group_id: object.group_id,
                     periods_id: object.periods_id,
-                    institution_id: this.$store.state.institutionOfTeacher.id
+                    institution_id: this.$store.state.institutionOfTeacher.id,
+                    isSubGroup: object.isSubGroup
                 }
 
-                this.urlPdf ="/pdf/consolidateByGroup?grade_id="+params.grade_id+
-                    "&group_id="+params.group_id+
-                    "&period_id="+params.periods_id+"&institution_id="+params.institution_id
+                this.urlPdf = "/pdf/consolidateByGroup?grade_id=" + params.grade_id +
+                    "&group_id=" + params.group_id +
+                    "&period_id=" + params.periods_id + "&institution_id=" + params.institution_id
 
                 this.data = params
+                //console.log(this.data.isSubGroup)
+
                 let url = '/ajax/getConsolidated'
 
                 axios.get(url, {params}).then(res => {
                     this.objectToStatsConsolidated.enrollments = res.data
                     this.state = true
                 })
+
             },
         }
 
