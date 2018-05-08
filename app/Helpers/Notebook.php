@@ -394,11 +394,19 @@ class Notebook
 
 		foreach($EvalP as $key => $ev)
 		{
-			$note = $this->determineRound($ev->noteFinal->value, 1);
+			$note = 0;
+			$overcoming = 0;
+			
+			if(!is_null($ev->noteFinal))
+			{
+				$note = $this->determineRound($ev->noteFinal->value, 1);
+				$overcoming = $this->determineRound($ev->noteFinal->overcoming, 1);
+			} 
+				
 			$response = [
 				'valoration'	=>	$this->getScaleByNote($note),
 				'value'			=>	$note,
-				'overcoming'	=>	$ev->noteFinal->overcoming,
+				'overcoming'	=>	$overcoming,
 				'performances'	=>	$this->resolveIndicators(
 					$asignature_id, $period_id, $enrollment, $pensum_id, $note
 				),
