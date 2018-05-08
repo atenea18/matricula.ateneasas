@@ -22,12 +22,15 @@ class Notebook
 	private $config = array();
 	private $scaleEvaluation = array();
 	private $evaluation_parameters = array();
-	private $pensums = array();
+
+	private $pensums_areas = array();
+	private $pensums_asignatures = array();
+	
 	private $group = array();
 	private $current_period = array();
 	private $general_observation = array();
 	private $general_report = array();
-	private $average_area = array();
+	private $average_areas = array();
 	private $enrollment = array();
 
 
@@ -56,7 +59,7 @@ class Notebook
 		// $this->getPensums();
 	}
 
-	private function getPensums()
+	private function getPensumsAreas()
 	{
 
 		$groupEnrollment = $this->enrollment->group()->first();
@@ -67,7 +70,7 @@ class Notebook
 
 		if(!is_null($groupEnrollment))
 		{
-			$groupPensum = GroupPensum::where('group_id', '=', $this->request->group)
+			$groupPensum = $groupEnrollment->pensums()
 			->with('area')
 			->with('subjectType')
 			->with('teacher.manager')						
@@ -78,7 +81,7 @@ class Notebook
 
 			foreach($groupPensum as $key=> $pensum)
 			{
-				array_push($this->pensums, $pensum);
+				array_push($this->pensums_areas, $pensum);
 			}
 		}
 
@@ -94,10 +97,49 @@ class Notebook
 
 			foreach($subgroupPensum as $key=> $pensum)
 			{
-				array_push($this->pensums, $pensum);
+				array_push($this->pensums_areas, $pensum);
 			}
 		}
-		return $this->pensums;
+		return $this->pensums_areas;
+	}
+
+	private function getPensumsAsignatgures()
+	{
+		$groupEnrollment = $this->enrollment->group()->first();
+		$subgroupEnrollment = $this->enrollment->subgroups()->first();
+
+		$groupPensum = array();
+		$SubGroupPensum = array();
+
+		if(!is_null($groupEnrollment))
+		{
+			$groupPensum = $groupEnrollment->pensums()
+			->with('area')
+			->with('subjectType')
+			->with('teacher.manager')						
+			->orderBy('order', 'asc')
+			->get();
+
+			foreach($groupPensum as $key=> $pensum)
+			{
+				array_push($this->pensums_asignatures, $pensum);
+			}
+		}
+
+		if(!is_null($subgroupEnrollment))
+		{
+			$subgroupPensum = SubGroupPensum::where('sub_group_id', '=', $subgroupEnrollment->id)
+			->with('area')
+			->with('subjectType')
+			->orderBy('order', 'asc')
+			->get(); 
+
+			foreach($subgroupPensum as $key=> $pensum)
+			{
+				array_push($this->pensums_asignatures, $pensum);
+			}
+		}
+		return $this->pensums_asignatures;
 	}
 
 	private function getPeriods()
@@ -170,15 +212,19 @@ class Notebook
 	public function create()
 	{
 
-		$this->pensums = $this->getPensums();
-		// return $this->pensums;
+		$this->pensums_areas = $this->getPensumsAreas();
+		$this->pensums_asignatures = $this->getPensumsAsignatgures();
+		
+		// return $this->pensums_areas;
+		// return $this->resolveAverageAreas(874, 8, 1, 1);
+		
 		$this->noteBook = array(
 			'tittle'				=>	'INFORME DESCRIPTIVO Y VALORATIVO',
 			'tittle_if' 			=> 	'INFORME DE EVALUACIÓN FINAL DEL PROCESO FORMATIVO',
 			'tittle_general_report'	=>	'INFORME GENERAL DE PERIODO',
 			'current_period' 		=> 	$this->current_period,
 			'date' 					=> 	date('Y-m-d'),
-			'student' 				=> 	$this->enrollment,
+			'student' 				=> 	$this->enrollment->student,
 			'group'					=>	$this->group,
 			'director'				=>	$this->group->director()->first()->manager,
 			'grade' 				=> 	$this->group->grade,
@@ -194,8 +240,6 @@ class Notebook
 
 		// Resolvemos las areas, asignaturas y notas de todos los periodos
 		foreach ($this->getPeriods() as $key => $periodW) {
-
-			$this->average_area = NotesFinal::getAverage($this->request->group, $this->institution->id, 1, $periodW->periods_id);
 
 			array_push($this->noteBook['periods'], array(
 					'code_working_day_periods'	=> 	$periodW->code_working_day_periods,
@@ -217,6 +261,38 @@ class Notebook
 		// $this->noteBook = $response;
 
 		return $this->noteBook;
+	}
+
+	private function resolveAverageAreas($institution_id, $school_year_id, $period_id)
+	{
+
+		$groupEnrollment = $this->enrollment->group()->first();
+		$subgroupEnrollment = $this->enrollment->subgroups()->first();
+
+		$averageGroup = array();
+		$averageSubGroup = array();
+
+		$averageGroup = NotesFinal::getAverageGroupPensum($groupEnrollment->id, $institution_id, $school_year_id, $period_id);
+		$averageSubGroup = NotesFinal::getAverageSubGroupPensum($subgroupEnrollment->id, 8, 1, 1);
+
+		if(!is_null($averageGroup))
+		{
+			foreach ($averageGroup as $key => $average) {
+				array_push($this->average_areas, $average);
+			}
+		}
+
+		if(!is_null($averageSubGroup))
+		{
+			foreach ($averageSubGroup as $key => $average) {
+				array_push($this->average_areas, $average);
+			}
+		}
+		
+
+		return $this->average_areas;
+
+
 	}
 
 	private function resolveAveragePeriod(Enrollment $enrollment, $school_year_id, $period)
@@ -242,10 +318,11 @@ class Notebook
 	{
 		
 		$response = array();
+		$averageA = $this->resolveAverageAreas($this->institution->id, 1, $period_id);
 
-		foreach ($this->pensums as $key => $pensum) 
+		foreach ($this->pensums_areas as $key => $pensum) 
 		{
-			foreach($this->average_area as $keyAA => $average)
+			foreach($averageA as $keyAA => $average)
 			{
 				if($average->enrollment_id == $enrollment->id && $average->areas_id == $pensum->areas_id)
 				{
@@ -277,7 +354,7 @@ class Notebook
 	{
 		$response = array();
 
-		foreach ($this->pensums as $key => $pensum) {
+		foreach ($this->pensums_asignatures as $key => $pensum) {
 			
 			if($area_id == $pensum->areas_id)
 			array_push(
