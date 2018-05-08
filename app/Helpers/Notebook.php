@@ -272,27 +272,25 @@ class Notebook
 		$averageGroup = array();
 		$averageSubGroup = array();
 
-		$averageGroup = NotesFinal::getAverageGroupPensum($groupEnrollment->id, $institution_id, $school_year_id, $period_id);
-		$averageSubGroup = NotesFinal::getAverageSubGroupPensum($subgroupEnrollment->id, 8, 1, 1);
-
-		if(!is_null($averageGroup))
+		if(!is_null($groupEnrollment))
 		{
+			$averageGroup = NotesFinal::getAverageGroupPensum($groupEnrollment->id, $institution_id, $school_year_id, $period_id);
+
 			foreach ($averageGroup as $key => $average) {
 				array_push($this->average_areas, $average);
 			}
 		}
 
-		if(!is_null($averageSubGroup))
+		if(!is_null($subgroupEnrollment))
 		{
+			$averageSubGroup = NotesFinal::getAverageSubGroupPensum($subgroupEnrollment->id, $institution_id, $school_year_id, $period_id);
+
 			foreach ($averageSubGroup as $key => $average) {
 				array_push($this->average_areas, $average);
 			}
 		}
-		
 
 		return $this->average_areas;
-
-
 	}
 
 	private function resolveAveragePeriod(Enrollment $enrollment, $school_year_id, $period)
