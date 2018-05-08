@@ -178,7 +178,7 @@ class Notebook extends Fpdf
 			$this->SetFont('Arial','B',8);
 
 			// VERIFICAMOS LA CALIFICACIÓN DEL AREA
-			if($area['note'] == 0):
+			if($area['note'] > 0):
 				// PREGUNTAMOS SI EL PERIODO IF ESTA ACTIVO
 				if(!$this->data['config']['periodIF']):
 					// PREGUNTAMOS SI LAS AREAS NO SE DESACTIVAN
@@ -186,7 +186,7 @@ class Notebook extends Fpdf
 
 						$this->Cell(150, $this->_h_c, utf8_decode($area['area']), 'TBL',0, 'L', true);
 						$this->Cell(17, $this->_h_c, $area['note'], 'TB',0, 'C', true);
-						$this->Cell(0, $this->_h_c, strtoupper($area['valoration']), 'TBR', 0, 'C', true);
+						$this->Cell(0, $this->_h_c, strtoupper($area['valoration']['name']), 'TBR', 0, 'C', true);
 					
 					else:
 
@@ -225,7 +225,7 @@ class Notebook extends Fpdf
 
 			if($this->determineShowValoration($asignature)):
 				
-				// if($asignature['nota'] > 0):
+				if($asignature['final_note']['value'] > 0):
 
 					if($this->data['config']['periodIF']):
 						// foreach($this->finalReportList as $report):
@@ -257,7 +257,7 @@ class Notebook extends Fpdf
 						$this->showTeacher($asignature['teacher']);
 					endif;
 
-				// endif;
+				endif;
 
 				
 			endif;

@@ -82,7 +82,7 @@ class GeneralReport extends Fpdf
 
 	public function subHeader()
 	{
-		$this->Cell(0, 212, '', 1,0);
+		$this->Cell(0, 222, '', 1,0);
 	    $this->Ln(0);	
 	}
 
