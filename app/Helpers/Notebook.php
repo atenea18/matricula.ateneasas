@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Enrollment;
 use App\Group;
 use App\GroupPensum;
+use App\SubGroupPensum;
 use App\EvaluationPeriod;
 use App\NotesFinal;
 use App\PeriodWorkingday;
@@ -27,6 +28,7 @@ class Notebook
 	private $general_observation = array();
 	private $general_report = array();
 	private $average_area = array();
+	private $enrollment = array();
 
 
 	// 
@@ -46,17 +48,56 @@ class Notebook
 
 	private function executeAllQueryGlobal()
 	{
-		$this->pensums =  GroupPensum::where('group_id', '=', $this->request->group)
-							->with('area')
-							->with('subjectType')
-							->with('teacher.manager')						
-							->get()
-							->unique('areas_id')
-							->values();
 
 		$this->group = Group::findOrFail($this->request->group);
 
 		$this->current_period = PeriodWorkingday::findOrFail($this->request->period);
+		
+		// $this->getPensums();
+	}
+
+	private function getPensums()
+	{
+
+		$groupEnrollment = $this->enrollment->group()->first();
+		$subgroupEnrollment = $this->enrollment->subgroups()->first();
+
+		$groupPensum = array();
+		$SubGroupPensum = array();
+
+		if(!is_null($groupEnrollment))
+		{
+			$groupPensum = GroupPensum::where('group_id', '=', $this->request->group)
+			->with('area')
+			->with('subjectType')
+			->with('teacher.manager')						
+			->orderBy('order', 'asc')
+			->get()
+			->unique('areas_id')
+			->values();
+
+			foreach($groupPensum as $key=> $pensum)
+			{
+				array_push($this->pensums, $pensum);
+			}
+		}
+
+		if(!is_null($subgroupEnrollment))
+		{
+			$subgroupPensum = SubGroupPensum::where('sub_group_id', '=', $subgroupEnrollment->id)
+			->with('area')
+			->with('subjectType')
+			->orderBy('order', 'asc')
+			->get()
+			->unique('areas_id')
+			->values(); 
+
+			foreach($subgroupPensum as $key=> $pensum)
+			{
+				array_push($this->pensums, $pensum);
+			}
+		}
+		return $this->pensums;
 	}
 
 	private function getPeriods()
@@ -97,6 +138,11 @@ class Notebook
 			];
 	}
 
+	public function setEnrollment($enrollment)
+	{
+		$this->enrollment = $enrollment;
+	}
+
 	public function setScaleEvaluation($scaleEvaluation)
 	{	
 		$this->scaleEvaluation = $scaleEvaluation;
@@ -121,16 +167,18 @@ class Notebook
 		)->first();
 	}
 
-	public function create($enrollment)
+	public function create()
 	{
 
+		$this->pensums = $this->getPensums();
+		// return $this->pensums;
 		$this->noteBook = array(
 			'tittle'				=>	'INFORME DESCRIPTIVO Y VALORATIVO',
 			'tittle_if' 			=> 	'INFORME DE EVALUACIÓN FINAL DEL PROCESO FORMATIVO',
 			'tittle_general_report'	=>	'INFORME GENERAL DE PERIODO',
 			'current_period' 		=> 	$this->current_period,
 			'date' 					=> 	date('Y-m-d'),
-			'student' 				=> 	$enrollment->student,
+			'student' 				=> 	$this->enrollment,
 			'group'					=>	$this->group,
 			'director'				=>	$this->group->director()->first()->manager,
 			'grade' 				=> 	$this->group->grade,
@@ -138,8 +186,8 @@ class Notebook
 			'institution'			=>	$this->institution,
 			'periods'				=> 	array(),
 			'config'				=>	$this->config,
-			'general_observation'	=>	$this->setGeneralObservation($enrollment),
-			'general_report'		=>	$this->setGeneralReport($enrollment),
+			'general_observation'	=>	$this->setGeneralObservation($this->enrollment),
+			'general_report'		=>	$this->setGeneralReport($this->enrollment),
 			'valueScale'			=>	$this->scaleEvaluation,
 			'evaluation_parameters'	=>	$this->evaluation_parameters,
 		);
@@ -159,9 +207,9 @@ class Notebook
 					'periods_state_id'			=>	$periodW->periods_state_id,
 					'school_year_id'			=>	$periodW->school_year_id,
 					'areas'						=>	$this->resolveAreas(
-						$enrollment, $this->request->group, $periodW->periods_id
+						$this->enrollment, $this->request->group, $periodW->periods_id
 					),
-					'average'					=>	$this->resolveAveragePeriod($enrollment, 1, $periodW->periods_id),
+					'average'					=>	$this->resolveAveragePeriod($this->enrollment, 1, $periodW->periods_id),
 				)
 			);
 		}
@@ -195,9 +243,9 @@ class Notebook
 		
 		$response = array();
 
-		foreach($this->average_area as $keyAA => $average)
+		foreach ($this->pensums as $key => $pensum) 
 		{
-			foreach ($this->pensums as $key => $pensum) 
+			foreach($this->average_area as $keyAA => $average)
 			{
 				if($average->enrollment_id == $enrollment->id && $average->areas_id == $pensum->areas_id)
 				{
@@ -349,15 +397,6 @@ class Notebook
 				} catch (\Exception $e) {
 					
 				}
-				// array_push(
-				// 	$response, 
-				// 	[
-				// 		'expression'		=>	$scale,
-				// 		'message'			=>	$messageScale->name,
-				// 		'reinforcement'		=>	$message->reinforcement,
-				// 		'recommendation'	=>	$messageScale->recommendation,
-				// 	]
-				// );
 			}
 		}
 
@@ -401,15 +440,6 @@ class Notebook
 				 	array_push($response, $messageScale);
 
 				}catch(\Exception $e){}
-				// array_push(
-				// 	$response, 
-				// 	[
-				// 		'expression'		=>	$this->getScaleByNote($noteAsig),
-				// 		'message'			=>	$notePerformances->performance->message->messageScale()->first()->name,
-				// 		'reinforcement'		=>	$notePerformances->performance->message->reinforcement,
-				// 		'recommendation'	=>	$notePerformances->performance->message->messageScale()->first()->recommendation,
-				// 	]
-				// );
 			}
 		}
 

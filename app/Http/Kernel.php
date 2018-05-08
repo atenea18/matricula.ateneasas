@@ -68,5 +68,8 @@ class Kernel extends HttpKernel
         // 
         'teacher_auth' => \App\Http\Middleware\AuthenticateTeacher::class,
         'teacher_guest' => \App\Http\Middleware\RedirectIfTeacherAuthenticated::class,
+
+        // 
+        'cors' => \App\Http\Middleware\Cors::class, 
     ];
 }
