@@ -3,6 +3,7 @@
         <div class="col-md-12">
             <div>
                 <tabs>
+
                     <tab name="Ver Grupos">
                         <div class="row">
                             <div class="col-md-12">

@@ -3,6 +3,7 @@
 /public/hot
 /public/storage
 /public/pdf
+/public/img
 /public/uploads/images
 /storage/*.key
 /.idea

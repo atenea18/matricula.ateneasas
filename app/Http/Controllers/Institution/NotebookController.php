@@ -74,7 +74,7 @@ class NotebookController extends Controller
             $notebook->setScaleEvaluation($scale);
             $notebook->setEvaluationParameters($eval_parameter);
             $data = $notebook->create(Enrollment::findOrFail($enrollment));
-
+            
             // return response()->json($data);
             // dd($data);
 
@@ -128,6 +128,7 @@ class NotebookController extends Controller
                 $pdi->useTemplate($tpl); 
             }
         }
+
         $pdi->Output('I',$fileName.'.pdf');
 
     }

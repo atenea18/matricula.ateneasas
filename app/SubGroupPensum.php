@@ -43,4 +43,16 @@ class SubGroupPensum extends Model
     {
         return $this->belongsTo(SubjectType::class, 'subjects_type_id');
     }
+
+    public static function find($group_id)
+    {
+        return self::select(
+            'asignatures.abbreviation', 'asignatures.name',
+            'sub_group_pensum.asignatures_id', 'sub_group_pensum.ihs', 'sub_group_pensum.order', 'sub_group_pensum.percent')
+            ->join('asignatures', 'asignatures.id', '=', 'sub_group_pensum.asignatures_id')
+            ->where('sub_group_pensum.sub_group_id', '=', $group_id)
+            ->get();
+
+        // return $asignatures;
+    }
 }

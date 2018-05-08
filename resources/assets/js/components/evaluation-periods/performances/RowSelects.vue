@@ -49,7 +49,8 @@
                     v-model="objectSelectParameter.id">
                 <option :value="0">Seleccionar</option>
                 <template v-for="row in parameters">
-                    <option :value="row.id">
+
+                    <option v-if="row.evaluation_type_id==1" :value="row.id">
                         {{ row.parameter }}
                     </option>
                 </template>

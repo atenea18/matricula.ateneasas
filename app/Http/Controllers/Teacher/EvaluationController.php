@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Asignature;
 use App\Enrollment;
+use App\EvaluationParameter;
 use App\EvaluationPeriod;
 use App\Grade;
 use App\Group;
@@ -56,6 +57,7 @@ class EvaluationController extends Controller
             ->with('sub_pensum', $sub_pemsun);
 
     }
+
 
     public function evaluationPeriods($group_id, $type, $asignatures_id)
     {
@@ -219,7 +221,8 @@ class EvaluationController extends Controller
     public function getAsignatureById(Request $request)
     {
         if ($request->isGroup == "true") {
-            $asignatures = Asignature::select('asignatures.id', 'asignatures.name', 'pensum.areas_id', 'pensum.grade_id', 'pensum.id as pensum_id')
+            $asignatures = Asignature::select('asignatures.id', 'asignatures.name', 'pensum.areas_id', 'pensum.grade_id', 'pensum.id as pensum_id',
+                'asignatures.subjects_type_id')
                 ->join('pensum', 'pensum.asignatures_id', '=', 'asignatures.id')
                 ->where('pensum.grade_id', '=', $request->grade_id)
                 ->where('asignatures.id', '=', $request->asignatureid)
@@ -686,10 +689,39 @@ class EvaluationController extends Controller
         $teacher = Auth::guard('teachers')->user()->teachers()->first();
         $institution = Institution::where('id', '=', $teacher->institution_id)->get();
 
+
         $parameters = $institution[0]->evaluationParameters()
             ->with('notesParameter')
             ->with('schoolYear')
             ->get();
+
+
+        $notes = DB::table('evaluation_parameters')
+            ->select('notes_parameters.name as notes_parameters_name', 'notes_parameters.id as notes_parameters_id',
+                'evaluation_parameters.parameter as evaluation_parameters_name',
+                'evaluation_parameters.id as evaluation_parameters_id',
+                'notes_parameters_criterias.id as notes_parameters_criterias_id',
+                'criterias.id as criterias_id', 'criterias.parameter as criterias_name',
+                'criterias.abbreviation as criterias_abbreviation')
+            ->join('notes_parameters','notes_parameters.evaluation_parameter_id', '=', 'evaluation_parameters.id')
+            ->join('notes_parameters_criterias', 'notes_parameters_criterias.notes_parameters_id','=', 'notes_parameters.id')
+            ->join('criterias', 'criterias.id','=','notes_parameters_criterias.criterias_id')
+            ->where('evaluation_parameters.institution_id', '=', $teacher->institution_id)
+            ->get();
+
+
+        foreach ($parameters as $key => $para){
+            if($para->evaluation_type_id == 2){
+                foreach ($para->notesParameter as $note){
+                    foreach ($notes as $noteAux){
+                        if($note->id == $noteAux->notes_parameters_id){
+                            $note->criterias = $noteAux;
+                        }
+                    }
+                }
+            }
+        }
+
 
         return $parameters;
     }

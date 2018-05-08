@@ -29,6 +29,7 @@ class Consolidate extends Fpdf
 	{
 		// To be implemented in your own inherited class
 		// Logo
+
 		if($this->institution->picture != NULL)
 			$this->Image(
 				Storage::disk('uploads')->url(
@@ -114,7 +115,7 @@ class Consolidate extends Fpdf
 		$this->Cell($this->_with_CE, 4, 'APELLIDOS Y NOMBRES DE ESTUDIANTE', 1,0, 'C', true);
 		$this->Cell(8, 4, 'TAV', 1, 0, 'C', true);
 		
-		// 
+		//
 		foreach($this->asignatures as $key => $asignature)
 		{
 			$this->Cell(10, 4, substr(utf8_decode($asignature->abbreviation), 0, 3), 1, 0, 'C', true);	
@@ -150,7 +151,7 @@ class Consolidate extends Fpdf
 		$hits = 0;
 
 		foreach ($student->notes_final as $key => $note) {
-			
+
 			foreach($this->asignatures as $keyA => $asignature)
 			{
 				if($note->asignatures_id == $asignature->asignatures_id)
@@ -163,7 +164,7 @@ class Consolidate extends Fpdf
 
 	private function showAsignatures($student)
 	{
-		
+
 		foreach($this->asignatures as $keyA => $asignature)
 			$this->Cell(10, 4, $this->getNote($student, $asignature), 1, 0, 'C', false);
 	}
@@ -172,7 +173,7 @@ class Consolidate extends Fpdf
 	{
 		foreach ($student->notes_final as $key => $note) 
 			if($note->asignatures_id == $asignature->asignatures_id)
-				return round($note->value);
+				return round($note->value,2)!=0?round($note->value,2):'';
 
 		return "";
 	}
