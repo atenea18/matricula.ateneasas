@@ -98,7 +98,5 @@ class GroupPensum extends Model
             ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
             ->where('group_pensum.group_id', '=', $group_id)
             ->get();
-
-        // return $asignatures;
     }
 }

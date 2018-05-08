@@ -48,7 +48,7 @@ class Notebook extends Fpdf
 	    $this->SetFont('Arial','B',9);
 	    // NOMBRE DE LA SEDE
 	    if(!empty($this->data['headquarter'])):
-		    $this->Cell(0,4, 'SEDE: '.strtoupper(($this->data['headquarter']->name)), 0, 0, 'C');
+		    $this->Cell(0,4, 'SEDE: '.utf8_decode(strtoupper(($this->data['headquarter']->name))), 0, 0, 'C');
 		    
 	    endif;
 
@@ -186,7 +186,7 @@ class Notebook extends Fpdf
 
 						$this->Cell(150, $this->_h_c, utf8_decode($area['area']), 'TBL',0, 'L', true);
 						$this->Cell(17, $this->_h_c, $area['note'], 'TB',0, 'C', true);
-						$this->Cell(0, $this->_h_c, strtoupper($area['valoration']['name']), 'TBR', 0, 'C', true);
+						$this->Cell(0, $this->_h_c, utf8_decode(strtoupper($area['valoration']['name'])), 'TBR', 0, 'C', true);
 					
 					else:
 
@@ -273,23 +273,17 @@ class Notebook extends Fpdf
 	{
 		foreach($this->data['periods'] as $keyPeriod => $period)
 		{
-
-
 			foreach($period['areas'] as $keyAreas => $area)
 			{
 				foreach($area['asignatures'] as $keyAsignature => $asignaturee)
 				{
-
 					if(isset($asignaturee['final_note']['value']))
 					{
-
 						if($asignature['asignature_id'] == $asignaturee['asignature_id'] && $asignaturee['final_note']['value'] > 0 )
 						{
-
 							return true;
 						}
 					}
-
 				}
 			}
 		}
@@ -342,7 +336,7 @@ class Notebook extends Fpdf
 
 		else:
 
-			$this->Cell(0, $this->_h_c, $valoration, 'R', 0, 'C');
+			$this->Cell(0, $this->_h_c, ($valoration), 'R', 0, 'C');
 		endif;
 
 		$this->Ln($height);
@@ -745,7 +739,6 @@ class Notebook extends Fpdf
 	*/
 	private function showPeriodPositions($period)
 	{
-
 		$position = (isset($period['average']['position'])) ? $period['average']['position'] : null;
 
 		$this->Cell(6, $this->_h_c, '', 1,0, 'C');

@@ -68,13 +68,16 @@ class NotebookController extends Controller
 
         $eval_parameter = $this->institution->evaluationParameters()->where('school_year_id', '=', 1)->get();
 
-    	foreach($request->enrollments as $key => $enrollment)
+    	foreach($request->enrollments as $key => $enrollment_id)
     	{
+            $enrollment = Enrollment::findOrFail($enrollment_id);
+
             $notebook = new Notebook($request, $this->institution);
             $notebook->setScaleEvaluation($scale);
             $notebook->setEvaluationParameters($eval_parameter);
-            $data = $notebook->create(Enrollment::findOrFail($enrollment));
-            
+            $notebook->setEnrollment($enrollment);
+            $data = $notebook->create();
+
             // return response()->json($data);
             // dd($data);
 
