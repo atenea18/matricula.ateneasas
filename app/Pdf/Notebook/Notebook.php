@@ -641,10 +641,13 @@ class Notebook extends Fpdf
 	*/
 	private function showTeacher($teacher)
 	{	
-		$this->SetFont('Arial','B',8);
-		$this->Cell(0, $this->_h_c,'DOCENTE: '. utf8_decode($teacher->manager->fullNameInverse), 'LR',0,'R');
+		if(!is_null($teacher))
+		{
+			$this->SetFont('Arial','B',8);
+			$this->Cell(0, $this->_h_c,'DOCENTE: '. utf8_decode($teacher->manager->fullNameInverse), 'LR',0,'R');
 
-		$this->Ln($this->_h_c);
+			$this->Ln($this->_h_c);
+		}
 	}
 
 	/**
