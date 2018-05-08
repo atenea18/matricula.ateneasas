@@ -28,6 +28,7 @@ class Notebook
 	private $current_period = array();
 	private $general_observation = array();
 	private $general_report = array();
+	private $average_area = array();
 
 
 	// 
@@ -125,8 +126,6 @@ class Notebook
 	public function create($enrollment)
 	{
 
-		// return $this->resolvePerformances(3, 1, $enrollment);
-
 		$this->noteBook = array(
 			'tittle'				=>	'INFORME DESCRIPTIVO Y VALORATIVO',
 			'tittle_if' 			=> 	'INFORME DE EVALUACIÓN FINAL DEL PROCESO FORMATIVO',
@@ -150,26 +149,23 @@ class Notebook
 		// Resolvemos las areas, asignaturas y notas de todos los periodos
 		foreach ($this->getPeriods() as $key => $periodW) {
 
-			// return (Integer) $this->request->period;
-			// return ($this->request->period <= $periodW->period->name);
-			// if( (Integer) $periodW->period->name <= (Integer) $this->request->period)
-			// {
-				array_push($this->noteBook['periods'], array(
-						'code_working_day_periods'	=> 	$periodW->code_working_day_periods,
-						'percent'					=>	$periodW->percent,
-						'start_date'				=>	$periodW->start_date,
-						'end_date'					=>	$periodW->end_date,
-						'working_day_id'			=>	$periodW->working_day_id,
-						'periods_id'				=>	$periodW->periods_id,
-						'periods_state_id'			=>	$periodW->periods_state_id,
-						'school_year_id'			=>	$periodW->school_year_id,
-						'areas'						=>	$this->resolveAreas(
-							$enrollment, $this->request->group, $periodW->periods_id
-						),
-						'average'					=>	$this->resolveAveragePeriod($enrollment, 1, $periodW->periods_id),
-					)
-				);
-			// }
+			$this->average_area = NotesFinal::getAverage($this->request->group, $this->institution->id, 1, $periodW->periods_id);
+
+			array_push($this->noteBook['periods'], array(
+					'code_working_day_periods'	=> 	$periodW->code_working_day_periods,
+					'percent'					=>	$periodW->percent,
+					'start_date'				=>	$periodW->start_date,
+					'end_date'					=>	$periodW->end_date,
+					'working_day_id'			=>	$periodW->working_day_id,
+					'periods_id'				=>	$periodW->periods_id,
+					'periods_state_id'			=>	$periodW->periods_state_id,
+					'school_year_id'			=>	$periodW->school_year_id,
+					'areas'						=>	$this->resolveAreas(
+						$enrollment, $this->request->group, $periodW->periods_id
+					),
+					'average'					=>	$this->resolveAveragePeriod($enrollment, 1, $periodW->periods_id),
+				)
+			);
 		}
 
 		// $this->noteBook = $response;
@@ -201,22 +197,30 @@ class Notebook
 		
 		$response = array();
 
-		foreach ($this->pensums as $key => $pensum) {
-			array_push(
-				$response, 
-				array(
-					'pensum_id'			=>	$pensum->id,
-					'area_id'			=>	$pensum->areas_id,
-					'area'				=> 	$pensum->area->name,
-					'abbreviation'		=>	$pensum->abbreviation,
-					'subjects_type_id'	=> 	$pensum->subjectType->name,
-					'note'				=> 	0,
-					'valoration'		=>	'espera',
-					'asignatures'		=>	$this->resolveAsignatures(
-						$pensum->areas_id, $enrollment, $period_id
-					)
-				)
-			);
+		foreach($this->average_area as $keyAA => $average)
+		{
+			foreach ($this->pensums as $key => $pensum) 
+			{
+				if($average->enrollment_id == $enrollment->id && $average->areas_id == $pensum->areas_id)
+				{
+					$note = $this->determineRound($average->average, 1);
+					array_push(
+						$response, 
+						array(
+							'pensum_id'			=>	$pensum->id,
+							'area_id'			=>	$pensum->areas_id,
+							'area'				=> 	$pensum->area->name,
+							'abbreviation'		=>	$pensum->abbreviation,
+							'subjects_type_id'	=> 	$pensum->subjectType->name,
+							'note'				=> 	$note,
+							'valoration'		=>	$this->getScaleByNote($note),
+							'asignatures'		=>	$this->resolveAsignatures(
+								$pensum->areas_id, $enrollment, $period_id
+							)
+						)
+					);
+				}
+			}
 		}
 
 		return $response;

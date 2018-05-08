@@ -76,6 +76,7 @@ class NotebookController extends Controller
             $data = $notebook->create(Enrollment::findOrFail($enrollment));
 
             // return response()->json($data);
+            // dd($data);
 
             $fileName = str_replace(' ', '', $data['student']->fullNameInverse);
 
@@ -87,10 +88,13 @@ class NotebookController extends Controller
                 $report->Output($path.$fileName."ReporteGeneralPeriodo.pdf", "F");
             }
 
-            $pdf = new NotebookPDF('p', 'mm', 'letter');
-            $pdf->setData($data);
-            $pdf->create();
-            $pdf->Output($path.$fileName."boletin.pdf", "F");
+            if($data['grade']->id > 4)
+            {
+                $pdf = new NotebookPDF('p', 'mm', 'letter');
+                $pdf->setData($data);
+                $pdf->create();
+                $pdf->Output($path.$fileName."boletin.pdf", "F");
+            }
     	}
 
         $this->merge($path, $this->institution->id.'boletines'.time(), 'p');
