@@ -15,6 +15,11 @@ trait utf8Helper
 		$content = $text;
 		$decoded = false;
 
+		if(strstr($content, '&ndash;')){
+			$content = str_replace('&ndash;', '-', $content);
+			$decoded = true;
+		}
+
 		if(strstr($content, '&eacute;')){
 			$content = str_replace('&eacute;', 'é', $content);
 			$decoded = true;

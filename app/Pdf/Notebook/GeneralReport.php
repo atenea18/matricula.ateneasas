@@ -103,10 +103,13 @@ class GeneralReport extends Fpdf
 
 		$border = 0;
 		foreach($this->content as $key => $p):
-
 			$this->determineCell($this->hideTilde($p), $border);
-
 		endforeach;
+
+		// Activanos el doble cara
+		if($this->data['config']['doubleFace']	):
+			$this->DoubleFace();
+		endif;
 	}
 
 	/**
@@ -128,6 +131,17 @@ class GeneralReport extends Fpdf
 		$this->Ln(4);
 	}
 
+	/**
+	*
+	*
+	*/
+	private function DoubleFace()
+	{
+		if($this->PageNo()% 2 != 0 && $this->PageNo() >= 1):
+			$this->AddPage();
+		endif;
+	}
+	
 	function footer()
 	{
 		// Posición: a 1,5 cm del final
