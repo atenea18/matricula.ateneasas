@@ -475,7 +475,7 @@ class Notebook
 				 	$scale = $this->getScaleByNote($note->value);
 
 				 	$messageScale = null;
-				 	$messageScale = (strtolower($scale->abbreviation) == 'sup') ? $message : $message->messageScale()->where('scale_evaluations_id', '=', $scale->id)->first();
+				 	$messageScale = (strtolower($scale->abbreviation) == 's') ? $message : $message->messageScale()->where('scale_evaluations_id', '=', $scale->id)->first();
 
 				 	array_push($response, $messageScale);
 				} catch (\Exception $e) {
@@ -517,7 +517,7 @@ class Notebook
 					$scale = $this->getScaleByNote($noteAsig);
 
 					$messageScale = null;
-				 	$messageScale = (strtolower($scale->abbreviation) == 'sup') ? $message : $message->messageScale()->where('scale_evaluations_id', '=', $scale->id)->first();
+				 	$messageScale = (strtolower($scale->abbreviation) == 's') ? $message : $message->messageScale()->where('scale_evaluations_id', '=', $scale->id)->first();
 
 				 	array_push($response, $messageScale);
 

@@ -28,7 +28,7 @@ class ScaleEvaluation extends Model
     public static function getMinScale(Institution $institution)
     {
         return ScaleEvaluation::where([
-            ['abbreviation', '=', 'baj'],
+            ['abbreviation', '=', 'bj'],
             ['school_year_id', '=', 1],
             ['institution_id', '=', $institution->id]
         ])
