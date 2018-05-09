@@ -124,9 +124,11 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         array (
             'Barryvdh\\DomPDF\\' => 16,
             'Barryvdh\\Debugbar\\' => 18,
+            'Barryvdh\\Cors\\' => 14,
         ),
         'A' => 
         array (
+            'Asm89\\Stack\\' => 12,
             'App\\' => 4,
         ),
     );
@@ -346,6 +348,14 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         array (
             0 => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src',
         ),
+        'Barryvdh\\Cors\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/barryvdh/laravel-cors/src',
+        ),
+        'Asm89\\Stack\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
@@ -436,6 +446,7 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         'App\\BloodType' => __DIR__ . '/../..' . '/app/BloodType.php',
         'App\\Capacity' => __DIR__ . '/../..' . '/app/Capacity.php',
         'App\\City' => __DIR__ . '/../..' . '/app/City.php',
+        'App\\ConfigInstitution' => __DIR__ . '/../..' . '/app/ConfigInstitution.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Constancy' => __DIR__ . '/../..' . '/app/Constancy.php',
         'App\\Constancy_type' => __DIR__ . '/../..' . '/app/Constancy_type.php',
@@ -469,6 +480,7 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
         'App\\Http\\Controllers\\Auth\\ResetPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ResetPasswordController.php',
+        'App\\Http\\Controllers\\ConfigController' => __DIR__ . '/../..' . '/app/Http/Controllers/ConfigController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\EnrollmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/EnrollmentController.php',
         'App\\Http\\Controllers\\ExcelController' => __DIR__ . '/../..' . '/app/Http/Controllers/ExcelController.php',
@@ -520,6 +532,7 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         'App\\Http\\Middleware\\AuthenticateAdmin' => __DIR__ . '/../..' . '/app/Http/Middleware/AuthenticateAdmin.php',
         'App\\Http\\Middleware\\AuthenticateInstitution' => __DIR__ . '/../..' . '/app/Http/Middleware/AuthenticateInstitution.php',
         'App\\Http\\Middleware\\AuthenticateTeacher' => __DIR__ . '/../..' . '/app/Http/Middleware/AuthenticateTeacher.php',
+        'App\\Http\\Middleware\\Cors' => __DIR__ . '/../..' . '/app/Http/Middleware/Cors.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\RedirectIfAdminAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAdminAuthenticated.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
@@ -555,6 +568,7 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         'App\\Notifications\\InstitutionResetPasswordNotification' => __DIR__ . '/../..' . '/app/Notifications/InstitutionResetPasswordNotification.php',
         'App\\Pdf\\Constancy\\Study' => __DIR__ . '/../..' . '/app/Pdf/Constancy/Study.php',
         'App\\Pdf\\Merge\\Merge' => __DIR__ . '/../..' . '/app/Pdf/Merge/Merge.php',
+        'App\\Pdf\\Notebook\\GeneralReport' => __DIR__ . '/../..' . '/app/Pdf/Notebook/GeneralReport.php',
         'App\\Pdf\\Notebook\\Notebook' => __DIR__ . '/../..' . '/app/Pdf/Notebook/Notebook.php',
         'App\\Pdf\\Sheet\\EvaluationSheet' => __DIR__ . '/../..' . '/app/Pdf/Sheet/EvaluationSheet.php',
         'App\\Pdf\\Sheet\\StudentAttendance' => __DIR__ . '/../..' . '/app/Pdf/Sheet/StudentAttendance.php',
@@ -591,7 +605,13 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         'App\\Zone' => __DIR__ . '/../..' . '/app/Zone.php',
         'App\\stateManager' => __DIR__ . '/../..' . '/app/stateManager.php',
         'ArithmeticError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/ArithmeticError.php',
+        'Asm89\\Stack\\Cors' => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack/Cors.php',
+        'Asm89\\Stack\\CorsService' => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack/CorsService.php',
         'AssertionError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/AssertionError.php',
+        'Barryvdh\\Cors\\HandleCors' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/HandleCors.php',
+        'Barryvdh\\Cors\\HandlePreflight' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/HandlePreflight.php',
+        'Barryvdh\\Cors\\LumenServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/LumenServiceProvider.php',
+        'Barryvdh\\Cors\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/ServiceProvider.php',
         'Barryvdh\\Debugbar\\Console\\ClearCommand' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/Console/ClearCommand.php',
         'Barryvdh\\Debugbar\\Console\\PublishCommand' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/Console/PublishCommand.php',
         'Barryvdh\\Debugbar\\Controllers\\AssetController' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/Controllers/AssetController.php',

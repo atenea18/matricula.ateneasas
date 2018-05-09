@@ -28,6 +28,7 @@ class RecoveryController extends ApiController
 
         $scaleEvaluations = ScaleEvaluation::getMinScale($institution);
 
+        // dd( $scaleEvaluations );
         $students = $group->recovery($asignature, $period, $scaleEvaluations);
 
         return $this->showAll($students);

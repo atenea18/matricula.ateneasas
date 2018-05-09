@@ -183,6 +183,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class,
         Codedge\Fpdf\FpdfServiceProvider::class,
         Laraveles\Spanish\SpanishServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,

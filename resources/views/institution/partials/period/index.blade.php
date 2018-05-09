@@ -90,7 +90,7 @@
             retrieve: true,
             "ajax": {
             	"method": "GET",
-            	"url": "{{env('APP_URL')}}/api/periods/{{$institution->id}}",
+            	"url": "{{env('APP_URL')}}api/periods/{{$institution->id}}",
             },
             "columns": [
                 {
