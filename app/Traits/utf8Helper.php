@@ -12,6 +12,8 @@ trait utf8Helper
 	*/
 	protected function hideTilde($text)
 	{	
+
+		return iconv('UTF-8', 'windows-1252', html_entity_decode($text));
 		$content = $text;
 		$decoded = false;
 
