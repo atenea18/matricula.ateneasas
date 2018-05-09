@@ -56,7 +56,6 @@ class Notebook
 
 		$this->current_period = PeriodWorkingday::findOrFail($this->request->period);
 		
-		// $this->getPensums();
 	}
 
 	private function getPensumsAreas()
@@ -216,7 +215,7 @@ class Notebook
 		$this->pensums_asignatures = $this->getPensumsAsignatgures();
 		
 		// return $this->pensums_areas;
-		// return $this->resolveAverageAreas(874, 8, 1, 1);
+		// return $this->resolveAverageAreas(8, 1, 1);
 		
 		$this->noteBook = array(
 			'tittle'				=>	'INFORME DESCRIPTIVO Y VALORATIVO',
@@ -340,6 +339,7 @@ class Notebook
 							)
 						)
 					);
+					break;
 				}
 			}
 		}
@@ -396,7 +396,7 @@ class Notebook
 		{
 			$note = 0;
 			$overcoming = 0;
-			
+
 			if(!is_null($ev->noteFinal))
 			{
 				$note = $this->determineRound($ev->noteFinal->value, 1);

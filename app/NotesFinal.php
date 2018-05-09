@@ -215,11 +215,11 @@ class NotesFinal extends Model
                 SUM((result.percent/100) * result.value), 
                 SUM(result.value)/SUM((result.value>0))), 2) average, 
             SUM(result.tav) tav,
-            result.areas_id
+            result.areas_id, result.sgName
             from
             (SELECT 
             enrollment.id as 'enrollment_id',
-            student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_areas', sub_group_pensum.percent as 'percent',
+            student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_areas', sub_group_pensum.percent as 'percent', sub_group.name as 'sgName',
             notes_final.`value` as 'value', (notes_final.`value`>0) tav, areas.id as 'areas_id'
             FROM notes_final
             INNER JOIN evaluation_periods ON evaluation_periods.id = notes_final.evaluation_periods_id
