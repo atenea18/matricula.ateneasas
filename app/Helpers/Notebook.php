@@ -27,6 +27,7 @@ class Notebook
 	private $pensums_asignatures = array();
 	
 	private $group = array();
+	private $manager = array();
 	private $current_period = array();
 	private $general_observation = array();
 	private $general_report = array();
@@ -53,6 +54,8 @@ class Notebook
 	{
 
 		$this->group = Group::findOrFail($this->request->group);
+
+		$this->manager = (!is_null($this->group->director()->first())) ? $this->group->director()->first()->manager : null ;
 
 		$this->current_period = PeriodWorkingday::findOrFail($this->request->period);
 		
@@ -216,6 +219,7 @@ class Notebook
 		
 		// return $this->pensums_areas;
 		// return $this->resolveAverageAreas(8, 1, 1);
+		// return $this->resolvePerformances(1, 1, $this->enrollment, 4259);
 		
 		$this->noteBook = array(
 			'tittle'				=>	'INFORME DESCRIPTIVO Y VALORATIVO',
@@ -225,7 +229,7 @@ class Notebook
 			'date' 					=> 	date('Y-m-d'),
 			'student' 				=> 	$this->enrollment->student,
 			'group'					=>	$this->group,
-			'director'				=>	$this->group->director()->first()->manager,
+			'director'				=>	$this->manager,
 			'grade' 				=> 	$this->group->grade,
 			'headquarter'			=>	$this->group->headquarter,
 			'institution'			=>	$this->institution,
@@ -256,8 +260,6 @@ class Notebook
 				)
 			);
 		}
-
-		// $this->noteBook = $response;
 
 		return $this->noteBook;
 	}
@@ -462,7 +464,6 @@ class Notebook
 		->pluck('notes')
 		->collapse();
 
-		// return $notes;
 		$response = array();
 
 		foreach ($notes as $key => $note) {
@@ -503,8 +504,6 @@ class Notebook
 		->get()
 		->pluck('notes')
 		->collapse();
-
-		// return $notes;
 		$response = array();
 
 		foreach ($notes as $key => $note) {

@@ -12,7 +12,7 @@ use App\Helpers\Notebook;
 
 use App\Pdf\Merge\Merge;
 use App\Pdf\Notebook\Notebook as NotebookPDF;
-use App\Pdf\Notebook\GeneralReport;
+use App\Pdf\Notebook\GeneralReport as GeneralReportPDF;
 
 
 use Auth;
@@ -85,13 +85,13 @@ class NotebookController extends Controller
 
             if($data['config']['generalReportPeriod'] && !is_null($data['general_report']))
             {
-                $report = new GeneralReport('p', 'mm', 'letter');
+                $report = new GeneralReportPDF('p', 'mm', 'letter');
                 $report->setData($data);
                 $report->create();
                 $report->Output($path.$fileName."ReporteGeneralPeriodo.pdf", "F");
             }
 
-            if($data['grade']->id > 4)
+            if(!$data['config']['generalReportPeriod'])
             {
                 $pdf = new NotebookPDF('p', 'mm', 'letter');
                 $pdf->setData($data);
