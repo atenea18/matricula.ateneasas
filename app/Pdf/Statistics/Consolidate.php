@@ -24,18 +24,22 @@ class Consolidate extends Fpdf
 	private $_width_mark = 267;
 	private $_with_CE = 75;
 	private $_with_CD = 5.7;
+	private $_with_CA = 10;
 
 	public function Header()
 	{
 		// To be implemented in your own inherited class
 		// Logo
 
-		if($this->institution->picture != NULL)
+		try
+		{
+			if($this->institution->picture != NULL)
 			$this->Image(
 				Storage::disk('uploads')->url(
 					$this->institution->picture
 
 				), 12, 14, 17, 17);
+		}catch(\Exception $e){}
 
 
 		//Marco
@@ -111,6 +115,12 @@ class Consolidate extends Fpdf
 		// 
 		$this->SetFont('Arial','B',7);
 
+		if(count($this->asignatures) > 19)
+		{
+			$this->_with_CA = 8.5;
+			$this->_with_CE = 72;	
+		}
+
 		$this->Cell(5, 4, '#', 1, 0, 'C', true);
 		$this->Cell($this->_with_CE, 4, 'APELLIDOS Y NOMBRES DE ESTUDIANTE', 1,0, 'C', true);
 		$this->Cell(8, 4, 'TAV', 1, 0, 'C', true);
@@ -118,7 +128,7 @@ class Consolidate extends Fpdf
 		//
 		foreach($this->asignatures as $key => $asignature)
 		{
-			$this->Cell(10, 4, substr(utf8_decode($asignature->abbreviation), 0, 3), 1, 0, 'C', true);	
+			$this->Cell($this->_with_CA, 4, substr(utf8_decode($asignature->abbreviation), 0, 3), 1, 0, 'C', true);	
 		}
 
 		$this->Ln(4);
@@ -166,7 +176,7 @@ class Consolidate extends Fpdf
 	{
 
 		foreach($this->asignatures as $keyA => $asignature)
-			$this->Cell(10, 4, $this->getNote($student, $asignature), 1, 0, 'C', false);
+			$this->Cell($this->_with_CA, 4, $this->getNote($student, $asignature), 1, 0, 'C', false);
 	}
 
 	private function getNote($student, $asignature)

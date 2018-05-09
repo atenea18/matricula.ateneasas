@@ -64,8 +64,8 @@ class Notebook extends Fpdf
 	    $this->Cell(90, 4, 'GRUPO: '.$this->data['group']->name, 0, 0, 'L');
 
 	    // DIRECTOR DE GRUPO
-	     $this->Cell(0,4, $this->hideTilde('DIR. DE GRUPO: '.
-	     	    	$this->data['director']->fullName), 0, 0, 'L');
+	     $this->Cell(0,4, (!is_null($this->data['director'])) ? $this->hideTilde('DIR. DE GRUPO: '.
+	     	    	$this->data['director']->fullName) : 'DIR. DE GRUPO: ', 0, 0, 'L');
 	    $this->Ln();
 
 	    // NOMBRE DEL ESTUDIANTE
@@ -801,14 +801,18 @@ class Notebook extends Fpdf
 		endif;
 
 		$this->Ln($this->_h_c * 4);
-		// DIRECTOR DE GRUPO
-		$this->SetFont('Arial','B',8);
-	     $this->Cell(0,4, $this->data['director']->fullName, 0, 0, 'L');
 
-	    $this->Ln();
+		if(!is_null($this->data['director']))
+		{
+			// DIRECTOR DE GRUPO
+			$this->SetFont('Arial','B',8);
+		     $this->Cell(0,4, $this->hideTilde('DIR. DE GRUPO: '.$this->data['director']->fullName), 0, 0, 'L');
 
-	    $this->SetFont('Arial','',8);
-	    $this->Cell(0, $this->_h_c, 'DIRECTOR DE GRUPO', 0,0);
+		    $this->Ln();
+
+		    $this->SetFont('Arial','',8);
+		    $this->Cell(0, $this->_h_c, 'DIRECTOR DE GRUPO', 0,0);
+		}
 	}
 
 	/**
