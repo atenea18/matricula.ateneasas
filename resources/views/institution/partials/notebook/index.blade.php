@@ -164,21 +164,6 @@
 				$("#group").empty().html(html);
 
 			}, 'json');
-
-			// // Se obtiene los periodos de la sede selecionada
-			// $.get("{{env('APP_URL')}}/api/headquarter/"+this.value+"/periods", function(data){
-
-			// 	var html = "<option>- Seleccione un periodo -</option>";
-
-			// 	$.each(data.data, function(indx, ele){
-					
-			// 		html += "<option value='"+ele.id+"'>"+ele.name+"</option>";
-
-			// 	});
-
-			// 	$("#period").empty().html(html);
-
-			// }, 'json');
 		});
 
 		$("#group").change(function(){

@@ -40,7 +40,7 @@ class GeneralReport extends Fpdf
 
 	    // NOMBRE DE LA INSTITUCIÓN
 	    $this->SetFont('Arial','B',12);
-	    $this->Cell(0, 6, utf8_decode($this->data['institution']->name), 0, 0, 'C');
+	    $this->Cell(0, 6, $this->hideTilde($this->data['institution']->name), 0, 0, 'C');
 	    $this->Ln(6);
 
 	    $this->SetFont('Arial','B',9);
@@ -62,13 +62,13 @@ class GeneralReport extends Fpdf
 	    $this->Cell(90, 4, 'GRUPO: '.$this->data['group']->name, 0, 0, 'L');
 
 	    // DIRECTOR DE GRUPO
-	     $this->Cell(0,4, utf8_decode('DIR. DE GRUPO: '.
+	     $this->Cell(0,4, $this->hideTilde('DIR. DE GRUPO: '.
 	     	    	$this->data['director']->fullName), 0, 0, 'L');
 	    $this->Ln();
 
 	    // NOMBRE DEL ESTUDIANTE
 	    $this->Cell(20, 4, '', 0,0);
-	    $this->Cell(90, 4, 'ESTUDIANTE: '.utf8_decode(
+	    $this->Cell(90, 4, 'ESTUDIANTE: '.$this->hideTilde(
 	    	$this->data['student']->fullNameInverse
 	    ), 0, 0, 'L');
 
@@ -82,7 +82,7 @@ class GeneralReport extends Fpdf
 
 	public function subHeader()
 	{
-		$this->Cell(0, 212, '', 1,0);
+		$this->Cell(0, 222, '', 1,0);
 	    $this->Ln(0);	
 	}
 
@@ -103,10 +103,13 @@ class GeneralReport extends Fpdf
 
 		$border = 0;
 		foreach($this->content as $key => $p):
-
 			$this->determineCell($this->hideTilde($p), $border);
-
 		endforeach;
+
+		// Activanos el doble cara
+		if($this->data['config']['doubleFace']	):
+			$this->DoubleFace();
+		endif;
 	}
 
 	/**
@@ -128,6 +131,17 @@ class GeneralReport extends Fpdf
 		$this->Ln(4);
 	}
 
+	/**
+	*
+	*
+	*/
+	private function DoubleFace()
+	{
+		if($this->PageNo()% 2 != 0 && $this->PageNo() >= 1):
+			$this->AddPage();
+		endif;
+	}
+
 	function footer()
 	{
 		// Posición: a 1,5 cm del final
@@ -136,6 +150,6 @@ class GeneralReport extends Fpdf
 	    // Arial italic 8
 	    $this->SetFont('Arial','I',8);
 	    // Número de página
-	    $this->Cell(0,5,utf8_decode('@tenea - Página ').$this->PageNo(),0,0,'C');
+	    $this->Cell(0,5,$this->hideTilde('@tenea - Página ').$this->PageNo(),0,0,'C');
 	}
 }

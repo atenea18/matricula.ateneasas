@@ -117,8 +117,6 @@ class NotesFinal extends Model
 
         }
 
-
-        // return $data->period_id;
         $collection = [];
 
         foreach ($enrollments as $key => $enrollment) {
@@ -137,12 +135,11 @@ class NotesFinal extends Model
 
 
         return $collection;
-        // return $data;
     }
 
     public static function getAverageByGroup($group_id, $school_year_id, $institution_id, $periods_id)
     {
-        return self::select('enrollment.id AS enrollment_id', DB::raw('CONCAT(student.last_name," ",student.name) as name_student'), DB::raw('ROUND(SUM(notes_final.`value`)/SUM(notes_final.`value`>0), 0) AS average'), DB::raw('SUM(notes_final.`value`>0) AS tav'))
+        return self::select('enrollment.id AS enrollment_id', DB::raw('CONCAT(student.last_name," ",student.name) as name_student'), DB::raw('ROUND(SUM(notes_final.`value`)/SUM(notes_final.`value`>0), 1) AS average'), DB::raw('SUM(notes_final.`value`>0) AS tav'))
             ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
             ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
             ->join('student', 'student.id', '=', 'enrollment.student_id')
@@ -169,5 +166,78 @@ class NotesFinal extends Model
             ->groupBy('enrollment.id')
             ->orderBy('average', 'desc')
             ->get();
+    }
+
+    public static function getAverageGroupPensum($group_id, $institution_id, $school_year_id, $period_id)
+    {
+       return DB::select(DB::raw("SELECT result.enrollment_id, result.last_name, result.name, result.name_areas, SUM(result.percent) percent,
+            ROUND(IF((SUM(result.percent) = 100), 
+                SUM((result.percent/100) * result.value), 
+                SUM(result.value)/SUM((result.value>0))), 2) average, 
+            SUM(result.tav) tav,
+            result.areas_id
+            from
+            (SELECT 
+            enrollment.id as 'enrollment_id',
+            student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_areas', group_pensum.percent as 'percent',
+            notes_final.`value` as 'value', (notes_final.`value`>0) tav, areas.id as 'areas_id'
+            FROM notes_final
+            INNER JOIN evaluation_periods ON evaluation_periods.id = notes_final.evaluation_periods_id
+            INNER JOIN enrollment ON enrollment.id = evaluation_periods.enrollment_id
+            INNER JOIN student ON student.id = enrollment.student_id
+            INNER JOIN institution ON institution.id = enrollment.institution_id
+            INNER JOIN schoolyears ON schoolyears.id = enrollment.school_year_id
+            INNER JOIN group_assignment ON group_assignment.enrollment_id = enrollment.id
+            INNER JOIN `group` ON `group`.id = group_assignment.group_id
+            INNER JOIN headquarter ON headquarter.id = group.headquarter_id AND headquarter.institution_id =  institution.id 
+
+            INNER JOIN group_pensum ON group_pensum.group_id = `group`.id
+            AND group_pensum.asignatures_id = evaluation_periods.asignatures_id
+            INNER JOIN areas ON areas.id = group_pensum.areas_id
+            INNER JOIN asignatures ON asignatures.id = group_pensum.asignatures_id
+            WHERE `group`.id = {$group_id} AND
+            institution.id = {$institution_id} AND
+            schoolyears.id = {$school_year_id} AND
+            evaluation_periods.periods_id = {$period_id}
+            GROUP BY enrollment.id, asignatures.id
+            ) result
+            GROUP BY result.enrollment_id, result.areas_id
+            ORDER BY result.last_name, result.name"));
+    }
+
+    public static function getAverageSubGroupPensum($subgroup_id, $institution_id, $school_year_id, $period_id)
+    {
+        return DB::select(DB::raw("SELECT result.enrollment_id, result.last_name, result.name, result.name_areas, SUM(result.percent) percent,
+            ROUND(IF((SUM(result.percent) = 100), 
+                SUM((result.percent/100) * result.value), 
+                SUM(result.value)/SUM((result.value>0))), 2) average, 
+            SUM(result.tav) tav,
+            result.areas_id, result.sgName
+            from
+            (SELECT 
+            enrollment.id as 'enrollment_id',
+            student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_areas', sub_group_pensum.percent as 'percent', sub_group.name as 'sgName',
+            notes_final.`value` as 'value', (notes_final.`value`>0) tav, areas.id as 'areas_id'
+            FROM notes_final
+            INNER JOIN evaluation_periods ON evaluation_periods.id = notes_final.evaluation_periods_id
+            INNER JOIN enrollment ON enrollment.id = evaluation_periods.enrollment_id
+            INNER JOIN student ON student.id = enrollment.student_id
+            INNER JOIN institution ON institution.id = enrollment.institution_id
+            INNER JOIN schoolyears ON schoolyears.id = enrollment.school_year_id
+            INNER JOIN sub_group_assignments ON sub_group_assignments.enrollment_id = enrollment.id
+            INNER JOIN sub_group ON sub_group.id = sub_group_assignments.subgroup_id
+            INNER JOIN headquarter ON headquarter.id = sub_group.headquarter_id AND headquarter.institution_id =  institution.id
+            INNER JOIN sub_group_pensum ON sub_group_pensum.sub_group_id = sub_group.id
+            AND sub_group_pensum.asignatures_id = evaluation_periods.asignatures_id
+            INNER JOIN areas ON areas.id = sub_group_pensum.areas_id
+            INNER JOIN asignatures ON asignatures.id = sub_group_pensum.asignatures_id
+            WHERE sub_group.id = {$subgroup_id} AND
+            institution.id = {$institution_id} AND
+            schoolyears.id = {$school_year_id} AND
+            evaluation_periods.periods_id = {$period_id}
+            GROUP BY enrollment.id, asignatures.id
+            ) result
+            GROUP BY result.enrollment_id, result.areas_id
+            ORDER BY result.last_name, result.name"));
     }
 }

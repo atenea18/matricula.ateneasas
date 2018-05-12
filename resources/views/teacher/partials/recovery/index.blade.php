@@ -78,7 +78,7 @@
 
 				$("#tableBody").empty().html("<tr><td colspan='5' class='text-center'><i class='fas fa-spinner fa-pulse fa-3x'></i></td></tr>")
 
-				$.get("{{env('APP_URL')}}/api/recovery/{{$group->id}}/{{$asignature->id}}/"+this.value+"/students", function(data){
+				$.get("/api/recovery/{{$group->id}}/{{$asignature->id}}/"+this.value+"/students", function(data){
 
 					var html = '',
 						dataEmpty = (data.data.length > 0) ? false : true;
@@ -138,7 +138,7 @@
 						if( (overcoming != value) && overcoming > 0){
 
 							$.ajax({
-								url: "{{env('APP_URL')}}/teacher/recovery/"+id,
+								url: "/teacher/recovery/"+id,
 								method: "PUT",
 								data: { group_id, id, overcoming, value},
 								beforeSend:function(){

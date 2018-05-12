@@ -12,7 +12,7 @@ use App\Helpers\Notebook;
 
 use App\Pdf\Merge\Merge;
 use App\Pdf\Notebook\Notebook as NotebookPDF;
-use App\Pdf\Notebook\GeneralReport;
+use App\Pdf\Notebook\GeneralReport as GeneralReportPDF;
 
 
 use Auth;
@@ -68,32 +68,36 @@ class NotebookController extends Controller
 
         $eval_parameter = $this->institution->evaluationParameters()->where('school_year_id', '=', 1)->get();
 
-    	foreach($request->enrollments as $key => $enrollment)
+    	foreach($request->enrollments as $key => $enrollment_id)
     	{
+            $enrollment = Enrollment::findOrFail($enrollment_id);
+
             $notebook = new Notebook($request, $this->institution);
             $notebook->setScaleEvaluation($scale);
             $notebook->setEvaluationParameters($eval_parameter);
-            $data = $notebook->create(Enrollment::findOrFail($enrollment));
+            $notebook->setEnrollment($enrollment);
+            $data = $notebook->create();
 
-
-
-            //return response()->json($data);
-
+            // return response()->json($data);
+            // dd($data);
 
             $fileName = str_replace(' ', '', $data['student']->fullNameInverse);
 
             if($data['config']['generalReportPeriod'] && !is_null($data['general_report']))
             {
-                $report = new GeneralReport('p', 'mm', 'letter');
+                $report = new GeneralReportPDF('p', 'mm', 'letter');
                 $report->setData($data);
                 $report->create();
                 $report->Output($path.$fileName."ReporteGeneralPeriodo.pdf", "F");
             }
 
-            $pdf = new NotebookPDF('p', 'mm', 'letter');
-            $pdf->setData($data);
-            $pdf->create();
-            $pdf->Output($path.$fileName."boletin.pdf", "F");
+            if(!$data['config']['generalReportPeriod'])
+            {
+                $pdf = new NotebookPDF('p', 'mm', 'letter');
+                $pdf->setData($data);
+                $pdf->create();
+                $pdf->Output($path.$fileName."boletin.pdf", "F");
+            }
     	}
 
         $this->merge($path, $this->institution->id.'boletines'.time(), 'p');

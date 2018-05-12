@@ -42,13 +42,13 @@ class Notebook extends Fpdf
 
 	    // NOMBRE DE LA INSTITUCIÓN
 	    $this->SetFont('Arial','B',12);
-	    $this->Cell(0, 6, utf8_decode($this->data['institution']->name), 0, 0, 'C');
+	    $this->Cell(0, 6, $this->hideTilde($this->data['institution']->name), 0, 0, 'C');
 	    $this->Ln(6);
 
 	    $this->SetFont('Arial','B',9);
 	    // NOMBRE DE LA SEDE
 	    if(!empty($this->data['headquarter'])):
-		    $this->Cell(0,4, 'SEDE: '.strtoupper(($this->data['headquarter']->name)), 0, 0, 'C');
+		    $this->Cell(0,4, 'SEDE: '.$this->hideTilde(strtoupper(($this->data['headquarter']->name))), 0, 0, 'C');
 		    
 	    endif;
 
@@ -64,13 +64,13 @@ class Notebook extends Fpdf
 	    $this->Cell(90, 4, 'GRUPO: '.$this->data['group']->name, 0, 0, 'L');
 
 	    // DIRECTOR DE GRUPO
-	     $this->Cell(0,4, utf8_decode('DIR. DE GRUPO: '.
-	     	    	$this->data['director']->fullName), 0, 0, 'L');
+	     $this->Cell(0,4, (!is_null($this->data['director'])) ? $this->hideTilde('DIR. DE GRUPO: '.
+	     	    	$this->data['director']->fullName) : 'DIR. DE GRUPO: ', 0, 0, 'L');
 	    $this->Ln();
 
 	    // NOMBRE DEL ESTUDIANTE
 	    $this->Cell(20, 4, '', 0,0);
-	    $this->Cell(90, 4, 'ESTUDIANTE: '.utf8_decode(
+	    $this->Cell(90, 4, 'ESTUDIANTE: '.$this->hideTilde(
 	    	$this->data['student']->fullNameInverse
 	    ), 0, 0, 'L');
 
@@ -88,16 +88,16 @@ class Notebook extends Fpdf
 		
 
 		// if($this->data['config']['periodIF']):
-		// 	$this->Cell(140, $this->_h_c, utf8_decode($this->gradeBook['tittle_if']), 1,0, 'L'); 
+		// 	$this->Cell(140, $this->_h_c, $this->hideTilde($this->gradeBook['tittle_if']), 1,0, 'L'); 
 		// else:
-			$this->Cell(140, $this->_h_c, $this->data['tittle'].utf8_decode(' PERIODO '.$this->data["current_period"]->periods_id.' - AÑO LECTIVO ').date('Y'), 1,0, 'L'); 
+			$this->Cell(140, $this->_h_c, $this->data['tittle'].$this->hideTilde(' PERIODO '.$this->data["current_period"]->periods_id.' - AÑO LECTIVO ').date('Y'), 1,0, 'L'); 
 		// endif;
 		
 
 		$this->Cell(10, $this->_h_c, 'IHS', 1,0, 'C');
 
 		$this->Cell(17, $this->_h_c, 'VAL', 1,0, 'C');
-		$this->Cell(0, $this->_h_c, utf8_decode('DESEMPEÑO'), 1,0, 'C');
+		$this->Cell(0, $this->_h_c, $this->hideTilde('DESEMPEÑO'), 1,0, 'C');
 
 		$this->Ln($this->_h_c+4);
 
@@ -178,19 +178,19 @@ class Notebook extends Fpdf
 			$this->SetFont('Arial','B',8);
 
 			// VERIFICAMOS LA CALIFICACIÓN DEL AREA
-			if($area['note'] == 0):
+			if($area['note'] > 0):
 				// PREGUNTAMOS SI EL PERIODO IF ESTA ACTIVO
 				if(!$this->data['config']['periodIF']):
 					// PREGUNTAMOS SI LAS AREAS NO SE DESACTIVAN
 					if(!$this->data['config']['areasDisabled']):
 
-						$this->Cell(150, $this->_h_c, utf8_decode($area['area']), 'TBL',0, 'L', true);
+						$this->Cell(150, $this->_h_c, $this->hideTilde($area['area']), 'TBL',0, 'L', true);
 						$this->Cell(17, $this->_h_c, $area['note'], 'TB',0, 'C', true);
-						$this->Cell(0, $this->_h_c, strtoupper($area['valoration']), 'TBR', 0, 'C', true);
+						$this->Cell(0, $this->_h_c, $this->hideTilde(strtoupper($area['valoration']['name'])), 'TBR', 0, 'C', true);
 					
 					else:
 
-						$this->Cell(0, $this->_h_c, utf8_decode($area['area']), 1,0, 'L', true);
+						$this->Cell(0, $this->_h_c, $this->hideTilde($area['area']), 1,0, 'L', true);
 
 					endif;
 					$this->Ln();
@@ -203,7 +203,7 @@ class Notebook extends Fpdf
 					// 			$this->Cell(17, $this->_h_c, $report['note'], 'TB',0, 'C', true);
 					// 			$this->Cell(0, $this->_h_c, strtoupper($report['valoration']), 'TBR', 0, 'C', true);
 					// 		else:
-					// 			$this->Cell(0, $this->_h_c, utf8_decode($report['area']), 1,0, 'L', true);
+					// 			$this->Cell(0, $this->_h_c, $this->hideTilde($report['area']), 1,0, 'L', true);
 					// 		endif;
 					// 	$this->Ln();
 					// 	endif;
@@ -225,7 +225,7 @@ class Notebook extends Fpdf
 
 			if($this->determineShowValoration($asignature)):
 				
-				// if($asignature['nota'] > 0):
+				if($asignature['final_note']['value'] > 0):
 
 					if($this->data['config']['periodIF']):
 						// foreach($this->finalReportList as $report):
@@ -257,7 +257,7 @@ class Notebook extends Fpdf
 						$this->showTeacher($asignature['teacher']);
 					endif;
 
-				// endif;
+				endif;
 
 				
 			endif;
@@ -273,23 +273,17 @@ class Notebook extends Fpdf
 	{
 		foreach($this->data['periods'] as $keyPeriod => $period)
 		{
-
-
 			foreach($period['areas'] as $keyAreas => $area)
 			{
 				foreach($area['asignatures'] as $keyAsignature => $asignaturee)
 				{
-
 					if(isset($asignaturee['final_note']['value']))
 					{
-
 						if($asignature['asignature_id'] == $asignaturee['asignature_id'] && $asignaturee['final_note']['value'] > 0 )
 						{
-
 							return true;
 						}
 					}
-
 				}
 			}
 		}
@@ -312,13 +306,13 @@ class Notebook extends Fpdf
 
 		if($this->data['config']['NumberValoration']):
 			$note = (isset($asignature['final_note']['value'])) ? $asignature['final_note']['value'] : 0;
-			$valoration = utf8_decode(strtoupper($asignature['final_note']['valoration']['name']));
+			$valoration = $this->hideTilde(strtoupper($asignature['final_note']['valoration']['name']));
 		else: 
 			$note = '';
 			$valoration = '';
 		endif;
 
-		$ihs = ($ihs == 0) ? '' : $ihs;
+		$ihs = ($ihs <= 0) ? '' : $ihs;
 		
 		if($this->data['config']['showFaces'] == true):
 			$height = 11;
@@ -327,7 +321,7 @@ class Notebook extends Fpdf
 		endif;
 
 		if(!$utf8_encode)
-			$this->Cell(140, $height, utf8_decode($asignature['asignature']), 'L',0, 'L');
+			$this->Cell(140, $height, $this->hideTilde($asignature['asignature']), 'L',0, 'L');
 		else
 			$this->Cell(140, $height, ($asignature['asignature']), 'L',0, 'L');
 
@@ -342,7 +336,7 @@ class Notebook extends Fpdf
 
 		else:
 
-			$this->Cell(0, $this->_h_c, $valoration, 'R', 0, 'C');
+			$this->Cell(0, $this->_h_c, ($valoration), 'R', 0, 'C');
 		endif;
 
 		$this->Ln($height);
@@ -359,7 +353,7 @@ class Notebook extends Fpdf
 			if(isset($performance->name))
 			{
 				$this->determineCell(
-					utf8_decode('   * '.strtoupper($performance->name)), 
+					$this->hideTilde('   * '.strtoupper($performance->name)), 
 				'LR');
 			}
 		
@@ -380,7 +374,7 @@ class Notebook extends Fpdf
 
 		$this->SetFont('Arial','B',8);
 
-		$this->Cell( $withHeader , $this->_h_c, utf8_decode('VALORACIONES ACUMULADAS DURANTE EL AÑO LECTIVO'), 1, 0, 'C');
+		$this->Cell( $withHeader , $this->_h_c, $this->hideTilde('VALORACIONES ACUMULADAS DURANTE EL AÑO LECTIVO'), 1, 0, 'C');
 
 		$this->Ln();
 
@@ -479,7 +473,7 @@ class Notebook extends Fpdf
 
 		$this->SetFont('Arial','B',8);
 
-		$this->Cell( (100 + (22 * count($this->data['periods'])) ), $this->_h_c, utf8_decode('CUADRO DETALLADO DURANTE EL AÑO LECTIVO'), 1, 0, 'C');
+		$this->Cell( (100 + (22 * count($this->data['periods'])) ), $this->_h_c, $this->hideTilde('CUADRO DETALLADO DURANTE EL AÑO LECTIVO'), 1, 0, 'C');
 
 		$this->Ln();
 		
@@ -515,7 +509,7 @@ class Notebook extends Fpdf
 			$this->SetFont('Arial','B',8);
 
 			$this->Cell(96 , $this->_h_c, 
-				utf8_decode(
+				$this->hideTilde(
 					substr($area['area'], 0, 58)
 				),
 			1,0, 'L', true);
@@ -549,16 +543,16 @@ class Notebook extends Fpdf
 				if($type == 'combinedEvaluation'):
 
 					$this->Cell(90, $this->_h_c, 
-					utf8_decode(substr($asignature['asignature'], 0, 51)),'TBL',0, 'L');
+					$this->hideTilde(substr($asignature['asignature'], 0, 51)),'TBL',0, 'L');
 
 					$this->Cell(6, $this->_h_c, 
-					($asignature['ihs']== 0) ? '' : $asignature['ihs'], 1,0, 'C');
+					($asignature['ihs'] <= 0) ? '' : $asignature['ihs'], 1,0, 'C');
 					// MOSTRAMOS LA VALORACION DE LOS PERIODOS
 					$this->showPeriodValorationByAsignature($asignature);
 
 				else:
 					$this->Cell(96, $this->_h_c, 
-					utf8_decode(substr($asignature['asignature'], 0, 51)),'TBL',0, 'L');
+					$this->hideTilde(substr($asignature['asignature'], 0, 51)),'TBL',0, 'L');
 
 					// $this->showValorationPerformanceTableDetail($asignature);
 				endif;
@@ -647,10 +641,13 @@ class Notebook extends Fpdf
 	*/
 	private function showTeacher($teacher)
 	{	
-		$this->SetFont('Arial','B',8);
-		$this->Cell(0, $this->_h_c,'DOCENTE: '. utf8_decode($teacher->manager->fullNameInverse), 'LR',0,'R');
+		if(!is_null($teacher))
+		{
+			$this->SetFont('Arial','B',8);
+			$this->Cell(0, $this->_h_c,'DOCENTE: '. $this->hideTilde($teacher->manager->fullNameInverse), 'LR',0,'R');
 
-		$this->Ln($this->_h_c);
+			$this->Ln($this->_h_c);
+		}
 	}
 
 	/**
@@ -662,7 +659,7 @@ class Notebook extends Fpdf
 		$this->SetFont('Arial','B',8);
 
 		$this->Cell(90 , $this->_h_c, 
-				utf8_decode(
+				$this->hideTilde(
 					'PROMEDIO GENERAL DEL ESTUDIANTE:'
 				),
 			1,0, 'R');
@@ -712,7 +709,7 @@ class Notebook extends Fpdf
 		$this->SetFont('Arial','B',8);
 
 		$this->Cell(90 , $this->_h_c, 
-				utf8_decode(
+				$this->hideTilde(
 					'PUESTO EN EL GRUPO:'
 				),
 			1,0, 'R');
@@ -745,7 +742,6 @@ class Notebook extends Fpdf
 	*/
 	private function showPeriodPositions($period)
 	{
-
 		$position = (isset($period['average']['position'])) ? $period['average']['position'] : null;
 
 		$this->Cell(6, $this->_h_c, '', 1,0, 'C');
@@ -763,13 +759,13 @@ class Notebook extends Fpdf
 	{
 		$this->Ln($this->_h_c * 2);
 		
-		$this->Cell(0, $this->_h_c, utf8_decode('ESCALA DE VALORACIÓN:'), 0, 0, '');
+		$this->Cell(0, $this->_h_c, $this->hideTilde('ESCALA DE VALORACIÓN:'), 0, 0, '');
 		$this->Ln($this->_h_c);
 
 		$this->SetFont('Arial','',8);
 		foreach ($this->data['valueScale'] as $key => $scale):
 			
-			$this->Cell(0, $this->_h_c, utf8_decode("{$scale->name}: {$scale->rank_start} A {$scale->rank_end}"), 0,0, '');
+			$this->Cell(0, $this->_h_c, $this->hideTilde("{$scale->name}: {$scale->rank_start} A {$scale->rank_end}"), 0,0, '');
 			$this->Ln($this->_h_c);
 		endforeach;
 	}
@@ -805,14 +801,18 @@ class Notebook extends Fpdf
 		endif;
 
 		$this->Ln($this->_h_c * 4);
-		// DIRECTOR DE GRUPO
-		$this->SetFont('Arial','B',8);
-	     $this->Cell(0,4, $this->data['director']->fullName, 0, 0, 'L');
 
-	    $this->Ln();
+		if(!is_null($this->data['director']))
+		{
+			// DIRECTOR DE GRUPO
+			$this->SetFont('Arial','B',8);
+		     $this->Cell(0,4, $this->hideTilde('DIR. DE GRUPO: '.$this->data['director']->fullName), 0, 0, 'L');
 
-	    $this->SetFont('Arial','',8);
-	    $this->Cell(0, $this->_h_c, 'DIRECTOR DE GRUPO', 0,0);
+		    $this->Ln();
+
+		    $this->SetFont('Arial','',8);
+		    $this->Cell(0, $this->_h_c, 'DIRECTOR DE GRUPO', 0,0);
+		}
 	}
 
 	/**
@@ -871,6 +871,6 @@ class Notebook extends Fpdf
 	    // Arial italic 8
 	    $this->SetFont('Arial','I',8);
 	    // Número de página
-	    $this->Cell(0,5,utf8_decode('@tenea - Página ').$this->PageNo(),0,0,'C');
+	    $this->Cell(0,5,$this->hideTilde('@tenea - Página ').$this->PageNo(),0,0,'C');
 	}
 }

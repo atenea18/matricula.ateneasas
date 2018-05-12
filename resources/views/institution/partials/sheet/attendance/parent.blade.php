@@ -1,0 +1,29 @@
+<div class="col-md-12">
+	{!! Form::open(['route'=>'parent.attendances.pdf', 'method'=>'POST', 'target'=>'_blank']) !!}
+	<div class="row">
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="">Sede</label>
+				{!! Form::select('headquarter_id_pa', $headquarters, null, ['class'=>'form-control', 'placeholder'=>'- Seleccione una sede -','id'=>'headquarter_id_pa']) !!}
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				{!! Form::label('group_id_pa', 'Grupo', []) !!}
+				{!! Form::select('group_id_pa', [], null, ['class'=>'form-control']) !!}
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				<label for="">Nombre del Evento</label>
+				{!! Form::text('event', null, ['class'=>'form-control']) !!}
+			</div>
+		</div>
+	</div>
+	<div class="row text-center">
+		<div class="form-group">
+			<button class="btn btn-primary" type="submit" style="margin-top: 1.5em;">Imprimir</button>
+		</div>
+	</div>
+	{!! Form::close() !!}
+</div>

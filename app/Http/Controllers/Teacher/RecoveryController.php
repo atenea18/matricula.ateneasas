@@ -28,6 +28,7 @@ class RecoveryController extends ApiController
 
         $scaleEvaluations = ScaleEvaluation::getMinScale($institution);
 
+        // dd( $scaleEvaluations );
         $students = $group->recovery($asignature, $period, $scaleEvaluations);
 
         return $this->showAll($students);
@@ -91,8 +92,6 @@ class RecoveryController extends ApiController
         
         $noteFinal->fill($request->all());
         $response = $noteFinal->updateOvercoming($institution);
-        
-        // return response()->json($noteFinal);
 
         return response()->json($response, $response['code']);
     }

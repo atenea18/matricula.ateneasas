@@ -37,7 +37,7 @@ class Group extends Model
      */
     public function pensums()
     {
-        return $this->belongsTo(GroupPensum::class, 'group_id'); 
+        return $this->hasMany(GroupPensum::class, 'group_id'); 
     }
 
     /**

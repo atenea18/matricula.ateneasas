@@ -8,6 +8,9 @@ class SubGroupPensum extends Model
 {
     protected $table = 'sub_group_pensum';
 
+    protected $fillable = [
+        'code', 'percent', 'description', 'ihs', 'order', 'sub_group_id', 'asignatures_id', 'areas_id', 'subjects_type_id', 'teacher_id', 'schoolyear_id'
+    ];   
     /**
      * Obtiene la relacion que hay entre el pensum y la asignatura
      */

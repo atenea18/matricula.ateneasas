@@ -28,11 +28,14 @@ class Study extends Fpdf
 	function Header()
 	{
 
-		if($this->institution->picture != NULL)
-			$this->Image(
-				Storage::disk('uploads')->url(
-					$this->institution->picture
-				), 30, 30, 17, 17, "PNG");
+		try
+		{
+			if($this->institution->picture != NULL)
+				$this->Image(
+					Storage::disk('uploads')->url(
+						$this->institution->picture
+					), 30, 30, 17, 17);
+		}catch(Exception $e){}
 
 
 		// PRIMERA LINEA
