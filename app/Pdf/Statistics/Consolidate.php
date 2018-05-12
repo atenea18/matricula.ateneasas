@@ -118,7 +118,7 @@ class Consolidate extends Fpdf
 		if(count($this->asignatures) >= 19)
 		{
 			$this->_with_CA = 8.5;
-			$this->_with_CE = 72;	
+			$this->_with_CE = 65;	
 		}
 
 		$this->Cell(5, 4, '#', 1, 0, 'C', true);
