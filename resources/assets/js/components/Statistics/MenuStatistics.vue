@@ -22,23 +22,50 @@
                                 <span class="sr-only">(current)</span>
                             </a>
                         </li>
+                        <li :class="currentView=='stats-rating'?'active':''">
+                            <a href="#rating" @click="setCurrentView('stats-rating')">Puestos
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
                     </ul>
 
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" @click="getIsGroup" v-model="objectToManagerGroupSelect.isSubGroup"> Subgrupo
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <manager-group-select v-show="currentView" :objectInput="objectToManagerGroupSelect"></manager-group-select>
     </div>
 </template>
 
 <script>
 
     import {mapState} from 'vuex'
+    import ManagerGroupSelect from "../partials/Form/GroupSelect/ManagerGroupSelect";
 
     export default {
         name: "menu-statistics",
-        components: {},
+        components: {ManagerGroupSelect},
         data() {
-            return {}
+            return {
+                objectToManagerGroupSelect: {
+                    referenceId: "statistics",
+                    referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.referenceId + '.managerGroupSelect',
+                    isSubGroup: false
+                },
+            }
+        },
+        created(){
+            this.managerEvents()
         },
         computed: {
             ...mapState([
@@ -47,8 +74,22 @@
 
         },
         methods: {
+            managerEvents() {
+                this.$bus.$on(this.objectToManagerGroupSelect.referenceToReciveObjectSelected, object => {
+                    let objectToStats = {
+                        fieldSelects: object,
+                        type: this.$store.state.currentView
+                    }
+                    this.$bus.$emit("spire",objectToStats)
+                })
+            },
+            getIsGroup() {
+                this.objectToManagerGroupSelect.isSubGroup = !this.objectToManagerGroupSelect.isSubGroup
+                this.$bus.$emit("get-is-sub-group",this.objectToManagerGroupSelect)
+            },
             setCurrentView(view) {
                 this.$store.state.currentView = view
+                this.$bus.$emit("get-spire",view)
             },
 
         },

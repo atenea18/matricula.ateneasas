@@ -15,6 +15,7 @@
     import {mapState} from 'vuex'
     import MenuStatistics from "./Statistics/MenuStatistics";
     import StatsConsolidated from './Statistics/Consolidated/StatsConsolidated'
+    import StatsRating from './Statistics/Rating/StatsRating'
     import StatsTeachers from './Statistics/Teachers/StatsTeachers'
 
     export default {
@@ -22,6 +23,7 @@
         components: {
             MenuStatistics,
             StatsConsolidated,
+            StatsRating,
             StatsTeachers
 
         },

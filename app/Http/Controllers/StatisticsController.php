@@ -119,6 +119,181 @@ class StatisticsController extends Controller
         return $groups;
     }
 
+    public function getPositionStudents(Request $request)
+    {
+
+        $enrollments = DB::table('notes_final')
+            ->select('enrollment.id', 'student.last_name', 'student.name',
+                DB::raw('ROUND(SUM(notes_final.value)/SUM(notes_final.value>0), 2) average'),
+                DB::raw('SUM(notes_final.`value`>0) tav'))
+            ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
+            ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
+            ->join('student', 'student.id', '=', 'enrollment.student_id')
+            ->join('institution', 'institution.id', '=', 'enrollment.institution_id')
+            ->join('schoolyears', 'schoolyears.id', '=', 'enrollment.school_year_id')
+            ->join('group_assignment', 'group_assignment.enrollment_id','=','enrollment.id')
+            ->join('group', 'group.id', '=', 'group_assignment.group_id')
+            ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
+            ->join('group_pensum', 'group_pensum.group_id', '=', 'group.id')
+            ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
+            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
+            ->whereColumn(
+                [
+                    ['headquarter.institution_id', '=', 'institution.id'],
+                    ['group_pensum.asignatures_id', '=', 'evaluation_periods.asignatures_id']
+                ]
+            )
+            ->where('group.id', '=', $request->group_id)
+            ->where('institution.id', '=', $this->institution->id)
+            ->where('schoolyears.id', '=', '1')
+            ->where('evaluation_periods.periods_id', '=', $request->periods_id)
+            ->groupBy('enrollment.id')
+            ->orderBy('average','DESC')
+            ->get();
+
+        $positions = $this->averageStudents($enrollments);
+
+        return $positions;
+    }
+
+    public function averageStudents($arrayStudentAverage){
+
+        #
+        $count=0;
+
+        #Array donde se va almacenar objetos de estudiantes de arrayStudentAverage, pero con una estructra un poco modificada
+        $vectorOfStudents = array();
+
+        #En este vector se va a guardar el número de asignaras evaluada por cada estudiante
+        $vectorNumberAsignatures = array();
+
+        foreach ($arrayStudentAverage as $key => $value) {
+            $vectorStudent = array(
+                'id' => $value->id,
+                'last_name' => $value->last_name,
+                'name' => $value->name,
+                'average' => $value->average,
+                'tav' => $value->tav
+            );
+
+            #Se guarda la nueva estructura en el vector por cada estudiante
+            $vectorOfStudents[$count] = $vectorStudent;
+
+            # Se guarda el tav de asignatura del estudiante i o count..
+            $vectorNumberAsignatures[$count]= $value->tav;
+
+            $count++;
+        }
+
+        #Obtengo y almaceno el número maximo de asignaturas evaluadas
+        $numberMaxOfAsignatures = max($vectorNumberAsignatures);
+
+
+        #Este es un nuevo vector donde se va a guardar los mismo estudiantes pero con el promedio levemente modificado
+        $vectorOfStudentsAux = array();
+        foreach ($vectorOfStudents as $value) {
+
+            #Esta formula da como resultado un promedio auxiliar,
+            #Nos soluciona el problema de aquellos estudiantes que tienen un promedio alto pero con menor
+            #asignaturas evaluadas
+            $averageAux = (($value['average']*$value['tav'])/$numberMaxOfAsignatures);
+
+		$vectorStudent = array(
+            'id' => $value['id'],
+            'last_name' => $value['last_name'],
+            'name' => $value['name'],
+            'averageAux' => $averageAux,
+			'average' => $value['average'],
+			'tav' => $value['tav']
+		);
+		#usamos el id de estudiante como el indice del vector
+		$vectorOfStudentsAux[$value['id']] = $vectorStudent;
+	}
+
+        $vectorOfStudentsAux = $this->orderMultiDimensionalArray($vectorOfStudentsAux, 'averageAux', true);
+        $vectorOfStudentsAux = $this->generateRating($vectorOfStudentsAux);
+        $vectorOfStudentsAux = $this->orderMultiDimensionalArray($vectorOfStudentsAux, 'rating', false);
+        return $vectorOfStudentsAux;
+    }
+
+    function orderMultiDimensionalArray ($toOrderArray, $field, $inverse = false) {
+        $position = array();
+        $newRow = array();
+        foreach ($toOrderArray as $key => $row) {
+            $position[$key]  = $row[$field];
+            $newRow[$key] = $row;
+        }
+        if ($inverse) {
+            arsort($position);
+        }
+        else {
+            asort($position);
+        }
+        $returnArray = array();
+        foreach ($position as $key => $pos) {
+            $returnArray[] = $newRow[$key];
+        }
+        return $returnArray;
+    }
+
+    private function generateRating($vectorOfStudentsAux){
+        #variable con la que voy asignar el puesto de cada estudiante
+        $countAux=1;
+
+        #promedio auxiliar que comienza en cero
+        $averageAux=0;
+        $vectorRating = array();
+
+        #Vamos a recorrer el vector auxiliar de estudiante, ya esta ordenado segun al promdedio modificado
+        foreach ($vectorOfStudentsAux as $key => $value) {
+
+            #Si es mayor
+            if($value['averageAux']>$averageAux){
+                $vectorOfStudent = array(
+                    'id' => $value['id'],
+                    'last_name' => $value['last_name'],
+                    'name' => $value['name'],
+                    'rating' => $countAux ,
+                    'average' => $value['average'],
+                    'tav' => $value['tav']
+                );
+                $averageAux = $value['averageAux'];
+                $vectorRating[$value['id']]= $vectorOfStudent;
+                $countAux++;
+            }
+            #Si es igual
+            if($value['averageAux']==$averageAux){
+                $vectorOfStudent = array(
+                    'id' => $value['id'],
+                    'last_name' => $value['last_name'],
+                    'name' => $value['name'],
+                    'rating' => $countAux-1,
+                    'average' => $value['average'],
+                    'tav' => $value['tav']
+                );
+                $averageAux=$value['averageAux'];
+                $vectorRating[$value['id']] = $vectorOfStudent;
+            }
+            #Si es menor
+            if($value['averageAux']<$averageAux){
+                $vectorOfStudent = array(
+                    'id' => $value['id'],
+                    'last_name' => $value['last_name'],
+                    'name' => $value['name'],
+                    'rating' => $countAux,
+                    'average' => $value['average'],
+                    'tav' => $value['tav']
+                );
+                $averageAux=$value['averageAux'];
+                $vectorRating[$value['id']] = $vectorOfStudent;
+                $countAux++;
+            }
+
+        }
+
+        return $vectorRating;
+    }
+
     public function getAsignaturesGroupPensum(Request $request)
     {
         if ($request->isSubGroup == "false") {
@@ -159,7 +334,7 @@ class StatisticsController extends Controller
                 ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
                 ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
                 ->join('group', 'group_assignment.group_id', '=', 'group.id')
-                ->join('group_pensum', 'group_pensum.group_id', '=','group.id')
+                ->join('group_pensum', 'group_pensum.group_id', '=', 'group.id')
                 ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
                 ->join('headquarter', 'institution.id', '=', 'headquarter.institution_id')
                 ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
@@ -205,8 +380,6 @@ class StatisticsController extends Controller
                 ->where('evaluation_periods.periods_id', '=', $request->periods_id)
                 ->get();
         }
-
-
 
 
         $collection = [];
