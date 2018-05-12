@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <manager-group-select :objectInput="objectToManagerGroupSelect"></manager-group-select>
+        <!--<manager-group-select :objectInput="objectToManagerGroupSelect"></manager-group-select>-->
         <div class="row">
             <div class="col-md-12">
                 <template v-if="state">
@@ -95,8 +95,10 @@
             },
 
             managerEvents() {
-                this.$bus.$on(this.objectToManagerGroupSelect.referenceToReciveObjectSelected, object => {
-                    this.getAsignaturesConsolidated(object)
+                this.$bus.$on('spire', object => {
+                    if(object.type == 'stats-consolidated'){
+                        this.getAsignaturesConsolidated(object.fieldSelects)
+                    }
                 })
             },
 
