@@ -7,13 +7,6 @@
                        :href="urlPdf">PDF</a>
                 </form>
             </div>
-            <div class="col-md-3">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" @click="getIsGroup" v-model="objectToManagerGroupSelect.isSubGroup"> Subgrupo
-                    </label>
-                </div>
-            </div>
         </div>
         <!--<manager-group-select :objectInput="objectToManagerGroupSelect"></manager-group-select>-->
         <div class="row">
@@ -47,8 +40,10 @@
                 },
                 objectToStatsConsolidated: {
                     asignatures: [],
-                    enrollments: []
+                    enrollments: [],
+                    data:{}
                 },
+
                 state: false,
                 data: {},
                 urlPdf: ""
@@ -96,8 +91,14 @@
 
             managerEvents() {
                 this.$bus.$on('spire', object => {
+                    this.objectToStatsConsolidated.data = object.fieldSelects
                     if(object.type == 'stats-consolidated'){
                         this.getAsignaturesConsolidated(object.fieldSelects)
+                    }
+                })
+                this.$bus.$on('get-spire', object => {
+                    if(object == 'stats-consolidated'){
+                        this.getAsignaturesConsolidated(this.objectToStatsConsolidated.data)
                     }
                 })
             },
@@ -120,6 +121,7 @@
                     this.getConsolidated(object)
                 })
             },
+
 
             getConsolidated(object) {
 

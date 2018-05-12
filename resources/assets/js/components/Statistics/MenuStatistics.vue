@@ -89,6 +89,7 @@
             },
             setCurrentView(view) {
                 this.$store.state.currentView = view
+                this.$bus.$emit("get-spire",view)
             },
 
         },

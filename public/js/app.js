@@ -59286,7 +59286,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -59391,6 +59391,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         },
         setCurrentView: function setCurrentView(view) {
             this.$store.state.currentView = view;
+            this.$bus.$emit("get-spire", view);
         }
     }
 });
@@ -59672,7 +59673,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -59690,13 +59691,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__TableConsolidated___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__TableConsolidated__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -59738,8 +59732,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             },
             objectToStatsConsolidated: {
                 asignatures: [],
-                enrollments: []
+                enrollments: [],
+                data: {}
             },
+
             state: false,
             data: {},
             urlPdf: ""
@@ -59784,8 +59780,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             var _this3 = this;
 
             this.$bus.$on('spire', function (object) {
+                _this3.objectToStatsConsolidated.data = object.fieldSelects;
                 if (object.type == 'stats-consolidated') {
                     _this3.getAsignaturesConsolidated(object.fieldSelects);
+                }
+            });
+            this.$bus.$on('get-spire', function (object) {
+                if (object == 'stats-consolidated') {
+                    _this3.getAsignaturesConsolidated(_this3.objectToStatsConsolidated.data);
                 }
             });
         },
@@ -60968,7 +60970,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -60981,6 +60983,10 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__RowTableConsolidated__ = __webpack_require__(302);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__RowTableConsolidated___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__RowTableConsolidated__);
+//
+//
+//
+//
 //
 //
 //
@@ -61215,51 +61221,55 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("table", { staticClass: "table table-bordered" }, [
-    _c("thead", [
-      _c(
-        "tr",
-        { staticStyle: { "font-size": "11px" } },
-        [
-          _c("th", { attrs: { scope: "col" } }, [_vm._v("No.")]),
-          _vm._v(" "),
-          _c("th", [_vm._v(" NOMBRES Y APELLIDOS")]),
-          _vm._v(" "),
-          _c("th", [_vm._v("TAV")]),
-          _vm._v(" "),
-          _vm._l(_vm.objectInput.asignatures, function(asignature) {
-            return _c("th", [
-              _vm._v(
-                "\n            " +
-                  _vm._s(asignature.abbreviation) +
-                  "\n        "
-              )
-            ])
-          })
-        ],
-        2
-      )
-    ]),
-    _vm._v(" "),
-    _c(
-      "tbody",
-      [
-        _vm._l(_vm.objectInput.enrollments, function(enrollment, i) {
-          return [
-            _c("row-table-consolidated", {
-              attrs: {
-                objectInput: {
-                  enrollment: enrollment,
-                  asignatures: _vm.objectInput.asignatures,
-                  index: i
-                }
-              }
+  return _c("div", [
+    _c("div", { staticClass: "table-responsive" }, [
+      _c("table", { staticClass: "table table-bordered" }, [
+        _c("thead", [
+          _c(
+            "tr",
+            { staticStyle: { "font-size": "11px" } },
+            [
+              _c("th", { attrs: { scope: "col" } }, [_vm._v("No.")]),
+              _vm._v(" "),
+              _c("th", [_vm._v(" NOMBRES Y APELLIDOS")]),
+              _vm._v(" "),
+              _c("th", [_vm._v("TAV")]),
+              _vm._v(" "),
+              _vm._l(_vm.objectInput.asignatures, function(asignature) {
+                return _c("th", [
+                  _vm._v(
+                    "\n                    " +
+                      _vm._s(asignature.abbreviation) +
+                      "\n                "
+                  )
+                ])
+              })
+            ],
+            2
+          )
+        ]),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          [
+            _vm._l(_vm.objectInput.enrollments, function(enrollment, i) {
+              return [
+                _c("row-table-consolidated", {
+                  attrs: {
+                    objectInput: {
+                      enrollment: enrollment,
+                      asignatures: _vm.objectInput.asignatures,
+                      index: i
+                    }
+                  }
+                })
+              ]
             })
-          ]
-        })
-      ],
-      2
-    )
+          ],
+          2
+        )
+      ])
+    ])
   ])
 }
 var staticRenderFns = []
@@ -61294,57 +61304,6 @@ var render = function() {
                 [_vm._v("PDF")]
               )
             : _vm._e()
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-3" }, [
-        _c("div", { staticClass: "checkbox" }, [
-          _c("label", [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.objectToManagerGroupSelect.isSubGroup,
-                  expression: "objectToManagerGroupSelect.isSubGroup"
-                }
-              ],
-              attrs: { type: "checkbox" },
-              domProps: {
-                checked: Array.isArray(
-                  _vm.objectToManagerGroupSelect.isSubGroup
-                )
-                  ? _vm._i(_vm.objectToManagerGroupSelect.isSubGroup, null) > -1
-                  : _vm.objectToManagerGroupSelect.isSubGroup
-              },
-              on: {
-                click: _vm.getIsGroup,
-                change: function($event) {
-                  var $$a = _vm.objectToManagerGroupSelect.isSubGroup,
-                    $$el = $event.target,
-                    $$c = $$el.checked ? true : false
-                  if (Array.isArray($$a)) {
-                    var $$v = null,
-                      $$i = _vm._i($$a, $$v)
-                    if ($$el.checked) {
-                      $$i < 0 &&
-                        (_vm.objectToManagerGroupSelect.isSubGroup = $$a.concat(
-                          [$$v]
-                        ))
-                    } else {
-                      $$i > -1 &&
-                        (_vm.objectToManagerGroupSelect.isSubGroup = $$a
-                          .slice(0, $$i)
-                          .concat($$a.slice($$i + 1)))
-                    }
-                  } else {
-                    _vm.$set(_vm.objectToManagerGroupSelect, "isSubGroup", $$c)
-                  }
-                }
-              }
-            }),
-            _vm._v(" Subgrupo\n                ")
-          ])
         ])
       ])
     ]),
@@ -78093,7 +78052,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -78110,19 +78069,83 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "stats-rating",
+    data: function data() {
+        return {
+            objectToStatsRating: {
+                enrollments: []
+            },
+            state: false,
+            data: {},
+            urlPdf: ""
+        };
+    },
     created: function created() {
         this.managerEvents();
     },
 
     methods: {
         managerEvents: function managerEvents() {
+            var _this = this;
+
             this.$bus.$on('spire', function (object) {
                 if (object.type == 'stats-rating') {
-                    console.log("Hola");
+                    _this.getPositions(object.fieldSelects);
                 }
+            });
+        },
+        getPositions: function getPositions(object) {
+            var _this2 = this;
+
+            var params = {
+                grade_id: object.grade_id,
+                group_id: object.group_id,
+                periods_id: object.periods_id,
+                institution_id: this.$store.state.institutionOfTeacher.id,
+                isSubGroup: object.isSubGroup
+                //console.log(this.data.isSubGroup)
+            };var url = '/ajax/getPositionStudents';
+
+            axios.get(url, { params: params }).then(function (res) {
+                _this2.objectToStatsRating.enrollments = res.data;
             });
         }
     }
@@ -78136,9 +78159,87 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("\n    hola\n")])
+  return _c("div", [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c("div", { staticClass: "table-responsive" }, [
+          _c("table", { staticClass: "table table-bordered" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.objectToStatsRating.enrollments, function(enrollment) {
+                return _vm.objectToStatsRating.enrollments
+                  ? _c("tr", [
+                      _c("td"),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          "\n                                " +
+                            _vm._s(
+                              enrollment.last_name + " " + enrollment.name
+                            ) +
+                            "\n                            "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          "\n                                " +
+                            _vm._s(enrollment.rating) +
+                            "\n                            "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          "\n                                " +
+                            _vm._s(enrollment.tav) +
+                            "\n                            "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _vm._v(
+                          "\n                                " +
+                            _vm._s(enrollment.average) +
+                            "\n                            "
+                        )
+                      ])
+                    ])
+                  : _vm._e()
+              })
+            )
+          ])
+        ])
+      ])
+    ])
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", { staticStyle: { "font-size": "11px" } }, [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("No.")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" NOMBRES Y APELLIDOS")]),
+        _vm._v(" "),
+        _c("th", [_vm._v(" PUESTO ")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("TAV")]),
+        _vm._v(" "),
+        _c("th", [
+          _vm._v(
+            "\n                            PROMEDIO\n                        "
+          )
+        ])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
