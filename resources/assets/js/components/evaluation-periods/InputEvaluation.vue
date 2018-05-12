@@ -63,7 +63,9 @@
                 'isConexion',
                 'counterInput',
                 'counterParameter',
-                'totalInput'
+                'totalInput',
+                'scaleEvaluation',
+                'periodsworkingday'
 
 
             ]),

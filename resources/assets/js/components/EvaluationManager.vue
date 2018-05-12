@@ -13,7 +13,7 @@
                 <performances-manager></performances-manager>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <label for="">Seleccionar Periodo</label>
             <select v-on:change="getEvaluationsByPeriod" class="form-control" name="" v-model="periodid">
                 <option :value="0">Seleccionar</option>
@@ -21,6 +21,12 @@
                     {{ period.periods_name }}
                 </option>
             </select>
+            <div v-if="periodObjectSelected">
+                <small>Inicia: {{ periodObjectSelected.start_date | moment("dddd, MMMM Do YYYY, h:mm:ss a") }}</small>
+                <br>
+                <small>Finaliza: {{periodObjectSelected.end_date | moment("dddd, MMMM Do YYYY, h:mm:ss a")}}</small>
+            </div>
+
         </div>
         <div class="col-md-12">
             <div v-if="isCollection">
@@ -55,6 +61,7 @@
             }
         },
         created() {
+            this.$store.state.dateNow = new Date()
             this.$store.state.isTypeGroup = (this.filter == "group" || this.filter == "basic") ? true : false
 
             this.getAsignatureById()
@@ -83,7 +90,8 @@
                 'isConexion',
                 'groupPensum',
                 'isTypeGroup',
-                'configInstitution'
+                'configInstitution',
+                'periodObjectSelected'
             ]),
 
         },
@@ -117,6 +125,14 @@
                 })
             },
             getEvaluationsByPeriod() {
+
+                this.$store.state.periodsworkingday.forEach(element =>{
+                    if(element.periods_id == this.periodid){
+                        this.$store.state.periodObjectSelected = element
+                    }
+                })
+                console.log(this.$store.state.periodObjectSelected)
+
                 this.$store.state.isCollection = false
                 this.$store.state.periodSelected = this.periodid
 

@@ -109,7 +109,9 @@
                 'collectionNotes',
                 'counterParameter',
                 'totalInput',
-                'scaleEvaluation'
+                'scaleEvaluation',
+                'periodObjectSelected',
+                'dateNow'
             ]),
         },
         methods:{

@@ -28,7 +28,9 @@ const store = new Vuex.Store({
         periodsworkingday: Object,
         isTypeGroup: true,
         scaleEvaluation:[],
-        configInstitution:[]
+        configInstitution:[],
+        periodObjectSelected:null,
+        dateNow:null
 
 
     },

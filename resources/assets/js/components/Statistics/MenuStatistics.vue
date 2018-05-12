@@ -35,7 +35,7 @@
 
         <div class="row">
             <div class="col-md-3">
-                <div class="checkbox">
+                <div class="checkbox" v-show="currentView">
                     <label>
                         <input type="checkbox" @click="getIsGroup" v-model="objectToManagerGroupSelect.isSubGroup"> Subgrupo
                     </label>
