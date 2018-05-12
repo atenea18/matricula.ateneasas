@@ -92,8 +92,6 @@ class RecoveryController extends ApiController
         
         $noteFinal->fill($request->all());
         $response = $noteFinal->updateOvercoming($institution);
-        
-        // return response()->json($noteFinal);
 
         return response()->json($response, $response['code']);
     }

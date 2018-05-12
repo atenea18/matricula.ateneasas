@@ -55,11 +55,6 @@
                     "url": "{{route('institution.teachers', [$institution->id, '2018'])}}"
                 },
                 "columns": [
-                    // {
-                    //     "render": function(data, type, full, meta){
-                    //         return ++cont;
-                    //     }
-                    // },
                     {
                         "render": function(data, type, full, meta){
                             return full.manager.last_name+" "+full.manager.name;

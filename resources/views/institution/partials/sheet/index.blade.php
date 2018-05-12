@@ -17,13 +17,19 @@
 			  	<div class="panel-body" style="padding: 0">
 					<ul class="nav nav-tabs" role="tablist">
 			        	<li role="presentation" class="active">
-			        		<a href="#attendance_sheet" aria-controls="attendance_sheet" role="tab" data-toggle="tab">Planilla de asistencia</a>
+			        		<a href="#attendance_sheet" aria-controls="attendance_sheet" role="tab" data-toggle="tab">P. de asistencia</a>
 			        	</li>
 					    <li role="presentation">
-					    	<a href="#evaluation_sheet" aria-controls="evaluation_sheet" role="tab" data-toggle="tab">Planilla Auxiliar de Evaluación</a>
+					    	<a href="#evaluation_sheet" aria-controls="evaluation_sheet" role="tab" data-toggle="tab">P. Aux. de Evaluación</a>
 					    </li>
 					    <li role="presentation">
-					    	<a href="#evaluation_sheet_subgroup" aria-controls="evaluation_sheet_subgroup" role="tab" data-toggle="tab">Planilla Auxiliar Subgrupos</a>
+					    	<a href="#evaluation_sheet_subgroup" aria-controls="evaluation_sheet_subgroup" role="tab" data-toggle="tab">P. Aux. Subgrupos</a>
+					    </li>
+					    <li role="presentation">
+					    	<a href="#attendance_teacher" aria-controls="attendance_teacher" role="tab" data-toggle="tab">P. Asistencia Docentes</a>
+					    </li>
+					    <li role="presentation">
+					    	<a href="#attendance_parents" aria-controls="attendance_parents" role="tab" data-toggle="tab">P. Asistencia Acudientes</a>
 					    </li>
 			        </ul>
 			  	</div>
@@ -37,13 +43,19 @@
 							<div class="tab-content">
 					        	{{-- PERSONAL INFORMATION --}}
 							    <div role="tabpanel" class="tab-pane active" id="attendance_sheet">
-							    	@include('institution.partials.sheet.attendance.home')
+							    	@include('institution.partials.sheet.attendance.student')
 							    </div>
 							    <div role="tabpanel" class="tab-pane" id="evaluation_sheet">
 							    	@include('institution.partials.sheet.evaluation.home')
 							    </div>
 							    <div role="tabpanel" class="tab-pane" id="evaluation_sheet_subgroup">
 							    	@include('institution.partials.sheet.evaluation.subgroup')
+							    </div>
+							    <div role="tabpanel" class="tab-pane" id="attendance_teacher">
+							    	@include('institution.partials.sheet.attendance.teacher')
+							    </div>
+							    <div role="tabpanel" class="tab-pane" id="attendance_parents">
+							    	@include('institution.partials.sheet.attendance.parent')
 							    </div>
 							</div>
 						</div>
@@ -138,6 +150,58 @@
 				}
 			});
 			
+			// 
+			$("#print_type").change(function(){
+
+				var value = this.value;
+
+				if(value == 'headquarter')
+				{
+					$("#group_id_ta").prop('disabled',true);
+				}
+				else
+				{
+					$("#group_id_ta").prop('disabled',false);
+				}
+			});
+
+			// 
+			$("#headquarter_id_ta").change(function(){
+
+				var headquarter = this.value;
+
+				$.get("{{env('APP_URL')}}/api/headquarter/"+headquarter+"/groups", function(data){
+						
+					var options = '';
+					$.each(data.data, function(indx, el){
+						
+						options += '<option value="'+el.id+'">' + el.name + '</option>';
+					});
+
+					
+					$( '#group_id_ta' ).html( options );
+
+				}, "json");
+			});
+
+			// 
+			$("#headquarter_id_pa").change(function(){
+
+				var headquarter = this.value;
+
+				$.get("{{env('APP_URL')}}/api/headquarter/"+headquarter+"/groups", function(data){
+						
+					var options = '';
+					$.each(data.data, function(indx, el){
+						
+						options += '<option value="'+el.id+'">' + el.name + '</option>';
+					});
+					
+					$( '#group_id_pa' ).html( options );
+
+				}, "json");
+			});
+
 		});
 	</script>
 @endsection

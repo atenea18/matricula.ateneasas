@@ -46,6 +46,7 @@ class TeacherController extends ApiController
     {   
         $year = Schoolyear::where('year','=', ($year == null) ? date('Y') : $year )->first();
         $teachers = $institution->teachers()
+        ->whereHas('manager')
         ->with('manager')
         ->with('schoolyear')
         ->with('manager.identification')

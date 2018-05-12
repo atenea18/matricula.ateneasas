@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use DB;
+
 //Trait for sending notifications in laravel
 use Illuminate\Notifications\Notifiable;
 
@@ -71,5 +73,32 @@ class Manager extends Authenticatable
     public function address()
     {
         return $this->belongsTo(Address::class, 'address_id');
+    }
+
+    /***/
+    public static function getByHeadquarter($headquarter_id)
+    {
+        return self::select(DB::raw('DISTINCT managers.id'), DB::raw('CONCAT(managers.`name`," ",managers.last_name) AS name'), 'identification.identification_number')
+        ->join('identification', 'managers.identification_id', '=', 'identification.id')
+        ->join('teachers', 'teachers.manager_id', '=', 'managers.id')
+        ->join('group_pensum', 'group_pensum.teacher_id', '=', 'teachers.id')
+        ->join('group', 'group_pensum.group_id', '=', 'group.id')
+        ->join('headquarter', 'group.headquarter_id', '=', 'headquarter_id')
+        ->where('headquarter.id', '=', $headquarter_id)
+        ->orderBy('name')
+        ->get();
+    }
+
+    /***/
+    public static function getByGroup($group_id)
+    {
+        return self::select(DB::raw('DISTINCT managers.id'), DB::raw('CONCAT(managers.name," ",managers.last_name) AS name'), 'identification.identification_number')
+        ->join('identification', 'managers.identification_id', '=', 'identification.id')
+        ->join('teachers', 'teachers.manager_id', '=', 'managers.id')
+        ->join('group_pensum', 'group_pensum.teacher_id', '=', 'teachers.id')
+        ->join('group', 'group_pensum.group_id', '=', 'group.id')
+        ->where('group.id', '=', $group_id)
+        ->orderBy('name')
+        ->get();
     }
 }

@@ -14,6 +14,8 @@ use App\Institution;
 use App\Subgroup;
 use App\GroupPensum;
 use App\NotesFinal;
+use App\Manager;
+use App\Headquarter;
 
 use PDF;
 use Auth;
@@ -24,6 +26,8 @@ use setasign\Fpdi\Fpdi;
 use App\Pdf\Sheet\StudentAttendance;
 use App\Pdf\Constancy\Study as ConstancyStudy;
 use App\Pdf\Sheet\EvaluationSheet;
+use App\Pdf\Sheet\TeacherSheet;
+use App\Pdf\Sheet\ParentSheet;
 use App\Pdf\Statistics\Consolidate;
 
 
@@ -132,6 +136,57 @@ class PdfController extends Controller
         $this->merge($path, 'lista de asistencia_'.time()."_".$request->institution_id, 'l');
     }
 
+    public function attendanceTeacher(Request $request)
+    {
+        $headquarter = Headquarter::findOrFail($request->headquarter_id_ta);
+        $group = null;
+        $managers = null;
+
+        if(isset($request->group_id_ta))
+        {
+            $managers = Manager::getByGroup($request->group_id_ta);
+            $group = Group::findOrFail($request->group_id_ta);
+        }
+        else
+        {
+            $managers = Manager::getByHeadquarter($request->headquarter_id_ta);
+        }
+        
+        // dd($managers);
+        $pdf = new TeacherSheet('p', 'mm', 'letter');
+        $pdf->setInstitution($headquarter->institution);
+        $pdf->setHeadquarter($headquarter);
+        $pdf->setGroup($group);
+        $pdf->setEvent($request->event);
+        $pdf->setData($managers);
+        $pdf->create();
+        $pdf->Output("file.pdf", "D"); 
+    }
+
+    public function attendanceParent(Request $request)
+    {
+        $group = Group::findOrFail($request->group_id_pa);
+        $students = $group->enrollments()
+        ->with('student')
+        ->with('student.identification.identification_type')
+        ->with('student.address')
+        ->with('student.family.address')
+        ->get()
+        ->sortBy('student.last_name')
+        ->pluck('student');
+
+        // dd($students);
+
+        $pdf = new ParentSheet('p', 'mm', 'letter');
+        $pdf->setInstitution($group->headquarter->institution);
+        $pdf->setHeadquarter($group->headquarter);
+        $pdf->setGroup($group);
+        $pdf->setEvent($request->event);
+        $pdf->setData($students);
+        $pdf->create();
+        $pdf->Output("file.pdf", "D"); 
+    }
+
     public function evaluationPdf(Request $request)
     {
         $path = "./pdf/".time()."-".$request->institution_id.$request->year."-evaluationSheet/";
@@ -232,6 +287,7 @@ class PdfController extends Controller
 
         $notes = NotesFinal::getConsolidate($request);
 
+        // return response()->json($notes);
 
         $consolidate = new Consolidate('l', 'mm', 'letter');
         $consolidate->institution = Institution::findOrFail($request->institution_id);

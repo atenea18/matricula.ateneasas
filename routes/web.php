@@ -258,6 +258,9 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 		// CONSTANCIA DE ESTUDIO
 	Route::post('pdf/constancy_study', 'PdfController@constancyStudy')->name('constancy.study.pdf');
 
+	// 
+	Route::post('pdf/teacherAttendance', 'PdfController@attendanceTeacher')->name('teacher.attendances.pdf');
+	Route::post('pdf/parentAttendance', 'PdfController@attendanceParent')->name('parent.attendances.pdf');
 });
 
 Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
