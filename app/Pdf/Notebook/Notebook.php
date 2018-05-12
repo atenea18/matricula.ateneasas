@@ -312,7 +312,7 @@ class Notebook extends Fpdf
 			$valoration = '';
 		endif;
 
-		$ihs = ($ihs == 0) ? '' : $ihs;
+		$ihs = ($ihs <= 0) ? '' : $ihs;
 		
 		if($this->data['config']['showFaces'] == true):
 			$height = 11;
@@ -546,7 +546,7 @@ class Notebook extends Fpdf
 					$this->hideTilde(substr($asignature['asignature'], 0, 51)),'TBL',0, 'L');
 
 					$this->Cell(6, $this->_h_c, 
-					($asignature['ihs']== 0) ? '' : $asignature['ihs'], 1,0, 'C');
+					($asignature['ihs'] <= 0) ? '' : $asignature['ihs'], 1,0, 'C');
 					// MOSTRAMOS LA VALORACION DE LOS PERIODOS
 					$this->showPeriodValorationByAsignature($asignature);
 

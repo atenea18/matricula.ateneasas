@@ -162,7 +162,7 @@
 				var select = $(this);
 
 				$.ajax({
-					url: "{{env('APP_URL')}}api/periodByGroup/"+this.value,
+					url: "{{env('APP_URL')}}/api/periodByGroup/"+this.value,
 					method: "GET",
 					beforeSend:function(){
 						
@@ -192,7 +192,7 @@
 				var group_id = $("#group_og").val();
 
 				$.ajax({
-					url: "{{env('APP_URL')}}api/group/"+group_id+"/enrollments",
+					url: "{{env('APP_URL')}}/api/group/"+group_id+"/enrollments",
 					method: "GET",
 					// data: {group: group_id},
 					beforeSend:function(){},

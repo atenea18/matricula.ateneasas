@@ -115,7 +115,7 @@ class Consolidate extends Fpdf
 		// 
 		$this->SetFont('Arial','B',7);
 
-		if(count($this->asignatures) > 19)
+		if(count($this->asignatures) >= 19)
 		{
 			$this->_with_CA = 8.5;
 			$this->_with_CE = 72;	
@@ -181,11 +181,16 @@ class Consolidate extends Fpdf
 
 	private function getNote($student, $asignature)
 	{
+		$note_final = "";
+
 		foreach ($student->notes_final as $key => $note) 
 			if($note->asignatures_id == $asignature->asignatures_id)
-				return round($note->value,2)!=0?round($note->value,2):'';
+				if(!is_null($note->overcoming))
+					$note_final = "{$note->overcoming} / {$note->value}";
+				else
+					$note_final = $note->value;
 
-		return "";
+		return $note_final;
 	}
 
 	private function showFooterAsignatures()

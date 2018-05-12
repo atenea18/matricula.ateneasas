@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Teacher;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 
 use Auth;
 
@@ -15,7 +15,7 @@ use App\Period;
 use App\NotesFinal;
 use App\ScaleEvaluation;
 
-class PeriodPendingController extends Controller
+class PeriodPendingController extends ApiController
 {
     /**
      * Display a listing of the resource.

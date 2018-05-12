@@ -38,7 +38,7 @@ class ScaleEvaluation extends Model
     public static function getHighScale(Institution $institution)
     {
         return ScaleEvaluation::where([
-            ['abbreviation', '=', 'sup'],
+            ['abbreviation', '=', 's'],
             ['school_year_id', '=', 1],
             ['institution_id', '=', $institution->id]
         ])

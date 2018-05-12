@@ -220,6 +220,7 @@ class Notebook
 		// return $this->pensums_areas;
 		// return $this->resolveAverageAreas(8, 1, 1);
 		// return $this->resolvePerformances(1, 1, $this->enrollment, 4259);
+		// return $this->resolveAveragePeriod($this->enrollment, 1, 1);
 		
 		$this->noteBook = array(
 			'tittle'				=>	'INFORME DESCRIPTIVO Y VALORATIVO',
@@ -476,7 +477,7 @@ class Notebook
 
 				 	$messageScale = null;
 				 	$messageScale = (strtolower($scale->abbreviation) == 's') ? $message : $message->messageScale()->where('scale_evaluations_id', '=', $scale->id)->first();
-
+				 	$messageScale = (!is_null($messageScale)) ? $messageScale : $message ;
 				 	array_push($response, $messageScale);
 				} catch (\Exception $e) {
 					
@@ -518,7 +519,7 @@ class Notebook
 
 					$messageScale = null;
 				 	$messageScale = (strtolower($scale->abbreviation) == 's') ? $message : $message->messageScale()->where('scale_evaluations_id', '=', $scale->id)->first();
-
+				 	$messageScale = (!is_null($messageScale)) ? $messageScale : $message ;
 				 	array_push($response, $messageScale);
 
 				}catch(\Exception $e){}

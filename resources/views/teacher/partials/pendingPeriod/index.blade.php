@@ -78,7 +78,7 @@
 
 				$("#tableBody").empty().html("<tr><td colspan='5' class='text-center'><i class='fas fa-spinner fa-pulse fa-3x'></i></td></tr>")
 
-				$.get("{{env('APP_URL')}}api/pendingPeriod/{{$group->id}}/{{$asignature->id}}/"+this.value+"/students", function(data){
+				$.get("/api/pendingPeriod/{{$group->id}}/{{$asignature->id}}/"+this.value+"/students", function(data){
 
 					var html = '',
 						dataEmpty = (data.data.length > 0) ? false : true;

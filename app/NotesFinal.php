@@ -117,8 +117,6 @@ class NotesFinal extends Model
 
         }
 
-
-        // return $data->period_id;
         $collection = [];
 
         foreach ($enrollments as $key => $enrollment) {
@@ -137,12 +135,11 @@ class NotesFinal extends Model
 
 
         return $collection;
-        // return $data;
     }
 
     public static function getAverageByGroup($group_id, $school_year_id, $institution_id, $periods_id)
     {
-        return self::select('enrollment.id AS enrollment_id', DB::raw('CONCAT(student.last_name," ",student.name) as name_student'), DB::raw('ROUND(SUM(notes_final.`value`)/SUM(notes_final.`value`>0), 0) AS average'), DB::raw('SUM(notes_final.`value`>0) AS tav'))
+        return self::select('enrollment.id AS enrollment_id', DB::raw('CONCAT(student.last_name," ",student.name) as name_student'), DB::raw('ROUND(SUM(notes_final.`value`)/SUM(notes_final.`value`>0), 1) AS average'), DB::raw('SUM(notes_final.`value`>0) AS tav'))
             ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
             ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
             ->join('student', 'student.id', '=', 'enrollment.student_id')
