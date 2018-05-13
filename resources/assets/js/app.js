@@ -31,7 +31,12 @@ import store from './store'
 
 
 
+const moment = require('moment')
+require('moment/locale/es')
 
+Vue.use(require('vue-moment'), {
+    moment
+})
 Vue.use(VueSweetAlert);
 Vue.use(VueGoodTable);
 Vue.use(EventBus);

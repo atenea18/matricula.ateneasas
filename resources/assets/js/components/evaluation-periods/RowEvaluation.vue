@@ -72,7 +72,9 @@
                 "parameters",
                 "asignature",
                 "periodSelected,",
-                "isConexion"
+                "isConexion",
+                "periodObjectSelected",
+                'dateNow'
             ]),
 
             fullName() {
@@ -103,12 +105,16 @@
               onEventDirtyInputEvaluation
              */
             onEventDirtyInputEvaluation() {
+                let date = this.$store.state.dateNow.getTime()
+                let start_date = new Date(this.$store.state.periodObjectSelected.start_date).getTime()
+                let end_date = new Date(this.$store.state.periodObjectSelected.end_date).getTime()
 
-                this.onEventOfKeyUpInputNoAttendance()
-                this.assignmentEventToInputEachNotesParameter()
-                this.meObject.isInit = true;
-
-
+                if(start_date < date && date < end_date){
+                    this.onEventOfKeyUpInputNoAttendance()
+                    this.assignmentEventToInputEachNotesParameter()
+                    this.meObject.isInit = true;
+                    console.log("Si se cumple")
+                }
             },
 
             onEventOfKeyUpInputNoAttendance() {

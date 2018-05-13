@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" v-if="state">
                         <!-- Fila de titulos -->
                         <thead>
                         <tr style="font-size: 11px">
@@ -17,8 +17,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr v-if="objectToStatsRating.enrollments" v-for="enrollment in objectToStatsRating.enrollments">
-                                <td></td>
+                            <tr v-if="objectToStatsRating.enrollments" v-for="(enrollment,i) in objectToStatsRating.enrollments">
+                                <td>
+                                    {{i+1}}
+                                </td>
                                 <td>
                                     {{enrollment.last_name +" "+ enrollment.name }}
                                 </td>
@@ -46,7 +48,8 @@
         data() {
             return {
                 objectToStatsRating: {
-                    enrollments: []
+                    enrollments: [],
+                    data:{}
                 },
                 state: false,
                 data: {},
@@ -59,12 +62,20 @@
         methods: {
             managerEvents() {
                 this.$bus.$on('spire', object => {
+                    this.objectToStatsRating.data = object.fieldSelects
+                    console.log("spire")
                     if (object.type == 'stats-rating') {
                         this.getPositions(object.fieldSelects)
                     }
                 })
+                this.$bus.$on('get-spire', object => {
+                    if(object == 'stats-rating'){
+                        this.getPositions(this.objectToStatsRating.data)
+                    }
+                })
             },
             getPositions(object) {
+                this.state = false
 
                 let params = {
                     grade_id: object.grade_id,
@@ -78,6 +89,7 @@
 
                 axios.get(url, {params}).then(res => {
                     this.objectToStatsRating.enrollments = res.data
+                    this.state = true
                 })
 
             },

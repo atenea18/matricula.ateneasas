@@ -81,11 +81,10 @@
                     if (s.length != 0) {
                         this.$bus.$emit("" + parameter.id + s[0].objectToParameter.id, performance);
                     }
-
                 })
-
             })
 
+            this.generateLimitNotes()
 
 
         },
@@ -109,11 +108,28 @@
                 'collectionNotes',
                 'counterParameter',
                 'totalInput',
-                'scaleEvaluation'
+                'scaleEvaluation',
+                'periodObjectSelected',
+                'dateNow',
+                'maxScale',
+                'minScale'
             ]),
         },
         methods:{
+            generateLimitNotes(){
 
+                this.$store.state.scaleEvaluation.forEach(element => {
+                    if(this.$store.state.maxScale < element.rank_end){
+                        this.$store.state.maxScale = element.rank_end
+                    }
+                    if(this.$store.state.minScale > element.rank_start){
+                        this.$store.state.minScale = element.rank_start
+                    }
+                })
+
+                console.log("max: "+ this.$store.state.maxScale)
+                console.log("min: "+ this.$store.state.minScale)
+            }
         }
     }
 </script>
