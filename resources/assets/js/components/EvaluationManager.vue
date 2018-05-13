@@ -70,8 +70,9 @@
             this.getGrades()
             this.getParameters()
             this.getGroupPensum()
-            this.getPeriodsByWorkingDay();
+            this.getPeriodsByWorkingDay()
             this.getInstitutionOfTeacher()
+
 
 
         },
@@ -91,7 +92,8 @@
                 'groupPensum',
                 'isTypeGroup',
                 'configInstitution',
-                'periodObjectSelected'
+                'periodObjectSelected',
+                'scaleEvaluation'
             ]),
 
         },
@@ -176,7 +178,7 @@
                 this.$store.dispatch('verifyConexion', {
                     isGroup: this.$store.state.isTypeGroup
                 })
-            }
+            },
 
         }
 
