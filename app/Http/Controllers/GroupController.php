@@ -138,9 +138,10 @@ class GroupController extends Controller
         ->with('manager.address')
         ->where('school_year_id','=', 1)
         ->get()
-        ->pluck('manager')
-        ->pluck('fullNameInverse', 'id');
+        // ->pluck('manager')
+        ->pluck('manager.fullNameInverse', 'id');
 
+        // dd($teachers);
         // dd($group->director()->first()->manager->fullName);
 
         return view('institution.partials.group.edit')
