@@ -84,7 +84,7 @@ class Manager extends Authenticatable
         ->join('group_pensum', 'group_pensum.teacher_id', '=', 'teachers.id')
         ->join('group', 'group_pensum.group_id', '=', 'group.id')
         ->join('headquarter', 'group.headquarter_id', '=', 'headquarter_id')
-        ->where('headquarter.id', '=', $headquarter_id)
+        ->where('group.headquarter_id', '=', $headquarter_id)
         ->orderBy('name')
         ->get();
     }
