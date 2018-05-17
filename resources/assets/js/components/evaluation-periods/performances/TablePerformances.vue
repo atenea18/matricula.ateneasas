@@ -54,7 +54,12 @@
         },
         computed: {
             ...
-                mapState(["parameters", "asignature", "periodSelected"]),
+                mapState(
+                    [
+                        "parameters",
+                        "asignature",
+                        "periodSelected"
+                    ]),
         },
         methods: {
             searchPerformances(params) {
@@ -64,7 +69,7 @@
             },
             selectPerformances(codePerformances) {
                 //console.log(this.params)
-                this.$bus.$emit(""+this.params.evaluation_parameters_id,codePerformances);
+                this.$bus.$emit("" + this.params.evaluation_parameters_id, codePerformances);
             }
         }
     }

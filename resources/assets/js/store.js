@@ -28,7 +28,11 @@ const store = new Vuex.Store({
         periodsworkingday: Object,
         isTypeGroup: true,
         scaleEvaluation:[],
-        configInstitution:[]
+        configInstitution:[],
+        periodObjectSelected:null,
+        dateNow:null,
+        maxScale:0,
+        minScale:200
 
 
     },
@@ -103,14 +107,12 @@ const store = new Vuex.Store({
     actions: {
 
         incrementAsync(context, payload) {
-
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     context.commit('increment', payload)
                     resolve()
                 }, 2000)
             })
-
         },
 
         configInstitution(context, payload = {}) {
@@ -125,9 +127,7 @@ const store = new Vuex.Store({
             axios.get('/ajax/getInstitutionOfTeacher').then(res => {
                 payload.institutionOfTeacher = res.data;
                 context.commit('setInstitutionOfTeacher', payload)
-
                 _this.dispatch('scaleEvaluation', payload)
-
             })
         },
         scaleEvaluation(context, payload = {}) {

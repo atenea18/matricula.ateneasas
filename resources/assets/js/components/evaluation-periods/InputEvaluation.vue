@@ -63,7 +63,9 @@
                 'isConexion',
                 'counterInput',
                 'counterParameter',
-                'totalInput'
+                'totalInput',
+                'scaleEvaluation',
+                'periodsworkingday'
 
 
             ]),
@@ -120,7 +122,7 @@
 
             },
 
-            style(){
+            style() {
                 if (!this.isFirst) {
                     if (this.beforevalue != this.valuenote) {
                         this.isSend = false
@@ -130,22 +132,31 @@
             writingNotes() {
                 this.getConexion()
                 let val = parseFloat(this.valuenote)
-                if (!isNaN(val)) {
+
+                if (!isNaN(val) || this.valuenote == '') {
                     this.sendEvent()
                 } else {
                     if (this.valuenote == '') {
                         this.sendEvent()
+                    }else {
+                        this.valuenote = this.beforevalue
+                        this.isSend = true
                     }
 
                 }
             },
 
             sendEvent() {
-                if (this.beforevalue != this.valuenote && this.$store.state.isConexion) {
-                    let referencia = this.refsInputEvaluation
-                    this.$bus.$emit('set-dirty-' + referencia, this.refEvaluationPeriodsMoreParameter)
-                }
 
+                if (this.valuenote == ''  || (this.valuenote >= this.$store.state.minScale && this.$store.state.maxScale >= this.valuenote) ) {
+                    if (this.beforevalue != this.valuenote && this.$store.state.isConexion) {
+                        let referencia = this.refsInputEvaluation
+                        this.$bus.$emit('set-dirty-' + referencia, this.refEvaluationPeriodsMoreParameter)
+                    }
+                } else {
+                    this.valuenote = this.beforevalue
+                    this.isSend = true
+                }
             },
 
             search(idnoteparameter) {
@@ -198,7 +209,6 @@
     .not-send {
         background-color: #ff9794;
     }
-
 
 
 </style>
