@@ -186,9 +186,9 @@ class Consolidate extends Fpdf
 		foreach ($student->notes_final as $key => $note) 
 			if($note->asignatures_id == $asignature->asignatures_id)
 				if(!is_null($note->overcoming))
-					$note_final = "{$note->overcoming} / {$note->value}";
+					$note_final = round($note->overcoming,1)."/".round($note->value,1);
 				else
-					$note_final = $note->value;
+					$note_final = round($note->value,1);
 
 		return $note_final;
 	}

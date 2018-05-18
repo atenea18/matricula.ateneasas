@@ -13,7 +13,7 @@
             <input-parameter :ref="refsInputParameter" :objectInput="objectToEvaluation" :parameter="parameter"/>
         </template>
         <td style="padding-top:9px;width:15px" :class="isFinal?'good':'bad'">
-            <label v-show="meObject.value">{{meObject.value.toFixed(2)}}</label>
+            <label v-show="meObject.value">{{meObject.value.toFixed(1)}}</label>
         </td>
     </tr>
 </template>
@@ -140,10 +140,6 @@
                     this.callbackSaveNoAttendance(object)
                 }
 
-
-                /*
-
-                    */
             },
 
             callbackSaveNoAttendance(object) {
@@ -206,7 +202,7 @@
 
                 if (typeof this.objectToEvaluation.enrollment.notes_final != 'undefined') {
 
-                    if (this.meObject.value.toFixed(2) != this.objectToEvaluation.enrollment.notes_final.value.toFixed(2)) {
+                    if (this.meObject.value.toFixed(1) != this.objectToEvaluation.enrollment.notes_final.value.toFixed(1)) {
                         this.meObject.evaluationPeriodId = this.objectToEvaluation.enrollment.notes_final.evaluation_periods_id
                         this.sendDataFinalNotes()
                     }
@@ -263,7 +259,7 @@
                 this.isFinal = false
                 let _this = this
                 let data = {
-                    value: this.meObject.value.toFixed(2),
+                    value: this.meObject.value.toFixed(1),
                     overcoming: null,
                     evaluation_periods_id: this.meObject.evaluationPeriodId,
                 }

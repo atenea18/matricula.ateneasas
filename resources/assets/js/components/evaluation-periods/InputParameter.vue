@@ -1,6 +1,6 @@
 <template>
     <td style="padding-top:6px !important;padding-left: 3px;padding-right: 2px; width:41px !important;">
-        <label v-show="value">{{value.toFixed(2)}} </label>
+        <label v-show="value">{{value.toFixed(1)}} </label>
     </td>
 </template>
 
