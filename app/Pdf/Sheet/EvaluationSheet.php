@@ -113,7 +113,7 @@ class EvaluationSheet extends Fpdf
 					Storage::disk('uploads')->url(
 						$this->institution->picture
 					), 12, 12, 17, 17);
-		}catch(Exception $e){}
+		}catch(\Exception $e){}
 
 		//Marco
 	    $this->Cell($this->_width_mark, $this->_height_mark, '', 1,0);
@@ -215,7 +215,7 @@ class EvaluationSheet extends Fpdf
 		{
 			if(strstr(strtolower($parameter->abbreviation), 'aee') || strstr(strtolower($parameter->abbreviation), 'efp'))
 			{
-				$this->Cell($this->_width_VG_VRA, 8, $parameter->abbreviation, 1,0, 'C', true);
+				$this->Cell($this->_width_VG_VRA, 8, substr($parameter->abbreviation, 0,3), 1,0, 'C', true);
 			}
 			else
 			{
