@@ -34,7 +34,7 @@
                 let value = ""
                 this.objectInput.enrollment.notes_final.forEach( (element, i) => {
                     if(element.asignatures_id == asignature.asignatures_id && element.value>0){
-                        value = element.value.toFixed(2)
+                        value = element.value.toFixed(1)
                     }
                 })
 
