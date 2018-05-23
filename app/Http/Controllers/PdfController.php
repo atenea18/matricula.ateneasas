@@ -30,6 +30,8 @@ use App\Pdf\Sheet\TeacherSheet;
 use App\Pdf\Sheet\ParentSheet;
 use App\Pdf\Statistics\Consolidate;
 
+// 
+use App\Helpers\EvaluationSheetHelper;
 
 class PdfController extends Controller
 {
@@ -193,15 +195,11 @@ class PdfController extends Controller
         $institution = Institution::findOrFail($request->institution_id);
         $schoolYear = Schoolyear::where('year','=',$request->year)->first();
         $parameters = $institution->evaluationParameters()
-                        ->with('criterias')
-                        ->with('schoolYear')
-                        ->where([
-                            ['school_year_id', '=', '1'],
-                            ['group_type', '=', $request->group_type]
-                        ])
-                        ->get();
-
-        // return response()->json($parameters);
+        ->with('criterias')->with('schoolYear')->where([
+            ['school_year_id', '=', '1'],['group_type', '=', $request->group_type]
+        ])->get();
+        $periods = $institution->periods()
+        ->with('period')->get()->pluck('period')->unique()->values()->pluck('name','id');
 
         if(!file_exists($path))
         {   
@@ -210,27 +208,27 @@ class PdfController extends Controller
 
         foreach($request->groups as $key => $group_id)
         {
-            $group_type = ($request->group_type == 'group') ? Group::findOrFail($group_id) : Subgroup::findOrFail($group_id) ;
 
-            // dd(count($institution->headquarters));
-            $students = $group_type->enrollments()
-            ->with('student')
-            ->with('student.state')
-            ->where('school_year_id', '=', $schoolYear->id)
-            ->get()
-            ->pluck('student')
-            ->sortBy('last_name');
+            $helper = new EvaluationSheetHelper($group_id, $request, $periods);
 
-            for ($i=0; $i < $request->copy; $i++) { 
+           $pensums = $helper->getPensums();
 
-                $evaluationSheet = new EvaluationSheet($request->orientation, 'mm', $request->papper);
-                $evaluationSheet->institution = $institution;
-                $evaluationSheet->group = $group_type;
-                $evaluationSheet->parameters = $parameters;
-                $evaluationSheet->create($students);
-                $evaluationSheet->Output($path.$group_id.$i.".pdf", "F");
-                
-            }
+           if(count($pensums) > 0)
+           {
+                foreach($pensums['pensums'] as $key => $pensum) { 
+
+                    // dd($pensum);
+                    $evaluationSheet = new EvaluationSheet($request->orientation, 'mm', $request->papper);
+                    $evaluationSheet->institution = $institution;
+                    $evaluationSheet->group = $pensums['group'];
+                    $evaluationSheet->parameters = $parameters;
+                    $evaluationSheet->asignatureName = $pensum['asignature'];
+                    $evaluationSheet->pensum = $pensum;
+                    $evaluationSheet->periods = $periods;
+                    $evaluationSheet->create();
+                    $evaluationSheet->Output($path.$group_id.$key.".pdf", "F");
+                }
+           }
 
         }
 
