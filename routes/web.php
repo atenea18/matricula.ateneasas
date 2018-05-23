@@ -310,6 +310,10 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 	// Ruta para la evaluación de periodo pendiente
 	Route::get('periodPending/{group}/{asignature}/group', 'Teacher\PeriodPendingController@byGroup')->name('group.pendingPeriod');
 
+	// Ruta para las planillas
+	Route::get('sheet', 'Teacher\SheetController@index')->name('teacher.sheet');
+	Route::post('sheet/byPensum', 'Teacher\SheetController@evaluationSheetByPensum')->name('teacher.sheetByPensum');
+
 	// Ruta para la configuración
 	Route::get('setting', 'Teacher\SettingController@index')->name('teacher.setting');
 	Route::get('setting/security', 'Teacher\SettingController@security')->name('teacher.setting.security');

@@ -1,24 +1,12 @@
 <div class="col-md-12">
-	{!! Form::open(['route'=>'evaluationSheet.pdf', 'method'=>'POST', 'target'=>'_blank']) !!}
+	{!! Form::open(['route'=>'teacher.sheetByPensum', 'method'=>'POST', 'target'=>'_blank']) !!}
 	<div class="row">
-		<div class="col-md-4">
+		{{-- <div class="col-md-4">
 			<div class="form-group">
-				<label for="">Sede</label>
-				{!! Form::select('headquarter_id_ev', $headquarters, null, ['class'=>'form-control', 'placeholder'=>'- Seleccione una sede -','id'=>'headquarter_id_ev']) !!}
+				<label for="">Grupo</label>
+				{!! Form::select('group_id_ev', $pensums, null, ['class'=>'form-control', 'placeholder'=>'- Seleccione un grupo -','id'=>'group_id_ev']) !!}
 			</div>
-		</div>
-		<div class="col-md-3">
-			<div class="form-group">
-				<label for="">Jornada</label>
-				{!! Form::select('working_day_id_ev', $journeys, null, ['class'=>'form-control', 'id'=>'working_day_id_ev', 'placeholder'=> '- Slecciones una jornada -']) !!}
-			</div>
-		</div>
-		<div class="col-md-3">
-			<div class="form-group">
-				<label for="">Grado</label>
-				{!! Form::select('grade_id_ev', $grades, null, ['class'=>'form-control', 'id'=>'grade_id_ev', 'placeholder'=> '- Seleccione un grado -']) !!}
-			</div>
-		</div>
+		</div> --}}
 		<div class="col-md-2">
 			<div class="form-group">
 				<label for="period_id">Periodo</label>
@@ -29,7 +17,14 @@
 	<div class="row">
 		<div class="col-md-5">
 			<div class="form-group">
-				{!! Form::select('sheet_ev', [], null, ['id'=>'sheet_ev','class'=>'form-control', 'multiple'=>true, 'size'=>8]) !!}
+				<select class="form-control" multiple="true" size="8" id="sheet_ev">
+					@foreach($pensums as $pensum)
+						<option value="{{$pensum['id']}}" title="{{$pensum['asignature']['name'] ." ".$pensum['group']['name']}}">
+							{{$pensum['asignature']['name'] ." ".$pensum['group']['name'] }}
+						</option>
+					@endforeach
+				</select>
+				{{-- {!! Form::select('sheet_ev', [], null, ['id'=>'sheet_ev','class'=>'form-control', 'multiple'=>true, 'size'=>8]) !!} --}}
 			</div>
 		</div>
 		<div class="col-md-2">
@@ -40,7 +35,7 @@
 		</div>
 		<div class="col-md-5">
 			<div class="form-group">
-				{!! Form::select('groups[]', [], null, ['id'=>'sheet_ev_to','class'=>'form-control', 'multiple'=>true, 'size'=>8]) !!}
+				{!! Form::select('pensums[]', [], null, ['id'=>'sheet_ev_to','class'=>'form-control', 'multiple'=>true, 'size'=>8]) !!}
 				{!! Form::hidden('year', date('Y'), []) !!}
 				{!! Form::hidden('institution_id', $institution->id, []) !!}
 			</div>

@@ -8,16 +8,23 @@ namespace App\Pdf\Sheet;
 use Illuminate\Support\Facades\Storage;
 use Codedge\Fpdf\Fpdf\Fpdf;
 
+use App\Traits\utf8Helper;
+
 use App\Group;
 
 class EvaluationSheet extends Fpdf
 {
 
-	public $institution = array();
-	public $parameters = array();
-	public $group = array();
+	use utf8Helper;
+
+	public $institution;
+	public $parameters;
+	public $group;
+	public $pensum;
+	public $periods;
 	public $title = "PLANILLA DE EVALUACIÓN";
- 	
+ 	public $asignatureName;
+
 	// 
 	private $_width_mark = 267; //Ancho del marco de la cabecera
 	private $_height_mark = 20; //Alto del marco de la cabecera
@@ -26,10 +33,12 @@ class EvaluationSheet extends Fpdf
 	private $_with_C_H = 50; //Ancho de la celda donde estan los header (Desempeños)
 	private $_width_VG_VRA = 8; //Ancho de las celdas (VRA y VG)
 	private $_with_title = 187; //Ancho de la celda del nombre de la institución
+	private $_with_CP = 8; // Ancho de la celda de los periodos
 	private $_font_tittle = 14; //Tamaño de fuente del nombre de la institución
 	private $_font_parameter = 9; //Tamaño de fuente del nombre de la institución
 	private $_font_criteria = 6;
 	private $_font_student = 7;
+	private $_font_header = 8;
 	private $_first_place_header = 25;
 	private $_second_place_header = 75;
 	private $_third_place_header = 100;
@@ -38,13 +47,16 @@ class EvaluationSheet extends Fpdf
 	{
 		if($this->DefOrientation == 'P')
 		{	
+			// 
+			$this->asignatureName = substr($this->asignatureName, 0, 22);
 			// Anchos
-			$this->_width_mark = 190;
+			$this->_width_mark = 0;
 			$this->_with_C_N_E = 7;
-			$this->_with_C_H = 42;
+			$this->_with_C_H = 40;
 			$this->_with_CE = 65;
-			$this->_width_VG_VRA = 7;
+			$this->_width_VG_VRA = 6;
 			// Fuentes
+			$this->_font_header = 7;
 			$this->_font_criteria = 5;
 			$this->_font_parameter = 7;
 
@@ -64,19 +76,28 @@ class EvaluationSheet extends Fpdf
 
 		    }else if(count($this->parameters) == 2 && $this->fieldExistiByName('aee') )
 		    {
-		    	$this->_with_C_H = 68;
-		    	$this->_width_VG_VRA = 9;
+		    	$this->_with_C_H = 60;
+		    	$this->_width_VG_VRA = 7;
 		    	$this->_with_C_N_E = 8;
-		    	$this->_with_CE = 70;
+		    	$this->_with_CE = 68;
 
-		    	$this->_font_criteria = 7;
-				$this->_font_parameter = 8;
+		    	$this->_font_criteria = 6;
+				$this->_font_parameter = 7;
 
 		    }else if(count($this->parameters) == 2 && !$this->fieldExistiByName('aee') )
 		    {
 		    	$this->_with_C_H = 42.4;
 		    	$this->_with_CE = 70;
 		    	$this->_font_criteria = 5;
+		    }
+		    
+		    if(count($this->parameters) == 3 && !$this->fieldExistiByName('aee'))
+		    {
+		    	$this->_with_CE = 65;	
+		    	$this->_with_C_H = 30;
+
+		    	$this->_font_parameter = 6;
+		    	$this->_font_student = 7;
 		    }
 
 			$this->_font_tittle = 12;
@@ -87,14 +108,35 @@ class EvaluationSheet extends Fpdf
 		}
 		else
 		{
+			$this->asignatureName = substr($this->asignatureName, 0, 30);
+
 			if(count($this->institution->headquarters) > 1){
 		    	$this->_height_mark = 25;
 		    }
-
-		    if(count($this->parameters) == 3 && !$this->fieldExistiByName('aee'))
+		    else if(count($this->parameters) == 3 && !$this->fieldExistiByName('aee'))
 		    {
 		    	$this->_with_CE = 77;	
-		    	$this->_font_student = 8;
+		    	$this->_with_C_H = 41;
+
+		    	$this->_font_parameter = 7;
+		    	$this->_font_student = 7;
+		    }
+		    else if(count($this->parameters) == 2 && $this->fieldExistiByName('aee'))
+		    {	
+		    	$this->_font_parameter = 7;
+
+		    	$this->_with_CE = 100;	
+		    	$this->_with_C_H = 70;
+		    	$this->_with_CP = 10;
+		    }
+		    else if(count($this->parameters) == 5 && $this->fieldExistiByName('aee'))
+		    {
+		    	$this->_with_CE = 68;	
+		    	$this->_with_C_H = 40;
+
+		    	$this->_font_parameter = 7;
+		    	$this->_font_student = 7;
+		    	$this->_font_criteria = 5;
 		    }
 		}
 	}
@@ -124,7 +166,7 @@ class EvaluationSheet extends Fpdf
 	    // Movernos a la dereca
 	    $this->Cell(40, 6, '', 0,0);
 	    // Título
-	    $this->Cell($this->_with_title, 6, (utf8_decode($this->institution->name)), 0, 0, 'C');
+	    $this->Cell($this->_with_title, 6, ($this->hideTilde($this->institution->name)), 0, 0, 'C');
 	    // Movernos a la derecha
 	    $this->Cell(40, 6, '', 0,0);
 	    // Salto de línea
@@ -136,7 +178,7 @@ class EvaluationSheet extends Fpdf
 	    
 	    // Título
 	    if(count($this->institution->headquarters) > 1){
-	    	$this->Cell(0,4, utf8_decode($this->group->headquarter->name), 0, 0, 'C');
+	    	$this->Cell(0,4, $this->hideTilde($this->group->headquarter->name), 0, 0, 'C');
 	    	$this->Ln(4);	
 	    }
 	    // Movernos a la derecha
@@ -146,30 +188,30 @@ class EvaluationSheet extends Fpdf
 	    // TERCERA LINEA
 	    // $this->Cell(90, 4, '', 0,0);
 	    // Título
-	    $this->Cell(0, 4, utf8_decode($this->title), 0, 0, 'C');
+	    $this->Cell(0, 4, $this->hideTilde($this->title), 0, 0, 'C');
 	    // Movernos a la derecha
 	    // $this->Cell(0, 4, '', 0,0);
 	    // Salto de línea
 	    $this->Ln(4);
 
 	    // CUARTA LINEA
-	    $this->SetFont('Arial','',8);
+	    $this->SetFont('Arial','',$this->_font_header);
 	    // Movernos a la derecha
 	    $this->Cell($this->_first_place_header, 4, '', 0,0);
-	    $this->Cell($this->_second_place_header, 4, "{$group_type}: ".utf8_decode($this->group->name), 0, 0, 'L');
+	    $this->Cell($this->_second_place_header, 4, "{$group_type}: ".$this->hideTilde($this->group->name), 0, 0, 'L');
 	    // Título
-	    $this->Cell($this->_third_place_header,4, ($this->group->director()->first() != null) ? "DIRECTOR DE {$group_type}: ".strtoupper(utf8_decode($this->group->director()->first()->manager->fullName)) : "DIRECTOR DE {$group_type}:", 0, 0, 'L');
+	    $this->Cell($this->_third_place_header,4, ($this->group->director()->first() != null) ? "DIRECTOR DE {$group_type}: ".strtoupper($this->hideTilde($this->group->director()->first()->manager->fullName)) : "DIRECTOR DE {$group_type}: ", 0, 0, 'L');
 	    // Movernos a la derecha
-	    $this->Cell(0, 4, utf8_decode('AÑO LECTIVO ').date('Y'), 0,0);
+	    $this->Cell(0, 4, $this->hideTilde('AÑO LECTIVO ').date('Y'), 0,0);
 	    // Salto de línea
 	    $this->Ln(4);
 
 	    // QUINTA LINEA
 	    // Movernos a la derecha
 	    $this->Cell($this->_first_place_header, 4, '', 0,0);
-	    $this->Cell($this->_second_place_header, 4, 'ASIGNATURA:', 0, 0, 'L');
+	    $this->Cell($this->_second_place_header, 4, 'ASIGNATURA: '.$this->hideTilde($this->asignatureName), 0, 0, 'L');
 	    // Título
-	    $this->Cell($this->_third_place_header,4, 'DOCENTE:', 0, 0, 'L');
+	    $this->Cell($this->_third_place_header,4, 'DOCENTE: '.$this->hideTilde($this->pensum['teacher']->fullName), 0, 0, 'L');
 	    // Movernos a la derecha
 	    $this->Cell(0,4, 'FECHA: '.date('d-m-Y'), 0, 0, 'L');
 	    
@@ -208,7 +250,7 @@ class EvaluationSheet extends Fpdf
 
 		$this->SetFont('Arial','B', $this->_font_parameter);
 
-		$this->Cell( (($this->_with_C_N_E * 2) + $this->_with_CE ), 4, '', 1,0, 'C', true);
+		$this->Cell( (($this->_with_C_N_E * 2) + $this->_with_CE + (count($this->periods) * $this->_with_CP) ), 4, '', 1,0, 'C', true);
 
 		// show Parameter
 		foreach($this->parameters as $parameter)
@@ -219,12 +261,12 @@ class EvaluationSheet extends Fpdf
 			}
 			else
 			{
-				$this->Cell($this->_with_C_H, 4, utf8_decode($parameter->parameter), 1, 0, 'C', true);
+				$this->Cell($this->_with_C_H, 4, $this->hideTilde($parameter->parameter), 1, 0, 'C', true);
 			}
 		}
 
 		$this->Cell($this->_width_VG_VRA, 8, 'VG', 1,0, 'C', true);
-        // $this->Cell($this->_width_VG_VRA, 8, 'VRA', 1,0, 'C', true);
+        $this->Cell($this->_width_VG_VRA, 8, 'VRA', 1,0, 'C', true);
 		$this->Cell($this->_width_VG_VRA, 8, 'Val', 1,0, 'C', true);
 
 		$this->Ln(4);
@@ -234,6 +276,11 @@ class EvaluationSheet extends Fpdf
 	{
 
 		$this->SetFont('Arial','B', $this->_font_criteria);
+		// Show Periods
+		foreach($this->periods as $period)
+		{
+			$this->Cell($this->_with_CP, 4, "P{$period}", 1,0, 'C', true);
+		}
 
 		// show Criteria
 		foreach($this->parameters as $parameter){
@@ -254,7 +301,7 @@ class EvaluationSheet extends Fpdf
 				{
 
 					foreach($parameter->criterias as $criteria)
-						$this->Cell($withCellCriteria , 4, utf8_decode($criteria->abbreviation), 1, 0, 'C', true);
+						$this->Cell($withCellCriteria , 4, $this->hideTilde($criteria->abbreviation), 1, 0, 'C', true);
 				}
 			}else{
 				$this->Cell($this->_width_VG_VRA, 4, '', 0,0, 'C', false);
@@ -263,22 +310,22 @@ class EvaluationSheet extends Fpdf
 
 	}
 
-	public function create($students)
+	public function create()
 	{
 		$this->AddPage();
 		$this->SetFont('Arial','',$this->_font_student);
 
 		$cont = 1;
-		foreach ($students as $key => $student) {
+		foreach ($this->pensum['students'] as $key => $student) {
 			
 			if($cont <= 9)
 			{
-				$this->Cell($this->_with_CE, 4, '0'.($cont++).' '.utf8_decode($student->fullNameInverse)
+				$this->Cell($this->_with_CE, 4, '0'.($cont++).' '.$this->hideTilde($student['name'])
 				, 1,0);	
 			}
 			else
 			{
-				$this->Cell($this->_with_CE, 4, ($cont++).' '.utf8_decode($student->fullNameInverse)
+				$this->Cell($this->_with_CE, 4, ($cont++).' '.$this->hideTilde($student['name'])
 				, 1,0);
 			}
 			
@@ -286,7 +333,15 @@ class EvaluationSheet extends Fpdf
 			$this->Cell($this->_with_C_N_E, 4, '', 1,0);
 			
 			// Mostramos el estado
-			$this->Cell($this->_with_C_N_E, 4, $student->state->state, 1,0, 'C');
+			$this->Cell($this->_with_C_N_E, 4, $student['state'], 1,0, 'C');
+
+			// Show Periods
+			foreach($this->periods as $period)
+			{
+				foreach($student['periods'] as $periodS)
+					if($period == $periodS['period_id'])
+						$this->Cell($this->_with_CP, 4, "{$periodS['note']}", 1,0, 'C', false);
+			}
 
 			// show field Criteria note
 			foreach($this->parameters as $parameter){
@@ -318,7 +373,7 @@ class EvaluationSheet extends Fpdf
 
 			// 
 			$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false);
-	  		// $this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false);
+	  		$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false);
 			$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false);
 
 			$this->Ln(4);
@@ -336,12 +391,12 @@ class EvaluationSheet extends Fpdf
 			{
 				foreach($parameter->criterias as $criteria)
 					$content .= ucwords($criteria->abbreviation)." : ".$criteria->parameter." - ";
-					// $this->Cell($withCellCriteria , 4, utf8_decode($criteria->abbreviation), 1, 0, 'C', true);
+					// $this->Cell($withCellCriteria , 4, $this->hideTilde($criteria->abbreviation), 1, 0, 'C', true);
 			}
 		}
 
 		$this->SetFont('Arial','I',6);
-		$this->MultiCell(0, 4, utf8_decode($content), 0, 'L');	
+		$this->MultiCell(0, 4, $this->hideTilde($content), 0, 'L');	
 	}
 
 	private function fieldExistiByName($name)
@@ -367,7 +422,7 @@ class EvaluationSheet extends Fpdf
 	    // Arial italic 8
 	    $this->SetFont('Arial','I',8);
 	    // Número de página
-	    $this->Cell(0,5,utf8_decode('@tenea - Página ').$this->PageNo(),0,0,'C');
+	    $this->Cell(0,5,$this->hideTilde('@tenea - Página ').$this->PageNo(),0,0,'C');
 	}
 
 }

@@ -21,6 +21,14 @@ class Subgroup extends Model
     }
 
     /**
+     * Obtiene la relacion que hay entre el docente y los grupos la asignatura (Pensum)
+     */
+    public function pensums()
+    {
+        return $this->hasMany(SubGroupPensum::class, 'sub_group_id'); 
+    }
+
+    /**
      * Obtiene la relacion que hay entre el subgrupo y el grado
      */
     public function grade()

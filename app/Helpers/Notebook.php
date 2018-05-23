@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Illuminate\Http\Request;
 
+use App\Traits\ConvertFormant;
 
 use App\Enrollment;
 use App\Group;
@@ -15,6 +16,8 @@ use App\PeriodWorkingday;
 
 class Notebook
 {
+	use ConvertFormant;
+
 	private $request = array();
 	
 	private $periods = array();
@@ -326,7 +329,7 @@ class Notebook
 			{
 				if($average->enrollment_id == $enrollment->id && $average->areas_id == $pensum->areas_id)
 				{
-					$note = $this->determineRound($average->average, 1);
+					$note = $this->determineRound($average->average, 1, $this->config['decimals']);
 					array_push(
 						$response, 
 						array(
@@ -402,8 +405,8 @@ class Notebook
 
 			if(!is_null($ev->noteFinal))
 			{
-				$note = $this->determineRound($ev->noteFinal->value, 1);
-				$overcoming = $this->determineRound($ev->noteFinal->overcoming, 1);
+				$note = $this->determineRound($ev->noteFinal->value, 1, $this->config['decimals']);
+				$overcoming = $this->determineRound($ev->noteFinal->overcoming, 1, $this->config['decimals']);
 			} 
 				
 			$response = [
@@ -438,7 +441,7 @@ class Notebook
 			array_push(
 				$response, 
 				[
-					'value'			=>	$this->determineRound($note->value, 1),
+					'value'			=>	$this->determineRound($note->value, 1, $this->config['decimals']),
 					'overcoming'	=>	$note->overcoming,
 				]
 			);
@@ -530,14 +533,6 @@ class Notebook
 	}
 
 	// 
-	private function determineRound($value, $roundNumber)
-	{
-		
-		if(!$this->config['decimals'])
-			return number_format($value, 0);
-
-		return number_format($value, $roundNumber);
-	}
 
 	private function getScaleByNote($note)
 	{
