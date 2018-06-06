@@ -199,8 +199,9 @@ class PdfController extends Controller
             ['school_year_id', '=', '1'],['group_type', '=', $request->group_type]
         ])->get();
         $periods = $institution->periods()
-        ->with('period')->get()->pluck('period')->unique()->values()->pluck('name','id');
+        ->with('period')->orderBy('periods_id')->get()->pluck('period')->unique()->values()->pluck('name','id');
 
+        // dd(count($parameters));
         if(!file_exists($path))
         {   
             mkdir($path);
