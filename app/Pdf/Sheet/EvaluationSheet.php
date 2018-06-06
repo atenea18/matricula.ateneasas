@@ -113,7 +113,8 @@ class EvaluationSheet extends Fpdf
 			if(count($this->institution->headquarters) > 1){
 		    	$this->_height_mark = 25;
 		    }
-		    else if(count($this->parameters) == 3 && !$this->fieldExistiByName('aee'))
+		    
+		    if(count($this->parameters) == 3 && !$this->fieldExistiByName('aee'))
 		    {
 		    	$this->_with_CE = 77;	
 		    	$this->_with_C_H = 41;
@@ -128,6 +129,24 @@ class EvaluationSheet extends Fpdf
 		    	$this->_with_CE = 100;	
 		    	$this->_with_C_H = 70;
 		    	$this->_with_CP = 10;
+		    }
+		    else if(count($this->parameters) == 4 && $this->fieldExistiByName('aee'))
+		    {
+		    	$this->_with_CE = 68;	
+		    	$this->_with_C_H = 40;
+
+		    	$this->_font_parameter = 7;
+		    	$this->_font_student = 7;
+		    	$this->_font_criteria = 5;
+		    }
+		    else if(count($this->parameters) == 5 && !$this->fieldExistiByName('aee'))
+		    {
+		    	$this->_with_CE = 60;	
+		    	$this->_with_C_H = 40;
+
+		    	$this->_font_parameter = 5;
+		    	$this->_font_student = 5;
+		    	$this->_font_criteria = 5;
 		    }
 		    else if(count($this->parameters) == 5 && $this->fieldExistiByName('aee'))
 		    {
