@@ -139,6 +139,16 @@ return [
            //expire time for these tokens in minutes
            'expire' => 60,
        ],
+
+       //Seller password broker
+       'teachers' => [
+            //user provider for seller
+           'provider' => 'teachers',
+            //table to store password reset tokens for seller
+           'table' => 'teacher_password_resets',
+           //expire time for these tokens in minutes
+           'expire' => 60,
+       ],
     ],
 
 ];

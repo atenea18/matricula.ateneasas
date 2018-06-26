@@ -9,6 +9,7 @@ use DB;
 //Trait for sending notifications in laravel
 use Illuminate\Notifications\Notifiable;
 
+use App\Notifications\TeacherResetPasswordNotification;
 
 class Manager extends Authenticatable
 {
@@ -73,6 +74,12 @@ class Manager extends Authenticatable
     public function address()
     {
         return $this->belongsTo(Address::class, 'address_id');
+    }
+
+    //Send password reset notification
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new TeacherResetPasswordNotification($token));
     }
 
     /***/
