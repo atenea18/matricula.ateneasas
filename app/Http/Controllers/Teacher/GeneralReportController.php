@@ -38,7 +38,7 @@ class GeneralReportController extends ApiController
         ->collapse();
 
         // dd($reports);
-        // return response()->json($reports[0]->generalReport);
+        // return response()->json($reports);
         return View('teacher.partials.generalReport.index')
         ->with('teacher',$teacher)
         ->with('groups',$groups)
@@ -87,6 +87,7 @@ class GeneralReportController extends ApiController
     {
 
         $generalReport->enrollment->student;
+        $generalReport->periodWorkingday->period;
 
         return $this->showOne($generalReport);
     }

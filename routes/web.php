@@ -12,6 +12,15 @@
 */
 
 use App\Institution;
+use App\Manager;
+use App\Mail\SendNewPasswordTeacher;
+
+Route::get('mailTest', function() {
+
+	$m = Manager::findOrFail(5);
+
+    return new SendNewPasswordTeacher($m);
+});
 
 Route::get('/', function () {
 
@@ -82,6 +91,13 @@ Route::group(['middleware'=>'teacher_guest'], function(){
 	Route::post('teacher_logout', 'TeacherAuth\LoginController@logout');
 	Route::get('teacher_login', 'TeacherAuth\LoginController@showLoginForm')->name('teacher.login');
 	Route::post('teacher_login', 'TeacherAuth\LoginController@login');
+
+	// Ruta para restablecer la contraseña
+	//Password reset routes
+	Route::get('teacher_password/reset', 'TeacherAuth\ForgotPasswordController@showLinkRequestForm');
+	Route::post('teacher_password/email', 'TeacherAuth\ForgotPasswordController@sendResetLinkEmail');
+	Route::get('teacher_password/reset/{token}', 'TeacherAuth\ResetPasswordController@showResetForm')->name('teacher.showResetForm');
+	Route::post('teacher_password/reset', 'TeacherAuth\ResetPasswordController@reset');
 });
 
 

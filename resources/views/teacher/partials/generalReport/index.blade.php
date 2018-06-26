@@ -72,31 +72,33 @@
 										</thead>
 										<tbody>
 											@foreach($enrollments as $key => $enrollment)
-											@if(!is_null($enrollment->generalReport->first()))
-												<tr>
-													<td> 
-														{{$enrollment->student->fullNameInverse}} 
-													</td>
-													<td>
-														{{$enrollment->group->first()->name}}
-													</td>
-													<td>
-														{{$enrollment->generalReport->first()->periodWorkingday->period->name}}
-													</td>
-													<td>
-														{!! substr(strip_tags(utf8_decode($enrollment->generalReport->first()->report)), 0, 20) !!}
-														
-													</td>
-													<td>
-														<a href="{{route('generalReport.show', $enrollment->generalReport->first()->id)}}" class="btn btn-primary btn-sm" data-reporte="{{$enrollment->generalReport->first()->id}}">
-															<i class="fa fa-edit"></i>
-														</a>
-														<a href="#" class="btn btn-danger btn-sm" data-reportd="{{$enrollment->generalReport->first()->id}}">
-															<i class="fa fa-trash"></i>
-														</a>
-													</td>
-												</tr>
-											@endif
+												@if(!is_null($enrollment->generalReport->first()))
+													@foreach($enrollment->generalReport as $key => $report)
+													<tr>
+														<td> 
+															{{$enrollment->student->fullNameInverse}} 
+														</td>
+														<td>
+															{{$enrollment->group->first()->name}}
+														</td>
+														<td>
+															{{$report->periodWorkingday->period->name}}
+														</td>
+														<td>
+															{!! substr(strip_tags(utf8_decode($report->report)), 0, 20) !!}
+															
+														</td>
+														<td>
+															<a href="{{route('generalReport.show', $report->id)}}" class="btn btn-primary btn-sm" data-reporte="{{$report->id}}">
+																<i class="fa fa-edit"></i>
+															</a>
+															<a href="#" class="btn btn-danger btn-sm" data-reportd="{{$report->id}}">
+																<i class="fa fa-trash"></i>
+															</a>
+														</td>
+													</tr>
+													@endforeach
+												@endif
 											@endforeach
 										</tbody>
 									</table>
@@ -262,6 +264,7 @@
 							backdrop: 'static'
 						});
 
+						form.find("#myModalLabel").text("Editar Observaciones periodo "+data.data.period_workingday.period.name);
 						form.find("#id").val(data.data.id);
 						form.find("#textStudent").text(data.data.enrollment.student.name+" "+data.data.enrollment.student.last_name);
 						CKEDITOR.instances['report_edit'].setData(data.data.report);
