@@ -91,13 +91,13 @@ class NotebookController extends Controller
                 $report->Output($path.$fileName."ReporteGeneralPeriodo.pdf", "F");
             }
 
-            if(!$data['config']['generalReportPeriod'])
-            {
+            // if(!$data['config']['generalReportPeriod'])
+            // {
                 $pdf = new NotebookPDF('p', 'mm', 'letter');
                 $pdf->setData($data);
                 $pdf->create();
                 $pdf->Output($path.$fileName."boletin.pdf", "F");
-            }
+            // }
     	}
 
         $this->merge($path, $this->institution->id.'boletines'.time(), 'p');
