@@ -582,7 +582,8 @@ class Notebook extends Fpdf
 					foreach($areaa['asignatures'] as $asignaturee):
 						if($asignature['asignature_id'] == $asignaturee['asignature_id']):
 
-							if($asignaturee['final_note']['overcoming'] > 0):
+							$asigOverCo = (isset($asignaturee['final_note']['overcoming'])) ? $asignaturee['final_note']['overcoming'] : 0 ;
+							if($asigOverCo > 0):
 								$recovery_note = $asignaturee['final_note']['value'];	
 								$note = $asignaturee['final_note']['overcoming'];
 							else:
