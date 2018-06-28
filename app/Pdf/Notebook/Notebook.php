@@ -225,7 +225,8 @@ class Notebook extends Fpdf
 
 			if($this->determineShowValoration($asignature)):
 				
-				if($asignature['final_note']['value'] > 0):
+				$asigFinalNote = (isset($asignature['final_note']['value'])) ? $asignature['final_note']['value'] : 0 ;
+				if($asigFinalNote > 0):
 
 					if($this->data['config']['periodIF']):
 						// foreach($this->finalReportList as $report):
