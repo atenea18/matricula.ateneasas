@@ -583,11 +583,12 @@ class Notebook extends Fpdf
 						if($asignature['asignature_id'] == $asignaturee['asignature_id']):
 
 							$asigOverCo = (isset($asignaturee['final_note']['overcoming'])) ? $asignaturee['final_note']['overcoming'] : 0 ;
+							$asigRecoveryN = (isset($asignaturee['final_note']['value'])) ? $asignaturee['final_note']['value'] : 0;
 							if($asigOverCo > 0):
-								$recovery_note = $asignaturee['final_note']['value'];	
-								$note = $asignaturee['final_note']['overcoming'];
+								$recovery_note = $asigRecoveryN;	
+								$note = $asigOverCo;
 							else:
-								$note = ($asignaturee['final_note']['value'] > 0) ? $asignaturee['final_note']['value'] : ''; 
+								$note = $asigRecoveryN;
 							
 							endif;
 							
