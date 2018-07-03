@@ -340,6 +340,11 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 
 });
 
+// Rutas compartidas entre el docente y la secretaria
+Route::group(['prefix' => 'mix', 'middleware'=>['institution_auth', 'teacher_auth'] ], function(){
+	Route::resource('periodPending', 'PeriodPendingController');
+});
+
 // Rutas para archivos PDF
 Route::group(['prefix' => 'pdf'], function() {
     

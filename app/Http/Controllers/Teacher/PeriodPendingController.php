@@ -28,9 +28,25 @@ class PeriodPendingController extends ApiController
 
         $scaleEvaluations = ScaleEvaluation::getMinScale($institution);
 
-        $students = $group->recovery($asignature, $period, $scaleEvaluations);
+        $students = $group->enrollments()
+        ->with('student')
+        ->with(['evaluationPeriod' => function($eval)use($asignature, $period){
+            return $eval->with('noteFinal')
+            ->where([
+                ['asignatures_id', $asignature->id],
+                ['periods_id', $period->id]
+            ]);
+        }])
+        ->get();
 
-        return $this->showAll($students);
+        $filter = $students->filter(function($enrollment){
+
+            if(count($enrollment->evaluationPeriod) == 0)
+                return $enrollment;
+
+        });
+
+        return $this->showAll($filter);
     }
 
     /**
