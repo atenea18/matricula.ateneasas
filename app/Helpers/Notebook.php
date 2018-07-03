@@ -220,11 +220,6 @@ class Notebook
 		$this->pensums_areas = $this->getPensumsAreas();
 		$this->pensums_asignatures = $this->getPensumsAsignatgures();
 		
-		// return $this->pensums_areas;
-		// return $this->resolveAverageAreas(8, 1, 1);
-		// return $this->resolvePerformances(1, 1, $this->enrollment, 4259);
-		// return $this->resolveAveragePeriod($this->enrollment, 1, 1);
-		
 		$this->noteBook = array(
 			'tittle'				=>	'INFORME DESCRIPTIVO Y VALORATIVO',
 			'tittle_if' 			=> 	'INFORME DE EVALUACIÓN FINAL DEL PROCESO FORMATIVO',
@@ -271,6 +266,8 @@ class Notebook
 	private function resolveAverageAreas($institution_id, $school_year_id, $period_id)
 	{
 
+		$response = array();
+
 		$groupEnrollment = $this->enrollment->group()->first();
 		$subgroupEnrollment = $this->enrollment->subgroups()->first();
 
@@ -282,7 +279,7 @@ class Notebook
 			$averageGroup = NotesFinal::getAverageGroupPensum($groupEnrollment->id, $institution_id, $school_year_id, $period_id);
 
 			foreach ($averageGroup as $key => $average) {
-				array_push($this->average_areas, $average);
+				array_push($response, $average);
 			}
 		}
 
@@ -291,11 +288,11 @@ class Notebook
 			$averageSubGroup = NotesFinal::getAverageSubGroupPensum($subgroupEnrollment->id, $institution_id, $school_year_id, $period_id);
 
 			foreach ($averageSubGroup as $key => $average) {
-				array_push($this->average_areas, $average);
+				array_push($response, $average);
 			}
 		}
 
-		return $this->average_areas;
+		return $response;
 	}
 
 	private function resolveAveragePeriod(Enrollment $enrollment, $school_year_id, $period)
@@ -453,8 +450,11 @@ class Notebook
 	private function resolvePerformances($asignature_id, $period_id, Enrollment $enrollment, $pensum_id)
 	{
 		$notes = EvaluationPeriod::with([
-			'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id){
-				$pensum->where('group_pensum_id', '=', $pensum_id)
+			'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id, $period_id){
+				$pensum->where([
+					['group_pensum_id', '=', $pensum_id],
+					['periods_id', '=', $period_id]
+				])
 				->with('performance.message.messageScale')
 				->get()
 				->pluck('performance.message.messageScale');
@@ -494,8 +494,11 @@ class Notebook
 	private function resolveIndicators($asignature_id, $period_id, Enrollment $enrollment, $pensum_id, $noteAsig)
 	{
 		$notes = EvaluationPeriod::with([
-			'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id){
-				$pensum->where('group_pensum_id', '=', $pensum_id)
+			'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id, $period_id){
+				$pensum->where([
+					['group_pensum_id', '=', $pensum_id],
+					['periods_id', '=', $period_id]
+				])
 				->with('performance.message.messageScale')
 				->get()
 				->pluck('performance.message.messageScale');

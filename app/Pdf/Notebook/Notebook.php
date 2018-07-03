@@ -668,9 +668,12 @@ class Notebook extends Fpdf
 			1,0, 'R');
 		$this->Cell(6 , $this->_h_c, '',	1,0, 'R');
 
+		// MOSTRAMOS LOS PUESTOS DE CADA PERIODO
 		foreach($this->data['periods'] as $periodKey => $period):
-			// MOSTRAMOS LOS PUESTOS DE CADA PERIODO
-			$this->showPeriodScores($period);
+			// PREGUNTAMOS SI EL PERIODO RECORRIDO ES IGUAL AL PERIOD SOLICITADO
+			if($period['periods_id'] <= $this->data['current_period']->periods_id):
+				$this->showPeriodScores($period);
+			endif;
 		endforeach;
 
 		// PERIODO FINAL
@@ -718,10 +721,12 @@ class Notebook extends Fpdf
 			1,0, 'R');
 		$this->Cell(6 , $this->_h_c, '',	1,0, 'R');
 
+		// MOSTRAMOS LOS PUESTOS DE CADA PERIODO
 		foreach($this->data['periods'] as $periodKey => $period):
-
-			// MOSTRAMOS LOS PUESTOS DE CADA PERIODO
-			$this->showPeriodPositions($period);
+			// PREGUNTAMOS SI EL PERIODO RECORRIDO ES IGUAL AL PERIOD SOLICITADO
+			if($period['periods_id'] <= $this->data['current_period']->periods_id):
+				$this->showPeriodPositions($period);
+			endif;
 		endforeach;
 
 		// PERIODO FINAL
