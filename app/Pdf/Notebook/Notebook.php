@@ -225,7 +225,8 @@ class Notebook extends Fpdf
 
 			if($this->determineShowValoration($asignature)):
 				
-				if($asignature['final_note']['value'] > 0):
+				$asigFinalNote = (isset($asignature['final_note']['value'])) ? $asignature['final_note']['value'] : 0 ;
+				if($asigFinalNote > 0):
 
 					if($this->data['config']['periodIF']):
 						// foreach($this->finalReportList as $report):
@@ -581,11 +582,13 @@ class Notebook extends Fpdf
 					foreach($areaa['asignatures'] as $asignaturee):
 						if($asignature['asignature_id'] == $asignaturee['asignature_id']):
 
-							if($asignaturee['final_note']['overcoming'] > 0):
-								$recovery_note = $asignaturee['final_note']['value'];	
-								$note = $asignaturee['final_note']['overcoming'];
+							$asigOverCo = (isset($asignaturee['final_note']['overcoming'])) ? $asignaturee['final_note']['overcoming'] : 0 ;
+							$asigRecoveryN = (isset($asignaturee['final_note']['value'])) ? $asignaturee['final_note']['value'] : 0;
+							if($asigOverCo > 0):
+								$recovery_note = $asigRecoveryN;	
+								$note = $asigOverCo;
 							else:
-								$note = ($asignaturee['final_note']['value'] > 0) ? $asignaturee['final_note']['value'] : ''; 
+								$note = $asigRecoveryN;
 							
 							endif;
 							
@@ -665,9 +668,12 @@ class Notebook extends Fpdf
 			1,0, 'R');
 		$this->Cell(6 , $this->_h_c, '',	1,0, 'R');
 
+		// MOSTRAMOS LOS PUESTOS DE CADA PERIODO
 		foreach($this->data['periods'] as $periodKey => $period):
-			// MOSTRAMOS LOS PUESTOS DE CADA PERIODO
-			$this->showPeriodScores($period);
+			// PREGUNTAMOS SI EL PERIODO RECORRIDO ES IGUAL AL PERIOD SOLICITADO
+			if($period['periods_id'] <= $this->data['current_period']->periods_id):
+				$this->showPeriodScores($period);
+			endif;
 		endforeach;
 
 		// PERIODO FINAL
@@ -715,10 +721,12 @@ class Notebook extends Fpdf
 			1,0, 'R');
 		$this->Cell(6 , $this->_h_c, '',	1,0, 'R');
 
+		// MOSTRAMOS LOS PUESTOS DE CADA PERIODO
 		foreach($this->data['periods'] as $periodKey => $period):
-
-			// MOSTRAMOS LOS PUESTOS DE CADA PERIODO
-			$this->showPeriodPositions($period);
+			// PREGUNTAMOS SI EL PERIODO RECORRIDO ES IGUAL AL PERIOD SOLICITADO
+			if($period['periods_id'] <= $this->data['current_period']->periods_id):
+				$this->showPeriodPositions($period);
+			endif;
 		endforeach;
 
 		// PERIODO FINAL

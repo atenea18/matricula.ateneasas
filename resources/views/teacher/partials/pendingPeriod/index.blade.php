@@ -50,9 +50,8 @@
 										<tr>
 											<th>#</th>
 											<th>Apellidos y Nombres</th>
-											<th>Superación</th>
-											<th>Nota Superación</th>
-											<th id="periodNumber">Periodo</th>
+											<th>Nota</th>
+											{{-- <th id="periodNumber">Periodo</th> --}}
 										</tr>
 									</thead>
 									<tbody id="tableBody"></tbody>
@@ -76,37 +75,40 @@
 
 				var _this = $(this);
 
-				$("#tableBody").empty().html("<tr><td colspan='5' class='text-center'><i class='fas fa-spinner fa-pulse fa-3x'></i></td></tr>")
+				$.ajax({
+					url: "/api/pendingPeriod/{{$group->id}}/{{$asignature->id}}/"+this.value+"/students",
+					method: "get",
+					dataType: "json",
+					beforeSend: function(){
+						$("#tableBody").empty().html("<tr><td colspan='5' class='text-center'><i class='fas fa-spinner fa-pulse fa-3x'></i></td></tr>")
+					},
+					success: function(data){
+						// 
+						var html = '';
+						// dataEmpty = (data.data.length > 0) ? false : true;
 
-				$.get("/api/pendingPeriod/{{$group->id}}/{{$asignature->id}}/"+this.value+"/students", function(data){
+						$.each(data.data, function(indx, ele){
 
-					var html = '',
-						dataEmpty = (data.data.length > 0) ? false : true;
+							html += "<tr>";
 
-					$.each(data.data, function(indx, ele){
+							html += "<td>"+indx+"</td>";
+							html += "<td>"+ele.student.last_name+" "+ele.student.name+"</td>";
+							html += "<td><input type='text' class='form-control' enrollment-id='"+ele.id+"'><span class='hide'>Cargando...</span></td>";
+							html += "</tr>";
 
-						html += "<tr>";
+						});
 
-						html += "<td>"+indx+"</td>";
-						html += "<td>"+ele.name_student+"</td>";
-						html += "<td><input type='text' class='form-control' data-id='"+ele.note_final_id+"' data-old='"+ele.value+"'><span class='hide'>Cargando...</span></td>";
-						html += "<td><span>"+( (ele.overcoming == null) ? 0 : ele.overcoming) +"</span></td>";
-						html += "<td><span>"+ele.value+"</span></td>";
-						html += "</tr>";
+						$("#periodNumber").text("Periodo "+_this.val());
 
-					});
-
-					$("#periodNumber").text("Periodo "+_this.val());
-
-					if(dataEmpty){
-						$("#tableBody").empty().html("<tr><td colspan='5' class='text-center'><h3>No hay resultados</h3></td></tr>");
-					}else{
 						$("#tableBody").empty().html(html);
-					}
 
-					bindInput();
-					blurInput();
-				}, 'json')
+						bindInput();
+						// blurInput();
+					},
+					error: function(xhr){
+						console.log(xhr);
+					}
+				})
 			});
 
 			var bindInput = function(){
@@ -130,16 +132,15 @@
 
 					$(this).blur(function(){
 						var that = $(this),
-							value = that.data('old'),
-							overcoming = that.val().replace(',', '.'),
-							id = that.data('id'),
+							notePending = that.val().replace(',', '.'),
+							id = that.data('enrollment-id'),
 							group_id = {{$group->id}};
 
-						// if( (overcoming != value) && overcoming > 0){
+						if( notePending > 0){
 
-						// 	$.ajax({
-						// 		url: "{{env('APP_URL')}}/teacher/recovery/"+id,
-						// 		method: "PUT",
+							$.ajax({
+								url: "/mix/periodPending/",
+								method: "PUT",
 						// 		data: { group_id, id, overcoming, value},
 						// 		beforeSend:function(){
 						// 			that.parent().find('span').removeClass('hide');
@@ -158,8 +159,8 @@
 						// 				toastr.error(xhr.responseJSON.message);
 						// 			}
 						// 		}
-						// 	});
-						// }
+							});
+						}
 
 						that.unbind("blur");
 					});

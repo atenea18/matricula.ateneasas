@@ -72,30 +72,32 @@
 										</thead>
 										<tbody>
 											@foreach($enrollments as $key => $enrollment)
-											@if(!is_null($enrollment->observations->first()))
-												<tr>
-													<td> 
-														{{$enrollment->student->fullNameInverse}} 
-													</td>
-													<td>
-														{{$enrollment->group->first()->name}}
-													</td>
-													<td>
-														{{$enrollment->observations->first()->periodWorkingday->period->name}}
-													</td>
-													<td>
-														{!! substr(strip_tags($enrollment->observations->first()->observation), 0, 20) !!}
-													</td>
-													<td>
-														<a href="{{route('generalObservation.show', $enrollment->observations->first()->id)}}" class="btn btn-primary btn-sm" data-observatione="{{$enrollment->observations->first()->id}}">
-															<i class="fa fa-edit"></i>
-														</a>
-														<a href="#" class="btn btn-danger btn-sm" data-observationd="{{$enrollment->observations->first()->id}}">
-															<i class="fa fa-trash"></i>
-														</a>
-													</td>
-												</tr>
-											@endif
+												@if(!is_null($enrollment->observations->first()))
+													@foreach($enrollment->observations as $key=> $observation)
+													<tr>
+														<td> 
+															{{$enrollment->student->fullNameInverse}} 
+														</td>
+														<td>
+															{{$enrollment->group->first()->name}}
+														</td>
+														<td>
+															{{$observation->periodWorkingday->period->name}}
+														</td>
+														<td>
+															{!! substr(strip_tags($observation->observation), 0, 20) !!}
+														</td>
+														<td>
+															<a href="{{route('generalObservation.show', $observation->id)}}" class="btn btn-primary btn-sm" data-observatione="{{$observation->id}}">
+																<i class="fa fa-edit"></i>
+															</a>
+															<a href="#" class="btn btn-danger btn-sm" data-observationd="{{$observation->id}}">
+																<i class="fa fa-trash"></i>
+															</a>
+														</td>
+													</tr>
+													@endforeach
+												@endif
 											@endforeach
 										</tbody>
 									</table>
@@ -260,6 +262,7 @@
 							backdrop: 'static'
 						});
 
+						form.find("#myModalLabel").text("Editar Observaciones periodo "+data.data.period_workingday.period.name);
 						form.find("#id").val(data.data.id);
 						form.find("#textStudent").text(data.data.enrollment.student.name+" "+data.data.enrollment.student.last_name);
 						CKEDITOR.instances['observation_edit'].setData(data.data.observation);

@@ -32,7 +32,7 @@
 
         <!-- Planilla -->
         <li>
-            <a href="{{route('teacher.evaluation')}}"> 
+            <a href="{{route('teacher.sheet')}}"> 
                 <span class="fa-stack fa-lg pull-left">
                     <i class="fa fa-clipboard fa-stack-1x "></i>
                 </span>

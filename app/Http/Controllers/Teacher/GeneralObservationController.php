@@ -85,8 +85,7 @@ class GeneralObservationController extends ApiController
     public function show(GeneralObservation $generalObservation)
     {   
         $generalObservation->enrollment->student;
-
-        // return response()->json($generalObservation);
+        $generalObservation->periodWorkingday->period;
         return $this->showOne($generalObservation);
     }
 

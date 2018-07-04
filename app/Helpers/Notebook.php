@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Illuminate\Http\Request;
 
+use App\Traits\ConvertFormant;
 
 use App\Enrollment;
 use App\Group;
@@ -15,6 +16,8 @@ use App\PeriodWorkingday;
 
 class Notebook
 {
+	use ConvertFormant;
+
 	private $request = array();
 	
 	private $periods = array();
@@ -217,11 +220,6 @@ class Notebook
 		$this->pensums_areas = $this->getPensumsAreas();
 		$this->pensums_asignatures = $this->getPensumsAsignatgures();
 		
-		// return $this->pensums_areas;
-		// return $this->resolveAverageAreas(8, 1, 1);
-		// return $this->resolvePerformances(1, 1, $this->enrollment, 4259);
-		// return $this->resolveAveragePeriod($this->enrollment, 1, 1);
-		
 		$this->noteBook = array(
 			'tittle'				=>	'INFORME DESCRIPTIVO Y VALORATIVO',
 			'tittle_if' 			=> 	'INFORME DE EVALUACIÓN FINAL DEL PROCESO FORMATIVO',
@@ -268,6 +266,8 @@ class Notebook
 	private function resolveAverageAreas($institution_id, $school_year_id, $period_id)
 	{
 
+		$response = array();
+
 		$groupEnrollment = $this->enrollment->group()->first();
 		$subgroupEnrollment = $this->enrollment->subgroups()->first();
 
@@ -279,7 +279,7 @@ class Notebook
 			$averageGroup = NotesFinal::getAverageGroupPensum($groupEnrollment->id, $institution_id, $school_year_id, $period_id);
 
 			foreach ($averageGroup as $key => $average) {
-				array_push($this->average_areas, $average);
+				array_push($response, $average);
 			}
 		}
 
@@ -288,11 +288,11 @@ class Notebook
 			$averageSubGroup = NotesFinal::getAverageSubGroupPensum($subgroupEnrollment->id, $institution_id, $school_year_id, $period_id);
 
 			foreach ($averageSubGroup as $key => $average) {
-				array_push($this->average_areas, $average);
+				array_push($response, $average);
 			}
 		}
 
-		return $this->average_areas;
+		return $response;
 	}
 
 	private function resolveAveragePeriod(Enrollment $enrollment, $school_year_id, $period)
@@ -326,7 +326,7 @@ class Notebook
 			{
 				if($average->enrollment_id == $enrollment->id && $average->areas_id == $pensum->areas_id)
 				{
-					$note = $this->determineRound($average->average, 1);
+					$note = $this->determineRound($average->average, 1, $this->config['decimals']);
 					array_push(
 						$response, 
 						array(
@@ -402,8 +402,8 @@ class Notebook
 
 			if(!is_null($ev->noteFinal))
 			{
-				$note = $this->determineRound($ev->noteFinal->value, 1);
-				$overcoming = $this->determineRound($ev->noteFinal->overcoming, 1);
+				$note = $this->determineRound($ev->noteFinal->value, 1, $this->config['decimals']);
+				$overcoming = $this->determineRound($ev->noteFinal->overcoming, 1, $this->config['decimals']);
 			} 
 				
 			$response = [
@@ -438,7 +438,7 @@ class Notebook
 			array_push(
 				$response, 
 				[
-					'value'			=>	$this->determineRound($note->value, 1),
+					'value'			=>	$this->determineRound($note->value, 1, $this->config['decimals']),
 					'overcoming'	=>	$note->overcoming,
 				]
 			);
@@ -450,8 +450,11 @@ class Notebook
 	private function resolvePerformances($asignature_id, $period_id, Enrollment $enrollment, $pensum_id)
 	{
 		$notes = EvaluationPeriod::with([
-			'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id){
-				$pensum->where('group_pensum_id', '=', $pensum_id)
+			'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id, $period_id){
+				$pensum->where([
+					['group_pensum_id', '=', $pensum_id],
+					['periods_id', '=', $period_id]
+				])
 				->with('performance.message.messageScale')
 				->get()
 				->pluck('performance.message.messageScale');
@@ -491,8 +494,11 @@ class Notebook
 	private function resolveIndicators($asignature_id, $period_id, Enrollment $enrollment, $pensum_id, $noteAsig)
 	{
 		$notes = EvaluationPeriod::with([
-			'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id){
-				$pensum->where('group_pensum_id', '=', $pensum_id)
+			'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id, $period_id){
+				$pensum->where([
+					['group_pensum_id', '=', $pensum_id],
+					['periods_id', '=', $period_id]
+				])
 				->with('performance.message.messageScale')
 				->get()
 				->pluck('performance.message.messageScale');
@@ -530,14 +536,6 @@ class Notebook
 	}
 
 	// 
-	private function determineRound($value, $roundNumber)
-	{
-		
-		if(!$this->config['decimals'])
-			return number_format($value, 0);
-
-		return number_format($value, $roundNumber);
-	}
 
 	private function getScaleByNote($note)
 	{

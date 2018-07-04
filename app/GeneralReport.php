@@ -19,4 +19,9 @@ class GeneralReport extends Model
     {
     	return $this->belongsTo(PeriodWorkingday::class, 'period_working_day_id');
     }
+
+    public static function getByGroup($group_id, $school_year_id)
+    {
+      
+    }
 }

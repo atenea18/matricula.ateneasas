@@ -22,9 +22,9 @@
 					    <li role="presentation">
 					    	<a href="#evaluation_sheet" aria-controls="evaluation_sheet" role="tab" data-toggle="tab">P. Aux. de Evaluación</a>
 					    </li>
-					    <li role="presentation">
+					    {{-- <li role="presentation">
 					    	<a href="#evaluation_sheet_subgroup" aria-controls="evaluation_sheet_subgroup" role="tab" data-toggle="tab">P. Aux. Subgrupos</a>
-					    </li>
+					    </li> --}}
 					    <li role="presentation">
 					    	<a href="#attendance_teacher" aria-controls="attendance_teacher" role="tab" data-toggle="tab">P. Asistencia Docentes</a>
 					    </li>

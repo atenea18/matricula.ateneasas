@@ -12,6 +12,15 @@
 */
 
 use App\Institution;
+use App\Manager;
+use App\Mail\SendNewPasswordTeacher;
+
+Route::get('mailTest', function() {
+
+	$m = Manager::findOrFail(5);
+
+    return new SendNewPasswordTeacher($m);
+});
 
 Route::get('/', function () {
 
@@ -82,6 +91,13 @@ Route::group(['middleware'=>'teacher_guest'], function(){
 	Route::post('teacher_logout', 'TeacherAuth\LoginController@logout');
 	Route::get('teacher_login', 'TeacherAuth\LoginController@showLoginForm')->name('teacher.login');
 	Route::post('teacher_login', 'TeacherAuth\LoginController@login');
+
+	// Ruta para restablecer la contraseña
+	//Password reset routes
+	Route::get('teacher_password/reset', 'TeacherAuth\ForgotPasswordController@showLinkRequestForm');
+	Route::post('teacher_password/email', 'TeacherAuth\ForgotPasswordController@sendResetLinkEmail');
+	Route::get('teacher_password/reset/{token}', 'TeacherAuth\ResetPasswordController@showResetForm')->name('teacher.showResetForm');
+	Route::post('teacher_password/reset', 'TeacherAuth\ResetPasswordController@reset');
 });
 
 
@@ -310,6 +326,10 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 	// Ruta para la evaluación de periodo pendiente
 	Route::get('periodPending/{group}/{asignature}/group', 'Teacher\PeriodPendingController@byGroup')->name('group.pendingPeriod');
 
+	// Ruta para las planillas
+	Route::get('sheet', 'Teacher\SheetController@index')->name('teacher.sheet');
+	Route::post('sheet/byPensum', 'Teacher\SheetController@evaluationSheetByPensum')->name('teacher.sheetByPensum');
+
 	// Ruta para la configuración
 	Route::get('setting', 'Teacher\SettingController@index')->name('teacher.setting');
 	Route::get('setting/security', 'Teacher\SettingController@security')->name('teacher.setting.security');
@@ -318,6 +338,11 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 	Route::get('setting/{manager}/checkEmail', 'Teacher\SettingController@checkEmail')->name('teacher.checkEmail');
 	Route::put('setting/{manager}/saveEmail', 'Teacher\SettingController@saveEmail')->name('teacher.setting.saveEmail');
 
+});
+
+// Rutas compartidas entre el docente y la secretaria
+Route::group(['prefix' => 'mix', 'middleware'=>['institution_auth', 'teacher_auth'] ], function(){
+	Route::resource('periodPending', 'PeriodPendingController');
 });
 
 // Rutas para archivos PDF

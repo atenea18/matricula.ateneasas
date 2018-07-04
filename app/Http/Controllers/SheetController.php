@@ -20,9 +20,17 @@ class SheetController extends Controller
     	$headquarters = $institution
     					->headquarters
     					->pluck('name', 'id');
+        $periods = $institution->periods()
+        ->with('period')
+        ->get()
+        ->pluck('period')
+        ->unique()
+        ->values()
+        ->pluck('name','id');
 
     	return View('institution.partials.sheet.index')
     			->with('institution',$institution)
+                ->with('periods', $periods)
     			->with('headquarters',$headquarters)
     			->with('journeys',$journeys)
     			->with('grades',$grades);
