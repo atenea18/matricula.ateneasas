@@ -147,7 +147,7 @@
 						if( value > 0){
 
 							$.ajax({
-								url: "/mix/periodPending/",
+								url: "/mix/periodPending",
 								method: "POST",
 								data: { 
 									enrollment_id, 
