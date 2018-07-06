@@ -1,4 +1,4 @@
-@extends('teacher.dashboard.index')
+@extends('institution.dashboard.index')
 
 @section('css')
     <link rel="stylesheet" href="{{asset('css/bootstrap-chosen.css')}}">
@@ -12,8 +12,8 @@
 
 @section('breadcrums')
     <ol class="breadcrumb">
-        <li><a href="{{route('teacher.home')}}">Inicio</a></li>
-        <li class="active"><a href="">Evaluación</a></li>
+        <li><a href="{{route('institution.home')}}">Inicio</a></li>
+        <li class="active"><a href="{{route('group.index')}}">Grupos</a></li>
         <li>Periodo Pendiente</li>
     </ol>
 @endsection
@@ -31,11 +31,12 @@
 				<div class="conatiner-fluid">
 					<div class="row">
 						<div class="col-md-6">
-							<h5>{{ $asignature->name}}</h5>
+							{{-- <h5>{{ $asignature->name}}</h5> --}}
 							<h5>{{ $group->name}}</h5>
 						</div>
 						<div class="col-md-3">
-							
+							{!! Form::label('asignature_id', 'Asignatura', []) !!}
+							{!! Form::select('asignature_id', $pensums, null, ['class'=>'form-control', 'placeholder'=>'Seleccionar una asignatura', 'id'=>'asignature_id']) !!}
 						</div>
 						<div class="col-md-3">
 							{!! Form::label('period_id', 'Periodo', []) !!}
@@ -71,44 +72,48 @@
 	<script>
 		$(document).ready(function(){
 
-			$("#period_id").change(function(){
+			$("#period_id, #asignature_id").change(function(){
 
-				var _this = $(this);
+				var period_id = $("#period_id").val(),
+					asignature_id = $("#asignature_id").val()
+					group_id = {{$group->id}};
 
-				$.ajax({
-					url: "/api/pendingPeriod/{{$group->id}}/{{$asignature->id}}/"+this.value+"/students",
-					method: "get",
-					dataType: "json",
-					beforeSend: function(){
-						$("#tableBody").empty().html("<tr><td colspan='5' class='text-center'><i class='fas fa-spinner fa-pulse fa-3x'></i></td></tr>")
-					},
-					success: function(data){
-						// 
-						var html = '';
-						// dataEmpty = (data.data.length > 0) ? false : true;
+				if(period_id != '' && asignature_id != '') {
+					$.ajax({
+						url: "/api/pendingPeriod/"+group_id+"/"+asignature_id+"/"+period_id+"/students",
+						method: "get",
+						dataType: "json",
+						beforeSend: function(){
+							$("#tableBody").empty().html("<tr><td colspan='5' class='text-center'><i class='fas fa-spinner fa-pulse fa-3x'></i></td></tr>")
+						},
+						success: function(data){
+							// 
+							var html = '';
 
-						$.each(data.data, function(indx, ele){
+							$.each(data.data, function(indx, ele){
 
-							html += "<tr>";
+								html += "<tr>";
 
-							html += "<td>"+indx+"</td>";
-							html += "<td>"+ele.student.last_name+" "+ele.student.name+"</td>";
-							html += "<td><input type='text' class='form-control' data-enrollment='"+ele.id+"'><span class='hide'>Cargando...</span></td>";
-							html += "</tr>";
+								html += "<td>"+indx+"</td>";
+								html += "<td>"+ele.student.last_name+" "+ele.student.name+"</td>";
+								html += "<td><input type='text' class='form-control' data-enrollment='"+ele.id+"'><span class='hide'>Cargando...</span></td>";
+								html += "</tr>";
 
-						});
+							});
 
-						$("#periodNumber").text("Periodo "+_this.val());
+							// $("#periodNumber").text("Periodo "+_this.val());
 
-						$("#tableBody").empty().html(html);
+							$("#tableBody").empty().html(html);
 
-						bindInput();
-						blurInput();
-					},
-					error: function(xhr){
-						console.log(xhr);
-					}
-				})
+							bindInput();
+							blurInput();
+						},
+						error: function(xhr){
+							console.log(xhr);
+						}
+					});
+				}
+				
 			});
 
 			var bindInput = function(){
@@ -135,7 +140,7 @@
 							value = that.val().replace(',', '.'),
 							enrollment_id = that.data('enrollment'),
 							periods_id = $("#period_id").val(),
-							asignatures_id = {{$asignature->id}},
+							asignatures_id = $("#asignature_id").val(),
 							group_id = {{$group->id}}
 							;
 
