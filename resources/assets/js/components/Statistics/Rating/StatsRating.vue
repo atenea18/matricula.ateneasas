@@ -61,14 +61,13 @@
         },
         methods: {
             managerEvents() {
-                this.$bus.$on('spire', object => {
-                    this.objectToStatsRating.data = object.fieldSelects
-                    console.log("spire")
-                    if (object.type == 'stats-rating') {
-                        this.getPositions(object.fieldSelects)
+                this.$bus.$on('get-data-manager-group-select', object => {
+                    this.objectToStatsRating.data = object.dataManagerGroupSelect
+                    if (object.typeViewSection == 'stats-rating') {
+                        this.getPositions(object.dataManagerGroupSelect)
                     }
                 })
-                this.$bus.$on('get-spire', object => {
+                this.$bus.$on('get-data-manager-group-select-change-section', object => {
                     if(object == 'stats-rating'){
                         this.getPositions(this.objectToStatsRating.data)
                     }

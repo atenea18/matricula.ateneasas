@@ -37,12 +37,23 @@
             <div class="col-md-3">
                 <div class="checkbox" v-show="currentView">
                     <label>
-                        <input type="checkbox" @click="getIsGroup" v-model="objectToManagerGroupSelect.isSubGroup"> Subgrupo
+                        <input type="checkbox" @click="filterSearch('periodo-acumulado')" v-model="objectFilterSearch.isAcumulatedPeriod"> Periodos Acumulados
                     </label>
                 </div>
             </div>
         </div>
 
+        <!--
+        <div class="row">
+            <div class="col-md-3">
+                <div class="checkbox" v-show="currentView">
+                    <label>
+                        <input type="checkbox" @click="getIsGroup" v-model="objectToManagerGroupSelect.isSubGroup"> Subgrupo
+                    </label>
+                </div>
+            </div>
+        </div>
+        -->
         <manager-group-select v-show="currentView" :objectInput="objectToManagerGroupSelect"></manager-group-select>
     </div>
 </template>
@@ -62,10 +73,23 @@
                     referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.referenceId + '.managerGroupSelect',
                     isSubGroup: false
                 },
+                objectFilterSearch:{
+                    isAcumulatedPeriod: false,
+                },
+                objectMenuStatistics:{
+                    isAcumulatedPeriod: false,
+                    typeViewSection: '',
+                    dataManagerGroupSelect: null,
+                }
             }
         },
         created(){
             this.managerEvents()
+
+
+        },
+        mounted(){
+
         },
         computed: {
             ...mapState([
@@ -74,22 +98,52 @@
 
         },
         methods: {
-            managerEvents() {
-                this.$bus.$on(this.objectToManagerGroupSelect.referenceToReciveObjectSelected, object => {
-                    let objectToStats = {
-                        fieldSelects: object,
-                        type: this.$store.state.currentView
-                    }
-                    this.$bus.$emit("spire",objectToStats)
-                })
+            setDataForFilter(){
+
+                this.objectMenuStatistics.isAcumulatedPeriod = !this.objectFilterSearch.isAcumulatedPeriod
+                this.objectMenuStatistics.typeViewSection = this.$store.state.currentView
             },
+
+            filterSearch(param){
+                this.setDataForFilter()
+                if(!this.objectFilterSearch.isAcumulatedPeriod){
+
+                }
+                this.$bus.$emit("get-data-filter-when-acumulated-period-is-check", null)
+            },
+            managerEvents() {
+                //Se subscribe al evento de manager-group-select, cuándo todos los select son llenados
+                this.$bus.$on(this.objectToManagerGroupSelect.referenceToReciveObjectSelected, object => {
+                    this.setDataForFilter()
+                    this.objectMenuStatistics.dataManagerGroupSelect = object
+
+                    //Emite evento, y pasa un objeto con los valores de los select de manager-group-select
+                    // y el tipo de sección donde se encuentra, si es consolidado, puesto por grupo, etc
+
+                    this.$bus.$emit("get-data-manager-group-select",this.objectMenuStatistics)
+
+
+                    this.$bus.$on('get-data-filter-when-acumulated-period-is-check', object =>{
+                        console.log(this.objectMenuStatistics)
+                    })
+                })
+
+
+            },
+
+            /*
             getIsGroup() {
                 this.objectToManagerGroupSelect.isSubGroup = !this.objectToManagerGroupSelect.isSubGroup
                 this.$bus.$emit("get-is-sub-group",this.objectToManagerGroupSelect)
             },
+            */
+
+            // Método que consite en asignar el nombre de identificación de la sección que ha sido seleccionada
             setCurrentView(view) {
                 this.$store.state.currentView = view
-                this.$bus.$emit("get-spire",view)
+                // Se emite un nuevo evento con la misma finalidad de pasar los valores seleccionados en
+                // manager-group-select, pero este se ejecuta cuando el usuario cambia de sección.
+                this.$bus.$emit("get-data-manager-group-select-change-section",view)
             },
 
         },
