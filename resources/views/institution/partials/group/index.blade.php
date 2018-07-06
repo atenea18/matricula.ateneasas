@@ -28,6 +28,7 @@
 								<th>Sede</th>
 			  					<th>Grupo</th>
 			  					<th>Jornada</th>
+			  					<th>Evaluación</th>
 			  					<th></th>
 			  				</tr>
 			  			</thead>
@@ -38,6 +39,33 @@
 									<td>{{ $group->headquarter->name }}</td>
 									<td>{{ $group->name }}</td>
 									<td>{{ $group->workingday->name }}</td>
+									<td>
+										<div class='btn-group' role='group'>
+	                                        <button type='button' class='btn btn-primary dropdown-toggle'
+	                                                data-toggle='dropdown'
+	                                                aria-haspopup='true' aria-expanded='false'>
+	                                            Evaluación
+	                                            <span class='caret'></span>
+	                                        </button>
+	                                        <ul class='dropdown-menu'>
+	                                            <li>
+	                                                <a href="#">Evaluar
+	                                                    Periodo
+	                                                </a>
+	                                            </li>
+	                                            <li>
+	                                                <a href="#">Superaciones
+	                                                </a>
+	                                            </li>
+	                                            <li>
+	                                                <a href="{{route('institution.periodPending', [$group->id])}}">Evaluar
+	                                                    Periodo Pendiente
+	                                                </a>
+	                                            </li>
+	                                            <li><a href=''>Refuerzo Academico</a></li>
+	                                        </ul>
+	                                    </div>
+									</td>
 									<td>
 										<a href="{{route('group.edit', $group)}}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
 									</td>

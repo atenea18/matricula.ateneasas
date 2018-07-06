@@ -178,6 +178,8 @@ Route::group(['prefix'=>'institution', 'middleware' => 'institution_auth'], func
 
 	// Ruta para los salones de clase
 	Route::resource('group', 'GroupController');
+	Route::get('group/{group}/pendingPeriod', "Institution\PeriodPendingController@index")->name('institution.periodPending');
+
     Route::get('group-assignment', 'GroupController@assigment')->name('group.assignment');
     Route::resource('subgroup', 'Institution\SubgroupController');
     Route::get('subgroup/{subgroup}/assignment', 'Institution\SubgroupController@assigment')->name('subgroup.assignment');
@@ -341,7 +343,7 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
 });
 
 // Rutas compartidas entre el docente y la secretaria
-Route::group(['prefix' => 'mix', 'middleware'=>['institution_auth', 'teacher_auth'] ], function(){
+Route::group(['prefix' => 'mix' ], function(){
 	Route::resource('periodPending', 'PeriodPendingController');
 });
 
