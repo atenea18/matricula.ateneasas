@@ -38,7 +38,6 @@ class PeriodPendingController extends Controller
      */
     public function store(Request $request)
     {
-
         $evaPeriod = EvaluationPeriod::where([
             ['enrollment_id', $request->enrollment_id],
             ['periods_id', $request->periods_id],
