@@ -40,7 +40,8 @@
                 objectToStatsConsolidated: {
                     asignatures: [],
                     enrollments: [],
-                    data: {}
+                    data: {},
+                    params:{}
                 },
 
                 state: false,
@@ -92,25 +93,28 @@
                 //Se subscribe al evento generado por menu-statistics, este le permite saber si se debe
                 //mostrar la sección de consolidado con su respectiva consulta, ya que este evento devuelve
                 //un objeto con los datos seleccionados de manager-group-select
-                this.$bus.$on('get-data-manager-group-select', object => {
+                this.$bus.$off('get-data-manager-group-select')
+                this.$bus.$on('get-data-manager-group-select', objectMenuStatistics => {
 
                     //Se asigna el objeto fieldSelects a variable local, objeto que tiene los datos seleccionados
                     //de manager-group-select
-                    this.objectToStatsConsolidated.data = object.dataManagerGroupSelect
-                    if (object.typeViewSection == 'stats-consolidated') {
+                    this.objectToStatsConsolidated.data = objectMenuStatistics.dataManagerGroupSelect
+                    this.objectToStatsConsolidated.params = objectMenuStatistics
 
+                    if (objectMenuStatistics.typeViewSection == 'stats-consolidated') {
                         //Si valor de type indica, que estamos en la sección de consolidados
                         //ejecutamos la consulta de consolidados
-                        this.getAsignaturesConsolidated(object.dataManagerGroupSelect)
+                        this.getAsignaturesConsolidated(this.objectToStatsConsolidated.params)
                     }
 
                 })
 
                 // Se subscribe al evento generado por menu-statistics, para generar una nueva consulta de consolidados
                 // si algún select de manager-group-select fue modificado
+                this.$bus.$off('get-data-manager-group-select-change-section')
                 this.$bus.$on('get-data-manager-group-select-change-section', object => {
                     if (object == 'stats-consolidated') {
-                        this.getAsignaturesConsolidated(this.objectToStatsConsolidated.data)
+                        this.getAsignaturesConsolidated(this.objectToStatsConsolidated.params)
                     }
                 })
             },
@@ -124,11 +128,11 @@
                 let url = '/ajax/getAsignaturesGroupPensum'
 
                 let params = {
-                    grade_id: object.grade_id,
-                    group_id: object.group_id,
-                    periods_id: object.periods_id,
+                    grade_id: object.dataManagerGroupSelect.grade_id,
+                    group_id: object.dataManagerGroupSelect.group_id,
+                    periods_id: object.dataManagerGroupSelect.periods_id,
                     institution_id: this.$store.state.institutionOfTeacher.id,
-                    isSubGroup: object.isSubGroup
+                    isSubGroup: object.dataManagerGroupSelect.isSubGroup
 
                 }
 
@@ -144,11 +148,12 @@
             getConsolidated(object) {
 
                 let params = {
-                    grade_id: object.grade_id,
-                    group_id: object.group_id,
-                    periods_id: object.periods_id,
+                    grade_id: object.dataManagerGroupSelect.grade_id,
+                    group_id: object.dataManagerGroupSelect.group_id,
+                    periods_id: object.dataManagerGroupSelect.periods_id,
                     institution_id: this.$store.state.institutionOfTeacher.id,
-                    isSubGroup: object.isSubGroup
+                    isSubGroup: object.dataManagerGroupSelect.isSubGroup,
+                    isAcumulatedPeriod: object.isAcumulatedPeriod
                 }
 
                 this.urlPdf = "/pdf/consolidateByGroup?grade_id=" + params.grade_id +
@@ -157,7 +162,7 @@
                     "&is_subgroup=" + params.isSubGroup
 
                 this.data = params
-                //console.log(this.data.isSubGroup)
+                //console.log(params.isAcumulatedPeriod)
 
                 let url = '/ajax/getConsolidated'
 

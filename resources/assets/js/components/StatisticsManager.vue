@@ -45,7 +45,6 @@
 
             this.getGroupPensum(this.group.id, this.asignatureid, 1)
             this.getPeriodsByWorkingDay(this.group.working_day_id);
-            this.getInstitutionOfTeacher()
             */
         },
 

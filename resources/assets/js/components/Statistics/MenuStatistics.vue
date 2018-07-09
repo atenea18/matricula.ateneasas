@@ -37,7 +37,7 @@
             <div class="col-md-3">
                 <div class="checkbox" v-show="currentView">
                     <label>
-                        <input type="checkbox" @click="filterSearch('periodo-acumulado')" v-model="objectFilterSearch.isAcumulatedPeriod"> Periodos Acumulados
+                        <input type="checkbox" @change="filterSearch('periodo-acumulado')" v-model="objectFilterSearch.isAcumulatedPeriod"> Periodos Acumulados
                     </label>
                 </div>
             </div>
@@ -100,15 +100,12 @@
         methods: {
             setDataForFilter(){
 
-                this.objectMenuStatistics.isAcumulatedPeriod = !this.objectFilterSearch.isAcumulatedPeriod
+                this.objectMenuStatistics.isAcumulatedPeriod = this.objectFilterSearch.isAcumulatedPeriod
                 this.objectMenuStatistics.typeViewSection = this.$store.state.currentView
             },
 
             filterSearch(param){
                 this.setDataForFilter()
-                if(!this.objectFilterSearch.isAcumulatedPeriod){
-
-                }
                 this.$bus.$emit("get-data-filter-when-acumulated-period-is-check", null)
             },
             managerEvents() {
@@ -122,9 +119,9 @@
 
                     this.$bus.$emit("get-data-manager-group-select",this.objectMenuStatistics)
 
-
+                    this.$bus.$off('get-data-filter-when-acumulated-period-is-check')
                     this.$bus.$on('get-data-filter-when-acumulated-period-is-check', object =>{
-                        console.log(this.objectMenuStatistics)
+                        this.$bus.$emit("get-data-manager-group-select",this.objectMenuStatistics)
                     })
                 })
 

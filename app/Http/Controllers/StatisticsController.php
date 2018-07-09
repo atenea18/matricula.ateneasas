@@ -348,7 +348,7 @@ class StatisticsController extends Controller
                 ->where('group.id', '=', $request->group_id)
                 ->where('institution.id', '=', $this->institution->id)
                 ->where('schoolyears.id', '=', '1')
-                ->where('evaluation_periods.periods_id', '=', $request->periods_id)
+                //->where('evaluation_periods.periods_id', '=', $request->periods_id)
                 ->get();
         } else {
 

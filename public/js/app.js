@@ -75663,7 +75663,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         this.getParameters()
          this.getGroupPensum(this.group.id, this.asignatureid, 1)
         this.getPeriodsByWorkingDay(this.group.working_day_id);
-        this.getInstitutionOfTeacher()
         */
     },
     updated: function updated() {
@@ -75778,7 +75777,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -75888,12 +75887,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     methods: {
         setDataForFilter: function setDataForFilter() {
 
-            this.objectMenuStatistics.isAcumulatedPeriod = !this.objectFilterSearch.isAcumulatedPeriod;
+            this.objectMenuStatistics.isAcumulatedPeriod = this.objectFilterSearch.isAcumulatedPeriod;
             this.objectMenuStatistics.typeViewSection = this.$store.state.currentView;
         },
         filterSearch: function filterSearch(param) {
             this.setDataForFilter();
-            if (!this.objectFilterSearch.isAcumulatedPeriod) {}
             this.$bus.$emit("get-data-filter-when-acumulated-period-is-check", null);
         },
         managerEvents: function managerEvents() {
@@ -75909,8 +75907,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
                 _this.$bus.$emit("get-data-manager-group-select", _this.objectMenuStatistics);
 
+                _this.$bus.$off('get-data-filter-when-acumulated-period-is-check');
                 _this.$bus.$on('get-data-filter-when-acumulated-period-is-check', function (object) {
-                    console.log(_this.objectMenuStatistics);
+                    _this.$bus.$emit("get-data-manager-group-select", _this.objectMenuStatistics);
                 });
             });
         },
@@ -77045,35 +77044,37 @@ var render = function() {
                       : _vm.objectFilterSearch.isAcumulatedPeriod
                   },
                   on: {
-                    click: function($event) {
-                      _vm.filterSearch("periodo-acumulado")
-                    },
-                    change: function($event) {
-                      var $$a = _vm.objectFilterSearch.isAcumulatedPeriod,
-                        $$el = $event.target,
-                        $$c = $$el.checked ? true : false
-                      if (Array.isArray($$a)) {
-                        var $$v = null,
-                          $$i = _vm._i($$a, $$v)
-                        if ($$el.checked) {
-                          $$i < 0 &&
-                            (_vm.objectFilterSearch.isAcumulatedPeriod = $$a.concat(
-                              [$$v]
-                            ))
+                    change: [
+                      function($event) {
+                        var $$a = _vm.objectFilterSearch.isAcumulatedPeriod,
+                          $$el = $event.target,
+                          $$c = $$el.checked ? true : false
+                        if (Array.isArray($$a)) {
+                          var $$v = null,
+                            $$i = _vm._i($$a, $$v)
+                          if ($$el.checked) {
+                            $$i < 0 &&
+                              (_vm.objectFilterSearch.isAcumulatedPeriod = $$a.concat(
+                                [$$v]
+                              ))
+                          } else {
+                            $$i > -1 &&
+                              (_vm.objectFilterSearch.isAcumulatedPeriod = $$a
+                                .slice(0, $$i)
+                                .concat($$a.slice($$i + 1)))
+                          }
                         } else {
-                          $$i > -1 &&
-                            (_vm.objectFilterSearch.isAcumulatedPeriod = $$a
-                              .slice(0, $$i)
-                              .concat($$a.slice($$i + 1)))
+                          _vm.$set(
+                            _vm.objectFilterSearch,
+                            "isAcumulatedPeriod",
+                            $$c
+                          )
                         }
-                      } else {
-                        _vm.$set(
-                          _vm.objectFilterSearch,
-                          "isAcumulatedPeriod",
-                          $$c
-                        )
+                      },
+                      function($event) {
+                        _vm.filterSearch("periodo-acumulado")
                       }
-                    }
+                    ]
                   }
                 }),
                 _vm._v(" Periodos Acumulados\n                ")
@@ -77223,7 +77224,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -77282,7 +77283,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             objectToStatsConsolidated: {
                 asignatures: [],
                 enrollments: [],
-                data: {}
+                data: {},
+                params: {}
             },
 
             state: false,
@@ -77331,24 +77333,27 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             //Se subscribe al evento generado por menu-statistics, este le permite saber si se debe
             //mostrar la sección de consolidado con su respectiva consulta, ya que este evento devuelve
             //un objeto con los datos seleccionados de manager-group-select
-            this.$bus.$on('get-data-manager-group-select', function (object) {
+            this.$bus.$off('get-data-manager-group-select');
+            this.$bus.$on('get-data-manager-group-select', function (objectMenuStatistics) {
 
                 //Se asigna el objeto fieldSelects a variable local, objeto que tiene los datos seleccionados
                 //de manager-group-select
-                _this3.objectToStatsConsolidated.data = object.dataManagerGroupSelect;
-                if (object.typeViewSection == 'stats-consolidated') {
+                _this3.objectToStatsConsolidated.data = objectMenuStatistics.dataManagerGroupSelect;
+                _this3.objectToStatsConsolidated.params = objectMenuStatistics;
 
+                if (objectMenuStatistics.typeViewSection == 'stats-consolidated') {
                     //Si valor de type indica, que estamos en la sección de consolidados
                     //ejecutamos la consulta de consolidados
-                    _this3.getAsignaturesConsolidated(object.dataManagerGroupSelect);
+                    _this3.getAsignaturesConsolidated(_this3.objectToStatsConsolidated.params);
                 }
             });
 
             // Se subscribe al evento generado por menu-statistics, para generar una nueva consulta de consolidados
             // si algún select de manager-group-select fue modificado
+            this.$bus.$off('get-data-manager-group-select-change-section');
             this.$bus.$on('get-data-manager-group-select-change-section', function (object) {
                 if (object == 'stats-consolidated') {
-                    _this3.getAsignaturesConsolidated(_this3.objectToStatsConsolidated.data);
+                    _this3.getAsignaturesConsolidated(_this3.objectToStatsConsolidated.params);
                 }
             });
         },
@@ -77365,11 +77370,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             var url = '/ajax/getAsignaturesGroupPensum';
 
             var params = {
-                grade_id: object.grade_id,
-                group_id: object.group_id,
-                periods_id: object.periods_id,
+                grade_id: object.dataManagerGroupSelect.grade_id,
+                group_id: object.dataManagerGroupSelect.group_id,
+                periods_id: object.dataManagerGroupSelect.periods_id,
                 institution_id: this.$store.state.institutionOfTeacher.id,
-                isSubGroup: object.isSubGroup
+                isSubGroup: object.dataManagerGroupSelect.isSubGroup
 
             };
 
@@ -77387,17 +77392,18 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             var _this5 = this;
 
             var params = {
-                grade_id: object.grade_id,
-                group_id: object.group_id,
-                periods_id: object.periods_id,
+                grade_id: object.dataManagerGroupSelect.grade_id,
+                group_id: object.dataManagerGroupSelect.group_id,
+                periods_id: object.dataManagerGroupSelect.periods_id,
                 institution_id: this.$store.state.institutionOfTeacher.id,
-                isSubGroup: object.isSubGroup
+                isSubGroup: object.dataManagerGroupSelect.isSubGroup,
+                isAcumulatedPeriod: object.isAcumulatedPeriod
             };
 
             this.urlPdf = "/pdf/consolidateByGroup?grade_id=" + params.grade_id + "&group_id=" + params.group_id + "&period_id=" + params.periods_id + "&institution_id=" + params.institution_id + "&is_subgroup=" + params.isSubGroup;
 
             this.data = params;
-            //console.log(this.data.isSubGroup)
+            //console.log(params.isAcumulatedPeriod)
 
             var url = '/ajax/getConsolidated';
 
@@ -77501,7 +77507,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -77512,8 +77518,11 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__RowTableConsolidated__ = __webpack_require__(426);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__RowTableConsolidated___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__RowTableConsolidated__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__RowTableConsolidated__ = __webpack_require__(426);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__RowTableConsolidated___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__RowTableConsolidated__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 //
 //
 //
@@ -77543,14 +77552,95 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    components: { RowTableConsolidated: __WEBPACK_IMPORTED_MODULE_0__RowTableConsolidated___default.a },
+    components: { RowTableConsolidated: __WEBPACK_IMPORTED_MODULE_1__RowTableConsolidated___default.a },
     name: "table-consolidated",
     props: {
         objectInput: { type: Object }
+    },
+
+    created: function created() {
+        console.log(this.objectInput.params.dataManagerGroupSelect);
+    },
+
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["d" /* mapState */])(['periodObjectSelected'])),
+
+    methods: {
+        fullname: function fullname(enrollment) {
+            return enrollment.student_last_name + " " + enrollment.student_name;
+        },
+        getValueFinal: function getValueFinal(asignature, enrollment, period) {
+
+            var value = "";
+            enrollment.notes_final.forEach(function (element, i) {
+                if (element.asignatures_id == asignature.asignatures_id && element.value > 0 && element.periods_id == period) {
+                    value = element.value.toFixed(1);
+                    if (value <= 50) {
+                        value = '<span style="color:red;">' + value + '</span>';
+                    }
+                    if (element.overcoming) {
+                        var overcoming = element.overcoming;
+                        if (element.overcoming <= 50) {
+                            overcoming = '<span style="color:red;">' + overcoming + '</span>';
+                        }
+                        value += "/" + overcoming;
+                    }
+                }
+            });
+
+            return value;
+        },
+        getTav: function getTav(enrollment, period) {
+            var count = 0;
+            enrollment.notes_final.forEach(function (element, i) {
+                if (element.value != 0 && element.value != "" && element.periods_id == period) {
+                    //console.log(element.value)
+                    count++;
+                }
+            });
+            count = count == 0 ? "" : count;
+            return count;
+        }
     }
 });
 
@@ -77640,7 +77730,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -77651,6 +77741,9 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
 //
 //
 //
@@ -77762,7 +77855,9 @@ var render = function() {
             [
               _c("th", { attrs: { scope: "col" } }, [_vm._v("No.")]),
               _vm._v(" "),
-              _c("th", [_vm._v(" NOMBRES Y APELLIDOS")]),
+              _c("th", [_vm._v("NOMBRES Y APELLIDOS")]),
+              _vm._v(" "),
+              _c("th", [_vm._v("PER")]),
               _vm._v(" "),
               _c("th", [_vm._v("TAV")]),
               _vm._v(" "),
@@ -77780,25 +77875,163 @@ var render = function() {
           )
         ]),
         _vm._v(" "),
-        _c(
-          "tbody",
-          [
-            _vm._l(_vm.objectInput.enrollments, function(enrollment, i) {
-              return [
-                _c("row-table-consolidated", {
-                  attrs: {
-                    objectInput: {
-                      enrollment: enrollment,
-                      asignatures: _vm.objectInput.asignatures,
-                      index: i
-                    }
-                  }
+        !_vm.objectInput.params.isAcumulatedPeriod
+          ? _c(
+              "tbody",
+              [
+                _vm._l(_vm.objectInput.enrollments, function(enrollment, i) {
+                  return [
+                    _c(
+                      "tr",
+                      [
+                        _c("td", [_vm._v(_vm._s(i + 1))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(_vm.fullname(enrollment)))]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(
+                            _vm._s(
+                              _vm.objectInput.params.dataManagerGroupSelect
+                                .periods_id
+                            )
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(
+                                _vm.getTav(
+                                  enrollment,
+                                  _vm.objectInput.params.dataManagerGroupSelect
+                                    .periods_id
+                                ) == 0
+                                  ? ""
+                                  : _vm.getTav(
+                                      enrollment,
+                                      _vm.objectInput.params
+                                        .dataManagerGroupSelect.periods_id
+                                    )
+                              ) +
+                              "\n                    "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.objectInput.asignatures, function(
+                          asignature
+                        ) {
+                          return _c("td", [
+                            _c("div", {
+                              domProps: {
+                                innerHTML: _vm._s(
+                                  _vm.getValueFinal(
+                                    asignature,
+                                    enrollment,
+                                    _vm.objectInput.params
+                                      .dataManagerGroupSelect.periods_id
+                                  )
+                                )
+                              }
+                            })
+                          ])
+                        })
+                      ],
+                      2
+                    )
+                  ]
                 })
-              ]
-            })
-          ],
-          2
-        )
+              ],
+              2
+            )
+          : _c(
+              "tbody",
+              [
+                _vm._l(_vm.objectInput.enrollments, function(enrollment, i) {
+                  return [
+                    _c(
+                      "tr",
+                      [
+                        _c("td", { attrs: { rowspan: "4" } }, [
+                          _vm._v(_vm._s(i + 1))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { attrs: { rowspan: "4" } }, [
+                          _vm._v(_vm._s(_vm.fullname(enrollment)))
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(" 1")]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(
+                            _vm._s(
+                              _vm.getTav(enrollment, 1) == 0
+                                ? ""
+                                : _vm.getTav(enrollment, 1)
+                            )
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.objectInput.asignatures, function(
+                          asignature
+                        ) {
+                          return _c("td", [
+                            _c("div", {
+                              domProps: {
+                                innerHTML: _vm._s(
+                                  _vm.getValueFinal(asignature, enrollment, 1)
+                                )
+                              }
+                            })
+                          ])
+                        })
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _vm._l(3, function(row) {
+                      return [
+                        _c(
+                          "tr",
+                          [
+                            _c("td", [_vm._v(" " + _vm._s(row + 1))]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.getTav(enrollment, row + 1) == 0
+                                    ? ""
+                                    : _vm.getTav(enrollment, row + 1)
+                                )
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.objectInput.asignatures, function(
+                              asignature
+                            ) {
+                              return _c("td", [
+                                _c("div", {
+                                  domProps: {
+                                    innerHTML: _vm._s(
+                                      _vm.getValueFinal(
+                                        asignature,
+                                        enrollment,
+                                        row + 1
+                                      )
+                                    )
+                                  }
+                                })
+                              ])
+                            })
+                          ],
+                          2
+                        )
+                      ]
+                    })
+                  ]
+                })
+              ],
+              2
+            )
       ])
     ])
   ])
