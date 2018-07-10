@@ -54,7 +54,7 @@
 	                                                </a>
 	                                            </li>
 	                                            <li>
-	                                                <a href="#">Superaciones
+	                                                <a href="{{route('institution.recovery', [$group->id])}}">Superaciones
 	                                                </a>
 	                                            </li>
 	                                            <li>

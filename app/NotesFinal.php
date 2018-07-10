@@ -37,7 +37,7 @@ class NotesFinal extends Model
     			$this->value = $noteAux;
     		}
     		
-    		$this->save();
+    		$this->update();
 
     		return [
     			'state'		=>	true,
