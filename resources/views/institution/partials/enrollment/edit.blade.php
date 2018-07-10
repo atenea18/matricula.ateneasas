@@ -52,10 +52,10 @@
                         <div role="tabpanel" class="tab-pane active" id="personal_info">
                             <div class="container-fluid">
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    {{-- <div class="col-md-3">
                                         
-                                    </div>
-                                    <div class="col-md-9">
+                                    </div> --}}
+                                    <div class="col-md-12">
                                         {{-- PERSONAL IDENTIFICATION --}}
                                         <div id="identification" class="section_inscription">
                                             <div class="section_inscription__tittle">
@@ -80,21 +80,21 @@
                                                     <div class="row">
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                {!! Form::label('identification_type_dis', 'Tipo de Identificación') !!}
-                                                                {!! Form::text('identification_type', $enrollment->student->identification->identification_type->name, ['class'=>'form-control']) !!}
+                                                                {!! Form::label('identification_type_id', 'Tipo de Identificación') !!}
+                                                                {!! Form::select('identification_type_id', $identification_types, $enrollment->student->identification->identification_type_id, ['class'=>'form-control chosen-select', 'placeholder' => 'Seleccione']) !!}
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                {!! Form::label('identification_number_dis', 'Número de Identificación') !!}
+                                                                {!! Form::label('identification_number', 'Número de Identificación') !!}
                                                                 {!! Form::text('identification_number', $enrollment->student->identification->identification_number, ['class'=>'form-control']) !!}
                                                             </div>
                                                         </div>
                                                         <!--  CITY  EXPEDITION / BIRTH-->
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                {!! Form::label('city_expedition_dis', 'Ciudad de Expedición') !!}
-                                                                {!! Form::select('city_expedition_dis',$cities,  ($enrollment->student->identification->id_city_expedition != null) ? $enrollment->student->identification->id_city_expedition : null, ['class'=>'form-control', 'name'=>'id_city_expedition']) !!}
+                                                                {!! Form::label('id_city_expedition', 'Ciudad de Expedición') !!}
+                                                                {!! Form::select('id_city_expedition',$cities,  ($enrollment->student->identification->id_city_expedition != null) ? $enrollment->student->identification->id_city_expedition : null, ['class'=>'form-control chosen-select', 'name'=>'id_city_expedition']) !!}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -102,20 +102,20 @@
                                                     <div class="row">
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                {!! Form::label('city_birth_dis', 'Ciudad de Nacimiento') !!}
-                                                                {!! Form::text('city_birth', ($enrollment->student->identification->id_city_of_birth != null) ? $enrollment->student->identification->id_city_of_birth : null, ['class'=>'form-control']) !!}
+                                                                {!! Form::label('id_city_of_birth', 'Ciudad de Nacimiento') !!}
+                                                                {!! Form::select('id_city_of_birth', $cities, ($enrollment->student->identification->id_city_of_birth != null) ? $enrollment->student->identification->id_city_of_birth : null, ['class'=>'form-control chosen-select', 'placeholder'=>'Selecciona una ciudad']) !!}
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                {!! Form::label('birthdate_dis', 'Fecha de Nacimiento') !!}
-                                                                {!! Form::text('birthdate_dis', ($enrollment->student->identification->birthdate != null) ? $enrollment->student->identification->birthdate : '', ['class'=>'form-control']) !!}
+                                                                {!! Form::label('birthdate', 'Fecha de Nacimiento') !!}
+                                                                {!! Form::text('birthdate', ($enrollment->student->identification->birthdate != null) ? $enrollment->student->identification->birthdate : '', ['class'=>'form-control datepicker']) !!}
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
-                                                                {!! Form::label('gender_dis', 'Genero') !!}
-                                                                {!! Form::text('gender', $enrollment->student->identification->gender->gender, ['class'=>'form-control']) !!}
+                                                                {!! Form::label('gender_id', 'Genero') !!}
+                                                                {!! Form::select('gender_id', $genders, $enrollment->student->identification->gender_id, ['class'=>'form-control chosen-select', 'placeholder'=>'seleccione un genero']) !!}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -135,25 +135,25 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         {!! Form::label('address', 'Dirección') !!}
-                                                        {!! Form::text('adress_dis', $enrollment->student->address->address, ['class' => 'form-control']) !!}
+                                                        {!! Form::text('address', $enrollment->student->address->address, ['class' => 'form-control']) !!}
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         {!! Form::label('neighborhood', 'Barrio') !!}
-                                                        {!! Form::text('neighborhood_dis', $enrollment->student->address->neighborhood, ['class' => 'form-control']) !!}
+                                                        {!! Form::text('neighborhood', $enrollment->student->address->neighborhood, ['class' => 'form-control']) !!}
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        {!! Form::label('city', 'Ciudad') !!}
-                                                        {!! Form::select('city_dis', $cities,($enrollment->student->address->id_city_address != null) ? $enrollment->student->address->id_city_address : null, ['class' => 'form-control']) !!}
+                                                        {!! Form::label('id_city_address', 'Ciudad') !!}
+                                                        {!! Form::select('id_city_address', $cities,($enrollment->student->address->id_city_address != null) ? $enrollment->student->address->id_city_address : null, ['class' => 'form-control']) !!}
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2">
                                                     <div class="form-group">
-                                                        {!! Form::label('zone', 'Zona (Urbana/Rural)') !!}
-                                                        {!! Form::text('zone_dis', $enrollment->student->address->zone->name, ['class' => 'form-control']) !!}
+                                                        {!! Form::label('zone_id', 'Zona (Urbana/Rural)') !!}
+                                                        {!! Form::select('zone_id', $zones, $enrollment->student->address->zone_id, ['class'=>'form-control chosen-select', 'placeholder'=>'seleccione una zona']) !!}
                                                     </div>
                                                 </div>
 
@@ -163,19 +163,19 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         {!! Form::label('phone', 'Telefono') !!}
-                                                        {!! Form::text('phone_dis', $enrollment->student->address->phone, ['class' => 'form-control']) !!}
+                                                        {!! Form::text('phone', $enrollment->student->address->phone, ['class' => 'form-control']) !!}
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         {!! Form::label('mobil', 'Celular') !!}
-                                                        {!! Form::text('mobil_dis', $enrollment->student->address->mobil, ['class' => 'form-control']) !!}
+                                                        {!! Form::text('mobil', $enrollment->student->address->mobil, ['class' => 'form-control']) !!}
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         {!! Form::label('email', 'Email') !!}
-                                                        {!! Form::text('email_dis', $enrollment->student->address->email, ['class' => 'form-control']) !!}
+                                                        {!! Form::text('email', $enrollment->student->address->email, ['class' => 'form-control']) !!}
                                                     </div>
                                                 </div>
                                             </div>

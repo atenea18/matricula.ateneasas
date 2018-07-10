@@ -320,17 +320,17 @@ class EnrollmentController extends Controller
         // IDENTIFICACIÓN
         $identification = Identification::findOrFail($student->identification_id);
         $identification->fill($request->all());
-        $identification->save();
+        $identification->update();
         
         // DIRECCIÓN
         $address = Address::findOrFail($student->address_id);
         $address->fill($request->all());
-        $address->save();
+        $address->update();
 
         // ACADEMIC INFORMATION
         $academic_information = AcademicInformation::findOrFail($request->academic_information_id);
         $academic_information->fill($request->all());
-        $academic_information->save();
+        $academic_information->update();
 
         // ENROLLMENT
         $enrollment = Enrollment::findOrFail($request->enrollment_id);
@@ -339,7 +339,7 @@ class EnrollmentController extends Controller
         $enrollment->code = ($group != null) ? $schoolYear->year.$request->institution_id.$group->grade_id.$request->student_id : $schoolYear->year.$request->institution_id."17".$request->student_id;
                 $enrollment->grade_id = ($group != null) ? $group->grade->id : null ;
         // dd($enrollment);
-        $enrollment->save();
+        $enrollment->update();
 
         if($group != null)
             $enrollment->group()->sync($group->id);
@@ -348,12 +348,12 @@ class EnrollmentController extends Controller
         // MEDICAL INFORMATION
         $medical_information = MedicalInformation::findOrFail($request->medical_information_id);
         $medical_information->fill($request->all());
-        $medical_information->save();
+        $medical_information->update();
 
         // DISPLACEMENT
         $displacement = Displacement::findOrFail($request->displacement_id);
         $displacement->fill($request->all());
-        $displacement->save();
+        $displacement->update();
 
 
         // SOCIOECONOMIC INFORMARTION
@@ -370,7 +370,7 @@ class EnrollmentController extends Controller
         // TERRITORIALTY
         $territorialty = Territorialty::findOrFail($request->territorialty_id);
         $territorialty->fill($request->all());
-        $territorialty->save();
+        $territorialty->update();
 
         // CAPACITIES AND DISCAPACITIES
         $student->capacities()->sync($request->capacity_id);

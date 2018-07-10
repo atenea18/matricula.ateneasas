@@ -1,4 +1,4 @@
-@extends('teacher.dashboard.index')
+@extends('institution.dashboard.index')
 
 @section('css')
     <link rel="stylesheet" href="{{asset('css/bootstrap-chosen.css')}}">
@@ -12,9 +12,9 @@
 
 @section('breadcrums')
     <ol class="breadcrumb">
-        <li><a href="{{route('teacher.home')}}">Inicio</a></li>
-        <li class="active"><a href="">Evaluación</a></li>
-        <li>Superación</li>
+        <li><a href="{{route('institution.home')}}">Inicio</a></li>
+        <li class="active"><a href="{{route('group.index')}}">Grupos</a></li>
+        <li>Supereaciones</li>
     </ol>
 @endsection
 
@@ -31,15 +31,15 @@
 				<div class="conatiner-fluid">
 					<div class="row">
 						<div class="col-md-6">
-							<h5>{{ $asignature->name}}</h5>
 							<h5>{{ $group->name}}</h5>
 						</div>
 						<div class="col-md-3">
-							
+							{!! Form::label('asignature_id', 'Asignatura', []) !!}
+							{!! Form::select('asignature_id', $pensums, null, ['class'=>'form-control', 'placeholder'=>'Seleccionar una asignatura', 'id'=>'asignature_id']) !!}
 						</div>
 						<div class="col-md-3">
 							{!! Form::label('period_id', 'Periodo', []) !!}
-							{!! Form::select('period_id', $periods, null, ['class'=>'form-control', 'placeholder'=>'Seleccionar un periodo']) !!}
+							{!! Form::select('period_id', $periods, null, ['class'=>'form-control', 'placeholder'=>'Seleccionar un periodo', 'id'=>'period_id']) !!}
 						</div>
 					</div>
 					<div class="row">
@@ -52,7 +52,8 @@
 											<th>Apellidos y Nombres</th>
 											<th>Superación</th>
 											<th>Nota Superación</th>
-											<th id="periodNumber">Periodo</th>
+											<th>Nota periodo</th>
+											{{-- <th id="periodNumber">Periodo</th> --}}
 										</tr>
 									</thead>
 									<tbody id="tableBody"></tbody>
@@ -72,41 +73,47 @@
 	<script>
 		$(document).ready(function(){
 
-			$("#period_id").change(function(){
+			$("#period_id, #asignature_id").change(function(){
 
-				var _this = $(this);
+				var period_id = $("#period_id").val(),
+					asignature_id = $("#asignature_id").val()
+					group_id = {{$group->id}};
 
-				$("#tableBody").empty().html("<tr><td colspan='5' class='text-center'><i class='fas fa-spinner fa-pulse fa-3x'></i></td></tr>")
+				if(period_id != '' && asignature_id != '') {
+					$.ajax({
+						url: "/api/recovery/"+group_id+"/"+asignature_id+"/"+period_id+"/students",
+						method: "get",
+						dataType: "json",
+						beforeSend: function(){
+							$("#tableBody").empty().html("<tr><td colspan='5' class='text-center'><i class='fas fa-spinner fa-pulse fa-3x'></i></td></tr>")
+						},
+						success: function(data){
+							// 
+							var html = '';
 
-				$.get("/api/recovery/{{$group->id}}/{{$asignature->id}}/"+this.value+"/students", function(data){
+							$.each(data.data, function(indx, ele){
 
-					var html = '',
-						dataEmpty = (data.data.length > 0) ? false : true;
+								html += "<tr>";
 
-					$.each(data.data, function(indx, ele){
+								html += "<td>"+indx+"</td>";
+								html += "<td>"+ele.name_student+"</td>";
+								html += "<td><input type='text' class='form-control' data-id='"+ele.note_final_id+"' data-old='"+ele.value+"'><span class='hide'>Cargando...</span></td>";
+								html += "<td><span>"+( (ele.overcoming == null) ? 0 : ele.overcoming) +"</span></td>";
+								html += "<td><span>"+ele.value+"</span></td>";
+								html += "</tr>";
+							});
 
-						html += "<tr>";
+							$("#tableBody").empty().html(html);
 
-						html += "<td>"+indx+"</td>";
-						html += "<td>"+ele.name_student+"</td>";
-						html += "<td><input type='text' class='form-control' data-id='"+ele.note_final_id+"' data-old='"+ele.value+"'><span class='hide'>Cargando...</span></td>";
-						html += "<td><span>"+( (ele.overcoming == null) ? 0 : ele.overcoming) +"</span></td>";
-						html += "<td><span>"+ele.value+"</span></td>";
-						html += "</tr>";
-
+							bindInput();
+							blurInput();
+						},
+						error: function(xhr){
+							console.log(xhr);
+						}
 					});
-
-					$("#periodNumber").text("Periodo "+_this.val());
-
-					if(dataEmpty){
-						$("#tableBody").empty().html("<tr><td colspan='5' class='text-center'><h3>No hay resultados</h3></td></tr>");
-					}else{
-						$("#tableBody").empty().html(html);
-					}
-
-					bindInput();
-					blurInput();
-				}, 'json')
+				}
+				
 			});
 
 			var bindInput = function(){
@@ -165,7 +172,6 @@
 					});
 				});
 			}
-
 		});
 	</script>
 @endsection
