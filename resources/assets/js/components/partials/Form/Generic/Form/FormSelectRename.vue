@@ -2,9 +2,9 @@
     <div>
         <select v-on:change="selected" class="form-control"
                 v-if="objectSetting.isCreated" v-model="objectToSelect.objectSelectedId">
-            <option :value="0">Seleccionar</option>
+            <option>Seleccionar</option>
             <option v-for="row in objectInput.arrayData" :value="row.periods_id">
-                {{ row[objectInput.name] }}
+                {{ row.name}}
             </option>
         </select>
     </div>
@@ -30,7 +30,7 @@
                 },
                 objectToSelect: {
                     arrayData: [],
-                    objectSelectedId: 0
+                    objectSelectedId: 1
                 }
             }
         },

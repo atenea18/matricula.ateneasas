@@ -8,14 +8,14 @@
             <select-group v-show="!objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectGroup"></select-group>
 
             <!-- Depende de grade -->
-            <select-subgroup v-show="objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectSubGroup"></select-subgroup>
+            <!--<select-subgroup v-show="objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectSubGroup"></select-subgroup>-->
         </div>
         <div class="col-md-4">
             <!-- Depende de group-->
             <select-period v-show="!objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectPeriod"></select-period>
 
             <!-- Depende de subgroup-->
-            <select-period-section  v-show="objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectPeriodSection" ></select-period-section>
+            <!--<select-period-section  v-show="objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectPeriodSection" ></select-period-section>-->
         </div>
 
     </div>
@@ -47,8 +47,9 @@
                 objectToManagerGroupSelect: {
                     grade_id: 0,
                     group_id: 0,
-                    periods_id: 0,
+                    periods_id: 1,
                     type: "",
+                    whoTriggered:"",
                     isSubGroup: false
                 },
                 objectToSelectGrade: {
@@ -65,8 +66,9 @@
                     referenceChangeFormSelect: 'get-event-change-of-form-select@' + this.objectInput.referenceId + '.periods',
                     referenceGetObjectSelected: 'get-object-selected@' + this.objectInput.referenceId + '.periods',
                     referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.objectInput.referenceId + '.periods',
-                    id:0
+                    id:1
                 },
+                /*
                 objectToSelectSubGroup: {
                     referenceChangeFormSelect: 'get-event-change-of-form-select@' + this.objectInput.referenceId + '.subgroup',
                     referenceGetObjectSelected: 'get-object-selected@' + this.objectInput.referenceId + '.subgroup',
@@ -79,11 +81,14 @@
                     referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.objectInput.referenceId + '.section',
                     id:0
                 },
+                */
 
             }
         },
         created() {
             this.managerEvents()
+
+            /*
             this.$bus.$on("get-is-sub-group", object => {
 
                 this.objectToManagerGroupSelect.isSubGroup = object.isSubGroup
@@ -102,16 +107,15 @@
                 if (this.objectToManagerGroupSelect.periods_id != 0) {
                     this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
                 }
-
-
             })
+            */
         },
         methods: {
             managerEvents() {
 
                 this.$bus.$on(this.objectToSelectGrade.referenceGetObjectSelected, object => {
                     this.objectToManagerGroupSelect.grade_id = object.id
-                    this.$bus.$emit(this.objectToSelectSubGroup.referenceEmitObjectGradeSelected, object);
+                    //this.$bus.$emit(this.objectToSelectSubGroup.referenceEmitObjectGradeSelected, object);
                     this.$bus.$emit(this.objectToSelectGroup.referenceToReciveObjectSelected, object);
 
                 })
@@ -119,11 +123,27 @@
                 this.$bus.$on(this.objectToSelectGroup.referenceGetObjectSelected, object => {
                     this.objectToSelectGroup.id = object.id
                     this.objectToManagerGroupSelect.group_id = object.id
-                    this.$bus.$emit(this.objectToSelectPeriod.referenceToReciveObjectSelected, object);
+                    this.objectToManagerGroupSelect.whoTriggered = ""
+                    //this.$bus.$emit(this.objectToSelectPeriod.referenceToReciveObjectSelected, object);
                     if (this.objectToManagerGroupSelect.periods_id != 0) {
                         this.objectToManagerGroupSelect.type = "group"
+
                         this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
                     }
+                })
+
+                this.$bus.$on(this.objectToSelectPeriod.referenceGetObjectSelected, objectId => {
+                    this.objectToSelectPeriod.id = objectId
+                    this.objectToManagerGroupSelect.periods_id = objectId
+                    this.objectToManagerGroupSelect.whoTriggered = "period"
+                    this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
+                })
+
+                /*
+                this.$bus.$on(this.objectToSelectPeriodSection.referenceGetObjectSelected, objectId => {
+                    this.objectToSelectPeriodSection.id = objectId
+                    this.objectToManagerGroupSelect.periods_id = objectId
+                    this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
                 })
 
                 this.$bus.$on(this.objectToSelectSubGroup.referenceGetObjectSelected, object => {
@@ -136,18 +156,7 @@
                     }
                 })
 
-
-                this.$bus.$on(this.objectToSelectPeriod.referenceGetObjectSelected, objectId => {
-                    this.objectToSelectPeriod.id = objectId
-                    this.objectToManagerGroupSelect.periods_id = objectId
-                    this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
-                })
-
-                this.$bus.$on(this.objectToSelectPeriodSection.referenceGetObjectSelected, objectId => {
-                    this.objectToSelectPeriodSection.id = objectId
-                    this.objectToManagerGroupSelect.periods_id = objectId
-                    this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
-                })
+                */
             },
         },
 

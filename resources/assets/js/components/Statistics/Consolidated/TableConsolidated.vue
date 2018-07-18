@@ -3,40 +3,46 @@
         <div class="table-responsive">
             <table class="table table-bordered">
                 <!-- Fila de titulos -->
-                <thead>
-                <tr style="font-size: 11px">
+                <thead >
+                <tr style="font-size: 11px;">
                     <th scope="col">No.</th>
                     <th>NOMBRES Y APELLIDOS</th>
                     <th>PER</th>
                     <th>TAV</th>
-
+                    <th>PUESTO</th>
+                    <th>PGG</th>
                     <th v-for="asignature in objectInput.asignatures">
                         {{asignature.abbreviation}}
                     </th>
                 </tr>
                 </thead>
-                <tbody v-if="!objectInput.params.isAcumulatedPeriod">
+                <tbody v-if="!objectInput.params.filter.isAcumulatedPeriod">
                 <template v-for="(enrollment,i) in objectInput.enrollments">
                     <tr>
                         <td>{{i+1}}</td>
                         <td>{{fullname(enrollment)}}</td>
-                        <td>{{objectInput.params.dataManagerGroupSelect.periods_id}}</td>
+                        <td>{{objectInput.params.objectValuesManagerGroupSelect.periods_id}}</td>
+
                         <td>
-                            {{(getTav(enrollment,objectInput.params.dataManagerGroupSelect.periods_id)==0)?'':getTav(enrollment,objectInput.params.dataManagerGroupSelect.periods_id)}}
+                            {{(getTav(enrollment,objectInput.params.objectValuesManagerGroupSelect.periods_id)==0)?'':getTav(enrollment,objectInput.params.objectValuesManagerGroupSelect.periods_id)}}
                         </td>
+                        <td>#</td>
+                        <td>#..</td>
                         <td v-for="asignature in objectInput.asignatures">
-                            <div v-html="getValueFinal(asignature,enrollment,objectInput.params.dataManagerGroupSelect.periods_id)"></div>
+                            <div v-html="getValueFinal(asignature,enrollment,objectInput.params.objectValuesManagerGroupSelect.periods_id)"></div>
                         </td>
                     </tr>
                 </template>
                 </tbody>
-                <tbody v-else="!objectInput.params.isAcumulatedPeriod">
+                <tbody v-else="!objectInput.params.filter.isAcumulatedPeriod">
                 <template v-for="(enrollment,i) in objectInput.enrollments">
                     <tr>
                         <td rowspan="4">{{i+1}}</td>
                         <td rowspan="4">{{fullname(enrollment)}}</td>
                         <td> 1</td>
                         <td>{{(getTav(enrollment,1)==0)?'':getTav(enrollment,1)}}</td>
+                        <td>#</td>
+                        <td>#..</td>
                         <td v-for="asignature in objectInput.asignatures">
                             <div v-html="getValueFinal(asignature,enrollment,1)"></div>
                         </td>
@@ -45,11 +51,43 @@
                         <tr>
                             <td> {{row+1}}</td>
                             <td>{{(getTav(enrollment,(row+1))==0)?'':getTav(enrollment,(row+1))}}</td>
+                            <td>#</td>
+                            <td>#..</td>
                             <td v-for="asignature in objectInput.asignatures">
                                 <div v-html="getValueFinal(asignature,enrollment,(row+1))"></div>
                             </td>
                         </tr>
                     </template>
+                    <tr>
+                        <td></td>
+                        <td colspan="3">PROMEDIO ACUMULADO </td>
+                        <td rowspan="2">#</td>
+                        <td rowspan="2">#..</td>
+                        <td v-for="asignature in objectInput.asignatures">
+                            <div v-html="'.'"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td colspan="3">VALORACIÓN MIN. REQUERIDA PROX. PER.</td>
+                        <!--<td  >#</td>-->
+                        <!--<td>#..</td>-->
+                        <td v-for="asignature in objectInput.asignatures">
+                            <div v-html="'.'"></div>
+                        </td>
+                    </tr>
+                    <tr style="font-size: 11px">
+                        <th>No.</th>
+                        <th>NOMBRES Y APELLIDOS</th>
+                        <th>PER</th>
+                        <th>TAV</th>
+                        <th>PUESTO</th>
+                        <th>PGG</th>
+                        <th v-for="asignature in objectInput.asignatures">
+                            {{asignature.abbreviation}}
+                        </th>
+                    </tr>
+
                 </template>
                 <!--
                 <template v-for="(enrollment,i) in objectInput.enrollments">
@@ -75,7 +113,7 @@
         },
 
         created() {
-            console.log(this.objectInput.params.dataManagerGroupSelect)
+            //console.log(this.objectInput.params.objectValuesManagerGroupSelect)
         },
         computed: {
             ...mapState([
@@ -126,5 +164,6 @@
 </script>
 
 <style scoped>
+
 
 </style>

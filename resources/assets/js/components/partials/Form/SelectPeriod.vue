@@ -27,9 +27,14 @@
                 title: "Seleccionar Periodo",
                 objectToSelectPeriods: {
                     name: "periods_name",
-                    arrayData: [],
+                    arrayData: [
+                        {periods_id:1, name:1},
+                        {periods_id:2, name:2},
+                        {periods_id:3, name:3},
+                        {periods_id:4, name:4},
+                    ],
                     referenceChangeFormSelect: this.objectInput.referenceChangeFormSelect,
-                }
+                },
             }
         },
 
@@ -51,9 +56,11 @@
                     this.$bus.$emit(referenceEmitObjectSelected, objectId);
                 })
 
+                /*
                 this.$bus.$on(referenceToReciveObjectSelected, object => {
-                    this.getPeriodsByGroup(object)
+                    //this.getPeriodsByGroup(object)
                 })
+                */
             },
 
             getPeriodsByGroup(object) {

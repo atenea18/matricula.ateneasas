@@ -40,8 +40,7 @@
                 objectToStatsConsolidated: {
                     asignatures: [],
                     enrollments: [],
-                    data: {},
-                    params:{}
+                    params: {}
                 },
 
                 state: false,
@@ -60,12 +59,7 @@
         },
         methods: {
 
-            getIsGroup() {
-                this.objectToManagerGroupSelect.isSubGroup = !this.objectToManagerGroupSelect.isSubGroup
-                this.$bus.$emit("get-is-sub-group", this.objectToManagerGroupSelect)
-            },
             printConsolidated() {
-                //console.log(this.data)
                 if (this.data.periods_id) {
 
                     let url = '/pdf/consolidateByGroup'
@@ -93,68 +87,83 @@
                 //Se subscribe al evento generado por menu-statistics, este le permite saber si se debe
                 //mostrar la sección de consolidado con su respectiva consulta, ya que este evento devuelve
                 //un objeto con los datos seleccionados de manager-group-select
-                this.$bus.$off('get-data-manager-group-select')
-                this.$bus.$on('get-data-manager-group-select', objectMenuStatistics => {
+                this.$bus.$off('SelectedFieldsEvent@MenuStatistics')
+                this.$bus.$on('SelectedFieldsEvent@MenuStatistics', componentObjectMenuStatistics => {
+
+                    console.log('->StatsConsolidated... On SelectedFieldsEvent@MenuStatistics and ... ' +
+                        'call function managerSelectedFieldsEvent')
 
                     //Se asigna el objeto fieldSelects a variable local, objeto que tiene los datos seleccionados
                     //de manager-group-select
-                    this.objectToStatsConsolidated.data = objectMenuStatistics.dataManagerGroupSelect
-                    this.objectToStatsConsolidated.params = objectMenuStatistics
+                    this.objectToStatsConsolidated.params = componentObjectMenuStatistics
 
-                    if (objectMenuStatistics.typeViewSection == 'stats-consolidated') {
-                        //Si valor de type indica, que estamos en la sección de consolidados
-                        //ejecutamos la consulta de consolidados
-                        this.getAsignaturesConsolidated(this.objectToStatsConsolidated.params)
-                    }
+                    this.managerSelectedFieldsEvent(componentObjectMenuStatistics)
 
                 })
 
                 // Se subscribe al evento generado por menu-statistics, para generar una nueva consulta de consolidados
                 // si algún select de manager-group-select fue modificado
-                this.$bus.$off('get-data-manager-group-select-change-section')
-                this.$bus.$on('get-data-manager-group-select-change-section', object => {
-                    if (object == 'stats-consolidated') {
-                        this.getAsignaturesConsolidated(this.objectToStatsConsolidated.params)
-                    }
+                this.$bus.$off('SelectedCurrentVIew@MenuStatistics')
+                this.$bus.$on('SelectedCurrentVIew@MenuStatistics', object => {
+                    this.managerSelectedFieldsEvent()
                 })
             },
 
-            //
-            getAsignaturesConsolidated(object) {
-                // Evita renderización del componente table-consolidated antes que el
-                // objeto objectToStatsConsolidated que es pasado al componente, genere error, por no tener
-                // valor asignado
-                this.state = false
-                let url = '/ajax/getAsignaturesGroupPensum'
+            managerSelectedFieldsEvent(componentObject) {
+                console.log("->StatsConsolidated... Function managerSelectedFieldsEvent")
 
-                let params = {
-                    grade_id: object.dataManagerGroupSelect.grade_id,
-                    group_id: object.dataManagerGroupSelect.group_id,
-                    periods_id: object.dataManagerGroupSelect.periods_id,
-                    institution_id: this.$store.state.institutionOfTeacher.id,
-                    isSubGroup: object.dataManagerGroupSelect.isSubGroup
-
+                if (typeof componentObject == "undefined") {
+                    componentObject = this.objectToStatsConsolidated.params
                 }
 
-                axios.get(url, {params}).then(res => {
+                if (this.$store.state.currentView == 'stats-consolidated') {
+                    if (componentObject.eventInformation.whoTriggered == "areas" || componentObject.eventInformation.whoTriggered == "componentManagerGroupSelect") {
+                        console.log("->StatsConsolidated... Evento realiza consulta de consolidados")
+                        this.managerQueryForFilterConsolidated(componentObject)
+                    }
+                }
+
+            },
+
+            managerQueryForFilterConsolidated(componentObject) {
+
+                let params = {
+                    grade_id: componentObject.objectValuesManagerGroupSelect.grade_id,
+                    group_id: componentObject.objectValuesManagerGroupSelect.group_id,
+                    periods_id: componentObject.objectValuesManagerGroupSelect.periods_id,
+                    institution_id: this.$store.state.institutionOfTeacher.id,
+                    isSubGroup: componentObject.objectValuesManagerGroupSelect.isSubGroup,
+                    isFilterAreas: componentObject.filter.isAreas,
+                    urlSubjects: '',
+                    urlConsolidated: ''
+                }
+
+                if (componentObject.filter.isAreas) {
+                    console.log("->StatsConsolidated... Se consulta áreas")
+                    params.urlSubjects = '/ajax/getAreasGroupPensum'
+                    params.urlConsolidated = '/ajax/getTableConsolidated'
+                }
+                if (!componentObject.filter.isAreas) {
+                    console.log("->StatsConsolidated... Se consulta asignaturas")
+                    params.urlSubjects = '/ajax/getAsignaturesGroupPensum'
+                    params.urlConsolidated = '/ajax/getTableConsolidated'
+                }
+                this.getContentConsolidated(params)
+            },
+
+            getContentConsolidated(params) {
+                this.state = false
+                axios.get(params.urlSubjects, {params}).then(res => {
                     //Trae las asignaturas correpondiente a los datos seleccionados
                     this.objectToStatsConsolidated.asignatures = res.data
+                    console.log(this.objectToStatsConsolidated.asignatures)
                     //Trae la información correspondiente al consolidado
-                    this.getConsolidated(object)
+                    this.getTableConsolidated(params)
                 })
             },
 
             // Método que trae todos los datos sobre el consolidado a consultar
-            getConsolidated(object) {
-
-                let params = {
-                    grade_id: object.dataManagerGroupSelect.grade_id,
-                    group_id: object.dataManagerGroupSelect.group_id,
-                    periods_id: object.dataManagerGroupSelect.periods_id,
-                    institution_id: this.$store.state.institutionOfTeacher.id,
-                    isSubGroup: object.dataManagerGroupSelect.isSubGroup,
-                    isAcumulatedPeriod: object.isAcumulatedPeriod
-                }
+            getTableConsolidated(params) {
 
                 this.urlPdf = "/pdf/consolidateByGroup?grade_id=" + params.grade_id +
                     "&group_id=" + params.group_id +
@@ -162,20 +171,14 @@
                     "&is_subgroup=" + params.isSubGroup
 
                 this.data = params
-                //console.log(params.isAcumulatedPeriod)
-
-                let url = '/ajax/getConsolidated'
-
-                axios.get(url, {params}).then(res => {
+                axios.get(params.urlConsolidated, {params}).then(res => {
                     // Asignamos objeto que contiene la información correspondiente del consolidado
                     // a variable local, variable que es pasada como parametro al componente table-consolidated
                     this.objectToStatsConsolidated.enrollments = res.data
-
                     // Cuando la variable local tiene la información, le asignamos valor true a la variable
                     // state, para que renderice el componente table-consolidated
                     this.state = true
                 })
-
             },
         }
 
