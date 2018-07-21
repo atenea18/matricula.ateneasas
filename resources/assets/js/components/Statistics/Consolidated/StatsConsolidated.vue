@@ -11,6 +11,7 @@
         <div class="row">
             <div class="col-md-12">
                 <template v-if="state">
+                    <br>
                     <table-consolidated :objectInput="objectToStatsConsolidated"></table-consolidated>
                 </template>
             </div>
@@ -45,7 +46,8 @@
 
                 state: false,
                 data: {},
-                urlPdf: ""
+                urlPdf: "",
+
             }
         },
         created() {
@@ -152,7 +154,7 @@
             },
 
             getContentConsolidated(params) {
-                this.state = false
+                //this.state = false
                 axios.get(params.urlSubjects, {params}).then(res => {
                     //Trae las asignaturas correpondiente a los datos seleccionados
                     this.objectToStatsConsolidated.asignatures = res.data
@@ -178,6 +180,7 @@
                     // Cuando la variable local tiene la información, le asignamos valor true a la variable
                     // state, para que renderice el componente table-consolidated
                     this.state = true
+                    this.$bus.$emit("ya", params)
                 })
             },
         }

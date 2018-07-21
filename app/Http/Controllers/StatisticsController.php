@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Expr\Cast\Object_;
 
 
 class StatisticsController extends Controller
@@ -187,7 +188,12 @@ class StatisticsController extends Controller
         }
 
         #Obtengo y almaceno el número maximo de asignaturas evaluadas
-        $numberMaxOfAsignatures = max($vectorNumberAsignatures);
+        if(count($vectorNumberAsignatures)){
+            $numberMaxOfAsignatures = max($vectorNumberAsignatures);
+        }else{
+            $numberMaxOfAsignatures = 1;
+        }
+
 
 
         #Este es un nuevo vector donde se va a guardar los mismo estudiantes pero con el promedio levemente modificado
@@ -336,140 +342,30 @@ class StatisticsController extends Controller
         return $asignatures;
     }
 
-    public function getConsolidated(Request $request)
+    private function getNotesFinal($params)
     {
-        /*
-        if ($request->isSubGroup == "false") {
 
-        } else {
+        $paramsSearch = (object)array(
+            'group_id' => $params->group_id,
+            'institution_id' => $this->institution->id,
+            'periods_id' => $params->periods_id
+        );
 
-            $enrollments = Subgroup::enrollmentsBySubGroup($this->institution->id, $request->group_id);
-
-            $notes_final = DB::table('notes_final')
-                ->select('enrollment.id as enrollment_id', 'notes_final.value', 'notes_final.overcoming',
-                    'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id', 'evaluation_periods.periods_id',
-                    'evaluation_periods.id as evaluation_periods_id')
-                ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
-                ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
-                ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
-                ->join('sub_group_assignments', 'enrollment.id', '=', 'sub_group_assignments.enrollment_id')
-                ->join('sub_group', 'sub_group_assignments.subgroup_id', '=', 'sub_group.id')
-                ->join('sub_group_pensum', 'sub_group_pensum.sub_group_id', '=', 'sub_group.id')
-                ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
-                ->join('headquarter', 'institution.id', '=', 'headquarter.institution_id')
-                ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
-                ->whereColumn(
-                    [
-                        ['headquarter.id', '=', 'sub_group.headquarter_id'],
-                        ['sub_group.grade_id', '=', 'grade.id'],
-                        ['sub_group_pensum.asignatures_id', '=', 'evaluation_periods.asignatures_id']
-                    ]
-                )
-                ->where('sub_group.id', '=', $request->group_id)
-                ->where('institution.id', '=', $this->institution->id)
-                ->where('schoolyears.id', '=', '1')
-                ->where('evaluation_periods.periods_id', '=', $request->periods_id)
-                ->get();
+        if ($params->isFilterAreas == "true") {
+            return NotesFinal::getNotesFilterByAreas($paramsSearch);
         }
-        */
-        $enrollments = Group::enrollmentsByGroup($this->institution->id, $request->group_id);
-        $notes_final = [];
-
-        if ($request->isFilterAreas == "true") {
-            /*
-            $query = DB::table('membership as m')
-                ->select('my.membership_year', 'm.*')
-                ->join(DB::raw('(
-            SELECT my1.* 
-            FROM membership_years my1 
-            INNER JOIN (
-                SELECT member_id, MAX(membership_year) AS max_my 
-                FROM membership_years 
-                GROUP BY member_id
-            ) my2
-            ON my1.member_id = my2.member_id
-            AND my1.membership_year = my2.max_my
-        ) my'),
-                    'm.id', '=', 'my.member_id')
-                ->orderBy('m.id');
-            */
-            $id_institution = $this->institution->id;
-            $notes_final = DB::select(DB::raw(
-                "
-                SELECT result.enrollment_id, result.last_name, result.name, result.name_areas, 
-                SUM(result.percent) percent, ROUND(IF((SUM(result.percent) = 100),
-                SUM((result.percent/100) * result.value),
-                SUM(result.value)/SUM((result.value>0))), 2) 'value',
-                SUM(result.tav) tav, result.areas_id as 'asignatures_id', result.overcoming,
-                result.evaluation_periods_id, result.periods_id, result.notes_final_id
-                from
-                (
-                SELECT
-                enrollment.id as 'enrollment_id', notes_final.value as 'value', notes_final.overcoming,
-                notes_final.id as 'notes_final_id', areas.id as 'areas_id', evaluation_periods.periods_id, 
-                student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_areas',                
-                evaluation_periods.id as 'evaluation_periods_id',
-                group_pensum.percent as 'percent', 
-                (notes_final.value>0) as 'tav'
-                FROM notes_final
-                INNER JOIN evaluation_periods ON evaluation_periods.id = notes_final.evaluation_periods_id
-                INNER JOIN enrollment ON enrollment.id = evaluation_periods.enrollment_id
-                INNER JOIN student ON student.id = enrollment.student_id
-                INNER JOIN institution ON institution.id = enrollment.institution_id
-                INNER JOIN schoolyears ON schoolyears.id = enrollment.school_year_id
-                INNER JOIN group_assignment ON group_assignment.enrollment_id = enrollment.id
-                INNER JOIN `group` ON `group`.id = group_assignment.group_id
-                INNER JOIN headquarter ON headquarter.id = group.headquarter_id AND headquarter.institution_id =  institution.id 
-                INNER JOIN group_pensum ON group_pensum.group_id = `group`.id
-                AND group_pensum.asignatures_id = evaluation_periods.asignatures_id
-                INNER JOIN areas ON areas.id = group_pensum.areas_id
-                INNER JOIN asignatures ON asignatures.id = group_pensum.asignatures_id
-                WHERE `group`.id = '$request->group_id' AND
-                institution.id = '$id_institution' AND
-                schoolyears.id = 1
-                GROUP BY enrollment.id, asignatures.id, evaluation_periods.periods_id
-                ) as
-                result
-                GROUP BY result.enrollment_id, result.areas_id
-                ORDER BY result.last_name, result.name
-                "
-            ));
-
-            //return ($notes_final);
-
-
-        } else {
-            $notes_final = DB::table('notes_final')
-                ->select('enrollment.id as enrollment_id', 'notes_final.value', 'notes_final.overcoming',
-                    'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id', 'evaluation_periods.periods_id',
-                    'evaluation_periods.id as evaluation_periods_id')
-                ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
-                ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
-                ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
-                ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
-                ->join('group', 'group_assignment.group_id', '=', 'group.id')
-                ->join('group_pensum', 'group_pensum.group_id', '=', 'group.id')
-                ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
-                ->join('headquarter', 'institution.id', '=', 'headquarter.institution_id')
-                ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
-                ->whereColumn(
-                    [
-                        ['headquarter.id', '=', 'group.headquarter_id'],
-                        ['group.grade_id', '=', 'grade.id'],
-                        ['group_pensum.asignatures_id', '=', 'evaluation_periods.asignatures_id']
-                    ]
-                )
-                ->where('group.id', '=', $request->group_id)
-                ->where('institution.id', '=', $this->institution->id)
-                ->where('schoolyears.id', '=', '1')
-                ->get();
-
+        if ($params->isFilterAreas != "true") {
+            return NotesFinal::getNotesFilterByAsignatures($paramsSearch);
         }
+    }
 
+    private function createStructConsolidated($enrollments, $notes_final, $params)
+    {
         $collection = [];
-        foreach ($enrollments as $key => $enrollment) {
 
+        foreach ($enrollments as $key => $enrollment) {
             $collection_notes_final = [];
+
             foreach ($notes_final as $keyNotes => $note) {
                 if ($enrollment->id == $note->enrollment_id) {
                     array_push($collection_notes_final, $note);
@@ -477,10 +373,31 @@ class StatisticsController extends Controller
                 }
             }
 
+            /*
+            $position_enrollment = $this->getPositionStudents($params);
+            foreach ($position_enrollment as $key => $p_enroll) {
+                if ($enrollment->id == $p_enroll['id']) {
+                    $enrollment->averageForPeriods = $p_enroll;
+                }
+            }*/
+
+
+
             $enrollment->notes_final = $collection_notes_final;
+
             array_push($collection, $enrollment);
         }
+        //$positions = $this->averageStudents($collection);
 
+        return $collection;
+    }
+
+    public function getConsolidated(Request $request)
+    {
+
+        $enrollments = Group::enrollmentsByGroup($this->institution->id, $request->group_id);
+        $notes_final = $this->getNotesFinal($request);
+        $collection = $this->createStructConsolidated($enrollments, $notes_final, $request);
 
         return $collection;
     }

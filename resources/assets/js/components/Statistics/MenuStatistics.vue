@@ -78,7 +78,7 @@
             return {
                 componentManagerGroupSelect: {
                     referenceId: "statistics",
-                    referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.referenceId + '.managerGroupSelect',
+                    referenceToReciveObjectSelected: 'to-receive-object-selected@statistics.managerGroupSelect',
                     isSubGroup: false
                 },
                 SearchFilterObject: {

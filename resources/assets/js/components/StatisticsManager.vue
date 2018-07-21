@@ -4,6 +4,7 @@
             <menu-statistics></menu-statistics>
         </div>
         <div class="col-md-12">
+
             <keep-alive>
                 <component :is="currentView" transition="fade" transition-mode="out-in"></component>
             </keep-alive>
@@ -17,6 +18,7 @@
     import StatsConsolidated from './Statistics/Consolidated/StatsConsolidated'
     import StatsRating from './Statistics/Rating/StatsRating'
     import StatsTeachers from './Statistics/Teachers/StatsTeachers'
+    import { VueGoodTable } from 'vue-good-table';
 
     export default {
         name: "statistics-manager",
@@ -24,15 +26,17 @@
             MenuStatistics,
             StatsConsolidated,
             StatsRating,
-            StatsTeachers
+            StatsTeachers,
+            VueGoodTable,
 
         },
         data() {
             return {
-                objectToStatistics:{
+                objectToStatistics: {
                     selectedPeriodId: 0,
                     state: false,
-                }
+                },
+
             }
         },
         created() {
@@ -54,6 +58,7 @@
         computed: {
             ...mapState([
                 'currentView',
+                'scaleEvaluation'
                 /*
                 'grade',
                 'asignature',

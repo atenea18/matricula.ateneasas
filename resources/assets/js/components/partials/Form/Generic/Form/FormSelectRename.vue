@@ -4,7 +4,7 @@
                 v-if="objectSetting.isCreated" v-model="objectToSelect.objectSelectedId">
             <option>Seleccionar</option>
             <option v-for="row in objectInput.arrayData" :value="row.periods_id">
-                {{ row.name}}
+                {{ row.periods_name}}
             </option>
         </select>
     </div>
