@@ -686,6 +686,24 @@ class Notebook
 		return $vectorRating;
 	}
 
+	public function determineGradeBook()
+	{
+		foreach($this->noteBook['periods'] as $periodKey => $period)
+		{
+			if($period['periods_id'] == $this->noteBook['current_period']->periods_id)
+			{
+				foreach($period['areas'] as $key => $area)
+				{
+					if($area['note'] > 0)
+						return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+
 	public function getMaxValue($array = array())
 	{
 		$max = 0;

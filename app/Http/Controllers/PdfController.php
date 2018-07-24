@@ -167,26 +167,55 @@ class PdfController extends Controller
 
     public function attendanceParent(Request $request)
     {
-        $group = Group::findOrFail($request->group_id_pa);
-        $students = $group->enrollments()
-        ->with('student')
-        ->with('student.identification.identification_type')
-        ->with('student.address')
-        ->with('student.family.address')
-        ->get()
-        ->sortBy('student.last_name')
-        ->pluck('student');
+        $path = "./pdf/".time()."-".$request->institution_id."-parentsAttendance/";
 
-        // dd($students);
+        if(!file_exists($path))
+        {   
+            mkdir($path);
+        }
 
-        $pdf = new ParentSheet('p', 'mm', 'letter');
-        $pdf->setInstitution($group->headquarter->institution);
-        $pdf->setHeadquarter($group->headquarter);
-        $pdf->setGroup($group);
-        $pdf->setEvent($request->event);
-        $pdf->setData($students);
-        $pdf->create();
-        $pdf->Output("file.pdf", "D"); 
+        $groups;
+
+        if(!isset($request->groups))
+        {
+            $headquarter = Headquarter::findOrFail($request->headquarter_id_pa);
+            $groups = $headquarter->groups()->orderBy('grade_id')->get()->pluck('id');
+        }
+        else
+        {
+            $groups = $request->groups;
+        }
+
+        foreach($groups as $key => $group_id)
+        {
+            $group = Group::findOrFail($group_id);
+            
+            $students = $group->enrollments()
+            ->with('student')
+            ->with('student.identification.identification_type')
+            ->with('student.address')
+            ->with('student.family.address')
+            ->get()
+            ->sortBy('student.last_name')
+            ->pluck('student');
+
+            try
+            {
+                $pdf = new ParentSheet('p', 'mm', 'letter');
+                $pdf->setInstitution($group->headquarter->institution);
+                $pdf->setHeadquarter($group->headquarter);
+                $pdf->setGroup($group);
+                $pdf->setEvent($request->event);
+                $pdf->setData($students);
+                $pdf->create();
+                $pdf->Output($path.$group->id."lista.pdf", "F"); 
+            }
+            catch(\Exception $e){
+
+            }
+        }
+
+        $this->merge($path, 'Lista de asistencia-Acudientes'.time()."_".$request->institution_id, "p");
     }
 
     public function evaluationPdf(Request $request)
