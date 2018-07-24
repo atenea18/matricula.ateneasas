@@ -15,6 +15,14 @@ class SheetController extends Controller
     {
     	$institution = Auth::guard('web_institution')->user();
 
+        $teachers = $institution->teachers()
+        ->whereHas('manager')
+        ->with('manager')
+        ->get()
+        ->pluck('manager.fullName', 'id');
+
+        // dd($teachers);
+
     	$journeys = Workingday::orderBy('id', 'ASC')->pluck('name', 'id');
     	$grades = Grade::orderBy('id', 'ASC')->pluck('name', 'id');
     	$headquarters = $institution
@@ -33,7 +41,8 @@ class SheetController extends Controller
                 ->with('periods', $periods)
     			->with('headquarters',$headquarters)
     			->with('journeys',$journeys)
-    			->with('grades',$grades);
+    			->with('grades',$grades)
+                ->with('teachers',$teachers);
     }
 
     public function evaluationPdf(Request $request)
