@@ -240,82 +240,10 @@ class NotesFinal extends Model
             ORDER BY result.last_name, result.name"));
     }
 
-    public static function getNotesFilterAverageByAsignatures($params)
-    {
-        return $enrollments = DB::table('notes_final')
-            ->select('enrollment.id', 'student.last_name', 'student.name',
-                DB::raw('ROUND(SUM(notes_final.value)/SUM(notes_final.value>0), 2) average'),
-                DB::raw('SUM(notes_final.`value`>0) tav'))
-            ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
-            ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
-            ->join('student', 'student.id', '=', 'enrollment.student_id')
-            ->join('institution', 'institution.id', '=', 'enrollment.institution_id')
-            ->join('schoolyears', 'schoolyears.id', '=', 'enrollment.school_year_id')
-            ->join('group_assignment', 'group_assignment.enrollment_id', '=', 'enrollment.id')
-            ->join('group', 'group.id', '=', 'group_assignment.group_id')
-            ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
-            ->join('group_pensum', 'group_pensum.group_id', '=', 'group.id')
-            ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
-            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
-            ->whereColumn(
-                [
-                    ['headquarter.institution_id', '=', 'institution.id'],
-                    ['group_pensum.asignatures_id', '=', 'evaluation_periods.asignatures_id']
-                ]
-            )
-            ->where('group.id', '=', $params->group_id)
-            ->where('institution.id', '=', $params->institution_id)
-            ->where('schoolyears.id', '=', '1')
-            ->where('evaluation_periods.periods_id', '=', $params->periods_id)
-            ->groupBy('enrollment.id')
-            ->orderBy('average', 'DESC')
-            ->get();
-    }
-
-    public static function getNotesFilterAverageByAreas($params)
-    {
-        return $data = DB::select(DB::raw(
-            "SELECT result.enrollment_id as id, result.last_name, result.name, result.name_areas, 
-                SUM(result.percent) percent, ROUND(ROUND(IF((SUM(result.percent) = 100),
-                SUM((result.percent/100) * result.value),
-                SUM(result.value)/SUM((result.value>0))), 2) /SUM(result.value>0),2) 'average',
-                SUM(result.tav > 0) tav, result.areas_id as 'asignatures_id', result.overcoming,
-                result.evaluation_periods_id, result.periods_id, result.notes_final_id
-                from
-                (
-                SELECT
-                enrollment.id as 'enrollment_id', notes_final.value as 'value', notes_final.overcoming,
-                notes_final.id as 'notes_final_id', areas.id as 'areas_id', evaluation_periods.periods_id, 
-                student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_areas',                
-                evaluation_periods.id as 'evaluation_periods_id',
-                group_pensum.percent as 'percent', 
-                (notes_final.value>0) as 'tav'
-                FROM notes_final
-                INNER JOIN evaluation_periods ON evaluation_periods.id = notes_final.evaluation_periods_id
-                INNER JOIN enrollment ON enrollment.id = evaluation_periods.enrollment_id
-                INNER JOIN student ON student.id = enrollment.student_id
-                INNER JOIN institution ON institution.id = enrollment.institution_id
-                INNER JOIN schoolyears ON schoolyears.id = enrollment.school_year_id
-                INNER JOIN group_assignment ON group_assignment.enrollment_id = enrollment.id
-                INNER JOIN `group` ON `group`.id = group_assignment.group_id
-                INNER JOIN headquarter ON headquarter.id = group.headquarter_id AND headquarter.institution_id =  institution.id 
-                INNER JOIN group_pensum ON group_pensum.group_id = `group`.id
-                AND group_pensum.asignatures_id = evaluation_periods.asignatures_id
-                INNER JOIN areas ON areas.id = group_pensum.areas_id
-                INNER JOIN asignatures ON asignatures.id = group_pensum.asignatures_id
-                WHERE `group`.id = '$params->group_id' AND
-                institution.id = '$params->institution_id' AND
-                schoolyears.id = 1 AND 
-                evaluation_periods.periods_id = '$params->periods_id'               
-                GROUP BY enrollment.id, asignatures.id
-                ) as
-                result
-                GROUP BY result.enrollment_id
-                ORDER BY result.last_name, result.name
-                "));
 
 
-    }
+
+
 
     public static function getNotesFilterByAreas($params)
     {
@@ -368,7 +296,9 @@ class NotesFinal extends Model
 
         $data = DB::table('notes_final')
             ->select('enrollment.id as enrollment_id', 'notes_final.value', 'notes_final.overcoming',
-                'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id', 'evaluation_periods.periods_id',
+                'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id',
+                'asignatures.name as asignature_name',
+                'evaluation_periods.periods_id',
                 'evaluation_periods.id as evaluation_periods_id')
             ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
             ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
@@ -376,6 +306,7 @@ class NotesFinal extends Model
             ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
             ->join('group', 'group_assignment.group_id', '=', 'group.id')
             ->join('group_pensum', 'group_pensum.group_id', '=', 'group.id')
+            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
             ->join('institution', 'enrollment.institution_id', '=', 'institution.id')
             ->join('headquarter', 'institution.id', '=', 'headquarter.institution_id')
             ->join('schoolyears', 'enrollment.school_year_id', 'schoolyears.id')
@@ -393,6 +324,7 @@ class NotesFinal extends Model
 
         return $data;
     }
+
 
 
 }

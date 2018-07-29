@@ -7,6 +7,7 @@ use App\Enrollment;
 use App\EvaluationPeriod;
 use App\Grade;
 use App\Group;
+use App\GroupPensum;
 use App\Institution;
 use App\MessagesExpressions;
 use App\NoAttendance;
@@ -27,6 +28,7 @@ class StatisticsController extends Controller
 {
     private $teacher = null;
     private $institution = null;
+    private $vectorEnrollments = [];
 
     public function __construct()
     {
@@ -48,14 +50,16 @@ class StatisticsController extends Controller
     public function getConsolidated(Request $request)
     {
 
-        $arrayEnrollments = Group::enrollmentsByGroup($this->institution->id, $request->group_id);
+        $vectorEnrollments = Group::enrollmentsByGroup($this->institution->id, $request->group_id);
+
         $group = Group::findOrfail($request->group_id);
 
-        $arrayNotes = $this->queryGetNotesFinal($request);
-        $arrayPeriods = $this->getPeriodsByWorkingDay($group->working_day_id);
-        $arrayConsolidated = $this->createArrayConsolidated($arrayEnrollments, $arrayNotes, $arrayPeriods);
+        $vectorNotes = $this->queryGetNotesFinal($request);
+        $subjects = $this->queryGetSubjectsNotes($request);
+        $vectorPeriods = $this->getPeriodsByWorkingDay($group->working_day_id);
+        $vectorConsolidated = $this->createArrayConsolidated($vectorEnrollments, $vectorNotes, $vectorPeriods, $subjects);
 
-        return $arrayConsolidated;
+        return $vectorConsolidated;
     }
 
 
@@ -75,6 +79,23 @@ class StatisticsController extends Controller
         if ($params->isFilterAreas != "true") {
 
             return NotesFinal::getNotesFilterByAsignatures($paramsSearch);
+        }
+    }
+
+
+    private function queryGetSubjectsNotes($params)
+    {
+        $paramsSearch = (object)array(
+            'group_id' => $params->group_id,
+            'institution_id' => $this->institution->id,
+        );
+
+        if ($params->isFilterAreas == "true") {
+            return GroupPensum::getAreasByGroup($paramsSearch);
+        }
+        if ($params->isFilterAreas != "true") {
+
+            return GroupPensum::getAsignaturesByGroup($paramsSearch);
         }
     }
 
@@ -104,28 +125,64 @@ class StatisticsController extends Controller
     /**
      * Construye un arreglo con toda la información necesaria para el consolidado
      */
-    private function createArrayConsolidated($arrayEnrollments, $arrayNotes, $arrayNumberPeriods)
+    private function createArrayConsolidated($vectorEnrollments, $vectorNotes, $arrayNumberPeriods, $subjects)
     {
         foreach ($arrayNumberPeriods as $keyPeriod => $period) {
-            $this->addPropertyToEnrollmentPeriodsEvaluated($arrayEnrollments, $arrayNotes, $period->periods_id);
+            $this->addPropertyToEnrollmentPeriodsEvaluated($vectorEnrollments, $vectorNotes, $period);
         }
 
-        $this->addPropertyToEnrollmentsRating($arrayEnrollments, $arrayNumberPeriods);
-        return $arrayEnrollments;
+        $this->addPropertyToEnrollmentsRating($vectorEnrollments, $arrayNumberPeriods);
+        $this->addPropertyToEnrollmentsAccumulatedAsignatures($vectorEnrollments, $arrayNumberPeriods, $subjects);
+
+        return $vectorEnrollments;
     }
 
+    private function addPropertyToEnrollmentsAccumulatedAsignatures(&$vectorEnrollments, $arrayNumberPeriods, $subjects)
+    {
+        foreach ($vectorEnrollments as $keyEnrollment => $enrollment) {
+            $accumulated = [];
+            foreach ($subjects as $subject) {
+                $sum = 0;
+                $countTavAsignatures = 0;
+                foreach ($enrollment->evaluatedPeriods as $rowEvaluatedPeriod) {
+                    foreach ($rowEvaluatedPeriod['notes'] as $note) {
+                        if ($subject->asignatures_id == $note->asignatures_id) {
+
+                            $value = $this->processNote($note->value, $note->overcoming);
+                            $sum += ($value * ($rowEvaluatedPeriod['percent']/100));
+                            $this->generateTav($countTavAsignatures, $value);
+
+                        }
+                    }
+                }
+                $data = (object)array(
+                    'average' => $sum,
+                    'name' => $subject->name,
+                    'tav' => $countTavAsignatures,
+                    'asignatures_id' => $subject->asignatures_id,
+                );
+                array_push($accumulated, $data);
+            }
+            if (!isset($enrollment->accumulatedSubjects)) {
+                $enrollment->accumulatedSubjects = [];
+            }
+            $enrollment->accumulatedSubjects = $accumulated;
+        }
+        //dd($subjects);
+    }
 
     /**
      * Modifica el arreglo arrayEnrollments, agregandole la propiedad Periodos Evaluados, se ejecuta
      * por cada periodo recorrido
      */
-    private function addPropertyToEnrollmentPeriodsEvaluated(&$arrayEnrollments, $arrayNotes, $period_id)
+    private function addPropertyToEnrollmentPeriodsEvaluated(&$vectorEnrollments, $vectorNotes, $period)
     {
 
-        foreach ($arrayEnrollments as $keyEnrollment => $enrollment) {
+        foreach ($vectorEnrollments as $keyEnrollment => $enrollment) {
 
-            $vectorEvaluatedPeriod = $this->getVectorNotesToEnrollment($enrollment, $arrayNotes, $period_id);
-            $this->savePeriodEvaluatedToEnrollment($enrollment, $vectorEvaluatedPeriod, $period_id);
+            $vectorEvaluatedPeriod = $this->getVectorNotesToEnrollment($enrollment, $vectorNotes, $period);
+
+            $this->savePeriodEvaluatedToEnrollment($enrollment, $vectorEvaluatedPeriod, $period);
 
         }
     }
@@ -134,7 +191,7 @@ class StatisticsController extends Controller
     /**
      * Guarda información del periodo evaluado por estudiante y periodo
      */
-    private function savePeriodEvaluatedToEnrollment(&$enrollment, $vectorEvaluatedPeriod, $period_id)
+    private function savePeriodEvaluatedToEnrollment(&$enrollment, $vectorEvaluatedPeriod, $period)
     {
         # Se crea un nuevo atributo al objeto enrollment
         if (!isset($enrollment->evaluatedPeriods)) {
@@ -144,7 +201,8 @@ class StatisticsController extends Controller
         $arrayDataEnrollment = array
         (
             "rating" => 0,
-            "period_id" => $period_id,
+            "percent" => $period->percent,
+            "period_id" => $period->periods_id,
             "tav" => $vectorEvaluatedPeriod->tav,
             "average" => $vectorEvaluatedPeriod->average,
             "notes" => $vectorEvaluatedPeriod->arrayNotesOfEnrollment,
@@ -157,16 +215,16 @@ class StatisticsController extends Controller
     /**
      * Modifica el arreglo arrayEnrollments, agregandole la propiedad Rating
      */
-    public function addPropertyToEnrollmentsRating(& $arrayEnrollments, $arrayNumberPeriods)
+    public function addPropertyToEnrollmentsRating(& $vectorEnrollments, $arrayNumberPeriods)
     {
 
-        $vectorBasicDataPeriods = $this->createVectorBasicData($arrayEnrollments, $arrayNumberPeriods);
+        $vectorBasicDataPeriods = $this->createVectorBasicData($vectorEnrollments, $arrayNumberPeriods);
 
         foreach ($vectorBasicDataPeriods as $rowBasicDataPeriod) {
 
 
             $vectorRating = $this->createVectorRating($rowBasicDataPeriod->enrollments);
-            $this->addPropertiesToEnrollments($arrayEnrollments,$rowBasicDataPeriod, $vectorRating);
+            $this->addPropertiesToEnrollments($vectorEnrollments, $rowBasicDataPeriod, $vectorRating);
 
         }
 
@@ -174,16 +232,16 @@ class StatisticsController extends Controller
     }
 
 
-    private function addPropertiesToEnrollments(&$arrayEnrollments, $rowBasicDataPeriod, $vectorRating)
+    private function addPropertiesToEnrollments(&$vectorEnrollments, $rowBasicDataPeriod, $vectorRating)
     {
 
-        foreach ($arrayEnrollments as $keyEnrollment => &$enrollment) {
+        foreach ($vectorEnrollments as $keyEnrollment => &$enrollment) {
 
             foreach ($enrollment->evaluatedPeriods as &$periodEvaluation) {
 
                 if ($periodEvaluation['period_id'] == $rowBasicDataPeriod->period_id) {
 
-                    $this->addAccumulatedAverageToEnrollment($enrollment,$rowBasicDataPeriod, $periodEvaluation);
+                    $this->addAccumulatedAverageToEnrollment($enrollment, $rowBasicDataPeriod, $periodEvaluation);
 
                     $this->addRatingToEnrollment($enrollment, $periodEvaluation, $vectorRating);
                 }
@@ -192,14 +250,16 @@ class StatisticsController extends Controller
         }
     }
 
-    private function addAccumulatedAverageToEnrollment(&$enrollment, $rowBasicDataPeriod, $periodEvaluation){
-        if (!isset($enrollment->acumulated)) {
-            $enrollment->acumulated = 0;
+    private function addAccumulatedAverageToEnrollment(&$enrollment, $rowBasicDataPeriod, $periodEvaluation)
+    {
+        if (!isset($enrollment->accumulatedAverage)) {
+            $enrollment->accumulatedAverage = 0;
         }
-        $enrollment->acumulated += ($periodEvaluation['average'] * ($rowBasicDataPeriod->percent / 100));
+        $enrollment->accumulatedAverage += ($periodEvaluation['average'] * ($rowBasicDataPeriod->percent / 100));
     }
 
-    private  function addRatingToEnrollment(&$enrollment, &$periodEvaluation, $vectorRating){
+    private function addRatingToEnrollment(&$enrollment, &$periodEvaluation, $vectorRating)
+    {
         foreach ($vectorRating as $rowEnrollmentRating) {
 
             if ($enrollment->id == $rowEnrollmentRating['id']) {
@@ -214,11 +274,11 @@ class StatisticsController extends Controller
      * estudiantes con sus repectivas calificaciones correspondiente al periodo
      * indicado
      */
-    private function createVectorBasicData($arrayEnrollments, $arrayNumberPeriods)
+    private function createVectorBasicData($vectorEnrollments, $arrayNumberPeriods)
     {
         $vectorBasicData = [];
         foreach ($arrayNumberPeriods as $keyPeriod => $period) {
-            array_push($vectorBasicData, $this->createBasicData($arrayEnrollments, $period));
+            array_push($vectorBasicData, $this->createBasicData($vectorEnrollments, $period));
         }
 
         return $vectorBasicData;
@@ -228,10 +288,10 @@ class StatisticsController extends Controller
      * Agrupa todos los estudiantes evaluados en un periodo correspondiente, y
      * retorna una estructura basica: porcentaje del periodo, id y los estudiantes con sus notas
      */
-    private function createBasicData($arrayEnrollments, $period)
+    private function createBasicData($vectorEnrollments, $period)
     {
         $vectorBasicData = [];
-        foreach ($arrayEnrollments as $keyEnrollment => $enrollment) {
+        foreach ($vectorEnrollments as $keyEnrollment => $enrollment) {
 
             foreach ($enrollment->evaluatedPeriods as $keyPeriodsEvaluation => $periodEvaluation) {
                 if ($periodEvaluation['period_id'] == $period->periods_id) {
@@ -320,14 +380,91 @@ class StatisticsController extends Controller
             $vectorOfStudentsAux[$value['id']] = $vectorStudent;
         }
 
-        $vectorOfStudentsAux = $this->orderMultiDimensionalArray($vectorOfStudentsAux, 'averageAux', true);
+        $vectorOfStudentsAux = $this->sortVector($vectorOfStudentsAux, 'averageAux', true);
         $vectorOfStudentsAux = $this->generateRating($vectorOfStudentsAux);
-        $vectorOfStudentsAux = $this->orderMultiDimensionalArray($vectorOfStudentsAux, 'rating', false);
+        $vectorOfStudentsAux = $this->sortVector($vectorOfStudentsAux, 'rating', false);
         return $vectorOfStudentsAux;
     }
 
+    private function getVectorNotesToEnrollment(& $enrollment, $notes, $period)
+    {
+        $vectorNotesToEnrollment = [];
+        $sumNotes = 0;
+        $sumTav = 0;
+        $average = 0;
+        $sum = 0;
+        foreach ($notes as $keyNotes => $note) {
 
-    function orderMultiDimensionalArray($toOrderArray, $field, $inverse = false)
+            # Si la nota corresponde al estudiante actual en el ciclo, y al periodo actual
+            if ($enrollment->id == $note->enrollment_id) {
+
+
+                if ($period->periods_id == 1) {
+                    $data = [];
+                    /*
+                    if (!isset($accumulated[$note->asignatures_id]))
+                        $accumulated['A'.$note->asignatures_id] = 0;
+                    $accumulated['A'.$note->asignatures_id] += $this->processNote($note->value, $note->overcoming);
+                    */
+                }
+
+                if ($period->periods_id == $note->periods_id) {
+                    $sum = $this->processNote($note->value, $note->overcoming);
+                    $sumNotes += $sum;
+
+                    $this->generateTav($sumTav, $this->processNote($note->value, $note->overcoming));
+                    array_push($vectorNotesToEnrollment, $note);
+                    unset($notes[$keyNotes]);
+                }
+            }
+
+        }
+
+        $average = $this->generateAverage($sumTav, $sumNotes);
+
+
+        return (object)array(
+            'arrayNotesOfEnrollment' => $vectorNotesToEnrollment,
+            'tav' => $sumTav,
+            'average' => round($average, 2)
+        );
+    }
+
+
+    private function generateTav(&$sumTav, $note)
+    {
+        if ($note > 0) {
+            $sumTav++;
+        }
+    }
+
+    private function generateAverage($sumTav, $sumNotes)
+    {
+        if ($sumTav > 0) {
+            return $average = $sumNotes / $sumTav;
+        }
+    }
+
+    private function processNote($note, $overcoming)
+    {
+        $noteAux = 0;
+        $overcomingAux = 0;
+        if ($note > 0) {
+            if ($overcoming != null && $overcoming > 0) {
+                $overcomingAux = $overcoming;
+            }
+            $noteAux = $note;
+
+        }
+
+        if ($noteAux > $overcomingAux)
+            return $noteAux;
+        else
+            return $overcomingAux;
+    }
+
+
+    private function sortVector($toOrderArray, $field, $inverse = false)
     {
         $position = array();
         $newRow = array();
@@ -405,7 +542,6 @@ class StatisticsController extends Controller
 
         return $vectorRating;
     }
-
 
 
     public function getPeriodsBySection(Request $request)
@@ -497,7 +633,6 @@ class StatisticsController extends Controller
     }
 
 
-
     public function getAsignaturesGroupPensum(Request $request)
     {
         if ($request->isSubGroup == "false") {
@@ -536,56 +671,6 @@ class StatisticsController extends Controller
             ->get();
 
         return $asignatures;
-    }
-
-
-    private function getVectorNotesToEnrollment($enrollment, $notes, $period_id)
-    {
-        $arrayNotesOfEnrollment = [];
-        $sumNotes = 0;
-        $sumTav = 0;
-        $average = 0;
-        foreach ($notes as $keyNotes => $note) {
-
-            # Si la nota corresponde al estudiante actual en el ciclo, y al periodo actual
-            if ($enrollment->id == $note->enrollment_id && $period_id == $note->periods_id) {
-
-                $sumNotes += $this->processNote($note->value, $note->overcoming);
-                if ($this->processNote($note->value, $note->overcoming) > 0) {
-                    $sumTav++;
-                }
-                array_push($arrayNotesOfEnrollment, $note);
-                unset($notes[$keyNotes]);
-            }
-        }
-
-        if ($sumTav > 0) {
-            $average = $sumNotes / $sumTav;
-        }
-
-        return (object)array(
-            'arrayNotesOfEnrollment' => $arrayNotesOfEnrollment,
-            'tav' => $sumTav,
-            'average' => round($average, 2)
-        );
-    }
-
-    private function processNote($note, $overcoming)
-    {
-        $noteAux = 0;
-        $overcomingAux = 0;
-        if ($note > 0) {
-            if ($overcoming != null && $overcoming > 0) {
-                $overcomingAux = $overcoming;
-            }
-            $noteAux = $note;
-
-        }
-
-        if ($noteAux > $overcomingAux)
-            return $noteAux;
-        else
-            return $overcomingAux;
     }
 
 
