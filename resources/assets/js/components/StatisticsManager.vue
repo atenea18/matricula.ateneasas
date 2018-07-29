@@ -15,7 +15,7 @@
 <script>
     import {mapState} from 'vuex'
     import MenuStatistics from "./Statistics/MenuStatistics";
-    import StatsConsolidated from './Statistics/Consolidated/StatsConsolidated'
+    import MainConsolidated from './Statistics/Consolidated/MainConsolidated'
     import StatsRating from './Statistics/Rating/StatsRating'
     import StatsTeachers from './Statistics/Teachers/StatsTeachers'
     import { VueGoodTable } from 'vue-good-table';
@@ -24,7 +24,7 @@
         name: "statistics-manager",
         components: {
             MenuStatistics,
-            StatsConsolidated,
+            MainConsolidated,
             StatsRating,
             StatsTeachers,
             VueGoodTable,
@@ -42,14 +42,6 @@
         created() {
             this.getGrades()
             this.getInstitutionOfTeacher()
-            /*
-            this.getGradeById(this.group.grade_id)
-            this.getAsignatureById(this.asignatureid, this.group.grade_id)
-            this.getParameters()
-
-            this.getGroupPensum(this.group.id, this.asignatureid, 1)
-            this.getPeriodsByWorkingDay(this.group.working_day_id);
-            */
         },
 
         updated() {
@@ -59,16 +51,6 @@
             ...mapState([
                 'currentView',
                 'scaleEvaluation'
-                /*
-                'grade',
-                'asignature',
-                'periodSelected',
-                'institutionOfTeacher',
-                'periodsworkingday',
-                'isCollection',
-                'isConexion',
-                'groupPensum'
-                */
             ]),
 
         },
@@ -79,53 +61,6 @@
             getInstitutionOfTeacher() {
                 this.$store.dispatch('institutionOfTeacher')
             },
-
-            /*
-            getParameters() {
-                this.$store.dispatch('parameters')
-            },
-            getAsignatureById(asignatureid, grade_id) {
-                this.$store.dispatch('asignatureById', {
-                    asignatureid: asignatureid,
-                    grade_id: grade_id
-                })
-            },
-            getGroupPensum(group_id, asignatures_id, school_year_id) {
-                this.$store.dispatch('groupPensum', {
-                    group_id: group_id,
-                    asignatures_id: asignatures_id,
-                    school_year_id: school_year_id
-                })
-            },
-            getGradeById(grade_id) {
-                this.$store.dispatch('gradeById', {
-                    grade_id: grade_id
-                })
-            },
-            getEvaluationsByPeriod() {
-                this.$store.state.isCollection = false
-                this.$store.state.periodSelected = this.periodid
-                this.getCollectionNotes(this.group.id, this.asignatureid, this.$store.state.periodSelected)
-            },
-            getPeriodsByWorkingDay(workingdayid) {
-                this.$store.dispatch('periodsByWorkingDay', {
-                    workingdayid: workingdayid
-                })
-            },
-
-            getCollectionNotes(groupid, asignatureid, periodid) {
-                this.$store.dispatch('collectionNotes', {
-                    groupid: groupid,
-                    asignatureid: asignatureid,
-                    periodid: periodid
-                })
-            },
-
-
-            getConexion() {
-                this.$store.dispatch('verifyConexion')
-            }
-            */
 
         }
     }

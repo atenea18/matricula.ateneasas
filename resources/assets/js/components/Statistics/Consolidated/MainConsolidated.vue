@@ -22,7 +22,7 @@
 <script>
     import {mapState} from 'vuex'
     import ManagerGroupSelect from "../../partials/Form/GroupSelect/ManagerGroupSelect";
-    import TableConsolidated from "./TableConsolidated";
+    import TableConsolidated from "./Table/TableConsolidated";
 
 
     export default {
@@ -30,7 +30,7 @@
             TableConsolidated,
             ManagerGroupSelect
         },
-        name: "consolidated",
+        name: "main-consolidated",
         data() {
             return {
                 objectToManagerGroupSelect: {
@@ -56,6 +56,7 @@
         computed: {
             ...mapState([
                 'institutionOfTeacher',
+                'periodsworkingday'
             ]),
 
         },
@@ -118,7 +119,7 @@
                     componentObject = this.objectToStatsConsolidated.params
                 }
 
-                if (this.$store.state.currentView == 'stats-consolidated') {
+                if (this.$store.state.currentView == 'main-consolidated') {
                     if (componentObject.eventInformation.whoTriggered == "areas" || componentObject.eventInformation.whoTriggered == "componentManagerGroupSelect") {
                         console.log("->StatsConsolidated... Evento realiza consulta de consolidados")
                         this.managerQueryForFilterConsolidated(componentObject)
@@ -137,7 +138,7 @@
                     isSubGroup: componentObject.objectValuesManagerGroupSelect.isSubGroup,
                     isFilterAreas: componentObject.filter.isAreas,
                     urlSubjects: '',
-                    urlConsolidated: ''
+                    urlConsolidated: '',
                 }
 
                 if (componentObject.filter.isAreas) {
@@ -171,6 +172,8 @@
                     "&group_id=" + params.group_id +
                     "&period_id=" + params.periods_id + "&institution_id=" + params.institution_id +
                     "&is_subgroup=" + params.isSubGroup
+
+
 
                 this.data = params
                 axios.get(params.urlConsolidated, {params}).then(res => {

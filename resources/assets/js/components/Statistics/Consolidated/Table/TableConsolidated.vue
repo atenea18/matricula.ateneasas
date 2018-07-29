@@ -3,6 +3,7 @@
         <table class="table table-sm table-bordered">
             <head-table-consolidated :objectInput="objectInput.asignatures"></head-table-consolidated>
             <tbody>
+            <!-- Por periodo-->
             <template v-for="(enrollment,i) in objectInput.enrollments"
                       v-if="!objectInput.params.filter.isAcumulatedPeriod">
                 <body-table-consolidated :objectInput="{
@@ -12,10 +13,14 @@
                 periodSelected: objectInput.params.objectValuesManagerGroupSelect.periods_id,
                 isAcumulatedPeriod: objectInput.params.filter.isAcumulatedPeriod,
                 xrowspan:0,
+                position:0,
                 index:(i+1)
                 }">
                 </body-table-consolidated>
             </template>
+
+            <!-- Periodo Acumulado -->
+
             <template v-for="(enrollment,i) in objectInput.enrollments"
                       v-if="objectInput.params.filter.isAcumulatedPeriod">
                 <template v-for="objectPeriod in periodsworkingday">
@@ -31,6 +36,7 @@
                     </body-table-consolidated>
                 </template>
 
+                <!-- Acumulados -->
                 <tr style="background-color: rgb(204, 225, 251)">
                     <td style="text-align: left !important;" colspan="3">PROMEDIO ACUMULADO</td>
                     <td></td>
@@ -48,10 +54,12 @@
                     </td>
                 </tr>
             </template>
+
+
+
             </tbody>
-
-
         </table>
+
         <!--
         <vue-good-table
                 :columns="columns"
@@ -172,13 +180,11 @@
 
 <script>
     import {mapState} from 'vuex'
-    import RowTableConsolidated from "./RowTableConsolidated";
-    import HeadTableConsolidated from "./Table/HeadTableConsolidated"
-    import BodyTableConsolidated from "./Table/BodyTableConsolidated"
+    import HeadTableConsolidated from "./HeadTableConsolidated"
+    import BodyTableConsolidated from "./BodyTableConsolidated"
 
     export default {
         components: {
-            RowTableConsolidated,
             HeadTableConsolidated,
             BodyTableConsolidated
         },
@@ -188,21 +194,31 @@
         },
 
         data() {
-            return {
-
-
-            }
+            return {}
         },
 
         created() {
-            this.$store.state.scaleEvaluation.forEach(element =>{
-                if(element.words_expressions_id == 4){
+            this.$store.state.scaleEvaluation.forEach(element => {
+                if (element.words_expressions_id == 4) {
                     this.$store.state.minScale = element.rank_end
                 }
             })
-            //console.log(this.$store.state.scaleEvaluation)
 
-            //console.log(this.objectInput.asignatures)
+            /*
+            this.objectInput.enrollments.sort(function (a, b) {
+                if (a.student_name > b.student_name) {
+                    return 1;
+                }
+                if (a.student_name < b.student_name) {
+                    return -1;
+                }
+                // a must be equal to b
+                return 0;
+            });
+            */
+
+            //console.log(this.objectInput.enrollments)
+
         },
         computed: {
             ...mapState([
@@ -214,16 +230,6 @@
         },
         mounted() {
 
-            /*
-            this.$bus.$on('ya', object => {
-                console.log("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-            })
-
-            this.$bus.$on('ya', object => {
-                this.my(object.periods_id)
-                console.log("holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-            })
-            */
         },
 
 
@@ -231,126 +237,7 @@
             fullname(enrollment) {
                 return enrollment.student_last_name + " " + enrollment.student_name
             },
-            getValueFinal(asignature, enrollment, period) {
 
-                let value = ""
-                enrollment.notes_final.forEach((element, i) => {
-                    if (element.asignatures_id == asignature.asignatures_id && element.value > 0 && element.periods_id == period) {
-                        value = element.value.toFixed(1)
-                        if (value <= 50) {
-                            value = '<span style="color:red;">' + value + '</span>'
-                        }
-                        if (element.overcoming) {
-                            let overcoming = element.overcoming
-                            if (element.overcoming <= 50) {
-                                overcoming = '<span style="color:red;">' + overcoming + '</span>'
-                            }
-                            value += "/" + overcoming
-                        }
-
-                    }
-                })
-
-                return value
-            },
-
-            my(periods_id) {
-                this.columns = []
-                this.rows = []
-                this.columns = [
-
-                    {
-                        label: "NOMBRE COMPLETO",
-                        field: "name"
-                    },
-                    {
-                        label: "TAV",
-                        field: "tav",
-                        type: 'number',
-                    },
-                    {
-                        label: "PGG",
-                        field: "average"
-                    }
-
-                ]
-
-                //Columnas
-                this.objectInput.asignatures.forEach(element => {
-                    let title = {
-                        label: element.abbreviation,
-                        field: "a" + element.asignatures_id,
-                        html: true,
-                    }
-                    this.columns.push(title)
-                })
-
-                let students = []
-
-                //Filas
-                this.objectInput.enrollments.forEach((element, index) => {
-
-                    let tav = 0
-                    let sum = 0;
-                    let average = 0;
-                    let information = {
-                        average: 0,
-                        tav: 0
-                    }
-                    let content = {
-                        id: (index + 1),
-                        name: element.student_last_name + " " + element.student_name,
-                        tav: tav,
-                        average: 0,
-                        position: 0
-                    }
-
-
-                    element.notes_final.forEach((el, i) => {
-
-                        if (el.periods_id == periods_id) {
-
-
-                            let valueNoteFinal = el.value.toFixed(1)
-                            let valueNoteOvercoming = el.overcoming
-
-                            if (valueNoteFinal > 0) {
-                                tav += 1
-                            }
-                            if (valueNoteFinal >= valueNoteOvercoming) {
-                                sum += parseFloat(valueNoteFinal)
-                            } else {
-                                sum += parseFloat(valueNoteOvercoming)
-                            }
-
-                            let value = el.value.toFixed(1)
-                            if (value <= 50) {
-
-                                value = '<span style="color:red;">' + value + '</span>'
-                            }
-                            if (el.overcoming) {
-                                let overcoming = el.overcoming
-                                if (el.overcoming <= 50) {
-                                    overcoming = '<span style="color:red;">' + overcoming + '</span>'
-                                }
-                                value += "/" + overcoming
-                            }
-                            content['a' + el.asignatures_id] = value
-                        }
-                    })
-
-                    if (tav > 0) {
-                        average = sum / tav
-                    }
-                    content.average = average.toFixed(2)
-                    content.tav = tav
-                    information.average = average.toFixed(2)
-
-                    students.push(information)
-                    this.rows.push(content)
-                })
-                console.log(students)
-            },
         }
     }
 </script>

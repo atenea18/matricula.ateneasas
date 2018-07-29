@@ -146,7 +146,8 @@ class Group extends Model
 
     public static function enrollmentsByGroup($institution_id, $group_id)
     {
-        return $enrollments = Enrollment::join('student', 'enrollment.student_id', '=', 'student.id')
+        return $enrollments = DB::table('enrollment')->
+        join('student', 'enrollment.student_id', '=', 'student.id')
             ->select(
                 'enrollment.id',
                 'student.id as student_id', 'student.name as student_name', 'student.last_name as student_last_name',

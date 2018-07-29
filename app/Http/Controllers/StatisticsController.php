@@ -15,6 +15,7 @@ use App\NotesFinal;
 use App\NotesParametersPerformances;
 use App\Performances;
 use App\Subgroup;
+use App\Workingday;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
@@ -31,27 +32,56 @@ class StatisticsController extends Controller
     {
         $this->middleware(function ($request, $next) {
 
-
             if (Auth::guard('teachers')->check()) {
-
                 $this->teacher = Auth::guard('teachers')->user()->teachers()->first();
-
                 $this->institution = $this->teacher->institution;
-
             } elseif (Auth::guard('web_institution')->check()) {
-
                 $this->institution = Auth::guard('web_institution')->user();
-
             }
-
             return $next($request);
-
-
         });
-
-
     }
 
+    /**
+     * Obtiene un array con la información para el consolidado solicitado
+     */
+    public function getConsolidated(Request $request)
+    {
+
+        $arrayEnrollments = Group::enrollmentsByGroup($this->institution->id, $request->group_id);
+        $group = Group::findOrfail($request->group_id);
+
+        $arrayNotes = $this->queryGetNotesFinal($request);
+        $arrayPeriods = $this->getPeriodsByWorkingDay($group->working_day_id);
+        $arrayConsolidated = $this->createArrayConsolidated($arrayEnrollments, $arrayNotes, $arrayPeriods);
+
+        return $arrayConsolidated;
+    }
+
+
+    /**
+     * Obtiene las notas finales por asignatura o áreas
+     */
+    private function queryGetNotesFinal($params)
+    {
+        $paramsSearch = (object)array(
+            'group_id' => $params->group_id,
+            'institution_id' => $this->institution->id,
+        );
+
+        if ($params->isFilterAreas == "true") {
+            return NotesFinal::getNotesFilterByAreas($paramsSearch);
+        }
+        if ($params->isFilterAreas != "true") {
+
+            return NotesFinal::getNotesFilterByAsignatures($paramsSearch);
+        }
+    }
+
+
+    /**
+     * Obtiene los periodos académico de acuerdo a la jornada de cada grupo
+     */
     public function getPeriodsByWorkingDay($working_day_id)
     {
 
@@ -70,104 +100,175 @@ class StatisticsController extends Controller
         return $periodsWorkingDay;
     }
 
-    public function getPeriodsBySection(Request $request)
+
+    /**
+     * Construye un arreglo con toda la información necesaria para el consolidado
+     */
+    private function createArrayConsolidated($arrayEnrollments, $arrayNotes, $arrayNumberPeriods)
     {
+        foreach ($arrayNumberPeriods as $keyPeriod => $period) {
+            $this->addPropertyToEnrollmentPeriodsEvaluated($arrayEnrollments, $arrayNotes, $period->periods_id);
+        }
 
-        $periodsWorkingDay = DB::table('section_periods')
-            ->select(
-                'periods.name as periods_name', 'periods.id as periods_id',
-                'section_periods.start_date', 'section_periods.end_date', 'section_periods.percent', 'section_periods.id as working_day_periods_id',
-                'periods_state.name as periods_state_name', 'periods_state.id as periods_state_id'
-            )
-            ->join('periods_state', 'periods_state.id', '=', 'section_periods.periods_state_id')
-            ->join('periods', 'periods.id', '=', 'section_periods.periods_id')
-            ->where('section_periods.section_id', '=', $request->section_id)
-            ->get();
-
-        return $periodsWorkingDay;
-
+        $this->addPropertyToEnrollmentsRating($arrayEnrollments, $arrayNumberPeriods);
+        return $arrayEnrollments;
     }
 
-    public function getInstitutionOfTeacher(Request $request)
+
+    /**
+     * Modifica el arreglo arrayEnrollments, agregandole la propiedad Periodos Evaluados, se ejecuta
+     * por cada periodo recorrido
+     */
+    private function addPropertyToEnrollmentPeriodsEvaluated(&$arrayEnrollments, $arrayNotes, $period_id)
     {
-        $institution = Institution::where('id', '=', $this->institution->id)->get();
-        if ($request->ajax()) {
-            return $institution[0];
+
+        foreach ($arrayEnrollments as $keyEnrollment => $enrollment) {
+
+            $vectorEvaluatedPeriod = $this->getVectorNotesToEnrollment($enrollment, $arrayNotes, $period_id);
+            $this->savePeriodEvaluatedToEnrollment($enrollment, $vectorEvaluatedPeriod, $period_id);
+
         }
     }
 
-    public function index()
+
+    /**
+     * Guarda información del periodo evaluado por estudiante y periodo
+     */
+    private function savePeriodEvaluatedToEnrollment(&$enrollment, $vectorEvaluatedPeriod, $period_id)
     {
-        return View('teacher.partials.statistics.index');
+        # Se crea un nuevo atributo al objeto enrollment
+        if (!isset($enrollment->evaluatedPeriods)) {
+            $enrollment->evaluatedPeriods = [];
+        }
+
+        $arrayDataEnrollment = array
+        (
+            "rating" => 0,
+            "period_id" => $period_id,
+            "tav" => $vectorEvaluatedPeriod->tav,
+            "average" => $vectorEvaluatedPeriod->average,
+            "notes" => $vectorEvaluatedPeriod->arrayNotesOfEnrollment,
+        );
+
+        array_push($enrollment->evaluatedPeriods, $arrayDataEnrollment);
     }
 
-    public function indexInstitution()
+
+    /**
+     * Modifica el arreglo arrayEnrollments, agregandole la propiedad Rating
+     */
+    public function addPropertyToEnrollmentsRating(& $arrayEnrollments, $arrayNumberPeriods)
     {
-        return View('institution.partials.statistics.index');
+
+        $vectorBasicDataPeriods = $this->createVectorBasicData($arrayEnrollments, $arrayNumberPeriods);
+
+        foreach ($vectorBasicDataPeriods as $rowBasicDataPeriod) {
+
+
+            $vectorRating = $this->createVectorRating($rowBasicDataPeriod->enrollments);
+            $this->addPropertiesToEnrollments($arrayEnrollments,$rowBasicDataPeriod, $vectorRating);
+
+        }
+
+
     }
 
-    public function getGroupsByGrade(Request $request)
+
+    private function addPropertiesToEnrollments(&$arrayEnrollments, $rowBasicDataPeriod, $vectorRating)
     {
 
-        $groups = DB::table('group')
-            ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
-            ->select('group.id', 'group.name', 'headquarter.name as headquarter_name', 'group.grade_id', 'group.working_day_id')
-            ->where('group.grade_id', '=', $request->grade_id)
-            ->where('headquarter.institution_id', '=', $this->institution->id)
-            ->get();
+        foreach ($arrayEnrollments as $keyEnrollment => &$enrollment) {
 
+            foreach ($enrollment->evaluatedPeriods as &$periodEvaluation) {
 
-        return $groups;
+                if ($periodEvaluation['period_id'] == $rowBasicDataPeriod->period_id) {
+
+                    $this->addAccumulatedAverageToEnrollment($enrollment,$rowBasicDataPeriod, $periodEvaluation);
+
+                    $this->addRatingToEnrollment($enrollment, $periodEvaluation, $vectorRating);
+                }
+
+            }
+        }
     }
 
-    public function getPositionStudents(Request $request)
-    {
-
-        $enrollments = DB::table('notes_final')
-            ->select('enrollment.id', 'student.last_name', 'student.name',
-                DB::raw('ROUND(SUM(notes_final.value)/SUM(notes_final.value>0), 2) average'),
-                DB::raw('SUM(notes_final.`value`>0) tav'))
-            ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
-            ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
-            ->join('student', 'student.id', '=', 'enrollment.student_id')
-            ->join('institution', 'institution.id', '=', 'enrollment.institution_id')
-            ->join('schoolyears', 'schoolyears.id', '=', 'enrollment.school_year_id')
-            ->join('group_assignment', 'group_assignment.enrollment_id', '=', 'enrollment.id')
-            ->join('group', 'group.id', '=', 'group_assignment.group_id')
-            ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
-            ->join('group_pensum', 'group_pensum.group_id', '=', 'group.id')
-            ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
-            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
-            ->whereColumn(
-                [
-                    ['headquarter.institution_id', '=', 'institution.id'],
-                    ['group_pensum.asignatures_id', '=', 'evaluation_periods.asignatures_id']
-                ]
-            )
-            ->where('group.id', '=', $request->group_id)
-            ->where('institution.id', '=', $this->institution->id)
-            ->where('schoolyears.id', '=', '1')
-            ->where('evaluation_periods.periods_id', '=', $request->periods_id)
-            ->groupBy('enrollment.id')
-            ->orderBy('average', 'DESC')
-            ->get();
-
-        $positions = $this->averageStudents($enrollments);
-
-        return $positions;
+    private function addAccumulatedAverageToEnrollment(&$enrollment, $rowBasicDataPeriod, $periodEvaluation){
+        if (!isset($enrollment->acumulated)) {
+            $enrollment->acumulated = 0;
+        }
+        $enrollment->acumulated += ($periodEvaluation['average'] * ($rowBasicDataPeriod->percent / 100));
     }
 
-    public function averageStudents($arrayStudentAverage)
-    {
+    private  function addRatingToEnrollment(&$enrollment, &$periodEvaluation, $vectorRating){
+        foreach ($vectorRating as $rowEnrollmentRating) {
 
-        #
-        $count = 0;
+            if ($enrollment->id == $rowEnrollmentRating['id']) {
+                $periodEvaluation['rating'] = $rowEnrollmentRating['rating'];
+            }
+        }
+    }
+
+    /**
+     * Crea un vector con los periodos evaluados, y cada periodo tiene un objeto
+     * con información básica, como lo es el id del periodo, su porcentaje y los
+     * estudiantes con sus repectivas calificaciones correspondiente al periodo
+     * indicado
+     */
+    private function createVectorBasicData($arrayEnrollments, $arrayNumberPeriods)
+    {
+        $vectorBasicData = [];
+        foreach ($arrayNumberPeriods as $keyPeriod => $period) {
+            array_push($vectorBasicData, $this->createBasicData($arrayEnrollments, $period));
+        }
+
+        return $vectorBasicData;
+    }
+
+    /**
+     * Agrupa todos los estudiantes evaluados en un periodo correspondiente, y
+     * retorna una estructura basica: porcentaje del periodo, id y los estudiantes con sus notas
+     */
+    private function createBasicData($arrayEnrollments, $period)
+    {
+        $vectorBasicData = [];
+        foreach ($arrayEnrollments as $keyEnrollment => $enrollment) {
+
+            foreach ($enrollment->evaluatedPeriods as $keyPeriodsEvaluation => $periodEvaluation) {
+                if ($periodEvaluation['period_id'] == $period->periods_id) {
+                    $dataEnrollment = (object)array
+                    (
+                        'id' => $enrollment->id,
+                        'tav' => $periodEvaluation['tav'],
+                        'name' => $enrollment->student_name,
+                        'average' => $periodEvaluation['average'],
+                        'last_name' => $enrollment->student_last_name,
+                    );
+                    array_push($vectorBasicData, $dataEnrollment);
+                }
+            }
+
+        }
+        $data = (object)array(
+            'percent' => $period->percent,
+            'period_id' => $period->periods_id,
+            'enrollments' => $vectorBasicData,
+        );
+
+        return $data;
+    }
+
+    private function createVectorRating($arrayStudentAverage)
+    {
+        $vectorEnrollments = [];
 
         #Array donde se va almacenar objetos de estudiantes de arrayStudentAverage, pero con una estructra un poco modificada
         $vectorOfStudents = array();
 
         #En este vector se va a guardar el número de asignaras evaluada por cada estudiante
         $vectorNumberAsignatures = array();
+
+        #
+        $count = 0;
 
         foreach ($arrayStudentAverage as $key => $value) {
             $vectorStudent = array(
@@ -179,21 +280,23 @@ class StatisticsController extends Controller
             );
 
             #Se guarda la nueva estructura en el vector por cada estudiante
-            $vectorOfStudents[$count] = $vectorStudent;
+            $vectorOfStudents[$key] = $vectorStudent;
 
             # Se guarda el tav de asignatura del estudiante i o count..
-            $vectorNumberAsignatures[$count] = $value->tav;
+            $vectorNumberAsignatures[$key] = $value->tav;
 
-            $count++;
         }
 
         #Obtengo y almaceno el número maximo de asignaturas evaluadas
-        if(count($vectorNumberAsignatures)){
-            $numberMaxOfAsignatures = max($vectorNumberAsignatures);
-        }else{
+        if (count($vectorNumberAsignatures)) {
+            if (max($vectorNumberAsignatures) > 0) {
+                $numberMaxOfAsignatures = max($vectorNumberAsignatures);
+            } else {
+                $numberMaxOfAsignatures = 1;
+            }
+        } else {
             $numberMaxOfAsignatures = 1;
         }
-
 
 
         #Este es un nuevo vector donde se va a guardar los mismo estudiantes pero con el promedio levemente modificado
@@ -222,6 +325,7 @@ class StatisticsController extends Controller
         $vectorOfStudentsAux = $this->orderMultiDimensionalArray($vectorOfStudentsAux, 'rating', false);
         return $vectorOfStudentsAux;
     }
+
 
     function orderMultiDimensionalArray($toOrderArray, $field, $inverse = false)
     {
@@ -302,6 +406,98 @@ class StatisticsController extends Controller
         return $vectorRating;
     }
 
+
+
+    public function getPeriodsBySection(Request $request)
+    {
+
+        $periodsWorkingDay = DB::table('section_periods')
+            ->select(
+                'periods.name as periods_name', 'periods.id as periods_id',
+                'section_periods.start_date', 'section_periods.end_date', 'section_periods.percent', 'section_periods.id as working_day_periods_id',
+                'periods_state.name as periods_state_name', 'periods_state.id as periods_state_id'
+            )
+            ->join('periods_state', 'periods_state.id', '=', 'section_periods.periods_state_id')
+            ->join('periods', 'periods.id', '=', 'section_periods.periods_id')
+            ->where('section_periods.section_id', '=', $request->section_id)
+            ->get();
+
+        return $periodsWorkingDay;
+
+    }
+
+    public function getInstitutionOfTeacher(Request $request)
+    {
+        $institution = Institution::where('id', '=', $this->institution->id)->get();
+        if ($request->ajax()) {
+            return $institution[0];
+        }
+    }
+
+    public function index()
+    {
+        return View('teacher.partials.statistics.index');
+    }
+
+    public function indexInstitution()
+    {
+        return View('institution.partials.statistics.index');
+    }
+
+    public function getGroupsByGrade(Request $request)
+    {
+
+        $groups = DB::table('group')
+            ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
+            ->select('group.id', 'group.name', 'headquarter.name as headquarter_name', 'group.grade_id', 'group.working_day_id')
+            ->where('group.grade_id', '=', $request->grade_id)
+            ->where('headquarter.institution_id', '=', $this->institution->id)
+            ->get();
+
+
+        return $groups;
+    }
+
+
+    public function getPositionStudents(Request $request)
+    {
+
+        $enrollments = DB::table('notes_final')
+            ->select('enrollment.id', 'student.last_name', 'student.name',
+                DB::raw('ROUND(SUM(notes_final.value)/SUM(notes_final.value>0), 2) average'),
+                DB::raw('SUM(notes_final.`value`>0) tav'))
+            ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
+            ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
+            ->join('student', 'student.id', '=', 'enrollment.student_id')
+            ->join('institution', 'institution.id', '=', 'enrollment.institution_id')
+            ->join('schoolyears', 'schoolyears.id', '=', 'enrollment.school_year_id')
+            ->join('group_assignment', 'group_assignment.enrollment_id', '=', 'enrollment.id')
+            ->join('group', 'group.id', '=', 'group_assignment.group_id')
+            ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
+            ->join('group_pensum', 'group_pensum.group_id', '=', 'group.id')
+            ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
+            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
+            ->whereColumn(
+                [
+                    ['headquarter.institution_id', '=', 'institution.id'],
+                    ['group_pensum.asignatures_id', '=', 'evaluation_periods.asignatures_id']
+                ]
+            )
+            ->where('group.id', '=', $request->group_id)
+            ->where('institution.id', '=', $this->institution->id)
+            ->where('schoolyears.id', '=', '1')
+            ->where('evaluation_periods.periods_id', '=', $request->periods_id)
+            ->groupBy('enrollment.id')
+            ->orderBy('average', 'DESC')
+            ->get();
+
+        $positions = $this->createVectorRating($enrollments);
+
+        return $positions;
+    }
+
+
+
     public function getAsignaturesGroupPensum(Request $request)
     {
         if ($request->isSubGroup == "false") {
@@ -342,63 +538,55 @@ class StatisticsController extends Controller
         return $asignatures;
     }
 
-    private function getNotesFinal($params)
+
+    private function getVectorNotesToEnrollment($enrollment, $notes, $period_id)
     {
+        $arrayNotesOfEnrollment = [];
+        $sumNotes = 0;
+        $sumTav = 0;
+        $average = 0;
+        foreach ($notes as $keyNotes => $note) {
 
-        $paramsSearch = (object)array(
-            'group_id' => $params->group_id,
-            'institution_id' => $this->institution->id,
-            'periods_id' => $params->periods_id
-        );
+            # Si la nota corresponde al estudiante actual en el ciclo, y al periodo actual
+            if ($enrollment->id == $note->enrollment_id && $period_id == $note->periods_id) {
 
-        if ($params->isFilterAreas == "true") {
-            return NotesFinal::getNotesFilterByAreas($paramsSearch);
-        }
-        if ($params->isFilterAreas != "true") {
-            return NotesFinal::getNotesFilterByAsignatures($paramsSearch);
-        }
-    }
-
-    private function createStructConsolidated($enrollments, $notes_final, $params)
-    {
-        $collection = [];
-
-        foreach ($enrollments as $key => $enrollment) {
-            $collection_notes_final = [];
-
-            foreach ($notes_final as $keyNotes => $note) {
-                if ($enrollment->id == $note->enrollment_id) {
-                    array_push($collection_notes_final, $note);
-                    unset($notes_final[$keyNotes]);
+                $sumNotes += $this->processNote($note->value, $note->overcoming);
+                if ($this->processNote($note->value, $note->overcoming) > 0) {
+                    $sumTav++;
                 }
+                array_push($arrayNotesOfEnrollment, $note);
+                unset($notes[$keyNotes]);
             }
-
-            /*
-            $position_enrollment = $this->getPositionStudents($params);
-            foreach ($position_enrollment as $key => $p_enroll) {
-                if ($enrollment->id == $p_enroll['id']) {
-                    $enrollment->averageForPeriods = $p_enroll;
-                }
-            }*/
-
-
-
-            $enrollment->notes_final = $collection_notes_final;
-
-            array_push($collection, $enrollment);
         }
-        //$positions = $this->averageStudents($collection);
 
-        return $collection;
+        if ($sumTav > 0) {
+            $average = $sumNotes / $sumTav;
+        }
+
+        return (object)array(
+            'arrayNotesOfEnrollment' => $arrayNotesOfEnrollment,
+            'tav' => $sumTav,
+            'average' => round($average, 2)
+        );
     }
 
-    public function getConsolidated(Request $request)
+    private function processNote($note, $overcoming)
     {
+        $noteAux = 0;
+        $overcomingAux = 0;
+        if ($note > 0) {
+            if ($overcoming != null && $overcoming > 0) {
+                $overcomingAux = $overcoming;
+            }
+            $noteAux = $note;
 
-        $enrollments = Group::enrollmentsByGroup($this->institution->id, $request->group_id);
-        $notes_final = $this->getNotesFinal($request);
-        $collection = $this->createStructConsolidated($enrollments, $notes_final, $request);
+        }
 
-        return $collection;
+        if ($noteAux > $overcomingAux)
+            return $noteAux;
+        else
+            return $overcomingAux;
     }
+
+
 }
