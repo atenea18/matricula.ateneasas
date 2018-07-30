@@ -93,8 +93,8 @@
                 this.$bus.$off('SelectedFieldsEvent@MenuStatistics')
                 this.$bus.$on('SelectedFieldsEvent@MenuStatistics', componentObjectMenuStatistics => {
 
-                    console.log('->StatsConsolidated... On SelectedFieldsEvent@MenuStatistics and ... ' +
-                        'call function managerSelectedFieldsEvent')
+                    
+
 
                     //Se asigna el objeto fieldSelects a variable local, objeto que tiene los datos seleccionados
                     //de manager-group-select
@@ -113,7 +113,7 @@
             },
 
             managerSelectedFieldsEvent(componentObject) {
-                console.log("->StatsConsolidated... Function managerSelectedFieldsEvent")
+                //console.log("->StatsConsolidated... Function managerSelectedFieldsEvent")
 
                 if (typeof componentObject == "undefined") {
                     componentObject = this.objectToStatsConsolidated.params
@@ -121,7 +121,7 @@
 
                 if (this.$store.state.currentView == 'main-consolidated') {
                     if (componentObject.eventInformation.whoTriggered == "areas" || componentObject.eventInformation.whoTriggered == "componentManagerGroupSelect") {
-                        console.log("->StatsConsolidated... Evento realiza consulta de consolidados")
+                        //console.log("->StatsConsolidated... Evento realiza consulta de consolidados")
                         this.managerQueryForFilterConsolidated(componentObject)
                     }
                 }
@@ -142,12 +142,12 @@
                 }
 
                 if (componentObject.filter.isAreas) {
-                    console.log("->StatsConsolidated... Se consulta áreas")
+                    //console.log("->StatsConsolidated... Se consulta áreas")
                     params.urlSubjects = '/ajax/getAreasGroupPensum'
                     params.urlConsolidated = '/ajax/getTableConsolidated'
                 }
                 if (!componentObject.filter.isAreas) {
-                    console.log("->StatsConsolidated... Se consulta asignaturas")
+                    //console.log("->StatsConsolidated... Se consulta asignaturas")
                     params.urlSubjects = '/ajax/getAsignaturesGroupPensum'
                     params.urlConsolidated = '/ajax/getTableConsolidated'
                 }
@@ -159,7 +159,7 @@
                 axios.get(params.urlSubjects, {params}).then(res => {
                     //Trae las asignaturas correpondiente a los datos seleccionados
                     this.objectToStatsConsolidated.asignatures = res.data
-                    console.log(this.objectToStatsConsolidated.asignatures)
+                    //console.log(this.objectToStatsConsolidated.asignatures)
                     //Trae la información correspondiente al consolidado
                     this.getTableConsolidated(params)
                 })

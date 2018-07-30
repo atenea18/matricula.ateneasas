@@ -164,7 +164,7 @@
                     //Emite evento, y pasa un objeto con los valores de los select de manager-group-select
                     // y el tipo de sección donde se encuentra, si es consolidado, puesto por grupo, etc
 
-                    console.log('->MenuStatistics... On ChangeManagerGroupSelect@ManagerGroupSelect and Emit SelectedFieldsEvent@MenuStatistics')
+                    //console.log('->MenuStatistics... On ChangeManagerGroupSelect@ManagerGroupSelect and Emit SelectedFieldsEvent@MenuStatistics')
                     //** Emitir Evento **//
                     this.$bus.$emit("SelectedFieldsEvent@MenuStatistics", this.mainComponentObject)
 
@@ -174,7 +174,7 @@
                     this.$bus.$off('SearchFilterEvent@MenuStatistics')
                     this.$bus.$on('SearchFilterEvent@MenuStatistics', object => {
 
-                        console.log('->MenuStatistics... On SearchFilterEvent@MenuStatistics and Emit SelectedFieldsEvent@MenuStatistics')
+                        //console.log('->MenuStatistics... On SearchFilterEvent@MenuStatistics and Emit SelectedFieldsEvent@MenuStatistics')
                         //** Emitir Evento **//
                         this.$bus.$emit("SelectedFieldsEvent@MenuStatistics", this.mainComponentObject)
                     })
