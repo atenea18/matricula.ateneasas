@@ -93,7 +93,7 @@
                 this.$bus.$off('SelectedFieldsEvent@MenuStatistics')
                 this.$bus.$on('SelectedFieldsEvent@MenuStatistics', componentObjectMenuStatistics => {
 
-                    
+
 
 
                     //Se asigna el objeto fieldSelects a variable local, objeto que tiene los datos seleccionados

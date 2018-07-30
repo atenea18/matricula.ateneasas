@@ -33,6 +33,7 @@ Route::resource('area', 'Administrator\AreaController', ['only'=>['index','show'
 // RUTA PARA LOS GRUPOS DE UNA  INSTITUCION
 Route::get('institution/{institution}/groups', 'Institution\GroupController@index');
 Route::get('headquarter/{headquarter}/{workingDay}/{grade}/getGroup', 'Headquarter\GroupController@getGroup')->name('api.headquarter.getGroup');
+Route::get('headquarter/{headquarter}/{grade}/groups', 'Headquarter\GroupController@byGrade');
 Route::get('headquarter/{headquarter}/groups', 'Headquarter\GroupController@byHeadquarter')->name('headquarter.groups');
 
 // RUTA PARA LOS SUBGRUPOS DE UNA INSTITUCIÓN

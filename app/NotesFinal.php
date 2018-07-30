@@ -25,31 +25,34 @@ class NotesFinal extends Model
 
     public function updateOvercoming(Institution $institution)
     {
+
         $minScale = ScaleEvaluation::getMinScale($institution);
-        $hihgScale = ScaleEvaluation::getHighScale($institution);
+    	$hihgScale = ScaleEvaluation::getHighScale($institution);
 
-        if ($this->overcoming >= $minScale->rank_start && $this->overcoming <= $hihgScale->rank_end) {
-            if ($this->overcoming > $this->value) {
+    	if($this->overcoming >= $minScale->rank_start && $this->overcoming <= $hihgScale->rank_end)
+    	{
+    		if($this->overcoming > $this->value){
 
-                $noteAux = $this->overcoming;
-                $this->overcoming = $this->value;
-                $this->value = $noteAux;
-            }
+    			$noteAux = $this->overcoming;
+    			$this->overcoming = $this->value;
+    			$this->value = $noteAux;
+    		}
 
-            $this->save();
+    		$this->update();
 
-            return [
-                'state' => true,
-                'code' => 200,
-                'message' => 'Superacion registrada con exito',
-            ];
-        }
+    		return [
+    			'state'		=>	true,
+    			'code'		=>	200,
+    			'message' 	=> 'Superacion registrada con exito',
+    		];
+    	}
 
-        return [
-            'state' => false,
-            'code' => 422,
-            'message' => 'Rango no permitido',
-        ];
+    	return [
+    		'state'		=>	false,
+    		'code'		=>	422,
+    		'message' 	=> 'Rango no permitido',
+    	];
+
     }
 
     public static function getConsolidate($data)
