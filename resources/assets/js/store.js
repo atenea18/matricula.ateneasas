@@ -212,6 +212,14 @@ const store = new Vuex.Store({
 
             });
         },
+        periodsByWorkingDayIns(context, payload = {}) {
+            let params = payload
+            axios.get('/ajax/getPeriodsByWorkingDay/'+params.workingdayid,).then(res => {
+                payload.periodsWD = res.data;
+                context.commit('setPeriodsWD', payload)
+
+            });
+        },
         collectionNotes(context, payload = {}) {
             let _this = this
             let params = payload

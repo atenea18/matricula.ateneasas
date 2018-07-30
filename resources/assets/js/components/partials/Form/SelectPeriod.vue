@@ -27,9 +27,9 @@
                 title: "Seleccionar Periodo",
                 objectToSelectPeriods: {
                     name: "periods_name",
-                    arrayData: [],
+                    arrayData: [ ],
                     referenceChangeFormSelect: this.objectInput.referenceChangeFormSelect,
-                }
+                },
             }
         },
 
@@ -49,11 +49,13 @@
                 this.$bus.$on(referenceOnGetObjectSelected, objectId => {
                     //Dispara el acción después del evento change con el objeto seleccionado
                     this.$bus.$emit(referenceEmitObjectSelected, objectId);
+
                 })
 
                 this.$bus.$on(referenceToReciveObjectSelected, object => {
                     this.getPeriodsByGroup(object)
                 })
+
             },
 
             getPeriodsByGroup(object) {

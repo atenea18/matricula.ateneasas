@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class GroupPensum extends Model
 {
-	protected $table = "group_pensum";
+    protected $table = "group_pensum";
 
-	// protected $primaryKey = 'code_group_pensum';
+    // protected $primaryKey = 'code_group_pensum';
 
     protected $fillable = [
-    	'code_group_pensum', 'percent', 'description', 'ihs', 'order', 'group_id', 'asignatures_id', 'areas_id', 'subjects_type_id', 'teacher_id', 'schoolyear_id'
+        'code_group_pensum', 'percent', 'description', 'ihs', 'order', 'group_id', 'asignatures_id', 'areas_id', 'subjects_type_id', 'teacher_id', 'schoolyear_id'
     ];
 
     /**
@@ -20,7 +20,7 @@ class GroupPensum extends Model
      */
     public function teacher()
     {
-        return $this->belongsTo(Teacher::class, 'teacher_id'); 
+        return $this->belongsTo(Teacher::class, 'teacher_id');
     }
 
     /**
@@ -28,7 +28,7 @@ class GroupPensum extends Model
      */
     public function group()
     {
-        return $this->belongsTo(Group::class, 'group_id'); 
+        return $this->belongsTo(Group::class, 'group_id');
     }
 
     /**
@@ -36,7 +36,7 @@ class GroupPensum extends Model
      */
     public function asignature()
     {
-        return $this->belongsTo(Asignature::class, 'asignatures_id'); 
+        return $this->belongsTo(Asignature::class, 'asignatures_id');
     }
 
     /**
@@ -44,7 +44,7 @@ class GroupPensum extends Model
      */
     public function subjectType()
     {
-        return $this->belongsTo(SubjectType::class, 'subjects_type_id'); 
+        return $this->belongsTo(SubjectType::class, 'subjects_type_id');
     }
 
     /**
@@ -52,15 +52,15 @@ class GroupPensum extends Model
      */
     public function area()
     {
-        return $this->belongsTo(Area::class, 'areas_id'); 
+        return $this->belongsTo(Area::class, 'areas_id');
     }
 
-     /**
+    /**
      * Obtiene la relacion que hay entre el pensum y el area
      */
     public function schoolYear()
     {
-        return $this->belongsTo(Schoolyear::class, 'schoolyear_id'); 
+        return $this->belongsTo(Schoolyear::class, 'schoolyear_id');
 
     }
 
@@ -68,8 +68,9 @@ class GroupPensum extends Model
     {
         return $this->hasMany(NotesParametersPerformances::class, 'group_pensum_id');
     }
-    
-    public static function getByGroup($group_id){
+
+    public static function getByGroup($group_id)
+    {
 
         $pensum = DB::table('group_pensum')
             ->select(
@@ -93,10 +94,31 @@ class GroupPensum extends Model
     public static function find($group_id)
     {
         return self::select(
+            'asignatures.abbreviation', 'asignatures.name',
+            'group_pensum.asignatures_id', 'group_pensum.ihs', 'group_pensum.order', 'group_pensum.percent')
+            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
+            ->where('group_pensum.group_id', '=', $group_id)
+            ->get();
+    }
+
+    public static function getAsignaturesByGroup($params)
+    {
+        return $asignatures = self::select(
                 'asignatures.abbreviation', 'asignatures.name',
                 'group_pensum.asignatures_id', 'group_pensum.ihs', 'group_pensum.order', 'group_pensum.percent')
             ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
-            ->where('group_pensum.group_id', '=', $group_id)
+            ->where('group_pensum.group_id', '=', $params->group_id)
+            ->get();
+    }
+
+    public static function getAreasByGroup($params)
+    {
+        return $asignatures = self::select(
+                'areas.abbreviation', 'areas.name',
+                'group_pensum.areas_id as asignatures_id', 'group_pensum.ihs')
+            ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
+            ->where('group_pensum.group_id', '=', $params->group_id)
+            ->groupBy('areas.id')
             ->get();
     }
 }

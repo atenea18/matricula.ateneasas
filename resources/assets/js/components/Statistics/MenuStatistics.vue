@@ -17,13 +17,13 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
                     <ul class="nav navbar-nav">
-                        <li :class="currentView=='stats-consolidated'?'active':''">
-                            <a href="#consolidated" @click="setCurrentView('stats-consolidated')">Consolidados
+                        <li :class="currentView=='main-consolidated'?'active':''">
+                            <a href="#consolidated" @click="setCurrentView('main-consolidated')">CONSOLIDADOS
                                 <span class="sr-only">(current)</span>
                             </a>
                         </li>
                         <li :class="currentView=='stats-rating'?'active':''">
-                            <a href="#rating" @click="setCurrentView('stats-rating')">Puestos
+                            <a href="#rating" @click="setCurrentView('stats-rating')">PUESTOS
                                 <span class="sr-only">(current)</span>
                             </a>
                         </li>
@@ -37,13 +37,32 @@
             <div class="col-md-3">
                 <div class="checkbox" v-show="currentView">
                     <label>
-                        <input type="checkbox" @click="getIsGroup" v-model="objectToManagerGroupSelect.isSubGroup"> Subgrupo
+                        <input type="checkbox" @change="filterSearch('accumulatedPeriod')"
+                               v-model="SearchFilterObject.isAcumulatedPeriod"> Periodos Acumulados
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="checkbox" v-show="currentView">
+                    <label>
+                        <input type="checkbox" @change="filterSearch('areas')" v-model="SearchFilterObject.isAreas"> Por
+                        Áreas
                     </label>
                 </div>
             </div>
         </div>
-
-        <manager-group-select v-show="currentView" :objectInput="objectToManagerGroupSelect"></manager-group-select>
+        <!--
+        <div class="row">
+            <div class="col-md-3">
+                <div class="checkbox" v-show="currentView">
+                    <label>
+                        <input type="checkbox" @click="getIsGroup" v-model="componentManagerGroupSelect.isSubGroup"> Subgrupo
+                    </label>
+                </div>
+            </div>
+        </div>
+        -->
+        <manager-group-select v-show="currentView" :objectInput="componentManagerGroupSelect"></manager-group-select>
     </div>
 </template>
 
@@ -57,16 +76,40 @@
         components: {ManagerGroupSelect},
         data() {
             return {
-                objectToManagerGroupSelect: {
+                componentManagerGroupSelect: {
                     referenceId: "statistics",
-                    referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.referenceId + '.managerGroupSelect',
+                    referenceToReciveObjectSelected: 'to-receive-object-selected@statistics.managerGroupSelect',
                     isSubGroup: false
+                },
+                SearchFilterObject: {
+                    isAcumulatedPeriod: false,
+                    isAreas: false,
+                },
+                mainComponentObject: {
+                    filter: {
+                        isAcumulatedPeriod: false,
+                        isAreas: false,
+                    },
+                    typeViewSection: '',
+                    objectValuesManagerGroupSelect:{
+                        grade_id: 0,
+                        group_id: 0,
+                        periods_id: 1,
+                        type: "",
+                        isSubGroup: false
+                    },
                 },
             }
         },
-        created(){
+
+        created() {
             this.managerEvents()
         },
+
+        mounted() {
+
+        },
+
         computed: {
             ...mapState([
                 'currentView',
@@ -74,22 +117,87 @@
 
         },
         methods: {
-            managerEvents() {
-                this.$bus.$on(this.objectToManagerGroupSelect.referenceToReciveObjectSelected, object => {
-                    let objectToStats = {
-                        fieldSelects: object,
-                        type: this.$store.state.currentView
-                    }
-                    this.$bus.$emit("spire",objectToStats)
+
+            initObjectComponentMain(eventProperties) {
+
+                let filter = {
+                    isAcumulatedPeriod: this.SearchFilterObject.isAcumulatedPeriod,
+                    isAreas: this.SearchFilterObject.isAreas,
+                }
+
+                this.mainComponentObject.filter = filter
+                this.mainComponentObject.eventInformation = eventProperties
+                this.mainComponentObject.typeViewSection = this.$store.state.currentView
+            },
+
+            filterSearch(EventName) {
+                let eventProperties = this.getEventProperties({
+                    name: "SearchFilterEvent@MenuStatistics",
+                    whoTriggered: EventName,
+                    type: "change"
                 })
+
+
+                this.initObjectComponentMain(eventProperties)
+
+                //** Emitir Evento **//
+                this.$bus.$emit("SearchFilterEvent@MenuStatistics", null)
             },
-            getIsGroup() {
-                this.objectToManagerGroupSelect.isSubGroup = !this.objectToManagerGroupSelect.isSubGroup
-                this.$bus.$emit("get-is-sub-group",this.objectToManagerGroupSelect)
+            managerEvents() {
+
+                //Se subscribe al evento de manager-group-select, cuándo todos los select son llenados
+                this.$bus.$on(this.componentManagerGroupSelect.referenceToReciveObjectSelected, object => {
+
+                    let eventProperties = this.getEventProperties({
+                        name: "SelectedFieldsEvent@MenuStatistics",
+                        whoTriggered: "componentManagerGroupSelect",
+                        type: "selected"
+                    })
+
+                    if(object.whoTriggered == "period"){
+                        eventProperties.whoTriggered = "PeriodComponentManagerGroupSelect"
+                    }
+
+                    this.initObjectComponentMain(eventProperties)
+                    this.mainComponentObject.objectValuesManagerGroupSelect = object
+
+                    //Emite evento, y pasa un objeto con los valores de los select de manager-group-select
+                    // y el tipo de sección donde se encuentra, si es consolidado, puesto por grupo, etc
+
+                    //console.log('->MenuStatistics... On ChangeManagerGroupSelect@ManagerGroupSelect and Emit SelectedFieldsEvent@MenuStatistics')
+                    //** Emitir Evento **//
+                    this.$bus.$emit("SelectedFieldsEvent@MenuStatistics", this.mainComponentObject)
+
+
+
+                    //** Subscribir a un Evento **//
+                    this.$bus.$off('SearchFilterEvent@MenuStatistics')
+                    this.$bus.$on('SearchFilterEvent@MenuStatistics', object => {
+
+                        //console.log('->MenuStatistics... On SearchFilterEvent@MenuStatistics and Emit SelectedFieldsEvent@MenuStatistics')
+                        //** Emitir Evento **//
+                        this.$bus.$emit("SelectedFieldsEvent@MenuStatistics", this.mainComponentObject)
+                    })
+                })
+
+
             },
+
+            getEventProperties(objectProperties){
+                let eventProperties = {
+                    name: objectProperties.name,
+                    whoTriggered: objectProperties.whoTriggered,
+                    type: objectProperties.type
+                }
+                return eventProperties
+            },
+
+            // Método que consite en asignar el nombre de identificación de la sección que ha sido seleccionada
             setCurrentView(view) {
                 this.$store.state.currentView = view
-                this.$bus.$emit("get-spire",view)
+                // Se emite un nuevo evento con la misma finalidad de pasar los valores seleccionados en
+                // manager-group-select, pero este se ejecuta cuando el usuario cambia de sección.
+                this.$bus.$emit("SelectedCurrentVIew@MenuStatistics", view)
             },
 
         },
