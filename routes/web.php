@@ -49,6 +49,7 @@ Route::group(['prefix'=>'ajax'], function(){
 
     Route::get('/getSubgroupsByGrade', 'AcademicAssignmentController@getSubgroupsByGrade');
     Route::get('/getGroupsByGrade', 'StatisticsController@getGroupsByGrade');
+
     Route::get('/getTableConsolidated', 'StatisticsController@getConsolidated');
     Route::get('/getAsignaturesGroupPensum', 'StatisticsController@getAsignaturesGroupPensum');
     Route::get('/getAreasGroupPensum', 'StatisticsController@getAreasGroupPensum');

@@ -83026,6 +83026,26 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     methods: {
         fullname: function fullname(enrollment) {
             return enrollment.student_last_name + " " + enrollment.student_name;
+        },
+        getAccumulated: function getAccumulated(enrollment, asignature) {
+            var average = 0;
+            enrollment.accumulatedSubjects.forEach(function (subjects) {
+                if (subjects.asignatures_id == asignature.asignatures_id) {
+                    average = subjects.average.toFixed(2);
+                }
+            });
+
+            return average;
+        },
+        getRequired: function getRequired(enrollment, asignature) {
+            var average = 0;
+            enrollment.requiredValuation.forEach(function (subjects) {
+                if (subjects.asignatures_id == asignature.asignatures_id) {
+                    average = subjects.required.toFixed(2);
+                }
+            });
+
+            return average;
         }
     }
 });
@@ -83697,7 +83717,7 @@ var render = function() {
       _c(
         "td",
         {
-          staticStyle: { "background-color": "#E6F5FF" },
+          staticStyle: { "background-color": "rgb(247, 251, 254)" },
           attrs: {
             "data-toggle": "tooltip",
             "data-placement": "top",
@@ -83710,7 +83730,7 @@ var render = function() {
       _c(
         "td",
         {
-          staticStyle: { "background-color": "#E6F5FF" },
+          staticStyle: { "background-color": "rgb(247, 251, 254)" },
           attrs: {
             "data-toggle": "tooltip",
             "data-placement": "top",
@@ -83723,7 +83743,7 @@ var render = function() {
       _c(
         "td",
         {
-          staticStyle: { "background-color": "#E6F5FF" },
+          staticStyle: { "background-color": "rgb(247, 251, 254)" },
           attrs: {
             "data-toggle": "tooltip",
             "data-placement": "top",
@@ -83736,7 +83756,7 @@ var render = function() {
       _c(
         "td",
         {
-          staticStyle: { "background-color": "#E6F5FF" },
+          staticStyle: { "background-color": "rgb(247, 251, 254)" },
           attrs: {
             "data-toggle": "tooltip",
             "data-placement": "top",
@@ -83802,17 +83822,17 @@ var render = function() {
                     _c("body-table-consolidated", {
                       attrs: {
                         objectInput: {
-                          enrollment: enrollment,
-                          asignatures: _vm.objectInput.asignatures,
-                          options: _vm.objectInput.params,
-                          periodSelected:
-                            _vm.objectInput.params
-                              .objectValuesManagerGroupSelect.periods_id,
-                          isAcumulatedPeriod:
-                            _vm.objectInput.params.filter.isAcumulatedPeriod,
                           xrowspan: 0,
                           position: 0,
-                          index: i + 1
+                          index: i + 1,
+                          enrollment: enrollment,
+                          options: _vm.objectInput.params,
+                          asignatures: _vm.objectInput.asignatures,
+                          isAcumulatedPeriod:
+                            _vm.objectInput.params.filter.isAcumulatedPeriod,
+                          periodSelected:
+                            _vm.objectInput.params
+                              .objectValuesManagerGroupSelect.periods_id
                         }
                       }
                     })
@@ -83828,15 +83848,14 @@ var render = function() {
                         _c("body-table-consolidated", {
                           attrs: {
                             objectInput: {
+                              index: i + 1,
                               enrollment: enrollment,
-                              asignatures: _vm.objectInput.asignatures,
                               options: _vm.objectInput.params,
+                              xrowspan: _vm.periodsworkingday.length,
+                              asignatures: _vm.objectInput.asignatures,
                               periodSelected: objectPeriod.periods_id,
                               isAcumulatedPeriod:
-                                _vm.objectInput.params.filter
-                                  .isAcumulatedPeriod,
-                              xrowspan: _vm.periodsworkingday.length,
-                              index: i + 1
+                                _vm.objectInput.params.filter.isAcumulatedPeriod
                             }
                           }
                         })
@@ -83847,7 +83866,7 @@ var render = function() {
                       "tr",
                       {
                         staticStyle: {
-                          "background-color": "rgb(204, 225, 251)"
+                          "background-color": "rgb(247, 251, 254)"
                         }
                       },
                       [
@@ -83867,7 +83886,15 @@ var render = function() {
                         _vm._l(_vm.objectInput.asignatures, function(
                           asignature
                         ) {
-                          return _c("td")
+                          return _c("td", [
+                            _c("span", {
+                              domProps: {
+                                innerHTML: _vm._s(
+                                  _vm.getAccumulated(enrollment, asignature)
+                                )
+                              }
+                            })
+                          ])
                         })
                       ],
                       2
@@ -83875,7 +83902,12 @@ var render = function() {
                     _vm._v(" "),
                     _c(
                       "tr",
-                      { staticStyle: { "background-color": "#fcf8e3" } },
+                      {
+                        staticStyle: {
+                          "background-color": "rgb(255, 253, 236)",
+                          "border-bottom": "1px solid #1d75b3 !important"
+                        }
+                      },
                       [
                         _c(
                           "td",
@@ -83893,7 +83925,15 @@ var render = function() {
                         _vm._l(_vm.objectInput.asignatures, function(
                           asignature
                         ) {
-                          return _c("td")
+                          return _c("td", [
+                            _c("span", {
+                              domProps: {
+                                innerHTML: _vm._s(
+                                  _vm.getRequired(enrollment, asignature)
+                                )
+                              }
+                            })
+                          ])
                         })
                       ],
                       2

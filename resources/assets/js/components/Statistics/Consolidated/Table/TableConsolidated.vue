@@ -7,14 +7,14 @@
             <template v-for="(enrollment,i) in objectInput.enrollments"
                       v-if="!objectInput.params.filter.isAcumulatedPeriod">
                 <body-table-consolidated :objectInput="{
-                enrollment:enrollment,
-                asignatures:objectInput.asignatures,
-                options: objectInput.params,
-                periodSelected: objectInput.params.objectValuesManagerGroupSelect.periods_id,
-                isAcumulatedPeriod: objectInput.params.filter.isAcumulatedPeriod,
                 xrowspan:0,
                 position:0,
-                index:(i+1)
+                index:(i+1),
+                enrollment:enrollment,
+                options: objectInput.params,
+                asignatures:objectInput.asignatures,
+                isAcumulatedPeriod: objectInput.params.filter.isAcumulatedPeriod,
+                periodSelected: objectInput.params.objectValuesManagerGroupSelect.periods_id,
                 }">
                 </body-table-consolidated>
             </template>
@@ -25,36 +25,36 @@
                       v-if="objectInput.params.filter.isAcumulatedPeriod">
                 <template v-for="objectPeriod in periodsworkingday">
                     <body-table-consolidated :objectInput="{
+                    index:(i+1),
                     enrollment:enrollment,
-                    asignatures:objectInput.asignatures,
                     options: objectInput.params,
+                    xrowspan: periodsworkingday.length,
+                    asignatures:objectInput.asignatures,
                     periodSelected: objectPeriod.periods_id,
                     isAcumulatedPeriod: objectInput.params.filter.isAcumulatedPeriod,
-                    xrowspan: periodsworkingday.length,
-                    index:(i+1)
                     }">
                     </body-table-consolidated>
                 </template>
 
                 <!-- Acumulados -->
-                <tr style="background-color: rgb(204, 225, 251)">
+                <tr style="background-color: rgb(247, 251, 254)">
                     <td style="text-align: left !important;" colspan="3">PROMEDIO ACUMULADO</td>
                     <td></td>
                     <td></td>
                     <td v-for="asignature in objectInput.asignatures">
+                        <span v-html="getAccumulated(enrollment,asignature)"></span>
 
                     </td>
                 </tr>
-                <tr style="background-color: #fcf8e3">
+                <tr style="background-color: rgb(255, 253, 236); border-bottom: 1px solid #1d75b3 !important;">
                     <td style="text-align: left !important;" colspan="3">VALORACIÓN MIN. REQUERIDA PROX. PER.</td>
                     <td></td>
                     <td></td>
                     <td v-for="asignature in objectInput.asignatures">
-
+                        <span v-html="getRequired(enrollment,asignature)"></span>
                     </td>
                 </tr>
             </template>
-
 
 
             </tbody>
@@ -237,7 +237,26 @@
             fullname(enrollment) {
                 return enrollment.student_last_name + " " + enrollment.student_name
             },
+            getAccumulated(enrollment, asignature) {
+                let average = 0;
+                enrollment.accumulatedSubjects.forEach(subjects => {
+                    if (subjects.asignatures_id == asignature.asignatures_id) {
+                        average = subjects.average.toFixed(2);
+                    }
+                })
 
+                return average;
+            },
+            getRequired(enrollment, asignature) {
+                let average = 0;
+                enrollment.requiredValuation.forEach(subjects => {
+                    if (subjects.asignatures_id == asignature.asignatures_id) {
+                        average = subjects.required.toFixed(2);
+                    }
+                })
+
+                return average;
+            },
         }
     }
 </script>

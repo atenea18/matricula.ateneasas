@@ -10,11 +10,11 @@
             <td style="text-align: left !important;" >{{objectInput.index}}</td>
             <td style="text-align: left !important;"> {{fullname}}</td>
         </template>
-        <td data-toggle="tooltip" data-placement="top" title="PERIODO" style="background-color: #E6F5FF">{{objectInput.periodSelected}}</td>
-        <td data-toggle="tooltip" data-placement="top" title="TAV" style="background-color: #E6F5FF">
+        <td data-toggle="tooltip" data-placement="top" title="PERIODO" style="background-color: rgb(247, 251, 254)">{{objectInput.periodSelected}}</td>
+        <td data-toggle="tooltip" data-placement="top" title="TAV" style="background-color: rgb(247, 251, 254)">
             {{mainComponentObject.tav}}</td>
-        <td data-toggle="tooltip" data-placement="top" title="PUESTO" style="background-color: #E6F5FF">{{mainComponentObject.rating}}</td>
-        <td data-toggle="tooltip" data-placement="top" title="PROMEDIO GENERAL" style="background-color: #E6F5FF">{{mainComponentObject.average}}</td>
+        <td data-toggle="tooltip" data-placement="top" title="PUESTO" style="background-color: rgb(247, 251, 254)">{{mainComponentObject.rating}}</td>
+        <td data-toggle="tooltip" data-placement="top" title="PROMEDIO GENERAL" style="background-color: rgb(247, 251, 254)">{{mainComponentObject.average}}</td>
         <td v-for="asignature in objectInput.asignatures">
             <cell-notes :objectInput="{
             asignature: asignature,
