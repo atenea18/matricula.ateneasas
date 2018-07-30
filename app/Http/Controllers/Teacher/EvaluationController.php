@@ -123,7 +123,6 @@ class EvaluationController extends Controller
                 $notesFinal = new NotesFinal();
                 $notesFinal->code_notes_final = $data['evaluation_periods_id'];
                 $notesFinal->value = $data['value'];
-                $notesFinal->overcoming = $data['overcoming'];
                 $notesFinal->evaluation_periods_id = $data['evaluation_periods_id'];
                 $notesFinal->save();
 
@@ -135,7 +134,6 @@ class EvaluationController extends Controller
                 ->update([
                     'code_notes_final' => $data['evaluation_periods_id'],
                     'value' => $data['value'],
-                    'overcoming' => $data['overcoming'],
                 ]);
         }
 
@@ -158,7 +156,6 @@ class EvaluationController extends Controller
                 $notes = new Note();
                 $notes->code_notes = $data['evaluation_periods_id'] . '' . $data['notes_parameters_id'];
                 $notes->value = $data['value'];
-                $notes->overcoming = $data['overcoming'];
                 $notes->notes_parameters_id = $data['notes_parameters_id'];
                 $notes->evaluation_periods_id = $data['evaluation_periods_id'];
                 $notes->save();
@@ -172,7 +169,6 @@ class EvaluationController extends Controller
                 ->update([
                     'code_notes' => $data['evaluation_periods_id'] . "" . $data['notes_parameters_id'],
                     'value' => $data['value'],
-                    'overcoming' => $data['overcoming'],
                 ]);
         }
 
