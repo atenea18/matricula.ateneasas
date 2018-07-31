@@ -3,8 +3,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
-                    hola
-                    <table class="table table-bordered" v-if="state">
+
+                    <table class="table table-bordered" v-if="false">
                         <!-- Fila de titulos -->
                         <thead>
                         <tr style="font-size: 11px">
