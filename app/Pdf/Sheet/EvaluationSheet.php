@@ -116,7 +116,7 @@ class EvaluationSheet extends Fpdf
 		    
 		    if(count($this->parameters) == 3 && !$this->fieldExistiByName('aee'))
 		    {
-		    	$this->_with_CE = 77;	
+		    	$this->_with_CE = 70;
 		    	$this->_with_C_H = 41;
 
 		    	$this->_font_parameter = 7;
@@ -126,7 +126,7 @@ class EvaluationSheet extends Fpdf
 		    {	
 		    	$this->_font_parameter = 7;
 
-		    	$this->_with_CE = 100;	
+		    	$this->_with_CE = 100;
 		    	$this->_with_C_H = 70;
 		    	$this->_with_CP = 10;
 		    }
