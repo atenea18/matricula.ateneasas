@@ -7,12 +7,14 @@
                        :href="urlPdf">PDF</a>
                 </form>
             </div>
+
+            <!--<button @click="imprint"> pdf</button>-->
         </div>
         <div class="row">
             <div class="col-md-12">
                 <template v-if="state">
                     <br>
-                    <table-consolidated :objectInput="objectToStatsConsolidated"></table-consolidated>
+                    <table-consolidated id="table-consolidated" :objectInput="objectToStatsConsolidated"></table-consolidated>
                 </template>
             </div>
         </div>
@@ -47,6 +49,8 @@
                 state: false,
                 data: {},
                 urlPdf: "",
+                urlStream :''
+
 
             }
         },
@@ -61,7 +65,34 @@
 
         },
         methods: {
+            imprint() {
+                /*
+                let url = '/ajax/PDFF'
+                let table = document.getElementById('table-consolidated')
+                let data = {
+                    contenido: ""+table.innerHTML
+                }
+                let _this = this
+                axios.post(url, {data}, {responseType: 'arraybuffer'}).then(function (response) {
+                    if (response.status == 200) {
 
+
+                        const url = window.URL.createObjectURL(new Blob([response.data], {type: 'application/pdf'}));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', 'file.pdf');
+                        document.body.appendChild(link);
+                        link.click();
+
+
+
+
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+                */
+            },
             printConsolidated() {
                 if (this.data.periods_id) {
 
@@ -172,7 +203,6 @@
                     "&group_id=" + params.group_id +
                     "&period_id=" + params.periods_id + "&institution_id=" + params.institution_id +
                     "&is_subgroup=" + params.isSubGroup
-
 
 
                 this.data = params

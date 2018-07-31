@@ -21,6 +21,7 @@ use App\Workingday;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Expr\Cast\Object_;
 
@@ -556,6 +557,15 @@ class StatisticsController extends Controller
             return $overcomingAux;
     }
 
+
+    public function pdf(Request $request){
+
+        $params = $request->data;
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($params['contenido'])->setPaper('a4', 'landscape')->setWarnings(false)->save('consolidado.pdf');
+
+        return $pdf->stream();
+    }
 
     private function sortVector($toOrderArray, $field, $inverse = false)
     {

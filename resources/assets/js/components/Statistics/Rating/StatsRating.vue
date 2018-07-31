@@ -3,6 +3,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
+                    hola
                     <table class="table table-bordered" v-if="state">
                         <!-- Fila de titulos -->
                         <thead>
@@ -43,6 +44,8 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex'
+
     export default {
         name: "stats-rating",
         data() {
@@ -56,22 +59,31 @@
                 urlPdf: ""
             }
         },
+        computed: {
+            ...mapState([
+                'institutionOfTeacher',
+                'periodsworkingday'
+            ]),
+
+        },
         created() {
             this.managerEvents()
         },
         methods: {
             managerEvents() {
-                this.$bus.$on('get-data-manager-group-select', object => {
-                    this.objectToStatsRating.data = object.dataManagerGroupSelect
-                    if (object.typeViewSection == 'stats-rating') {
-                        this.getPositions(object.dataManagerGroupSelect)
+                this.$bus.$on('SelectedFieldsEvent@MenuStatistics', componentObjectMenuStatistics => {
+                    this.objectToStatsRating.data = componentObjectMenuStatistics.objectValuesManagerGroupSelect
+                    if (this.$store.state.currentView == 'stats-rating') {
+                        this.getPositions(componentObjectMenuStatistics.objectValuesManagerGroupSelect)
                     }
                 })
+                /*
                 this.$bus.$on('get-data-manager-group-select-change-section', object => {
                     if(object == 'stats-rating'){
                         this.getPositions(this.objectToStatsRating.data)
                     }
                 })
+                */
             },
             getPositions(object) {
                 this.state = false
