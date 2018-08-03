@@ -188,6 +188,11 @@ return [
         Laraveles\Spanish\SpanishServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
+
+        /*
+         * Customs Service Providers
+         */
+        App\Providers\UtilsServiceProvider::class,
         
 
     ],
@@ -239,6 +244,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+
         /*
          * Downloaded Aliases
          */
@@ -248,7 +254,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'HelpsRoute' => App\Helpers\helpsRoute::class,
-
+        'Utils' => App\Helpers\Utils\Utils::class,
     ],
 
 ];

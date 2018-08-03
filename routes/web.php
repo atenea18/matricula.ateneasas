@@ -50,12 +50,17 @@ Route::group(['prefix'=>'ajax'], function(){
     Route::get('/getSubgroupsByGrade', 'AcademicAssignmentController@getSubgroupsByGrade');
     Route::get('/getGroupsByGrade', 'StatisticsController@getGroupsByGrade');
 
-    Route::post('/PDFF','StatisticsController@pdf');
+    Route::get('/PDFF', function (){
+
+    });
 
 
     Route::get('/getTableConsolidated', 'StatisticsController@getConsolidated');
     Route::get('/getAsignaturesGroupPensum', 'StatisticsController@getAsignaturesGroupPensum');
     Route::get('/getAreasGroupPensum', 'StatisticsController@getAreasGroupPensum');
+
+    Route::get('/getSubjects', 'StatisticsController@getQueryGetSubjects');
+
     Route::get('/getPeriodsByWorkingDay/{working_day_id}', 'StatisticsController@getPeriodsByWorkingDay');
 
     Route::get('/printConsolidated', 'StatisticsController@printConsolidated');

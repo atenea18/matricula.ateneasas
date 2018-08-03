@@ -162,32 +162,30 @@
             managerQueryForFilterConsolidated(componentObject) {
 
                 let params = {
+
+                    institution_id: this.$store.state.institutionOfTeacher.id,
                     grade_id: componentObject.objectValuesManagerGroupSelect.grade_id,
                     group_id: componentObject.objectValuesManagerGroupSelect.group_id,
                     periods_id: componentObject.objectValuesManagerGroupSelect.periods_id,
-                    institution_id: this.$store.state.institutionOfTeacher.id,
-                    isSubGroup: componentObject.objectValuesManagerGroupSelect.isSubGroup,
-                    isFilterAreas: componentObject.filter.isAreas,
-                    urlSubjects: '',
-                    urlConsolidated: '',
+
+                    is_filter_areas: componentObject.filter.isAreas,
+                    is_subgroup: componentObject.objectValuesManagerGroupSelect.isSubGroup,
+
+                    url_subjects: '',
+                    url_consolidated: '',
+                    type_response:'json',
+
                 }
 
-                if (componentObject.filter.isAreas) {
-                    //console.log("->StatsConsolidated... Se consulta áreas")
-                    params.urlSubjects = '/ajax/getAreasGroupPensum'
-                    params.urlConsolidated = '/ajax/getTableConsolidated'
-                }
-                if (!componentObject.filter.isAreas) {
-                    //console.log("->StatsConsolidated... Se consulta asignaturas")
-                    params.urlSubjects = '/ajax/getAsignaturesGroupPensum'
-                    params.urlConsolidated = '/ajax/getTableConsolidated'
-                }
+                params.url_subjects = '/ajax/getSubjects'
+                params.url_consolidated = '/ajax/getTableConsolidated'
+
                 this.getContentConsolidated(params)
             },
 
             getContentConsolidated(params) {
                 //this.state = false
-                axios.get(params.urlSubjects, {params}).then(res => {
+                axios.get(params.url_subjects, {params}).then(res => {
                     //Trae las asignaturas correpondiente a los datos seleccionados
                     this.objectToStatsConsolidated.asignatures = res.data
                     //console.log(this.objectToStatsConsolidated.asignatures)
@@ -206,7 +204,7 @@
 
 
                 this.data = params
-                axios.get(params.urlConsolidated, {params}).then(res => {
+                axios.get(params.url_consolidated, {params}).then(res => {
                     // Asignamos objeto que contiene la información correspondiente del consolidado
                     // a variable local, variable que es pasada como parametro al componente table-consolidated
                     this.objectToStatsConsolidated.enrollments = res.data
