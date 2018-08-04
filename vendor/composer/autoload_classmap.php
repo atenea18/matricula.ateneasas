@@ -46,6 +46,7 @@ return array(
     'App\\Helpers\\Statistics\\Consolidated\\PdfConsolidated' => $baseDir . '/app/Helpers/Statistics/Consolidated/Dispatchers/PdfConsolidated.php',
     'App\\Helpers\\Statistics\\MainConsolidated' => $baseDir . '/app/Helpers/Statistics/MainConsolidated.php',
     'App\\Helpers\\Statistics\\ParamsStatistics' => $baseDir . '/app/Helpers/Statistics/ParamsStatistics.php',
+    'App\\Helpers\\Utils\\GenerateRating' => $baseDir . '/app/Helpers/Utils/GenerateRating.php',
     'App\\Helpers\\Utils\\Utils' => $baseDir . '/app/Helpers/Utils/Utils.php',
     'App\\Helpers\\helpsRoute' => $baseDir . '/app/Helpers/helpsRoute.php',
     'App\\Http\\Controllers\\AcademicAssignmentController' => $baseDir . '/app/Http/Controllers/AcademicAssignmentController.php',

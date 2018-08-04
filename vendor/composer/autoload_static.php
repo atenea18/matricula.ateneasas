@@ -476,6 +476,7 @@ class ComposerStaticInit6a84da620c9e4e789164ca82ad9dbb43
         'App\\Helpers\\Statistics\\Consolidated\\PdfConsolidated' => __DIR__ . '/../..' . '/app/Helpers/Statistics/Consolidated/Dispatchers/PdfConsolidated.php',
         'App\\Helpers\\Statistics\\MainConsolidated' => __DIR__ . '/../..' . '/app/Helpers/Statistics/MainConsolidated.php',
         'App\\Helpers\\Statistics\\ParamsStatistics' => __DIR__ . '/../..' . '/app/Helpers/Statistics/ParamsStatistics.php',
+        'App\\Helpers\\Utils\\GenerateRating' => __DIR__ . '/../..' . '/app/Helpers/Utils/GenerateRating.php',
         'App\\Helpers\\Utils\\Utils' => __DIR__ . '/../..' . '/app/Helpers/Utils/Utils.php',
         'App\\Helpers\\helpsRoute' => __DIR__ . '/../..' . '/app/Helpers/helpsRoute.php',
         'App\\Http\\Controllers\\AcademicAssignmentController' => __DIR__ . '/../..' . '/app/Http/Controllers/AcademicAssignmentController.php',
