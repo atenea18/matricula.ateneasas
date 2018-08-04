@@ -57,7 +57,7 @@
 
             this.$store.state.parameters.forEach(element => {
 
-                this.$bus.$on("v" + element.id, performance => {
+                this.$bus.$on("parameter" + element.id, performance => {
                     console.log(performance)
                 })
             })
