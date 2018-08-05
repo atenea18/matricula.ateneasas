@@ -65,23 +65,47 @@
         components: {
             RowEvaluation, RelationPerformances
         },
+        computed: {
+            ...mapState([
+                'parameters',
+                'asignature',
+                'periodSelected',
+                'collectionNotes',
+                'counterParameter',
+                'totalInput',
+                'scaleEvaluation',
+                'periodObjectSelected',
+                'dateNow',
+                'maxScale',
+                'minScale',
+                'configInstitution'
+            ]),
+        },
         created() {
 
             this.parameters.forEach(parameter => {
                 let refsEvent = parameter.id
+                this.$bus.$on("" + refsEvent, performance => {
 
-                this.$bus.$on("parameter" + refsEvent, performance => {
+
                     let elements = this.$refs["parameter" + refsEvent];
+
+
                     if (elements) {
+                        console.log(elements)
+
                         let s = elements.filter(element => {
-                            if (!element.meObject.state) {
+                            if (!element.mainComponentObject.state) {
                                 return element
                             }
                         })
+
                         if (s.length != 0) {
                             this.$bus.$emit("" + parameter.id + s[0].objectToParameter.id, performance);
                         }
+
                     }
+
 
                 })
             })
@@ -101,21 +125,6 @@
 
             this.$store.state.totalInput = this.$store.state.counterParameter * this.$store.state.collectionNotes.length + this.$store.state.collectionNotes.length
 
-        },
-        computed: {
-            ...mapState([
-                'parameters',
-                'asignature',
-                'periodSelected',
-                'collectionNotes',
-                'counterParameter',
-                'totalInput',
-                'scaleEvaluation',
-                'periodObjectSelected',
-                'dateNow',
-                'maxScale',
-                'minScale'
-            ]),
         },
         methods: {
             generateLimitNotes() {

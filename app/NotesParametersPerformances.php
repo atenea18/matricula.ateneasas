@@ -26,4 +26,29 @@ class NotesParametersPerformances extends Model
     {
         return $this->belongsTo(GroupPensum::class, 'group_pensum_id');
     }
+
+    public static function insertRelation($notes_parameters_id, $performances_id, $periods_id, $group_pensum_id){
+        $performancesRelation = new NotesParametersPerformances();
+
+        try {
+            $performancesRelation->periods_id = $periods_id;
+            $performancesRelation->performances_id = $performances_id;
+            $performancesRelation->group_pensum_id = $group_pensum_id;
+            $performancesRelation->notes_parameters_id = $notes_parameters_id;
+            $performancesRelation->save();
+
+        } catch (\Exception $e) {
+            $performancesRelation->id = 0;
+        }
+
+        return $performancesRelation;
+    }
+
+    public static function getRelationPerformances($notes_parameters_id, $group_pensum_id,$periods_id){
+        $notesPerformances = NotesParametersPerformances::where('notes_parameters_id', '=', $notes_parameters_id)
+            ->where('periods_id', '=', $periods_id)
+            ->where('group_pensum_id', '=', $group_pensum_id)
+            ->get();
+        return $notesPerformances;
+    }
 }

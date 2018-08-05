@@ -12,6 +12,7 @@ namespace App\Helpers\Utils;
 use App\Group;
 use App\GroupPensum;
 use App\NotesFinal;
+use App\NotesParametersPerformances;
 use App\ScaleEvaluation;
 use App\Workingday;
 
@@ -56,4 +57,23 @@ class Utils
         return Group::enrollmentsByGroup($institution_id, $group_id);
     }
 
+    public static function store_relationship_performances(
+        $notes_parameters_id,
+        $performances_id,
+        $periods_id,
+        $group_pensum_id,
+        $config_option_id)
+    {
+        if ($config_option_id == 1) {
+            return 'Hola';
+        }
+        if ($config_option_id == 2) {
+            return NotesParametersPerformances::insertRelation(
+                $notes_parameters_id,
+                $performances_id,
+                $periods_id,
+                $group_pensum_id
+            );
+        }
+    }
 }

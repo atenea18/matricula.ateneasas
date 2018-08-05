@@ -312,7 +312,8 @@ Route::group(['prefix'=>'teacher','middleware'=>'teacher_auth'], function(){
     Route::get('evaluation/getPeriodsByWorkingDay', 'Teacher\EvaluationController@getPeriodsByWorkingDay');
     Route::get('evaluation/getCollectionsNotes', 'Teacher\EvaluationController@getCollectionsNotes');
     Route::get('evaluation/searchPerformances', 'Teacher\EvaluationController@searchPerformances');
-    Route::get('evaluation/getGroupPensum', 'Teacher\EvaluationController@getGroupPensum');
+	Route::get('evaluation/getGroupPensum', 'Teacher\EvaluationController@getGroupPensum');
+	
     Route::get('evaluation/getRelationPerformances', 'Teacher\EvaluationController@getRelationPerformances');
     Route::get('evaluation/getNotesFinalByAsignature', 'Teacher\EvaluationController@getNotesFinalByAsignature');
 
