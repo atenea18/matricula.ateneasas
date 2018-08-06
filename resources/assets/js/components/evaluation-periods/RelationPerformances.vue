@@ -39,7 +39,7 @@
                     config_options_id: 2,
                     config_options_name: "column",
 
-                    config_name: "relation_performances",
+                    config_institution_name: "relation_performances",
                     status: false,
                 },
                 configComponent: [],
@@ -66,17 +66,17 @@
         },
         mounted() {
 
-            let config = this.$store.state.configInstitution.find(rowConfig => {
-                return this.compareToRelationPerformances(rowConfig)
+            this.$store.state.configInstitution.forEach(rowConfig => {
+                this.compareToRelationPerformances(rowConfig)
             })
 
-            if (config) {
+            if (this.objectConfigInstitution) {
                 this.configComponent.push({
-                    id: config.config_type_id,
-                    name: config.config_institution_name,
+                    id: this.objectConfigInstitution.config_type_id,
+                    name: this.objectConfigInstitution.config_institution_name,
 
-                    option_id: config.config_options_id,
-                    option_name: config.config_options_name,
+                    option_id: this.objectConfigInstitution.config_options_id,
+                    option_name: this.objectConfigInstitution.config_options_name,
                 })
                 this.onEventSelectedPerformance()
 
@@ -84,14 +84,19 @@
             }
 
 
-
         },
 
         methods: {
             compareToRelationPerformances(rowConfig) {
-                if (rowConfig.config_type_id == this.objectConfigInstitution.config_type_id)
-                    if (rowConfig.config_options_id == this.objectConfigInstitution.config_options_id)
-                        return true
+
+                if (rowConfig.config_type_id) {
+                    if (rowConfig.config_type_id == this.objectConfigInstitution.config_type_id)
+                        // Si es igual a row, objectConfigInstitution es igual a null
+                        // mientras sea distinto de row, por defecto la configuracion es column
+                        if (rowConfig.config_options_id == 1)
+                            this.objectConfigInstitution = null
+                }
+
             },
             onEventSelectedPerformance() {
                 this.objectConfigInstitution.status = true
@@ -137,7 +142,7 @@
                         }
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        //console.log(error);
                     });
             },
             storeRelation() {
@@ -159,7 +164,7 @@
                         }
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        //console.log(error);
                     });
 
             }
