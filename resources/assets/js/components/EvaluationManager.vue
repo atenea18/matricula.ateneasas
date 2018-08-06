@@ -28,7 +28,8 @@
 
         </div>
         <div class="col-md-12">
-            <pensum-performances v-if="periodSelected"></pensum-performances>
+            <pensum-performances v-if="isCollection"></pensum-performances>
+            <br>
         </div>
         <div class="col-md-12">
             <div v-if="isCollection">

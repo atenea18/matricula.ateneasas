@@ -36,4 +36,28 @@ class MainRelationship
 
     }
 
+    public function get(){
+        $this->params->initForGet();
+
+        $this->response = Utils::get_relationship_performances(
+            $this->params->notes_parameters_id,
+            $this->params->group_pensum_id,
+            $this->params->period_id,
+            $this->params->config_option_id
+        );
+        return $this->response;
+    }
+
+    public function delete(){
+        $this->params->initForDelete();
+
+        $this->response = Utils::delete_relationship_performances(
+            $this->params->notes_performances_id,
+            $this->params->group_performances_id,
+            $this->params->config_option_id
+        );
+
+        return $this->response;
+    }
+
 }

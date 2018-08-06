@@ -38,7 +38,7 @@ class CreateGroupPensumPerformancesTable extends Migration
                 DROP PROCEDURE IF EXISTS insert_code_gropenper;
                 CREATE TRIGGER insert_code_gropenper BEFORE INSERT ON `group_pensum_performances` FOR EACH ROW
                 BEGIN
-                SET NEW.code = CONCAT(NEW.group_pensum_id,"-",NEW.periods_id);
+                SET NEW.code = CONCAT(NEW.group_pensum_id,"-",NEW.performances_id,"-",NEW.periods_id);
                 END;
                 
             ');
@@ -46,7 +46,7 @@ class CreateGroupPensumPerformancesTable extends Migration
               DROP PROCEDURE IF EXISTS update_code_gropenper;
                 CREATE TRIGGER update_code_gropenper BEFORE UPDATE ON `group_pensum_performances` FOR EACH ROW
                 BEGIN
-                SET NEW.code = CONCAT(NEW.group_pensum_id,"-",NEW.periods_id);
+                SET NEW.code = CONCAT(NEW.group_pensum_id,"-",NEW.performances_id,"-",NEW.periods_id);
                 END;                
             ');
         });

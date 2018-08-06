@@ -1,9 +1,12 @@
 <template>
     <div>
+
         <template v-if="objectConfigInstitution.status">
-            dd
-            <span v-for="data in mainComponentObject.data">
-                {{data.id}}
+            <h5>Desempeños seleccionados</h5>
+            <span class="performances" v-for="(data, index) in mainComponentObject.data" data-toggle="tooltip"
+                  data-placement="bottom"
+                  :title="data.name" @click="deleteRelation(data.id, index)">
+                {{data.performances_id}}
             </span>
         </template>
     </div>
@@ -39,6 +42,8 @@
         created() {
             this.mainComponentObject.period_id = this.$store.state.periodSelected
             this.mainComponentObject.group_pensum_id = this.$store.state.groupPensum.id
+
+
         },
         computed: {
             ...mapState([
@@ -70,6 +75,7 @@
                     option_name: config.config_options_name,
                 })
                 this.onEventSelectedPerformance()
+                this.getRelation()
             }
         },
 
@@ -88,12 +94,29 @@
                 this.$store.state.parameters.forEach(element => {
                     this.$bus.$on("" + element.id, performance => {
                         this.mainComponentObject.performances_id = performance.id
-                        this.storeGroupPensumPerformances()
+                        this.storeRalation()
                     })
                 })
             },
 
-            storeGroupPensumPerformances() {
+            getRelation() {
+                let params = {
+                    config: this.configComponent,
+                    period_id: this.mainComponentObject.period_id,
+                    group_pensum_id: this.mainComponentObject.group_pensum_id,
+                }
+
+                axios.get('/ajax/relation-performances/get', {params}).then(res => {
+                    let data = res.data
+                    this.mainComponentObject.data = res.data
+                    if (data.length != 0) {
+                        this.mainComponentObject.data = data
+                    }
+
+                })
+            },
+
+            storeRalation() {
                 let data = {
                     config: this.configComponent,
                     period_id: this.mainComponentObject.period_id,
@@ -102,23 +125,51 @@
                 }
 
                 let _this = this
-                axios.post('/teacher/evaluation/storeRelationPerformances', {data})
+                axios.post('/ajax/relation-performances/store', {data})
                     .then(function (response) {
                         if (response.status == 200) {
-                            _this.mainComponentObject.data = response.data
-                            console.log(response.data)
+                            if (response.data.id != 0) {
+                                _this.mainComponentObject.data.push(response.data)
+                            }
                         }
                     }).catch(function (error) {
                     console.log(error);
                 });
-
                 //console.log(data)
+            },
+
+            deleteRelation(group_performances_id, index) {
+                let data = {
+                    config: this.configComponent,
+                    group_performances_id: group_performances_id,
+                }
+
+                let _this = this
+                axios.post('/ajax/relation-performances/delete', {data})
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            if(response.data == 1)
+                                _this.mainComponentObject.data.splice(index,1)
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             }
         },
 
     }
 </script>
 
-<style scoped>
+<style>
+    .performances {
+        padding: 6px;
+        margin: 4px;
+        background-color: #eee;
+    }
 
+    .performances:hover {
+        cursor: pointer;
+        color: red;
+    }
 </style>

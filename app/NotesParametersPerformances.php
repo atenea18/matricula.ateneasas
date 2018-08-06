@@ -27,7 +27,7 @@ class NotesParametersPerformances extends Model
         return $this->belongsTo(GroupPensum::class, 'group_pensum_id');
     }
 
-    public static function insertRelation($notes_parameters_id, $performances_id, $periods_id, $group_pensum_id){
+    public static function insertRelationPerformances($notes_parameters_id, $performances_id, $periods_id, $group_pensum_id){
         $performancesRelation = new NotesParametersPerformances();
 
         try {
@@ -49,6 +49,11 @@ class NotesParametersPerformances extends Model
             ->where('periods_id', '=', $periods_id)
             ->where('group_pensum_id', '=', $group_pensum_id)
             ->get();
+        return $notesPerformances;
+    }
+
+    public static function deleteRelationPerformances($notes_performances_id){
+        $notesPerformances =  NotesParametersPerformances::where('id', '=', $notes_performances_id)->delete();
         return $notesPerformances;
     }
 }

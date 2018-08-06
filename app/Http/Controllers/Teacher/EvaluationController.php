@@ -611,40 +611,6 @@ class EvaluationController extends Controller
     }
 
 
-    public function storeRelationPerformances(Request $request)
-    {
-
-        $requestAux = (object)$request->data;
-        $params = new ParamsRelationship ($requestAux);
-        $mainRelationship = new MainRelationship($params);        
-
-        return $mainRelationship->store();
-    }
-
-    public function getRelationPerformances(Request $request)
-    {
-        $notesPerformances = NotesParametersPerformances::getRelationPerformances(
-            $request->notes_parameters_id,
-            $request->group_pensum_id,
-            $request->periods_id
-        );
-
-        return $notesPerformances;
-    }
-
-    public function deleteRelationPerformances(Request $request)
-    {
-        $params = $request->data;
-
-        $notesPerformances = NotesParametersPerformances::
-        where('id', '=', $params['notes_parameters_id'])
-            ->delete();
-
-
-        return $notesPerformances;
-    }
-
-
     public function evaluationParameter(Request $request)
     {
 

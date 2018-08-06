@@ -1,6 +1,7 @@
 <template>
-    <th @click="deleteRelationPerformances" style="width: 44px !important;">
-            <a href="#" title="Eliminar">{{ mainComponentObject.performances_id?mainComponentObject.performances_id:'' }}</a>
+    <th @click="deleteRelation" style="width: 44px !important;">
+        <a href="#" title="Eliminar">{{ mainComponentObject.performances_id?mainComponentObject.performances_id:''
+            }}</a>
     </th>
 </template>
 
@@ -49,7 +50,7 @@
                     performances_id: 0,
                     group_pensum_id: 0,
                     notes_parameters_id: 0,
-                    notes_performances_id:0,
+                    notes_performances_id: 0,
                 },
 
             }
@@ -59,11 +60,9 @@
             this.objectToParameter = this.objectInput
 
             this.mainComponentObject.notes_parameters_id = this.objectInput.id
-            this.mainComponentObject.period_id =this.$store.state.periodSelected
+            this.mainComponentObject.period_id = this.$store.state.periodSelected
             this.mainComponentObject.group_pensum_id = this.$store.state.groupPensum.id
 
-
-            this.getRelationPerformances()
         },
         mounted() {
 
@@ -80,7 +79,11 @@
                     option_name: config.config_options_name,
                 })
                 this.onEventSelectedPerformance()
+
+                this.getRelation()
             }
+
+
 
         },
 
@@ -95,18 +98,20 @@
                 this.$bus.$off("" + this.objectToParameter.evaluation_parameter_id + this.objectToParameter.id)
                 this.$bus.$on("" + this.objectToParameter.evaluation_parameter_id + this.objectToParameter.id, performances => {
                     this.mainComponentObject.performances_id = performances.id
-                    this.storeRelationPerformances()
+                    this.storeRelation()
                 })
             },
-            getRelationPerformances() {
+
+            getRelation() {
+
                 let params = {
                     config: this.configComponent,
-                    periods_id: this.mainComponentObject.period_id,
+                    period_id: this.mainComponentObject.period_id,
                     group_pensum_id: this.mainComponentObject.group_pensum_id,
                     notes_parameters_id: this.mainComponentObject.notes_parameters_id,
                 }
 
-                axios.get('/teacher/evaluation/getRelationPerformances', {params}).then(res => {
+                axios.get('/ajax/relation-performances/get', {params}).then(res => {
                     let data = res.data
                     if (data.length != 0) {
                         this.mainComponentObject.notes_performances_id = data[0].id
@@ -116,14 +121,14 @@
                 })
             },
 
-            deleteRelationPerformances() {
+            deleteRelation() {
                 let data = {
                     config: this.configComponent,
-                    notes_parameters_id: this.mainComponentObject.notes_performances_id,
+                    notes_performances_id: this.mainComponentObject.notes_performances_id,
                 }
 
                 let _this = this
-                axios.post('/teacher/evaluation/deleteRelationPerformances', {data})
+                axios.post('/ajax/relation-performances/delete', {data})
                     .then(function (response) {
                         if (response.status == 200) {
                             _this.mainComponentObject.state = false
@@ -135,7 +140,7 @@
                         console.log(error);
                     });
             },
-            storeRelationPerformances() {
+            storeRelation() {
                 let data = {
                     config: this.configComponent,
                     period_id: this.mainComponentObject.period_id,
@@ -145,7 +150,7 @@
                 }
 
                 let _this = this
-                axios.post('/teacher/evaluation/storeRelationPerformances', {data})
+                axios.post('/ajax/relation-performances/store', {data})
                     .then(function (response) {
 
                         if (response.status == 200) {

@@ -11,6 +11,7 @@ namespace App\Helpers\Utils;
 
 use App\Group;
 use App\GroupPensum;
+use App\GroupPensumPerformances;
 use App\NotesFinal;
 use App\NotesParametersPerformances;
 use App\ScaleEvaluation;
@@ -57,18 +58,21 @@ class Utils
         return Group::enrollmentsByGroup($institution_id, $group_id);
     }
 
-    public static function store_relationship_performances(
-        $notes_parameters_id,
-        $performances_id,
-        $periods_id,
-        $group_pensum_id,
-        $config_option_id)
+
+    // Relation Performances
+    public static function store_relationship_performances($notes_parameters_id, $performances_id, $periods_id, $group_pensum_id, $config_option_id)
     {
         if ($config_option_id == 1) {
-            return 'Hola';
+            //row
+            return GroupPensumPerformances::insertRelationPerformances(
+                $performances_id,
+                $periods_id,
+                $group_pensum_id
+            );
         }
         if ($config_option_id == 2) {
-            return NotesParametersPerformances::insertRelation(
+            //column
+            return NotesParametersPerformances::insertRelationPerformances(
                 $notes_parameters_id,
                 $performances_id,
                 $periods_id,
@@ -76,4 +80,40 @@ class Utils
             );
         }
     }
+
+    public static function get_relationship_performances($notes_parameters_id, $group_pensum_id, $periods_id, $config_option_id)
+    {
+
+        if ($config_option_id == 1) {
+            //row
+            return GroupPensumPerformances::getRelationPerformances(
+                $group_pensum_id,
+                $periods_id
+
+            );
+        }
+        if ($config_option_id == 2) {
+            //column
+            return $notesPerformances = NotesParametersPerformances::getRelationPerformances(
+                $notes_parameters_id,
+                $group_pensum_id,
+                $periods_id
+            );
+        }
+    }
+
+    public static function delete_relationship_performances($notes_performances_id, $group_performances_id, $config_option_id)
+    {
+        if ($config_option_id == 1) {
+            //row
+            return GroupPensumPerformances::deleteRelationPerformances($group_performances_id);
+        }
+        if ($config_option_id == 2) {
+            //column
+            return NotesParametersPerformances::deleteRelationPerformances($notes_performances_id);
+        }
+
+    }
+
+
 }
