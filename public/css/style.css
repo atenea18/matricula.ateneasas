@@ -1,0 +1,51 @@
+body{
+	/*font-family: "Lato", Arial, Tahoma, sans-serif;*/
+	font-family: Helvetica,Arial,sans-serif;
+	font-size: 1.5rem;
+	background-color: #fff;
+	overflow: auto;
+}
+
+section{
+	padding: 3rem;
+	background-color: #fff;
+}
+
+.section_can p{
+	font-size: 1.6rem;
+}
+
+.section_customer .img{
+	float: left;
+	margin: 0px;
+}
+
+.main_banner{
+	background: linear-gradient(120deg, #258acf, #b960da);
+	color: #fff;
+	margin-top: 5rem;
+	padding: 5rem;
+
+	-webkit-clip-path: polygon(0 0,100% 0,100% 100%,0 94%);
+    clip-path: polygon(0 0,100% 0,100% 100%,0 94%);
+}
+
+.main_footer{
+	background: linear-gradient(120deg, #258acf, #b960da);
+	color: #fff;
+	padding: 5rem;
+}
+
+.btn-outline-dark{
+	background-color: #fff;
+	color: #000;
+	border-color: #000;
+}
+
+.navbar-default{
+	background-color: #fff;
+}
+
+.tr_loading{
+	background-color: #ddd;
+}
