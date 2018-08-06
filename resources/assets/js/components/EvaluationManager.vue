@@ -5,12 +5,11 @@
             <h5>{{asignature.name}}</h5>
             <h5>{{group.name}}</h5>
 
-
             <span style="color:red;font-weight: bold ">{{isConexion?'':'Usted no tiene conexión a internet'}}</span>
         </div>
         <div class="col-md-3">
-            <div v-if="periodSelected">
-                <performances-manager></performances-manager>
+            <div>
+                <performances-manager v-if="periodSelected"></performances-manager>
             </div>
         </div>
         <div class="col-md-3">
@@ -29,6 +28,10 @@
 
         </div>
         <div class="col-md-12">
+            <pensum-performances v-if="isCollection"></pensum-performances>
+            <br>
+        </div>
+        <div class="col-md-12">
             <div v-if="isCollection">
                 <table-evaluation></table-evaluation>
             </div>
@@ -43,6 +46,7 @@
     import RowEvaluation from './evaluation-periods/RowEvaluation';
     import TableEvaluation from './evaluation-periods/TableEvaluation';
     import PerformancesManager from './evaluation-periods/performances/PerformancesManager';
+    import PensumPerformances from "./evaluation-periods/performances/Group/PensumPerformances";
 
     export default {
         name: "evaluation-manager",
@@ -52,6 +56,7 @@
             filter: {type: String}
         },
         components: {
+            PensumPerformances,
             RowEvaluation, TableEvaluation, PerformancesManager
         },
         data() {
@@ -93,7 +98,9 @@
                 'isTypeGroup',
                 'configInstitution',
                 'periodObjectSelected',
-                'scaleEvaluation'
+                'scaleEvaluation',
+                'parameters'
+
             ]),
 
         },
@@ -133,7 +140,7 @@
                         this.$store.state.periodObjectSelected = element
                     }
                 })
-                console.log(this.$store.state.periodObjectSelected)
+                //console.log(this.$store.state.periodObjectSelected)
 
                 this.$store.state.isCollection = false
                 this.$store.state.periodSelected = this.periodid

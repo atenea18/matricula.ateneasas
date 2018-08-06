@@ -8,6 +8,8 @@ use App\EvaluationParameter;
 use App\EvaluationPeriod;
 use App\Grade;
 use App\Group;
+use App\Helpers\Evaluation\RelationshipPerformances\MainRelationship;
+use App\Helpers\Evaluation\RelationshipPerformances\ParamsRelationship;
 use App\Institution;
 use App\MessagesExpressions;
 use App\MessagesScale;
@@ -290,15 +292,14 @@ class EvaluationController extends Controller
 
     }
 
-    public function getNotesFinalByAsignature(Request $request){
+    public function getNotesFinalByAsignature(Request $request)
+    {
 
         $teacher = Auth::guard('teachers')->user()->teachers()->first();
 
         $institution = Institution::where('id', '=', $teacher->institution_id)->get();
 
         $enrollments = Group::enrollmentsByGroup($institution[0]->id, $request->group_id);
-
-
 
 
         $collection = [];
@@ -308,7 +309,6 @@ class EvaluationController extends Controller
 
             array_push($collection, $enrollment);
         }
-
 
 
         return $collection;
@@ -563,7 +563,7 @@ class EvaluationController extends Controller
         $params = $request->data;
 
         $messageExpressions = new MessagesExpressions();
-        foreach($params['data'] as $data) {
+        foreach ($params['data'] as $data) {
 
             if ($data['perfor']) {
 
@@ -589,7 +589,7 @@ class EvaluationController extends Controller
                     }
 
                 }
-            }else{
+            } else {
                 $messageScale = new MessagesScale();
                 if ($messageExpressions->id != 0) {
                     try {
@@ -608,74 +608,6 @@ class EvaluationController extends Controller
 
 
         return $performances;
-    }
-
-    public function storeRelationPerformances(Request $request)
-    {
-        $params = $request->data;
-
-        if ($params['isGroup'] == "true") {
-
-            $performancesRelation = new NotesParametersPerformances();
-
-            try {
-                $performancesRelation->notes_parameters_id = $params['notes_parameters_id'];
-                $performancesRelation->performances_id = $params['performances_id'];
-                $performancesRelation->periods_id = $params['periods_id'];
-                $performancesRelation->group_pensum_id = $params['group_pensum_id'];
-                $performancesRelation->save();
-
-            } catch (\Exception $e) {
-                $performancesRelation->id = 0;
-            }
-
-        } else {
-            $performancesRelation = new NotesParametersPerformancesSub();
-            try {
-                $performancesRelation->notes_parameters_id = $params['notes_parameters_id'];
-                $performancesRelation->performances_id = $params['performances_id'];
-                $performancesRelation->periods_id = $params['periods_id'];
-                $performancesRelation->sub_group_pensum_id = $params['group_pensum_id'];
-                $performancesRelation->save();
-
-            } catch (\Exception $e) {
-                $performancesRelation->id = 0;
-            }
-
-        }
-        return $performancesRelation;
-    }
-
-    public function getRelationPerformances(Request $request)
-    {
-        if ($request->isGroup == "true") {
-            $notesPerformances = NotesParametersPerformances::where('notes_parameters_id', '=', $request->notes_parameters_id)
-                ->where('periods_id', '=', $request->periods_id)
-                ->where('group_pensum_id', '=', $request->group_pensum_id)
-                ->get();
-        } else {
-            $notesPerformances = NotesParametersPerformancesSub::where('notes_parameters_id', '=', $request->notes_parameters_id)
-                ->where('periods_id', '=', $request->periods_id)
-                ->where('sub_group_pensum_id', '=', $request->group_pensum_id)
-                ->get();
-        }
-        return $notesPerformances;
-    }
-
-    public function deleteRelationPerformances(Request $request)
-    {
-        $params = $request->data;
-        if ($params['isGroup'] == "true") {
-            $notesPerformances = NotesParametersPerformances::
-            where('id', '=', $params['id'])
-                ->delete();
-        } else {
-            $notesPerformances = NotesParametersPerformancesSub::
-            where('id', '=', $params['id'])
-                ->delete();
-        }
-
-        return $notesPerformances;
     }
 
 
@@ -699,18 +631,18 @@ class EvaluationController extends Controller
                 'notes_parameters_criterias.id as notes_parameters_criterias_id',
                 'criterias.id as criterias_id', 'criterias.parameter as criterias_name',
                 'criterias.abbreviation as criterias_abbreviation')
-            ->join('notes_parameters','notes_parameters.evaluation_parameter_id', '=', 'evaluation_parameters.id')
-            ->join('notes_parameters_criterias', 'notes_parameters_criterias.notes_parameters_id','=', 'notes_parameters.id')
-            ->join('criterias', 'criterias.id','=','notes_parameters_criterias.criterias_id')
+            ->join('notes_parameters', 'notes_parameters.evaluation_parameter_id', '=', 'evaluation_parameters.id')
+            ->join('notes_parameters_criterias', 'notes_parameters_criterias.notes_parameters_id', '=', 'notes_parameters.id')
+            ->join('criterias', 'criterias.id', '=', 'notes_parameters_criterias.criterias_id')
             ->where('evaluation_parameters.institution_id', '=', $teacher->institution_id)
             ->get();
 
 
-        foreach ($parameters as $key => $para){
-            if($para->evaluation_type_id == 2){
-                foreach ($para->notesParameter as $note){
-                    foreach ($notes as $noteAux){
-                        if($note->id == $noteAux->notes_parameters_id){
+        foreach ($parameters as $key => $para) {
+            if ($para->evaluation_type_id == 2) {
+                foreach ($para->notesParameter as $note) {
+                    foreach ($notes as $noteAux) {
+                        if ($note->id == $noteAux->notes_parameters_id) {
                             $note->criterias = $noteAux;
                         }
                     }

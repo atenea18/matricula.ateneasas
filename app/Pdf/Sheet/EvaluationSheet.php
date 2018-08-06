@@ -67,9 +67,9 @@ class EvaluationSheet extends Fpdf
 		    if(count($this->parameters) == 1 && !$this->fieldExistiByName('aee'))
 		    {
 		    	$this->_with_C_H = 68;
-		    	$this->_width_VG_VRA = 9;
-		    	$this->_with_C_N_E = 10;
-		    	$this->_with_CE = 75;
+		    	$this->_width_VG_VRA = 7;
+		    	$this->_with_C_N_E = 8;
+		    	$this->_with_CE = 67;
 
 		    	$this->_font_criteria = 7;
 				$this->_font_parameter = 8;
@@ -93,8 +93,8 @@ class EvaluationSheet extends Fpdf
 		    
 		    if(count($this->parameters) == 3 && !$this->fieldExistiByName('aee'))
 		    {
-		    	$this->_with_CE = 65;	
-		    	$this->_with_C_H = 30;
+		    	$this->_with_CE = 56;
+		    	$this->_with_C_H = 26;
 
 		    	$this->_font_parameter = 6;
 		    	$this->_font_student = 7;
@@ -295,7 +295,7 @@ class EvaluationSheet extends Fpdf
 	{
 
 		$this->SetFont('Arial','B', $this->_font_criteria);
-		// Show Periods
+		// Show Utils
 		foreach($this->periods as $period)
 		{
 			$this->Cell($this->_with_CP, 4, "P{$period}", 1,0, 'C', true);
@@ -354,7 +354,7 @@ class EvaluationSheet extends Fpdf
 			// Mostramos el estado
 			$this->Cell($this->_with_C_N_E, 4, $student['state'], 1,0, 'C');
 
-			// Show Periods
+			// Show Utils
 			foreach($this->periods as $period)
 			{
 				foreach($student['periods'] as $periodS)

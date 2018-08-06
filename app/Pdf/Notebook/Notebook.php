@@ -594,7 +594,12 @@ class Notebook extends Fpdf
 							
 							// Asistencias
 							if($this->data['grade']['name'] >= 10):
-								$noAttendace = $asignaturee['final_note']['noAttendances'];
+                                if(isset($asignaturee['final_note']['noAttendances'])){
+                                    $noAttendace = $asignaturee['final_note']['noAttendances'];
+                                }else{
+                                    $noAttendace = 0;
+                                }
+
 							endif;
 
 						endif;

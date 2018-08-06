@@ -12,7 +12,7 @@
                     {{para.parameter}}
                 </th>
             </template>
-            <th rowspan="2"> VAL </th>
+            <th rowspan="2"> VAL</th>
         </tr>
         <tr>
             <!--
@@ -22,10 +22,13 @@
             -->
             <template v-for="para in parameters">
                 <template v-for="note in para.notes_parameter">
-                    <relation-performances v-if="note.notes_type_id == 1" :objectInput="note" :ref="'parameter'+para.id"></relation-performances>
+                    <relation-performances v-if="note.notes_type_id == 1" :objectInput="note"
+                                           :ref="'parameter'+para.id">
+                    </relation-performances>
 
                     <th v-else="note.notes_type_id == 1" style="width: 44px !important; font-size: 10px !important;">
-                       <span v-if="note.criterias" data-toggle="tooltip" data-placement="bottom" :title="note.criterias.criterias_name">
+                       <span v-if="note.criterias" data-toggle="tooltip" data-placement="bottom"
+                             :title="note.criterias.criterias_name">
                            {{note.criterias.criterias_abbreviation || ""}}
                        </span>
                     </th>
@@ -57,30 +60,49 @@
     export default {
         name: "table-evaluation",
         data() {
-            return {
-
-            }
+            return {}
         },
         components: {
             RowEvaluation, RelationPerformances
+        },
+        computed: {
+            ...mapState([
+                'parameters',
+                'asignature',
+                'periodSelected',
+                'collectionNotes',
+                'counterParameter',
+                'totalInput',
+                'scaleEvaluation',
+                'periodObjectSelected',
+                'dateNow',
+                'maxScale',
+                'minScale',
+                'configInstitution'
+            ]),
         },
         created() {
 
             this.parameters.forEach(parameter => {
                 let refsEvent = parameter.id
-                this.$bus.$off("" + refsEvent)
                 this.$bus.$on("" + refsEvent, performance => {
 
                     let elements = this.$refs["parameter" + refsEvent];
-                    let s = elements.filter(element => {
-                        if (!element.meObject.state) {
-                            return element
-                        }
-                    })
+                    if (elements) {
+                        //console.log(elements)
+                        let s = elements.filter(element => {
+                            if (!element.mainComponentObject.state) {
+                                return element
+                            }
+                        })
 
-                    if (s.length != 0) {
-                        this.$bus.$emit("" + parameter.id + s[0].objectToParameter.id, performance);
+                        if (s.length != 0) {
+                            this.$bus.$emit("" + parameter.id + s[0].objectToParameter.id, performance);
+                        }
+
                     }
+
+
                 })
             })
 
@@ -100,35 +122,20 @@
             this.$store.state.totalInput = this.$store.state.counterParameter * this.$store.state.collectionNotes.length + this.$store.state.collectionNotes.length
 
         },
-        computed: {
-            ...mapState([
-                'parameters',
-                'asignature',
-                'periodSelected',
-                'collectionNotes',
-                'counterParameter',
-                'totalInput',
-                'scaleEvaluation',
-                'periodObjectSelected',
-                'dateNow',
-                'maxScale',
-                'minScale'
-            ]),
-        },
-        methods:{
-            generateLimitNotes(){
+        methods: {
+            generateLimitNotes() {
 
                 this.$store.state.scaleEvaluation.forEach(element => {
-                    if(this.$store.state.maxScale < element.rank_end){
+                    if (this.$store.state.maxScale < element.rank_end) {
                         this.$store.state.maxScale = element.rank_end
                     }
-                    if(this.$store.state.minScale > element.rank_start){
+                    if (this.$store.state.minScale > element.rank_start) {
                         this.$store.state.minScale = element.rank_start
                     }
                 })
 
-                console.log("max: "+ this.$store.state.maxScale)
-                console.log("min: "+ this.$store.state.minScale)
+                //console.log("max: " + this.$store.state.maxScale)
+                //console.log("min: " + this.$store.state.minScale)
             }
         }
     }

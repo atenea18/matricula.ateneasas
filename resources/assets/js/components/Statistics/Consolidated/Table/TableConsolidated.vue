@@ -203,22 +203,6 @@
                     this.$store.state.minScale = element.rank_end
                 }
             })
-
-            /*
-            this.objectInput.enrollments.sort(function (a, b) {
-                if (a.student_name > b.student_name) {
-                    return 1;
-                }
-                if (a.student_name < b.student_name) {
-                    return -1;
-                }
-                // a must be equal to b
-                return 0;
-            });
-            */
-
-            //console.log(this.objectInput.enrollments)
-
         },
         computed: {
             ...mapState([

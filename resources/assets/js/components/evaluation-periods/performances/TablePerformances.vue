@@ -58,7 +58,8 @@
                     [
                         "parameters",
                         "asignature",
-                        "periodSelected"
+                        "periodSelected",
+                        "configInstitution"
                     ]),
         },
         methods: {
@@ -68,7 +69,6 @@
                 })
             },
             selectPerformances(codePerformances) {
-                //console.log(this.params)
                 this.$bus.$emit("" + this.params.evaluation_parameters_id, codePerformances);
             }
         }

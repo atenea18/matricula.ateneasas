@@ -1,6 +1,7 @@
 <template>
-    <th @click="deleteRelationPerformances" style="width: 44px !important;">
-        <a href="#" title="Eliminar">{{ meObject.codePerformance?meObject.codePerformance:'' }}</a>
+    <th @click="deleteRelation" style="width: 44px !important;">
+        <a href="#" title="Eliminar">{{ mainComponentObject.performances_id?mainComponentObject.performances_id:''
+            }}</a>
     </th>
 </template>
 
@@ -12,6 +13,16 @@
         props: {
             objectInput: {type: Object}
         },
+        computed: {
+            ...mapState([
+                'periodSelected',
+                'institutionOfTeacher',
+                'isConexion',
+                'groupPensum',
+                'configInstitution'
+
+            ]),
+        },
         data() {
             return {
                 objectToParameter: {
@@ -21,96 +32,139 @@
                     evaluation_parameter_id: 0,
                     notes_type_id: 0
                 },
-                meObject: {
-                    id: 0,
+                objectConfigInstitution: {
+                    config_type_id: 1,
+                    config_type_description: "define el tipo de relación de desempeño, si es por columna o por filas ",
+
+                    config_options_id: 2,
+                    config_options_name: "column",
+
+                    config_institution_name: "relation_performances",
+                    status: false,
+                },
+                configComponent: [],
+                mainComponentObject: {
+                    data: null,
+                    period_id: 0,
                     state: false,
-                    codePerformance: 0
-                }
+                    performances_id: 0,
+                    group_pensum_id: 0,
+                    notes_parameters_id: 0,
+                    notes_performances_id: 0,
+                },
+
             }
         },
+
         created() {
             this.objectToParameter = this.objectInput
-            this.getRelationPerformances()
+
+            this.mainComponentObject.notes_parameters_id = this.objectInput.id
+            this.mainComponentObject.period_id = this.$store.state.periodSelected
+            this.mainComponentObject.group_pensum_id = this.$store.state.groupPensum.id
+
         },
         mounted() {
-            this.$bus.$off("" + this.objectToParameter.evaluation_parameter_id + this.objectToParameter.id)
-            this.$bus.$on("" + this.objectToParameter.evaluation_parameter_id + this.objectToParameter.id, performances => {
-                this.meObject.codePerformance = performances.id
-                this.meObject.state = true
-                this.storeRelationPerformances()
+
+            this.$store.state.configInstitution.forEach(rowConfig => {
+                this.compareToRelationPerformances(rowConfig)
             })
 
+            if (this.objectConfigInstitution) {
+                this.configComponent.push({
+                    id: this.objectConfigInstitution.config_type_id,
+                    name: this.objectConfigInstitution.config_institution_name,
+
+                    option_id: this.objectConfigInstitution.config_options_id,
+                    option_name: this.objectConfigInstitution.config_options_name,
+                })
+                this.onEventSelectedPerformance()
+
+                this.getRelation()
+            }
+
 
         },
-        computed: {
-            ...mapState([
-                'periodSelected',
-                'institutionOfTeacher',
-                'isConexion',
-                'groupPensum'
 
-            ]),
-        },
         methods: {
-            getRelationPerformances() {
-                let params = {
-                    notes_parameters_id: this.objectToParameter.id,
-                    periods_id: this.$store.state.periodSelected,
-                    group_pensum_id: this.$store.state.groupPensum.id,
-                    isGroup: this.$store.state.isTypeGroup
+            compareToRelationPerformances(rowConfig) {
+
+                if (rowConfig.config_type_id) {
+                    if (rowConfig.config_type_id == this.objectConfigInstitution.config_type_id)
+                        // Si es igual a row, objectConfigInstitution es igual a null
+                        // mientras sea distinto de row, por defecto la configuracion es column
+                        if (rowConfig.config_options_id == 1)
+                            this.objectConfigInstitution = null
                 }
 
-                axios.get('/teacher/evaluation/getRelationPerformances', {params}).then(res => {
-                    let data = res.data
-                    if (data.length != 0) {
-                        this.meObject.codePerformance = data[0].performances_id
-                        this.meObject.id = data[0].id
-                        this.meObject.state = true
-
-                    }
-
-
+            },
+            onEventSelectedPerformance() {
+                this.objectConfigInstitution.status = true
+                this.$bus.$off("" + this.objectToParameter.evaluation_parameter_id + this.objectToParameter.id)
+                this.$bus.$on("" + this.objectToParameter.evaluation_parameter_id + this.objectToParameter.id, performances => {
+                    this.mainComponentObject.performances_id = performances.id
+                    this.storeRelation()
                 })
             },
 
-            deleteRelationPerformances() {
+            getRelation() {
+
+                let params = {
+                    config: this.configComponent,
+                    period_id: this.mainComponentObject.period_id,
+                    group_pensum_id: this.mainComponentObject.group_pensum_id,
+                    notes_parameters_id: this.mainComponentObject.notes_parameters_id,
+                }
+
+                axios.get('/ajax/relation-performances/get', {params}).then(res => {
+                    let data = res.data
+                    if (data.length != 0) {
+                        this.mainComponentObject.notes_performances_id = data[0].id
+                        this.mainComponentObject.performances_id = data[0].performances_id
+                        this.mainComponentObject.state = true
+                    }
+                })
+            },
+
+            deleteRelation() {
                 let data = {
-                    id: this.meObject.id,
-                    isGroup: this.$store.state.isTypeGroup
+                    config: this.configComponent,
+                    notes_performances_id: this.mainComponentObject.notes_performances_id,
                 }
 
                 let _this = this
-                axios.post('/teacher/evaluation/deleteRelationPerformances', {data})
+                axios.post('/ajax/relation-performances/delete', {data})
                     .then(function (response) {
                         if (response.status == 200) {
-                            _this.meObject.id = 0
-                            _this.meObject.state = false
-                            _this.meObject.codePerformance = 0
+                            _this.mainComponentObject.state = false
+                            _this.mainComponentObject.notes_performances_id = 0
+                            _this.mainComponentObject.performances_id = 0
                         }
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        //console.log(error);
                     });
             },
-            storeRelationPerformances() {
+            storeRelation() {
                 let data = {
-                    notes_parameters_id: this.objectToParameter.id,
-                    performances_id: this.meObject.codePerformance,
-                    periods_id: this.$store.state.periodSelected,
-                    group_pensum_id: this.$store.state.groupPensum.id,
-                    isGroup: this.$store.state.isTypeGroup
+                    config: this.configComponent,
+                    period_id: this.mainComponentObject.period_id,
+                    performances_id: this.mainComponentObject.performances_id,
+                    group_pensum_id: this.mainComponentObject.group_pensum_id,
+                    notes_parameters_id: this.mainComponentObject.notes_parameters_id,
                 }
 
                 let _this = this
-                axios.post('/teacher/evaluation/storeRelationPerformances', {data})
+                axios.post('/ajax/relation-performances/store', {data})
                     .then(function (response) {
 
                         if (response.status == 200) {
-                            _this.meObject.id = response.data.id
+                            _this.mainComponentObject.notes_performances_id = response.data.id
+                            _this.mainComponentObject.state = true
                         }
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        //console.log(error);
                     });
 
             }

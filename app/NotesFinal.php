@@ -248,7 +248,7 @@ class NotesFinal extends Model
 
 
 
-    public static function getNotesFilterByAreas($params)
+    public static function getNotesFilterByAreas($institution_id,$group_id)
     {
 
         $data = DB::select(DB::raw(
@@ -280,8 +280,8 @@ class NotesFinal extends Model
                 AND group_pensum.asignatures_id = evaluation_periods.asignatures_id
                 INNER JOIN areas ON areas.id = group_pensum.areas_id
                 INNER JOIN asignatures ON asignatures.id = group_pensum.asignatures_id
-                WHERE `group`.id = '$params->group_id' AND
-                institution.id = '$params->institution_id' AND
+                WHERE `group`.id = '$group_id' AND
+                institution.id = '$institution_id' AND
                 schoolyears.id = 1                 
                 GROUP BY enrollment.id, asignatures.id, evaluation_periods.periods_id
                 ) as
@@ -294,7 +294,7 @@ class NotesFinal extends Model
         return $data;
     }
 
-    public static function getNotesFilterByAsignatures($params)
+    public static function getNotesFilterByAsignatures($institution_id,$group_id)
     {
 
         $data = DB::table('notes_final')
@@ -320,8 +320,8 @@ class NotesFinal extends Model
                     ['group_pensum.asignatures_id', '=', 'evaluation_periods.asignatures_id']
                 ]
             )
-            ->where('group.id', '=', $params->group_id)
-            ->where('institution.id', '=', $params->institution_id)
+            ->where('group.id', '=', $group_id)
+            ->where('institution.id', '=', $institution_id)
             ->where('schoolyears.id', '=', '1')
             ->get();
 
