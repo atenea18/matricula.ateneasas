@@ -66,8 +66,8 @@ class GroupController extends Controller
         ->with('manager.address')
         ->where('school_year_id','=', 1)
         ->get()
-        // ->pluck('manager')
-        ->pluck('manager.fullNameInverse', 'id');
+        ->pluck('manager')
+        ->pluck('fullNameInverse', 'id');
 
         return view('institution.partials.group.create')
             ->with('headquarters', $headquarters)

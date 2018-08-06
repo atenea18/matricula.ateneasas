@@ -127,7 +127,11 @@ class EvaluationSheet extends Fpdf
 		    {	
 		    	$this->_font_parameter = 7;
 
+<<<<<<< HEAD
 		    	$this->_with_CE = 90;
+=======
+		    	$this->_with_CE = 100;
+>>>>>>> origin/master
 		    	$this->_with_C_H = 70;
 		    	$this->_with_CP = 10;
 		    }

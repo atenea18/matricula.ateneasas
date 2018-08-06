@@ -33,7 +33,7 @@ class EvaluationController extends Controller
         $teacher = Auth::guard('teachers')->user()->teachers()->first();
 
 
-        // dd($teacher->groupDirector()->get());
+
         $pemsun = $teacher->pensums()
             ->where('schoolyear_id', '=', 1)
             ->with('asignature')
