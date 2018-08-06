@@ -140,7 +140,7 @@
                         this.$store.state.periodObjectSelected = element
                     }
                 })
-                console.log(this.$store.state.periodObjectSelected)
+                //console.log(this.$store.state.periodObjectSelected)
 
                 this.$store.state.isCollection = false
                 this.$store.state.periodSelected = this.periodid

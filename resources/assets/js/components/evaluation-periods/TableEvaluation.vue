@@ -87,13 +87,9 @@
                 let refsEvent = parameter.id
                 this.$bus.$on("" + refsEvent, performance => {
 
-
                     let elements = this.$refs["parameter" + refsEvent];
-
-
                     if (elements) {
-                        console.log(elements)
-
+                        //console.log(elements)
                         let s = elements.filter(element => {
                             if (!element.mainComponentObject.state) {
                                 return element
@@ -138,8 +134,8 @@
                     }
                 })
 
-                console.log("max: " + this.$store.state.maxScale)
-                console.log("min: " + this.$store.state.minScale)
+                //console.log("max: " + this.$store.state.maxScale)
+                //console.log("min: " + this.$store.state.minScale)
             }
         }
     }
