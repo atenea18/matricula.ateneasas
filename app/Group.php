@@ -37,7 +37,7 @@ class Group extends Model
      */
     public function pensums()
     {
-        return $this->hasMany(GroupPensum::class, 'group_id'); 
+        return $this->hasMany(GroupPensum::class, 'group_id');
     }
 
     /**
@@ -78,28 +78,29 @@ class Group extends Model
     public function director()
     {
         return $this->belongsToMany(Teacher::class, 'group_directors', 'group_id', 'teacher_id')
-                ->withPivot('created_at', 'updated_at');
+            ->withPivot('created_at', 'updated_at');
     }
 
     /**
-    *
-    */
+     *
+     */
     public function synchDirector($teacher_id)
     {
-        return $this->director()->sync($teacher_id, ['created_at' => \Illuminate\Support\Carbon::now()]);   
+        return $this->director()->sync($teacher_id, ['created_at' => \Illuminate\Support\Carbon::now()]);
     }
 
     public static function getAllByInstitution($institution_id)
- 	{
- 		return Group::join('headquarter', 'group.headquarter_id', '=', 'headquarter.id')
- 			->join('institution', 'headquarter.institution_id', '=', 'institution.id')
- 			->select('group.*')
- 			->where('institution.id', '=', $institution_id)
- 			->orderBy('group.grade_id')
- 			->get();
- 	}
+    {
+        return Group::join('headquarter', 'group.headquarter_id', '=', 'headquarter.id')
+            ->join('institution', 'headquarter.institution_id', '=', 'institution.id')
+            ->select('group.*')
+            ->where('institution.id', '=', $institution_id)
+            ->orderBy('group.grade_id')
+            ->get();
+    }
 
- 	public static function enrollmentsWithOutGroup($institution_id, $grade_id){
+    public static function enrollmentsWithOutGroup($institution_id, $grade_id)
+    {
         $enrollments = Enrollment::join('student', 'enrollment.student_id', '=', 'student.id')
             ->select(
                 'enrollment.id'
@@ -176,33 +177,33 @@ class Group extends Model
             ->get();
     }
 
-    public static function  getGroupsByGrade($institution_id, $grade_id)
+    public static function getGroupsByGrade($institution_id, $grade_id)
     {
         return $groups = Group::join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
-            ->select('group.id','group.name', 'headquarter.name as headquarter_name')
-            ->where('headquarter.institution_id','=',$institution_id)
+            ->select('group.id', 'group.name', 'headquarter.name as headquarter_name', 'group.grade_id', 'group.working_day_id')
+            ->where('headquarter.institution_id', '=', $institution_id)
             ->where('grade_id', '=', $grade_id)->get();
     }
 
     public function recovery(Asignature $asignature, Period $period, ScaleEvaluation $scale)
     {
         return $this->select(DB::raw('CONCAT(student.last_name, " ", student.name) AS name_student'), 'notes_final.overcoming', 'notes_final.value', 'notes_final.id AS note_final_id')
-                ->join('group_assignment', 'group.id', '=', 'group_assignment.group_id')
-                ->join('enrollment', 'group_assignment.enrollment_id', '=', 'enrollment.id')
-                ->join('student', 'student.id', '=', 'enrollment.student_id')
-                ->join('evaluation_periods', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
-                ->join('notes_final', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
-                ->where([
-                    ['enrollment.school_year_id', '=', 1],
-                    ['group.id', '=', $this->id],
-                    ['evaluation_periods.asignatures_id', '=', $asignature->id],
-                    ['evaluation_periods.periods_id', '=', $period->id],
-                ])
-                ->where([
-                    ['notes_final.value', '>=', $scale->rank_start],
-                    ['notes_final.value', '<=', $scale->rank_end]
-                ])
-                ->get();
+            ->join('group_assignment', 'group.id', '=', 'group_assignment.group_id')
+            ->join('enrollment', 'group_assignment.enrollment_id', '=', 'enrollment.id')
+            ->join('student', 'student.id', '=', 'enrollment.student_id')
+            ->join('evaluation_periods', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
+            ->join('notes_final', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
+            ->where([
+                ['enrollment.school_year_id', '=', 1],
+                ['group.id', '=', $this->id],
+                ['evaluation_periods.asignatures_id', '=', $asignature->id],
+                ['evaluation_periods.periods_id', '=', $period->id],
+            ])
+            ->where([
+                ['notes_final.value', '>=', $scale->rank_start],
+                ['notes_final.value', '<=', $scale->rank_end]
+            ])
+            ->get();
     }
 
     public function pendingPeriod(Asignature $asignature, Period $period, ScaleEvaluation $scale)
