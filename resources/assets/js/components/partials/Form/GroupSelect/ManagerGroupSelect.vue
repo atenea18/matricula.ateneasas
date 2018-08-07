@@ -1,23 +1,16 @@
 <template>
-    <div class="row">
+    <div >
         <div class="col-md-4">
             <select-grade :objectInput="objectToSelectGrade"></select-grade>
         </div>
         <div class="col-md-4">
             <!-- Depende de grade -->
             <select-group v-show="!objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectGroup"></select-group>
-
-            <!-- Depende de grade -->
-            <!--<select-subgroup v-show="objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectSubGroup"></select-subgroup>-->
         </div>
         <div class="col-md-4">
             <!-- Depende de group-->
             <select-period v-show="!objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectPeriod"></select-period>
-
-            <!-- Depende de subgroup-->
-            <!--<select-period-section  v-show="objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectPeriodSection" ></select-period-section>-->
         </div>
-
     </div>
 </template>
 
@@ -69,13 +62,10 @@
                     referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.objectInput.referenceId + '.periods',
                     id:1
                 },
-
-
             }
         },
         created() {
             this.managerEvents()
-
         },
         methods: {
             getPeriodsByWorkingDay(object) {
@@ -90,7 +80,6 @@
                     this.objectToManagerGroupSelect.grade_id = object.id
                     //this.$bus.$emit(this.objectToSelectSubGroup.referenceEmitObjectGradeSelected, object);
                     this.$bus.$emit(this.objectToSelectGroup.referenceToReciveObjectSelected, object);
-
                 })
 
                 this.$bus.$on(this.objectToSelectGroup.referenceGetObjectSelected, object => {
@@ -112,7 +101,6 @@
                     this.objectToManagerGroupSelect.whoTriggered = "period"
                     this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
                 })
-
             },
         },
 
