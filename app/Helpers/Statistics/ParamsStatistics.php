@@ -21,6 +21,8 @@ class ParamsStatistics
     public $type_response = '';
     public $consolidated_url = '';
     public $is_filter_subjects = false;
+    public $is_filter_all_groups = false;
+    public $is_accumulated = false;
 
     public $middle_point = 0;
     public $num_of_periods = 0;
@@ -39,20 +41,20 @@ class ParamsStatistics
     public function __construct($request)
     {
         $this->request = $request;
+        /*
+         * Inicializar propiedades...
+         */
+        $this->type_response = $request->type_response;
+        $this->period_selected_id = $request->periods_id;
+        $this->is_accumulated = $request->is_accumulated;
+        $this->is_filter_subjects = $request->is_filter_areas;
+        $this->group_object = Group::findOrfail($request->group_id);
+        $this->is_filter_all_groups = $request->is_filter_all_groups;
+        $this->institution_object = Institution::findOrfail($request->institution_id);
     }
 
     public function initConsolidated()
     {
-        /*
-         * Inicializar propiedades...
-         */
-
-        $this->type_response = $this->request->type_response;
-        $this->period_selected_id = $this->request->periods_id;
-        $this->group_object = Group::findOrfail($this->request->group_id);
-        $this->institution_object = Institution::findOrfail($this->request->institution_id);
-        $this->is_filter_subjects = $this->request->is_filter_areas;
-
 
         /*
          * Dependencias...
