@@ -90,20 +90,50 @@ class ExportPdf extends Fpdi
             $this->Cell(5, 5, $this->params->period_selected_id, 1, 0, 'C');
 
             foreach ($enrollment->evaluatedPeriods as $rowEvaluatePeriod){
+
                 if($rowEvaluatePeriod['period_id'] == $this->params->period_selected_id){
+
                     $this->Cell(7, 5, $rowEvaluatePeriod['tav'], 1, 0, 'C');
                     $this->Cell(10, 5, $rowEvaluatePeriod['rating'], 1, 0, 'C');
-                    $this->Cell(7, 5, $rowEvaluatePeriod['average'], 1, 1, 'C');
+                    $this->Cell(7, 5, $rowEvaluatePeriod['average'], 1, 0, 'C');
+                    foreach ($vector->subjects as $key => $subject){
+                        foreach ($rowEvaluatePeriod['notes'] as $note){
+                            if($subject->asignatures_id == $note->asignatures_id){
+                                $value = self::processNote($note->value, $note->overcoming);
+                                $this->Cell($size_column, 5, ROUND($value,1), 1, 0, 'C');
+                            }
+
+                        }
+
+                    }
+                    $this->ln();
                 }
             }
         }
 
     }
 
+    private  static function processNote($note, $overcoming)
+    {
+        $noteAux = 0;
+        $overcomingAux = 0;
+        if ($note > 0) {
+            if ($overcoming != null && $overcoming > 0) {
+                $overcomingAux = $overcoming;
+            }
+            $noteAux = $note;
+        }
+
+        if ($noteAux > $overcomingAux)
+            return $noteAux;
+        else
+            return $overcomingAux;
+    }
+
     private function CellName($enrollment){
-        $this->SetFont('Times', '', 6.3);
+        $this->SetFont('Times', '', 6.7);
         $this->Cell(45, 5, self::name($enrollment), 1, 0, 'L');
-        $this->SetFont('Times', '', 6.6);
+        $this->SetFont('Times', '', 8);
     }
 
     private static function name($enrollment){
