@@ -185,18 +185,13 @@ class Group extends Model
             DB::raw("CONCAT(managers.name,' ',managers.last_name) as director_name")
         )
             ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
-            ->join('group_directors', 'group_directors.group_id', '=', 'group.id')
-            ->join('teachers', 'teachers.id', '=', 'group_directors.teacher_id')
-            ->join('managers', 'managers.id', '=', 'teachers.manager_id')
+            ->leftJoin('group_directors', 'group_directors.group_id', '=', 'group.id')
+            ->leftJoin('teachers', 'teachers.id', '=', 'group_directors.teacher_id')
+            ->leftJoin('managers', 'managers.id', '=', 'teachers.manager_id')
             ->join('institution', 'institution.id', '=', 'headquarter.institution_id')
             ->join('working_day', 'working_day.id', '=', 'group.working_day_id')
             ->join('grade','grade.id','=','group.grade_id')
             ->where('institution.id', '=', $institution_id)
-            ->whereColumn(
-                [
-                    ['teachers.institution_id', '=', 'institution.id']
-                ]
-            )
             ->where('group.grade_id', '=', $grade_id)
             ->get();
     }
@@ -209,18 +204,13 @@ class Group extends Model
             DB::raw("CONCAT(managers.name,' ',managers.last_name) as director_name")
         )
             ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
-            ->join('group_directors', 'group_directors.group_id', '=', 'group.id')
-            ->join('teachers', 'teachers.id', '=', 'group_directors.teacher_id')
-            ->join('managers', 'managers.id', '=', 'teachers.manager_id')
+            ->leftJoin('group_directors', 'group_directors.group_id', '=', 'group.id')
+            ->leftJoin('teachers', 'teachers.id', '=', 'group_directors.teacher_id')
+            ->leftJoin('managers', 'managers.id', '=', 'teachers.manager_id')
             ->join('institution', 'institution.id', '=', 'headquarter.institution_id')
             ->join('working_day', 'working_day.id', '=', 'group.working_day_id')
             ->join('grade','grade.id','=','group.grade_id')
             ->where('institution.id', '=', $institution_id)
-            ->whereColumn(
-                [
-                    ['teachers.institution_id', '=', 'institution.id']
-                ]
-            )
             ->where('group.id', '=', $group_id)
             ->get();
     }
