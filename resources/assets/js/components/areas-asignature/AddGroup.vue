@@ -41,7 +41,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label for="">Enumerar</label>
-                    <select v-on:change="" class="form-control" name="" v-model="order">
+                    <select  class="form-control" name="" v-model="order">
                         <option :value="false">Seleccionar</option>
                         <option v-for="n in 50" :value="n">
                             {{ n }}

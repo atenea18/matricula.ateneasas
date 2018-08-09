@@ -4,7 +4,6 @@
             <menu-statistics></menu-statistics>
         </div>
         <div class="col-md-12">
-
             <keep-alive>
                 <component :is="currentView" transition="fade" transition-mode="out-in"></component>
             </keep-alive>
@@ -36,7 +35,6 @@
                     selectedPeriodId: 0,
                     state: false,
                 },
-
             }
         },
         created() {

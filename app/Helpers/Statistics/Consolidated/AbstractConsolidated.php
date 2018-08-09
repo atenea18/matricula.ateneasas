@@ -17,7 +17,6 @@ abstract class AbstractConsolidated
     protected $institution_object = null;
     protected $minimum_scale_object = null;
 
-    protected $response = null;
     protected $middle_point = 0;
     protected $num_of_periods = 0;
     protected $period_selected_id = 1;
@@ -30,6 +29,7 @@ abstract class AbstractConsolidated
 
     public function __construct(ParamsStatistics $params)
     {
+
         /*
          * Variables
          */
@@ -149,7 +149,7 @@ abstract class AbstractConsolidated
     /**
      * Modifica vectorEnrollments, agrega la propiedad rating
      */
-    public function addPropertiesToEnrollments()
+    private function addPropertiesToEnrollments()
     {
         $vectorDataBasicPeriodsEvaluated = $this->createVectorDataPeriodsEvaluated();
 

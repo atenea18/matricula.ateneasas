@@ -32,37 +32,59 @@
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
+        <!-- selects, check, buttons-->
+        <div class="row" v-show="currentView">
+            <!-- Filtros: Acumulado, Por Áreas -->
+            <div class="col-md-3">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"
+                               v-model="SearchFilterObject.isAcumulatedPeriod"
+                               @change="setEventProperties('accumulatedPeriod','check')"/>
+                        Periodos Acumulados
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"
+                               v-model="SearchFilterObject.isAreas"
+                               @change="setEventProperties('areas','check')"/>
+                        Por Áreas
+                    </label>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <!-- Selects: Grado, Grupo, Periodo -->
+            <manager-group-select :objectInput="componentManagerGroupSelect"></manager-group-select>
 
-        <div class="row">
+            <!-- Buttons: PDF, Excel -->
             <div class="col-md-3">
-                <div class="checkbox" v-show="currentView">
+                <!-- PDF -->
+                <a href="#" class="btn btn-primary btn-sm"
+                   @click="setEventProperties('pdf','click')">
+                    <i class="far fa-file-pdf fa-lg fa-2x"></i>
+                    PDF
+                </a>
+                <!-- Excel -->
+                <a href="#" class="btn btn-success btn-sm"
+                   @click="setEventProperties('excel','click')">
+                    <i class="far fa-file-excel fa-lg fa-2x"></i>
+                    EXCEL
+                </a>
+                <!-- ¿Todos los grupos? -->
+                <div class="checkbox">
                     <label>
-                        <input type="checkbox" @change="filterSearch('accumulatedPeriod')"
-                               v-model="SearchFilterObject.isAcumulatedPeriod"> Periodos Acumulados
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="checkbox" v-show="currentView">
-                    <label>
-                        <input type="checkbox" @change="filterSearch('areas')" v-model="SearchFilterObject.isAreas"> Por
-                        Áreas
+                        <input type="checkbox"
+                               v-model="SearchFilterObject.isAllGroups"
+                               @change="setEventProperties('all-groups','check')"/>
+                        ¿Todos los grupos?
                     </label>
                 </div>
             </div>
         </div>
-        <!--
-        <div class="row">
-            <div class="col-md-3">
-                <div class="checkbox" v-show="currentView">
-                    <label>
-                        <input type="checkbox" @click="getIsGroup" v-model="componentManagerGroupSelect.isSubGroup"> Subgrupo
-                    </label>
-                </div>
-            </div>
-        </div>
-        -->
-        <manager-group-select v-show="currentView" :objectInput="componentManagerGroupSelect"></manager-group-select>
+        <!-- //selects, check, buttons-->
     </div>
 </template>
 
@@ -77,26 +99,27 @@
         data() {
             return {
                 componentManagerGroupSelect: {
+                    isSubGroup: false,
                     referenceId: "statistics",
                     referenceToReciveObjectSelected: 'to-receive-object-selected@statistics.managerGroupSelect',
-                    isSubGroup: false
                 },
                 SearchFilterObject: {
-                    isAcumulatedPeriod: false,
                     isAreas: false,
+                    isAllGroups: false,
+                    isAcumulatedPeriod: false,
                 },
                 mainComponentObject: {
                     filter: {
-                        isAcumulatedPeriod: false,
                         isAreas: false,
+                        isAcumulatedPeriod: false,
                     },
                     typeViewSection: '',
-                    objectValuesManagerGroupSelect:{
+                    objectValuesManagerGroupSelect: {
+                        type: "",
                         grade_id: 0,
                         group_id: 0,
                         periods_id: 1,
-                        type: "",
-                        isSubGroup: false
+                        isSubGroup: false,
                     },
                 },
             }
@@ -121,8 +144,9 @@
             initObjectComponentMain(eventProperties) {
 
                 let filter = {
-                    isAcumulatedPeriod: this.SearchFilterObject.isAcumulatedPeriod,
                     isAreas: this.SearchFilterObject.isAreas,
+                    isAllGroups: this.SearchFilterObject.isAllGroups,
+                    isAcumulatedPeriod: this.SearchFilterObject.isAcumulatedPeriod
                 }
 
                 this.mainComponentObject.filter = filter
@@ -130,36 +154,34 @@
                 this.mainComponentObject.typeViewSection = this.$store.state.currentView
             },
 
-            filterSearch(EventName) {
-                let eventProperties = this.getEventProperties({
+            setEventProperties(whoElement, typeEvent) {
+                let eventProperties = {
+                    type: typeEvent,
+                    whoTriggered: whoElement,
                     name: "SearchFilterEvent@MenuStatistics",
-                    whoTriggered: EventName,
-                    type: "change"
-                })
-
+                }
 
                 this.initObjectComponentMain(eventProperties)
-
-                //** Emitir Evento **//
                 this.$bus.$emit("SearchFilterEvent@MenuStatistics", null)
             },
+
             managerEvents() {
 
                 //Se subscribe al evento de manager-group-select, cuándo todos los select son llenados
-                this.$bus.$on(this.componentManagerGroupSelect.referenceToReciveObjectSelected, object => {
+                this.$bus.$on(this.componentManagerGroupSelect.referenceToReciveObjectSelected, objectManagerGroup => {
 
-                    let eventProperties = this.getEventProperties({
+                    let eventProperties = {
+                        type: "selected",
                         name: "SelectedFieldsEvent@MenuStatistics",
                         whoTriggered: "componentManagerGroupSelect",
-                        type: "selected"
-                    })
+                    }
 
-                    if(object.whoTriggered == "period"){
+                    if (objectManagerGroup.whoTriggered == "period") {
                         eventProperties.whoTriggered = "PeriodComponentManagerGroupSelect"
                     }
 
                     this.initObjectComponentMain(eventProperties)
-                    this.mainComponentObject.objectValuesManagerGroupSelect = object
+                    this.mainComponentObject.objectValuesManagerGroupSelect = objectManagerGroup
 
                     //Emite evento, y pasa un objeto con los valores de los select de manager-group-select
                     // y el tipo de sección donde se encuentra, si es consolidado, puesto por grupo, etc
@@ -169,27 +191,14 @@
                     this.$bus.$emit("SelectedFieldsEvent@MenuStatistics", this.mainComponentObject)
 
 
-
                     //** Subscribir a un Evento **//
                     this.$bus.$off('SearchFilterEvent@MenuStatistics')
                     this.$bus.$on('SearchFilterEvent@MenuStatistics', object => {
-
                         //console.log('->MenuStatistics... On SearchFilterEvent@MenuStatistics and Emit SelectedFieldsEvent@MenuStatistics')
                         //** Emitir Evento **//
                         this.$bus.$emit("SelectedFieldsEvent@MenuStatistics", this.mainComponentObject)
                     })
                 })
-
-
-            },
-
-            getEventProperties(objectProperties){
-                let eventProperties = {
-                    name: objectProperties.name,
-                    whoTriggered: objectProperties.whoTriggered,
-                    type: objectProperties.type
-                }
-                return eventProperties
             },
 
             // Método que consite en asignar el nombre de identificación de la sección que ha sido seleccionada

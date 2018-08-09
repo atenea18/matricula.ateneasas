@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Group;
 use App\GroupPensum;
 use Auth;
 use App\Institution;
@@ -106,14 +107,7 @@ class StatisticsController extends Controller
 
     public function getGroupsByGrade(Request $request)
     {
-
-        $groups = DB::table('group')
-            ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
-            ->select('group.id', 'group.name', 'headquarter.name as headquarter_name', 'group.grade_id', 'group.working_day_id')
-            ->where('group.grade_id', '=', $request->grade_id)
-            ->where('headquarter.institution_id', '=', $this->institution->id)
-            ->get();
-
+        $groups = Group::getGroupsByGrade($this->institution->id,$request->grade_id);
 
         return $groups;
     }

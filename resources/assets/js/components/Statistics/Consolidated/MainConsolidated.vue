@@ -1,20 +1,12 @@
 <template>
     <div>
         <div class="row">
-            <div class="col-md-3">
-                <form class="navbar-form navbar-left">
-                    <a v-if="data.periods_id" type="submit" class="btn btn-default" target="_blank"
-                       :href="urlPdf">PDF</a>
-                </form>
-            </div>
-
-            <!--<button @click="imprint"> pdf</button>-->
-        </div>
-        <div class="row">
             <div class="col-md-12">
                 <template v-if="state">
                     <br>
-                    <table-consolidated id="table-consolidated" :objectInput="objectToStatsConsolidated"></table-consolidated>
+                    <table-consolidated id="table-consolidated"
+                                        :objectInput="objectToTableConsolidated">
+                    </table-consolidated>
                 </template>
             </div>
         </div>
@@ -26,7 +18,6 @@
     import ManagerGroupSelect from "../../partials/Form/GroupSelect/ManagerGroupSelect";
     import TableConsolidated from "./Table/TableConsolidated";
 
-
     export default {
         components: {
             TableConsolidated,
@@ -35,85 +26,47 @@
         name: "main-consolidated",
         data() {
             return {
-                objectToManagerGroupSelect: {
-                    referenceId: "statistics",
-                    referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.referenceId + '.managerGroupSelect',
-                    isSubGroup: false
-                },
-                objectToStatsConsolidated: {
+                state: false,
+                objectToTableConsolidated: {
+                    params: {},
                     asignatures: [],
                     enrollments: [],
-                    params: {}
                 },
-
-                state: false,
-                data: {},
-                urlPdf: "",
-                urlStream :''
-
-
+                objectToManagerGroupSelect: {
+                    isSubGroup: false,
+                    referenceId: "statistics",
+                    referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.referenceId + '.managerGroupSelect',
+                },
             }
         },
         created() {
             this.managerEvents()
+            this.initToast()
         },
         computed: {
             ...mapState([
                 'institutionOfTeacher',
                 'periodsworkingday'
             ]),
-
         },
         methods: {
-            imprint() {
-                /*
-                let url = '/ajax/PDFF'
-                let table = document.getElementById('table-consolidated')
-                let data = {
-                    contenido: ""+table.innerHTML
-                }
-                let _this = this
-                axios.post(url, {data}, {responseType: 'arraybuffer'}).then(function (response) {
-                    if (response.status == 200) {
-
-
-                        const url = window.URL.createObjectURL(new Blob([response.data], {type: 'application/pdf'}));
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.setAttribute('download', 'file.pdf');
-                        document.body.appendChild(link);
-                        link.click();
-
-
-
-
-                    }
-                }).catch(function (error) {
-                    console.log(error);
-                });
-                */
-            },
-            printConsolidated() {
-                if (this.data.periods_id) {
-
-                    let url = '/pdf/consolidateByGroup'
-
-                    let params = {
-                        grade_id: this.data.grade_id,
-                        group_id: this.data.group_id,
-                        period_id: this.data.periods_id,
-                        institution_id: this.$store.state.institutionOfTeacher.id
-                    }
-
-                    let _this = this
-                    axios.get(url, {params}).then(res => {
-                        var blob = new Blob([this.res], {type: 'application/pdf'});
-                        var link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = "report.pdf";
-                        link.click();
-                    })
-
+            initToast() {
+                toastr.options = {
+                    "closeButton": false,
+                    "debug": false,
+                    "newestOnTop": true,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "5000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
                 }
             },
 
@@ -122,16 +75,11 @@
                 //mostrar la sección de consolidado con su respectiva consulta, ya que este evento devuelve
                 //un objeto con los datos seleccionados de manager-group-select
                 this.$bus.$off('SelectedFieldsEvent@MenuStatistics')
-                this.$bus.$on('SelectedFieldsEvent@MenuStatistics', componentObjectMenuStatistics => {
+                this.$bus.$on('SelectedFieldsEvent@MenuStatistics', objectMenuStatistics => {
 
+                    this.objectToTableConsolidated.params = objectMenuStatistics
 
-
-
-                    //Se asigna el objeto fieldSelects a variable local, objeto que tiene los datos seleccionados
-                    //de manager-group-select
-                    this.objectToStatsConsolidated.params = componentObjectMenuStatistics
-
-                    this.managerSelectedFieldsEvent(componentObjectMenuStatistics)
+                    this.managerSelectedFieldsEvent(objectMenuStatistics)
 
                 })
 
@@ -139,42 +87,46 @@
                 // si algún select de manager-group-select fue modificado
                 this.$bus.$off('SelectedCurrentVIew@MenuStatistics')
                 this.$bus.$on('SelectedCurrentVIew@MenuStatistics', object => {
-                    this.managerSelectedFieldsEvent()
+                    this.objectToTableConsolidated.params.eventInformation.whoTriggered = 'json'
+                    this.managerSelectedFieldsEvent(this.objectToTableConsolidated.params)
                 })
             },
 
-            managerSelectedFieldsEvent(componentObject) {
-                //console.log("->StatsConsolidated... Function managerSelectedFieldsEvent")
+            managerSelectedFieldsEvent(objectMenuStatistics) {
 
-                if (typeof componentObject == "undefined") {
-                    componentObject = this.objectToStatsConsolidated.params
+                if (this.$store.state.currentView =='main-consolidated') {
+                    this.getWhoTriggered(objectMenuStatistics)
                 }
-
-                if (this.$store.state.currentView == 'main-consolidated') {
-                    if (componentObject.eventInformation.whoTriggered == "areas" || componentObject.eventInformation.whoTriggered == "componentManagerGroupSelect") {
-                        //console.log("->StatsConsolidated... Evento realiza consulta de consolidados")
-                        this.managerQueryForFilterConsolidated(componentObject)
-                    }
-                }
-
             },
 
-            managerQueryForFilterConsolidated(componentObject) {
+            getWhoTriggered(objectMenuStatistics) {
+                let whoTriggered = objectMenuStatistics.eventInformation.whoTriggered
+
+                if (
+                    whoTriggered == 'pdf' ||
+                    whoTriggered == 'areas' ||
+                    whoTriggered == 'excel' ||
+                    whoTriggered == 'componentManagerGroupSelect') {
+                    this.managerQueryForFilterConsolidated(objectMenuStatistics)
+                }
+            },
+
+            managerQueryForFilterConsolidated(objectMenuStatistics) {
 
                 let params = {
-
                     institution_id: this.$store.state.institutionOfTeacher.id,
-                    grade_id: componentObject.objectValuesManagerGroupSelect.grade_id,
-                    group_id: componentObject.objectValuesManagerGroupSelect.group_id,
-                    periods_id: componentObject.objectValuesManagerGroupSelect.periods_id,
+                    grade_id: objectMenuStatistics.objectValuesManagerGroupSelect.grade_id,
+                    group_id: objectMenuStatistics.objectValuesManagerGroupSelect.group_id,
+                    periods_id: objectMenuStatistics.objectValuesManagerGroupSelect.periods_id,
 
-                    is_filter_areas: componentObject.filter.isAreas,
-                    is_subgroup: componentObject.objectValuesManagerGroupSelect.isSubGroup,
+                    is_filter_areas: objectMenuStatistics.filter.isAreas,
+                    is_filter_all_groups: objectMenuStatistics.filter.isAllGroups,
+                    is_accumulated: objectMenuStatistics.filter.isAcumulatedPeriod,
+                    is_subgroup: objectMenuStatistics.objectValuesManagerGroupSelect.isSubGroup,
 
                     url_subjects: '',
                     url_consolidated: '',
-                    type_response:'json',
-
+                    type_response: objectMenuStatistics.eventInformation.whoTriggered,
                 }
 
                 params.url_subjects = '/ajax/getSubjects'
@@ -184,34 +136,44 @@
             },
 
             getContentConsolidated(params) {
-                //this.state = false
+                // Petición para obetener la cabecera de la tabla (areas o asignaturas)
                 axios.get(params.url_subjects, {params}).then(res => {
-                    //Trae las asignaturas correpondiente a los datos seleccionados
-                    this.objectToStatsConsolidated.asignatures = res.data
-                    //console.log(this.objectToStatsConsolidated.asignatures)
-                    //Trae la información correspondiente al consolidado
-                    this.getTableConsolidated(params)
+                    this.objectToTableConsolidated.asignatures = res.data
+                    //Si petición anterior es ok
+                    this.dispatcherConsolidated(params)
                 })
             },
 
             // Método que trae todos los datos sobre el consolidado a consultar
-            getTableConsolidated(params) {
+            dispatcherConsolidated(params) {
 
-                this.urlPdf = "/pdf/consolidateByGroup?grade_id=" + params.grade_id +
-                    "&group_id=" + params.group_id +
-                    "&period_id=" + params.periods_id + "&institution_id=" + params.institution_id +
-                    "&is_subgroup=" + params.isSubGroup
+                switch (params.type_response) {
+                    case 'pdf':
+                        this.executePDF(params)
+                        break;
+                    case 'excel':
+                        toastr.success('En desarrollo...')
+                        break;
+                    default:
+                        this.executeDefault(params)
+                }
+            },
 
+            executePDF(params) {
+                var esc = encodeURIComponent;
+                var query = Object.keys(params)
+                    .map(k => esc(k) + '=' + esc(params[k]))
+                    .join('&');
+                let url = params.url_consolidated + '?' + query;
+                window.open(url);
+            },
 
-                this.data = params
+            executeDefault(params) {
                 axios.get(params.url_consolidated, {params}).then(res => {
-                    // Asignamos objeto que contiene la información correspondiente del consolidado
-                    // a variable local, variable que es pasada como parametro al componente table-consolidated
-                    this.objectToStatsConsolidated.enrollments = res.data
                     // Cuando la variable local tiene la información, le asignamos valor true a la variable
                     // state, para que renderice el componente table-consolidated
+                    this.objectToTableConsolidated.enrollments = res.data
                     this.state = true
-                    this.$bus.$emit("ya", params)
                 })
             },
         }

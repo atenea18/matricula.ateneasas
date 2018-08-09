@@ -30,7 +30,7 @@ import VueGoodTable from 'vue-good-table';
 import 'vue-good-table/dist/vue-good-table.css'
 import store from './store'
 
-
+import VueToastr from 'toastr'
 
 const moment = require('moment')
 require('moment/locale/es')
@@ -40,6 +40,7 @@ Vue.use(require('vue-moment'), {
 })
 Vue.use(VueSweetAlert);
 Vue.use(VueGoodTable);
+Vue.use(VueToastr)
 Vue.use(EventBus);
 Vue.use(Tabs);
 
