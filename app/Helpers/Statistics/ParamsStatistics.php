@@ -48,9 +48,10 @@ class ParamsStatistics
         $this->period_selected_id = $request->periods_id;
         $this->is_accumulated = $request->is_accumulated;
         $this->is_filter_subjects = $request->is_filter_areas;
-        $this->group_object = Group::findOrfail($request->group_id);
+        $this->group_object = (object) Group::getGroupsById($request->institution_id, $request->group_id)[0];
         $this->is_filter_all_groups = $request->is_filter_all_groups;
         $this->institution_object = Institution::findOrfail($request->institution_id);
+
     }
 
     public function initConsolidated()
