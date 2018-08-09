@@ -20,6 +20,7 @@ class PdfConsolidated extends AbstractConsolidated
     private $export = null;
     private $params = null;
     private $enrollments_by_groups = [];
+    private $name_pdf = 'Consolidados';
 
     public function __construct(ParamsStatistics $params)
     {
@@ -36,13 +37,14 @@ class PdfConsolidated extends AbstractConsolidated
                 $this->params->group_object = $group;
                 $this->createVectorGroupForPDF();
             }
-
+            $this->name_pdf = $this->name_pdf.' '.$this->params->group_object->grade_name;
         } else {
             $this->createVectorGroupForPDF();
+            $this->name_pdf = $this->name_pdf.' '.$this->params->group_object->name;
         }
 
         $this->export = new ExportPdf('Landscape', 'Letter', $this->enrollments_by_groups, $this->params);
-        return $this->export->createConsolidated();
+        return $this->export->createConsolidated($this->name_pdf);
 
     }
 
@@ -52,10 +54,14 @@ class PdfConsolidated extends AbstractConsolidated
         parent::__construct($this->params);
         parent::getProcessedRequest();
         $information = (object)array(
-            'group_id' => $this->params->group_object->id,
-            'name' => $this->params->group_object->name,
+            'enrollments' => $this->vectorEnrollments,
             'subjects' => $this->params->vectorSubjects,
-            'enrollments' => $this->vectorEnrollments
+            'name' => $this->params->group_object->name,
+            'group_id' => $this->params->group_object->id,
+            'grade_name' => $this->params->group_object->grade_name,
+            'director_name' => $this->params->group_object->director_name,
+            'headquarter_name' =>$this->params->group_object->headquarter_name,
+            'working_day_name' => $this->params->group_object->working_day_name,
         );
 
         array_push($this->enrollments_by_groups, $information);
