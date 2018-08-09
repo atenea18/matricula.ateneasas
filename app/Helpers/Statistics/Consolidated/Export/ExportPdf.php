@@ -19,12 +19,13 @@ class ExportPdf extends Fpdi
     private $size_column = null;
     private $size_column_fixed = null;
     private $enrollments_by_groups = [];
+    private $num_is_accumulated = 2;
 
     // Se define el width de cada celda
     private $w_num = 5;
     private $w_per = 6;
     private $w_tav = 7;
-    private $w_pgg = 7;
+    private $w_pgg = 8;
     private $w_rat = 10;
     private $w_name = 47;
     private $w_margin = 20;
@@ -163,11 +164,26 @@ class ExportPdf extends Fpdi
      */
     private function columnsBodyTableFixed($enrollment, $count)
     {
-        $this->Cell($this->w_num, $this->h_cell, $count, 1, 0, 'C');
+        $this->Cell($this->w_num, $this->getNumMergePlus(), $count, 1, 0, 'C');
         $this->CellFullName($enrollment);
-        $this->Cell($this->w_per, $this->h_cell, $this->params->period_selected_id, 1, 0, 'C');
+
     }
 
+    private function getNumMergePlus()
+    {
+        if ($this->params->is_accumulated == "true")
+            return $this->h_cell * ($this->params->num_of_periods + $this->num_is_accumulated);
+        else
+            return $this->h_cell;
+    }
+
+    private function getNumMerge()
+    {
+        if ($this->params->is_accumulated == "true")
+            return $this->h_cell * $this->params->num_of_periods;
+        else
+            return $this->h_cell;
+    }
 
     /**
      * @param $enrollment
@@ -176,16 +192,50 @@ class ExportPdf extends Fpdi
     private function forEachEvaluatedPeriods($enrollment, $vector)
     {
         foreach ($enrollment->evaluatedPeriods as $rowEvaluatePeriod) {
-
-            if ($rowEvaluatePeriod['period_id'] == $this->params->period_selected_id) {
-
+            if ($this->params->is_accumulated == "true") {
+                $this->SetX(62);
+                $this->SetFont('Arial', '', 7.7);
+                $this->SetTextColor(0, 0, 0);
+                $this->Cell($this->w_per, $this->h_cell, $rowEvaluatePeriod['period_id'], 1, 0, 'C');
                 $this->Cell($this->w_tav, $this->h_cell, $rowEvaluatePeriod['tav'], 1, 0, 'C');
                 $this->Cell($this->w_rat, $this->h_cell, $rowEvaluatePeriod['rating'], 1, 0, 'C');
                 $this->Cell($this->w_pgg, $this->h_cell, $rowEvaluatePeriod['average'], 1, 0, 'C');
 
                 $this->searchNotes($vector, $rowEvaluatePeriod['notes']);
+
+            } else {
+                if ($rowEvaluatePeriod['period_id'] == $this->params->period_selected_id) {
+
+                    $this->Cell($this->w_per, $this->h_cell, $rowEvaluatePeriod['period_id'], 1, 0, 'C');
+                    $this->Cell($this->w_tav, $this->h_cell, $rowEvaluatePeriod['tav'], 1, 0, 'C');
+                    $this->Cell($this->w_rat, $this->h_cell, $rowEvaluatePeriod['rating'], 1, 0, 'C');
+                    $this->Cell($this->w_pgg, $this->h_cell, $rowEvaluatePeriod['average'], 1, 0, 'C');
+
+                    $this->searchNotes($vector, $rowEvaluatePeriod['notes']);
+                }
             }
         }
+        if ($this->params->is_accumulated == "true") {
+
+            $average = $enrollment->accumulatedAverage;
+
+            $this->SetFillColor(247, 251, 254);
+            $this->SetFont('Arial', '', 8);
+            $this->SetTextColor(0, 0, 0);
+            $this->SetX(15);
+            $this->Cell(70, $this->h_cell, self::transformMay('Acumulados'), 1, 0, 'L',true);
+
+            $this->Cell(8, $this->h_cell, ROUND($average, 2), 1, 0, 'L',true);
+            $this->searchAccumulatedNotes($enrollment, $vector);
+
+            //requiredValuation
+            $this->SetFont('Arial', '', 8);
+            $this->SetTextColor(0, 0, 0);
+            $this->SetX(15);
+            $this->Cell(78, $this->h_cell, self::transformMay('Valoración Requerida'), 1, 0, 'L',true);
+            $this->searchRequiredNotes($enrollment, $vector);
+        }
+
     }
 
 
@@ -200,12 +250,51 @@ class ExportPdf extends Fpdi
             foreach ($notes as $note) {
                 if ($subject->asignatures_id == $note->asignatures_id) {
                     $value = self::processNote($note->value, $note->overcoming);
+                    $this->setDanger($value, $this->params->middle_point);
                     $this->Cell($this->size_column, $this->h_cell, ROUND($value, 1), 1, 0, 'C');
+                    $this->setTextBlack();
                     $state = true;
                 }
             }
-            if(!$state)
+            if (!$state)
                 $this->Cell($this->size_column, $this->h_cell, '', 1, 0, 'C');
+
+        }
+        $this->ln();
+    }
+
+    private function searchAccumulatedNotes($enrollment, $vector)
+    {
+        foreach ($vector->subjects as $key => $subject) {
+            $state = false;
+            foreach ($enrollment->accumulatedSubjects as $accumulated) {
+                if ($subject->asignatures_id == $accumulated->asignatures_id) {
+                    $value = self::processNote($accumulated->average, 0);
+                    $this->setDanger($value, $this->params->middle_point);
+                    $this->Cell($this->size_column, $this->h_cell, ROUND($value, 2), 1, 0, 'C',true);
+                    $state = true;
+                }
+            }
+            if (!$state)
+                $this->Cell($this->size_column, $this->h_cell, '', 1, 0, 'C',true);
+
+        }
+        $this->ln();
+    }
+
+    private function searchRequiredNotes($enrollment, $vector)
+    {
+        foreach ($vector->subjects as $key => $subject) {
+            $state = false;
+            foreach ($enrollment->requiredValuation as $required) {
+                if ($subject->asignatures_id == $required->asignatures_id) {
+                    $value = self::processNote($required->required, 0);
+                    $this->Cell($this->size_column, $this->h_cell, ROUND($value, 2), 1, 0, 'C',true);
+                    $state = true;
+                }
+            }
+            if (!$state)
+                $this->Cell($this->size_column, $this->h_cell, '', 1, 0, 'C',true);
 
         }
         $this->ln();
@@ -232,11 +321,26 @@ class ExportPdf extends Fpdi
             return $overcomingAux;
     }
 
+    private function setDanger($note, $limit)
+    {
+        if ($note < $limit) {
+            $this->SetTextColor(255, 0, 0);
+        } else {
+            $this->SetTextColor(0, 0, 0);
+        }
+    }
+
+    private function setTextBlack()
+    {
+        $this->SetTextColor(0, 0, 0);
+
+    }
+
     private function CellFullName($enrollment)
     {
         $this->SetFont('Arial', '', 7);
-        $this->Cell($this->w_name, $this->h_cell, self::transformFullName($enrollment), 1, 0, 'L');
-        $this->SetFont('Arial', '', 8);
+        $this->Cell($this->w_name, $this->getNumMerge(), self::transformFullName($enrollment), 1, 0, 'L');
+
     }
 
     private static function transformFullName($enrollment)

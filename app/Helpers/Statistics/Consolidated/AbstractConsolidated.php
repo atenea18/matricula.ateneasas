@@ -67,6 +67,7 @@ abstract class AbstractConsolidated
             $this->addPropertyToEnrollmentPeriodsEvaluated($period);
         }
 
+
         $this->addPropertiesToEnrollments();
         $this->addPropertyToEnrollmentsAccumulatedAsignatures();
         $this->addPropertyToEnrollmentsRequiredValuation();
@@ -291,12 +292,14 @@ abstract class AbstractConsolidated
             foreach ($enrollment->evaluatedPeriods as $rowEvaluatedPeriod) {
                 foreach ($rowEvaluatedPeriod['notes'] as $note) {
                     if ($subject->asignatures_id == $note->asignatures_id) {
-                        $info = (object)array(
-                            'period_id' => $rowEvaluatedPeriod['period_id'],
-                            'percent' => $rowEvaluatedPeriod['percent']
-                        );
-                        array_push($periodsEvaluated, $info);
-                        $sum += $this->calculateAccumulatedNotes($note, $rowEvaluatedPeriod, $countTavAsignatures);
+                        if($note->value > 0){
+                            $info = (object)array(
+                                'period_id' => $rowEvaluatedPeriod['period_id'],
+                                'percent' => $rowEvaluatedPeriod['percent']
+                            );
+                            array_push($periodsEvaluated, $info);
+                            $sum += $this->calculateAccumulatedNotes($note, $rowEvaluatedPeriod, $countTavAsignatures);
+                        }
                     }
                 }
             }
@@ -340,18 +343,23 @@ abstract class AbstractConsolidated
         foreach ($this->vectorSubjects as $subject) {
             $valueRequired = 0;
 
+
             foreach ($enrollment->accumulatedSubjects as $rowAccumulated) {
                 if ($subject->asignatures_id == $rowAccumulated->asignatures_id) {
+
                     $rest = $this->middle_point - $rowAccumulated->average;
-                    $missingPeriod = $this->num_of_periods - $rowAccumulated->tav;
+                    $missingPeriod = $this->num_of_periods - count($rowAccumulated->periods);
                     $divide = 0;
 
-                    if ($missingPeriod > 0) {
+
+                    if ($missingPeriod > 0 && $missingPeriod < $this->num_of_periods) {
                         $divide = $rest / $missingPeriod;
                         $index = count($rowAccumulated->periods);
+
                         $percent = $this->vectorPeriods[$index]->percent / 100;
                         $valueRequired = $divide / $percent;
                     }
+
 
                 }
 
