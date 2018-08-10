@@ -180,9 +180,11 @@ class Group extends Model
     public static function getGroupsByGrade($institution_id, $grade_id)
     {
         return $groups = Group::
-        select('group.id', 'group.name', 'headquarter.name as headquarter_name', 'grade.name as grade_name',
-            'group.grade_id', 'group.working_day_id','working_day.name as working_day_name', 'group.working_day_id',
-            DB::raw("CONCAT(managers.name,' ',managers.last_name) as director_name")
+        select('group.id', 'group.name',
+            DB::raw("UPPER(headquarter.name) as headquarter_name"), 'grade.name as grade_name',
+            'group.grade_id', 'group.working_day_id',
+            DB::raw("UPPER(working_day.name) as working_day_name"), 'group.working_day_id',
+            DB::raw("UPPER(CONCAT(managers.name,' ',managers.last_name)) as director_name")
         )
             ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
             ->leftJoin('group_directors', 'group_directors.group_id', '=', 'group.id')
@@ -199,9 +201,11 @@ class Group extends Model
     public static function getGroupsById($institution_id, $group_id)
     {
         return $groups = Group::
-        select('group.id', 'group.name', 'headquarter.name as headquarter_name', 'grade.name as grade_name',
-            'group.grade_id', 'group.working_day_id','working_day.name as working_day_name', 'group.working_day_id',
-            DB::raw("CONCAT(managers.name,' ',managers.last_name) as director_name")
+        select('group.id', 'group.name',
+            DB::raw("UPPER(headquarter.name) as headquarter_name"), 'grade.name as grade_name',
+            'group.grade_id', 'group.working_day_id',
+            DB::raw("UPPER(working_day.name) as working_day_name"), 'group.working_day_id',
+            DB::raw("UPPER(CONCAT(managers.name,' ',managers.last_name)) as director_name")
         )
             ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
             ->leftJoin('group_directors', 'group_directors.group_id', '=', 'group.id')
