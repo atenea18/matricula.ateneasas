@@ -44,7 +44,7 @@ class PdfConsolidated extends AbstractConsolidated
         }
 
         $this->export = new ExportPdf('Landscape', 'Letter', $this->enrollments_by_groups, $this->params);
-        return $this->export->createConsolidated($this->name_pdf);
+        return $this->export->create($this->name_pdf);
 
     }
 
