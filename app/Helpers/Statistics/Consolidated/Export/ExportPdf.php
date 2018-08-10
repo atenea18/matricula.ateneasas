@@ -52,13 +52,15 @@ class ExportPdf extends Fpdi
 
     public function Header()
     {
-        $this->SetLineWidth(0.001);
-        $this->SetDrawColor(76, 76, 76);
+        if ($this->enrollmentByGroup) {
+            $this->SetLineWidth(0.001);
+            $this->SetDrawColor(76, 76, 76);
 
-        $this->TitleInstitutionHeader();
-        $this->TitleInformationGroupHeader();
+            $this->TitleInstitutionHeader();
+            $this->TitleInformationGroupHeader();
 
-        $this->HeaderTableConsolidated($this->enrollmentByGroup);
+            $this->HeaderTableConsolidated($this->enrollmentByGroup);
+        }
     }
 
 
@@ -112,7 +114,8 @@ class ExportPdf extends Fpdi
     public function create($name_pdf)
     {
         foreach ($this->enrollments_by_groups as $enrollmentByGroup) {
-            $this->BodyTableConsolidated($enrollmentByGroup);
+            if (count($enrollmentByGroup->subjects))
+                $this->BodyTableConsolidated($enrollmentByGroup);
         }
         $this->Output('D', $name_pdf . '.pdf', true);
     }
