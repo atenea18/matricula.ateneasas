@@ -158,11 +158,12 @@ class ExportPdf extends Fpdi
             $this->SetFillColor(247, 251, 254);
             $this->SetX(15);
             $this->Cell(70, $this->h_cell, $this->transformMay('Acumulados'), 1, 0, 'L', true);
-            $this->Cell(8, $this->h_cell, ROUND($average, 2), 1, 0, 'L', true);
+            $this->Cell(8, $this->h_cell, ROUND($average, 1), 1, 0, 'L', true);
             $this->searchAccumulatedNotes($enrollment, $enrollmentByGroup);
+            
             //requiredValuation
             $this->SetX(15);
-            $this->Cell(78, $this->h_cell, $this->transformMay('ValoraciÃ³n Requerida'), 1, 0, 'L', true);
+            $this->Cell(78, $this->h_cell, $this->transformMay('Valoraci¨®n Requerida'), 1, 0, 'L', true);
             $this->searchRequiredNotes($enrollment, $enrollmentByGroup);
         }
     }
@@ -232,7 +233,7 @@ class ExportPdf extends Fpdi
                 if ($subject->asignatures_id == $accumulated->asignatures_id) {
                     $value = self::processNote($accumulated->average, 0);
                     $this->setDanger($value, $this->params->middle_point);
-                    $this->Cell($this->size_column, $this->h_cell, ROUND($value, 2), 1, 0, 'C', true);
+                    $this->Cell($this->size_column, $this->h_cell, ROUND($value, 1), 1, 0, 'C', true);
                     $this->setTextBlack();
                     $state = true;
                 }
@@ -251,7 +252,7 @@ class ExportPdf extends Fpdi
             foreach ($enrollment->requiredValuation as $required) {
                 if ($subject->asignatures_id == $required->asignatures_id) {
                     $value = self::processNote($required->required, 0);
-                    $this->Cell($this->size_column, $this->h_cell, ROUND($value, 2), 1, 0, 'C', true);
+                    $this->Cell($this->size_column, $this->h_cell, ROUND($value, 1), 1, 0, 'C', true);
                     $state = true;
                 }
             }
