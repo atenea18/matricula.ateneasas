@@ -13,8 +13,14 @@
 				<select name="" id="sheetTypeTeacher" class="form-control">
 					<option value="">- Selecione un tipo -</option>
 					<option value="{{route('student.attendances.pdf')}}">Asistencia</option>
-					{{-- <option value="{{route('evaluationSheet.pdf')}}">Evaluación</option> --}}
+					<option value="{{route('evaluationSheet.pdf')}}">Evaluación</option>
 				</select>
+			</div>
+		</div>
+		<div class="col-md-2">
+			<div class="form-group">
+				<label for="period_id">Periodo</label>
+				{!! Form::select('period_id', $periods, null, ['class'=>'form-control','requierd'=>true]) !!}
 			</div>
 		</div>
 	</div>
@@ -35,10 +41,11 @@
 				{!! Form::select('groups[]', [], null, ['id'=>'sheet_pa_teacher_to','class'=>'form-control', 'multiple'=>true, 'size'=>8]) !!}
 				{!! Form::hidden('year', date('Y'), []) !!}
 				{!! Form::hidden('institution_id', $institution->id, []) !!}
+				{!! Form::hidden('evaluationType', 'asignature', []) !!}
 			</div>
 		</div>
 	</div>
-	{{-- <div class="row">
+	<div class="row">
 		<div class="col-md-offset-3 col-md-3">
 			<div class="form-group">
 				{!! Form::label('orientation', 'Orientación', []) !!}
@@ -65,7 +72,7 @@
 				{!! Form::hidden('group_type', 'group', []) !!}
 			</div>
 		</div>
-	</div> --}}
+	</div>
 	<div class="row text-center">
 		<div class="form-group">
 			<button class="btn btn-primary" type="submit" style="margin-top: 1.5em;">Imprimir</button>
