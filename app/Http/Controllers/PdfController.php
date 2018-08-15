@@ -113,8 +113,10 @@ class PdfController extends Controller
             mkdir($path);
         }
 
-        foreach($request->groups as $key => $group_id)
+        foreach($request->groups as $key => $groupArray)
         {
+            $group_id = explode('-', $groupArray)[0];
+
             $group = Group::findOrFail($group_id);
             $institution = $group->headquarter->institution;
             $schoolYear = Schoolyear::where('year','=',$request->year)->first();
@@ -236,15 +238,16 @@ class PdfController extends Controller
             mkdir($path);
         }
 
-        foreach($request->groups as $key => $group_id)
+        foreach($request->groups as $key => $group)
         {
 
-            $helper = new EvaluationSheetHelper($group_id, $request, $periods);
+            $groupArray = explode('-', $group);
+            $helper = new EvaluationSheetHelper($groupArray[0], $request, $periods);
 
-           $pensums = $helper->getPensums();
+            $pensums = (isset ($request->evaluationType) && $request->evaluationType == 'asignature') ? $helper->getByAsignature($groupArray[1]) : $helper->getPensums();
 
-           if(count($pensums) > 0)
-           {
+            if(count($pensums) > 0)
+            {
                 foreach($pensums['pensums'] as $key => $pensum) { 
 
                     // dd($pensum);
@@ -256,10 +259,9 @@ class PdfController extends Controller
                     $evaluationSheet->pensum = $pensum;
                     $evaluationSheet->periods = $periods;
                     $evaluationSheet->create();
-                    $evaluationSheet->Output($path.$group_id.$key.".pdf", "F");
+                    $evaluationSheet->Output($path.$groupArray[0].$key.".pdf", "F");
                 }
-           }
-
+            }
         }
 
         $this->merge($path, 'Planilla-Evaluacion'.time()."_".$request->institution_id, $request->orientation);        
