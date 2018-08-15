@@ -221,7 +221,7 @@
 					var options = '';
 					$.each(data.data, function(indx, el){
 						
-						options += '<option value="'+el.group.id+'">' + el.group.name +" - "+el.asignature.name+ '</option>';
+						options += '<option value=" '+el.group.id+'-'+el.asignatures_id+'">' + el.group.name +" - "+el.asignature.name+ '</option>';
 					});
 
 					
