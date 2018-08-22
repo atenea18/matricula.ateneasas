@@ -26,9 +26,17 @@ class ForgotPasswordController extends Controller
 
     	// Obtenemos al usuario, extraemos el email y guardamos el token en la 
     	// base de datos
-    	$response = $this->sendResetLink($request);
+    	$manager = $this->sendResetLink($request);
 
-    	return $response;
+        if(is_null($manager))
+        {
+            flash("Este usuario no esta registrado")->error();
+            return back();
+        }
+
+        flash("Se ha enviado un correo para restablecer su contraseña, por favor verifique su dirección de correo {$manager->address->email}")->success();
+
+    	return back();
     }
 
     protected function validateUsername(Request $request)
@@ -44,20 +52,21 @@ class ForgotPasswordController extends Controller
     {
     	$manager = Manager::where('username', $request->username)->first();
 
+
     	// Si el manager es nulo retornamo null
-    	if(is_null($manager))
-    		return null;
+    	if(!is_null($manager))
+        {
+            // Obtenemos un token
+            $token = $this->getToken($manager);
 
-    	// Obtenemos un token
-    	$token = $this->getToken($manager);
+            // Guardamos el token en la base de datos
+            $response = $this->saveLinkToken($token, $manager->username);
 
-    	// Guardamos el token en la base de datos
-    	$response = $this->saveLinkToken($token, $manager->username);
+            // enviamos el correo
+            $this->sendNotificationEmail($manager, $token);
+        }
 
-    	// enviamos el correo
-    	return $this->sendNotificationEmail($manager, $token);
-
-    	// return $response;
+    	return $manager;
     }
 
     protected function getToken(Manager $manager)

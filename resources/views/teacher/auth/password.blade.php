@@ -8,6 +8,8 @@
                 <div class="panel-heading">Cambiar Contraseña</div>
 
                 <div class="panel-body">
+                    @include('flash::message')
+                    
                     <form class="form-horizontal" method="POST" action="{{ url('teacher_password/reset') }}">
                         {{ csrf_field() }}
 
