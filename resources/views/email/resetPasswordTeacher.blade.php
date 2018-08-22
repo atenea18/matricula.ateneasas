@@ -1,6 +1,4 @@
 @component('mail::message')
-# Introduction
-
 Hola! **{{$manager->fullName}}**
 
 Hemos recivio una notificación para cambiar tu contraseña
@@ -12,6 +10,6 @@ Hemos recivio una notificación para cambiar tu contraseña
 Cambiar contraseña
 @endcomponent --}}
 
-Thanks,<br>
+Gracias por escogernos,<br>
 {{ config('app.name') }}
 @endcomponent

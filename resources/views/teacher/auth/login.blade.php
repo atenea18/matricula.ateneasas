@@ -7,6 +7,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">Iniciar sesión (Docente)</div>
                 <div class="panel-body">
+                    @include('flash::message')
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/teacher_login') }}">
                         {{ csrf_field() }}
 
@@ -38,11 +39,11 @@
                             </div>
                         </div>
 
-                       {{--  <div class="text-center">
+                        <div class="text-center">
                             <a class="btn btn-link" href="{{ url('teacher_password/reset') }}">
                                 Olvide mi contraseña?
                             </a>
-                        </div> --}}
+                        </div>
 
                         <div class="form-group">
                             <div class="col-md-8 col-md-offset-4">

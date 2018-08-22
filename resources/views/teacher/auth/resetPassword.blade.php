@@ -8,17 +8,13 @@
                 <div class="panel-heading">Restablecer contraseña</div>
 
                 <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+                    @include('flash::message')
 
                     <form class="form-horizontal" method="POST" action="{{ url('/teacher_password/email') }}">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
-                            <label for="username" class="col-md-4 control-label">Correo Electronico</label>
+                            <label for="username" class="col-md-4 control-label">Usuario</label>
 
                             <div class="col-md-6">
                                 <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}">
