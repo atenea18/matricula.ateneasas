@@ -109,8 +109,8 @@ class GroupPensum extends Model
     public static function getAsignaturesByGroup($params)
     {
         return $asignatures = self::select(
-                'asignatures.abbreviation', 'asignatures.name',
-                'group_pensum.asignatures_id', 'group_pensum.ihs', 'group_pensum.order', 'group_pensum.percent')
+            'asignatures.abbreviation', 'asignatures.name',
+            'group_pensum.asignatures_id', 'group_pensum.ihs', 'group_pensum.order', 'group_pensum.percent')
             ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
             ->where('group_pensum.group_id', '=', $params->group_id)
             ->get();
@@ -119,14 +119,15 @@ class GroupPensum extends Model
     public static function getAreasByGroup($params)
     {
         return $asignatures = self::select(
-                'areas.abbreviation', 'areas.name',
-                'group_pensum.areas_id as asignatures_id', 'group_pensum.ihs')
+            'areas.abbreviation', 'areas.name',
+            'group_pensum.areas_id as asignatures_id', 'group_pensum.ihs')
             ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
             ->where('group_pensum.group_id', '=', $params->group_id)
             ->groupBy('areas.id')
             ->get();
     }
 
+    //Diferencia -> parametro
     public static function getAsignaturesByGroupX($group_id)
     {
         return $asignatures = self::select(
@@ -147,4 +148,81 @@ class GroupPensum extends Model
             ->groupBy('areas.id')
             ->get();
     }
+
+
+    //Para Controlador Evaluation
+
+    public static function getAsignaturesByInstitution($institution_id)
+    {
+        return $asignatures = self::select(
+            'asignatures.id as asignature_id', 'asignatures.name as asignature_name',
+            'areas.id as area_id', 'areas.name as area_name',
+            'group.id as group_id', 'group.name as group_name',
+            'grade.id as grade_id', 'grade.name as grade_name', 'group_pensum.subjects_type_id',
+            'group_pensum.id as group_pensum_id',
+            'headquarter.id as headquarter_id', 'headquarter.name as headquarter_name'
+        )
+            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
+            ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
+            ->join('group','group.id','=','group_pensum.group_id')
+            ->join('grade','grade.id','=','group.grade_id')
+            ->join('headquarter','headquarter.id','=','group.headquarter_id')
+            ->where('headquarter.institution_id','=',$institution_id)
+            ->get();
+    }
+
+    public static function getAreasByInstitution($institution_id)
+    {
+        return $asignatures = self::select(
+            'areas.name as area_name', 'areas.id as area_id','group.id as group_id')
+            ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
+            ->join('group','group.id','=','group_pensum.group_id')
+            ->join('headquarter','headquarter.id','=','group.headquarter_id')
+            ->where('headquarter.institution_id','=',$institution_id)
+            ->groupBy('group.id','areas.id')
+            ->get();
+    }
+
+    public static function getAsignaturesByTeacherInstitution($institution_id ,$teacher_id)
+    {
+        return $asignatures = self::select(
+            'asignatures.id as asignature_id', 'asignatures.name as asignature_name',
+            'areas.id as area_id', 'areas.name as area_name',
+            'group.id as group_id', 'group.name as group_name',
+            'grade.id as grade_id', 'grade.name as grade_name', 'group_pensum.subjects_type_id',
+            'group_pensum.id as group_pensum_id',
+            'headquarter.id as headquarter_id', 'headquarter.name as headquarter_name'
+            )
+            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
+            ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
+            ->join('group','group.id','=','group_pensum.group_id')
+            ->join('grade','grade.id','=','group.grade_id')
+            ->join('headquarter','headquarter.id','=','group.headquarter_id')
+            ->where('group_pensum.teacher_id', '=', $teacher_id)
+            ->where('headquarter.institution_id','=',$institution_id)
+            ->get();
+    }
+
+    public static function getAreasByTeacherInstitution($teacher_id)
+    {
+        return $asignatures = self::select(
+            'areas.name as area_name', 'areas.id as area_id','group_pensum.group_id')
+            ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
+            ->where('group_pensum.teacher_id', '=', $teacher_id)
+            ->groupBy('group_pensum.group_id','areas.id')
+            ->get();
+    }
+
+    public static function getAsignaturesByTeacher($teacher_id)
+    {
+        return $asignatures = self::select(
+            'asignatures.id', 'asignatures.abbreviation', 'asignatures.name', 'asignatures.subjects_type_id',
+            'asignatures.created_at', 'asignatures.updated_at')
+            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
+            ->where('group_pensum.teacher_id', '=', $teacher_id)
+            ->groupBy('group_pensum.asignatures_id')
+            ->get();
+    }
+
+
 }

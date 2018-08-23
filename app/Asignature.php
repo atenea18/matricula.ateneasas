@@ -23,4 +23,15 @@ class Asignature extends Model
     {
         return $this->hasMany(EvaluationPeriod::class, 'asignatures_id');
     }
+
+    public static function getAsignaturesById($asignature_id)
+    {
+        return $asignatures = self::select(
+            'asignatures.id', 'asignatures.abbreviation', 'asignatures.name', 'asignatures.subjects_type_id',
+            'asignatures.created_at', 'asignatures.updated_at')
+            ->join('pensum', 'asignatures.id', '=', 'pensum.asignatures_id')
+            ->where('asignatures.id', '=', $asignature_id)
+            ->groupBy('pensum.asignatures_id')
+            ->get()->first();
+    }
 }

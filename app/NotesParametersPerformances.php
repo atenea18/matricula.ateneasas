@@ -9,17 +9,17 @@ class NotesParametersPerformances extends Model
     protected $table = 'notes_parameters_performances';
 
     protected $fillable = [
-    	'code', 'notes_parameters_id', 'performances_id', 'group_pensum_id', 'periods_id'
+        'code', 'notes_parameters_id', 'performances_id', 'group_pensum_id', 'periods_id'
     ];
 
     public function parameterNote()
     {
-    	return $this->belongsTo(NotesParameters::class, 'notes_parameters_id');
+        return $this->belongsTo(NotesParameters::class, 'notes_parameters_id');
     }
 
     public function performance()
     {
-    	return $this->belongsTo(Performances::class, 'performances_id');
+        return $this->belongsTo(Performances::class, 'performances_id');
     }
 
     public function groupPensum()
@@ -27,7 +27,8 @@ class NotesParametersPerformances extends Model
         return $this->belongsTo(GroupPensum::class, 'group_pensum_id');
     }
 
-    public static function insertRelationPerformances($notes_parameters_id, $performances_id, $periods_id, $group_pensum_id){
+    public static function insertRelationPerformances($notes_parameters_id, $performances_id, $periods_id, $group_pensum_id)
+    {
         $performancesRelation = new NotesParametersPerformances();
 
         try {
@@ -44,16 +45,19 @@ class NotesParametersPerformances extends Model
         return $performancesRelation;
     }
 
-    public static function getRelationPerformances($notes_parameters_id, $group_pensum_id,$periods_id){
+    public static function getRelationPerformances($notes_parameters_id, $group_pensum_id, $periods_id)
+    {
         $notesPerformances = NotesParametersPerformances::where('notes_parameters_id', '=', $notes_parameters_id)
             ->where('periods_id', '=', $periods_id)
             ->where('group_pensum_id', '=', $group_pensum_id)
-            ->get();
+            ->get()
+            ->first();
         return $notesPerformances;
     }
 
-    public static function deleteRelationPerformances($notes_performances_id){
-        $notesPerformances =  NotesParametersPerformances::where('id', '=', $notes_performances_id)->delete();
+    public static function deleteRelationPerformances($notes_performances_id)
+    {
+        $notesPerformances = NotesParametersPerformances::where('id', '=', $notes_performances_id)->delete();
         return $notesPerformances;
     }
 }

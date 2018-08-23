@@ -100,9 +100,7 @@
                 'periodObjectSelected',
                 'scaleEvaluation',
                 'parameters'
-
             ]),
-
         },
         methods: {
 
