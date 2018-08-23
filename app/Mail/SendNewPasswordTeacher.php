@@ -35,6 +35,7 @@ class SendNewPasswordTeacher extends Mailable
      */
     public function build()
     {
-        return $this->markdown('email.resetPasswordTeacher');
+        return $this->subject('Cambio de contraseña')
+        ->markdown('email.resetPasswordTeacher');
     }
 }

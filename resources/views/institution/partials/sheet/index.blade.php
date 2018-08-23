@@ -31,9 +31,9 @@
 					    <li role="presentation">
 					    	<a href="#attendance_parents" aria-controls="attendance_parents" role="tab" data-toggle="tab"> Asistencia Acudientes</a>
 					    </li>
-					    {{-- <li role="presentation">
+					    <li role="presentation">
 					    	<a href="#sheet_teacher" aria-controls="sheet_teacher" role="tab" data-toggle="tab">Docentes</a>
-					    </li> --}}
+					    </li>
 			        </ul>
 			  	</div>
 			</div>
@@ -221,13 +221,20 @@
 					var options = '';
 					$.each(data.data, function(indx, el){
 						
-						options += '<option value="'+el.group.id+'">' + el.group.name +" - "+el.asignature.name+ '</option>';
+						options += '<option value=" '+el.group.id+'-'+el.asignatures_id+'">' + el.group.name +" - "+el.asignature.name+ '</option>';
 					});
 
 					
 					$( '#sheet_pa_teacher' ).html( options );
 
 				}, "json");
+			});
+
+			$("#sheetTypeTeacher").change(function(){
+
+				var url = this.value;
+
+				$("#formSheetTeacher").attr('action', url);
 			});
 		});
 	</script>
