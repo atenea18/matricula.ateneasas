@@ -42,38 +42,68 @@ Route::group(['prefix' => 'ajax'], function () {
     Route::get('/student/getFamilyById/{id}', 'StudentController@getFamilyById');
     Route::get('/family/search', 'FamilyController@search')->name('family.search');
 
-    Route::get('/allgrades', 'GradeController@getAllGrades');
+
     Route::get('/asignaturesByGrade', 'Teacher\AsignatureController@asignaturesByGrade');
     Route::get('/areasByGrade', 'Teacher\AreasController@areasByGrade');
-
-
     Route::get('/getSubgroupsByGrade', 'AcademicAssignmentController@getSubgroupsByGrade');
-    Route::get('/getGroupsByGrade', 'StatisticsController@getGroupsByGrade');
 
+
+
+    Route::get('/getGroupsByGrade', 'StatisticsController@getGroupsByGrade');
 
     Route::get('/getTableConsolidated', 'StatisticsController@getConsolidated');
     Route::get('/getAsignaturesGroupPensum', 'StatisticsController@getAsignaturesGroupPensum');
     Route::get('/getAreasGroupPensum', 'StatisticsController@getAreasGroupPensum');
-    Route::get('/getSubjects', 'StatisticsController@getQueryGetSubjects');
 
+
+    //
     Route::get('/getPeriodsByWorkingDay/{working_day_id}', 'StatisticsController@getPeriodsByWorkingDay');
 
-    Route::get('/printConsolidated', 'StatisticsController@printConsolidated');
 
     Route::get('/getInstitutionOfTeacher', 'StatisticsController@getInstitutionOfTeacher');
-    Route::get('/getScaleEvaluation', 'ScaleEvaluationController@getScaleEvaluation');
     Route::get('/getPositionStudents', 'StatisticsController@getPositionStudents');
 
-
+    //Configuración
     Route::get('/getConfigInstitution', 'ConfigController@getConfigInstitution');
 
     Route::get('/getPeriodsBySection/{section_id}', 'StatisticsController@getPeriodsBySection');
+
+    // Pensum Controller
+    Route::get('/getAreasByGrade', 'PensumController@getAreasByGrade');
+    //Route::get('/getAreaByAsignatureOfPensum', 'PensumController@getAreaByAsignatureOfPensum');
+    Route::get('/getAsignaturesByAreaPensum', 'PensumController@getAsignaturesByAreaPensum');
+    //Subjects
+    Route::get('/getSubjectsByTeacher', 'PensumController@getSubjectsByTeacher');
+    Route::get('/getSubjects', 'StatisticsController@getQueryGetSubjects');
+
+
+    //Evaluation
+    Route::post('/evaluation-period/store', 'EvaluationController@store');
+    Route::get('/evaluation-period/{group_id}/{asignature_id}', 'EvaluationController@index')->name('evaluation.index');
+
+    //Pendiente: cambiar el controlador de la siguiente ruta
+    Route::post('/evaluation-store-note-final', 'EvaluationController@storeFinalNotes');
+    Route::post('/evaluation-store-note', 'EvaluationController@storeNote');
+    
+
+    Route::get('/evaluation-collections-notes', 'EvaluationController@getCollectionsNotes');
 
 
     // Relation Performances
     Route::get('/relation-performances/get', 'RelationPerformancesController@get');
     Route::post('/relation-performances/store', 'RelationPerformancesController@store');
     Route::post('/relation-performances/delete', 'RelationPerformancesController@delete');
+
+    //Parameters
+    Route::get('/evaluation-parameter', 'ParameterController@getEvaluationParameter');
+
+    //ScaleValoration
+    Route::get('/getScaleEvaluation', 'ScaleEvaluationController@getScaleEvaluation');
+
+    //Store Vue.js
+    Route::get('/allgrades', 'GradeController@getAllGrades');
+
+
 
 
 });
@@ -309,7 +339,9 @@ Route::group(['prefix' => 'teacher', 'middleware' => 'teacher_auth'], function (
     Route::get('evaluation/getAsignatureById', 'Teacher\EvaluationController@getAsignatureById');
     Route::get('evaluation/getGradeById/{grade_id}', 'Teacher\EvaluationController@getGradeById');
     Route::get('evaluation/getPeriodsByWorkingDay', 'Teacher\EvaluationController@getPeriodsByWorkingDay');
+
     Route::get('evaluation/getCollectionsNotes', 'Teacher\EvaluationController@getCollectionsNotes');
+
     Route::get('evaluation/searchPerformances', 'Teacher\EvaluationController@searchPerformances');
     Route::get('evaluation/getGroupPensum', 'Teacher\EvaluationController@getGroupPensum');
 
