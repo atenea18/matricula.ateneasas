@@ -33,6 +33,7 @@ class EvaluationController extends Controller
                 $this->teacher = Auth::guard('teachers')->user()->teachers()->first();
                 $this->institution = $this->teacher->institution;
             } elseif (Auth::guard('web_institution')->check()) {
+                $this->teacher = null;
                 $this->institution = Auth::guard('web_institution')->user();
             }
             return $next($request);
