@@ -13,6 +13,7 @@ use App\SubGroupPensum;
 use App\EvaluationPeriod;
 use App\NotesFinal;
 use App\PeriodWorkingday;
+use App\ScaleEvaluation;
 
 class Notebook
 {
@@ -25,6 +26,8 @@ class Notebook
 	private $config = array();
 	private $scaleEvaluation = array();
 	private $evaluation_parameters = array();
+
+	private $performance_specials = [8, 14];
 
 	private $pensums_areas = array();
 	private $pensums_asignatures = array();
@@ -357,26 +360,39 @@ class Notebook
 
 		foreach ($this->pensums_asignatures as $key => $pensum) {
 			
-			if($area_id == $pensum->areas_id)
-			array_push(
-				$response,
-				array(
-					'asignature_id'	=>	$pensum->asignatures_id,
-					'asignature'	=>	$pensum->asignature->name,
-					'abbreviation'	=>	$pensum->asignature->abbreviation,
-					'ihs'			=>	$pensum->ihs,
-					'teacher'		=>	(!is_null($pensum->teacher)) ? $pensum->teacher : null,
-					'final_note'	=>	$this->resolveNote(
+			if($area_id == $pensum->areas_id){
+				$notes = $this->resolveNotes(
+					$pensum->asignatures_id, $period_id, $enrollment
+				);
+
+				$final_note = $this->resolveNote(
+					$pensum->asignatures_id, $period_id, $enrollment, $pensum->id
+				);
+
+				if(in_array($this->institution->id, $this->performance_specials))
+				{
+					$indicators = $this->resolvePerformancesCustom(
+						$pensum->asignatures_id, $period_id, $enrollment, $pensum->id, $notes
+					);
+				}else{
+					$indicators = $this->resolvePerformances(
 						$pensum->asignatures_id, $period_id, $enrollment, $pensum->id
-					),
-					'notes'			=>	$this->resolveNotes(
-						$pensum->asignatures_id, $period_id, $enrollment
-					),
-					'indicators'	=>	$this->resolvePerformances(
-						$pensum->asignatures_id, $period_id, $enrollment, $pensum->id
-					),
-				)
-			);
+					);
+				}
+				array_push(
+					$response,
+					array(
+						'asignature_id'	=>	$pensum->asignatures_id,
+						'asignature'	=>	$pensum->asignature->name,
+						'abbreviation'	=>	$pensum->asignature->abbreviation,
+						'ihs'			=>	$pensum->ihs,
+						'teacher'		=>	(!is_null($pensum->teacher)) ? $pensum->teacher : null,
+						'final_note'	=>	$final_note,
+						'notes'			=>	$notes,
+						'indicators'	=>	$indicators,
+					)
+				);
+			}
 		}
 
 		return $response;
@@ -405,14 +421,26 @@ class Notebook
 				$note = $this->determineRound($ev->noteFinal->value, 1, $this->config['decimals']);
 				$overcoming = $this->determineRound($ev->noteFinal->overcoming, 1, $this->config['decimals']);
 			} 
-				
+			
+			$valoration = $this->getScaleByNote($note);
+
+			if(in_array($this->institution->id, $this->performance_specials))
+			{
+				$performances = $this->resolveIndicatorsCustom(
+					$asignature_id, $period_id, $pensum_id, $note, $valoration
+				);
+			}
+			else{
+				$performances = $this->resolveIndicators(
+					$asignature_id, $period_id, $enrollment, $pensum_id, $note
+				);
+			}
+
 			$response = [
-				'valoration'	=>	$this->getScaleByNote($note),
+				'valoration'	=>	$valoration,
 				'value'			=>	$note,
 				'overcoming'	=>	$overcoming,
-				'performances'	=>	$this->resolveIndicators(
-					$asignature_id, $period_id, $enrollment, $pensum_id, $note
-				),
+				'performances'	=>	$performances,
 				'noAttendances'	=>	$ev->noAttendances->sum('quantity'),
 			];
 		}
@@ -449,6 +477,7 @@ class Notebook
 
 	private function resolvePerformances($asignature_id, $period_id, Enrollment $enrollment, $pensum_id)
 	{
+
 		$notes = EvaluationPeriod::with([
 			'notes.noteParameter.notePerformances' => function($pensum) use ($pensum_id, $period_id){
 				$pensum->where([
@@ -489,6 +518,11 @@ class Notebook
 		}
 
 		return $response;
+	}
+
+	public function resolvePerformancesCustom($asignature_id, $period_id, Enrollment $enrollment, $pensum_id, $notes = array())
+	{
+		
 	}
 
 	private function resolveIndicators($asignature_id, $period_id, Enrollment $enrollment, $pensum_id, $noteAsig)
@@ -535,6 +569,33 @@ class Notebook
 		return $response;
 	}
 
+	private function resolveIndicatorsCustom($asignature_id, $period_id, $pensum_id, $noteAsig, ScaleEvaluation $valoration)
+	{
+
+		$pPerformances = GroupPensum::with('performances.performance.message')
+		->where([
+			['id', $pensum_id],
+			['asignatures_id', $asignature_id]
+		])
+		->get()
+		->pluck('performances')
+		->collapse();
+
+		$response = array();
+
+		foreach($pPerformances as $key => $performance)
+		{
+			if($performance->periods_id == $period_id)
+			{
+				$message = $performance->performance->message;
+				$message->name = $valoration->wordExpresion->name.", ".$message->name;
+
+				array_push($response, $message);
+			}
+		}
+
+		return $response;
+	}
 	// 
 
 	private function getScaleByNote($note)

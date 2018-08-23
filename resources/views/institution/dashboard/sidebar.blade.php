@@ -32,6 +32,7 @@
             <ul id="collapse-group" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
                 <li><a href="{{route('group.index')}}">Grupos</a></li>
                 <li><a href="{{route('subgroup.index')}}">Subgrupos</a></li>
+                {{-- <li><a href="{{route('group.index')}}">Evaluación</a></li> --}}
             </ul>
         </li>
 
