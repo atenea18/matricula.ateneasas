@@ -349,16 +349,10 @@ class Notebook extends Fpdf
 	*/
 	private function showPerformance($performances = array())
 	{
-		foreach($performances as $key => $performance):
-			
-			if(isset($performance->name))
-			{
-				$this->determineCell(
-					$this->hideTilde('   * '.strtoupper($performance->name)), 
-				'LR');
-			}
-		
-		endforeach;
+		if(!is_null($performances))
+			foreach($performances as $key => $performance)
+				if(isset($performance->name))
+					$this->determineCell($this->hideTilde('   * '.strtoupper($performance->name)), 'LR');
 	}
 
 
