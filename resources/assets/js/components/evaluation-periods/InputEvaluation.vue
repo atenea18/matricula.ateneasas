@@ -193,6 +193,7 @@
                         console.log(error);
                     });
             },
+
             getConexion() {
                 this.$store.dispatch('verifyConexion')
             }

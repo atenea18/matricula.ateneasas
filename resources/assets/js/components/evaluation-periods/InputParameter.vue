@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import {mapState, mapMutations, mapGetters} from "vuex";
+    import {mapState} from "vuex";
 
     export default {
         name: "input-parameter",
@@ -53,7 +53,6 @@
              *  calculate
              */
             calculate(element) {
-
                 //console.log(parseFloat(element.valuenote))
                 //Si la nota no tiene porcentaje
                 if (element.percent == 0) {
@@ -64,7 +63,7 @@
                     }
                 }
 
-                //Si la nota si tiene porcentaje example proyecto 30%
+                //Si la nota si tiene porcentaje example proyecto 0,3 (30%)
 
                 if (element.percent > 0) {
                     this.promedioWith += element.value * element.percent;
@@ -75,7 +74,6 @@
                 if (this.countPercentZero != 0) {
                     this.promedioZero = (this.sumaZero / this.countPercentZero) * this.percentZero;
                 }
-
             },
 
             /*

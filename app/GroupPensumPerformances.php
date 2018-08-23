@@ -26,18 +26,20 @@ class GroupPensumPerformances extends Model
     public static function getRelationPerformances($group_pensum_id, $periods_id)
     {
         $performancesRelation = GroupPensumPerformances::select(
-            'group_pensum_performances.id', 'messages_expressions.name','group_pensum_performances.performances_id'
-            )
-            ->join('performances','performances.id', '=','group_pensum_performances.performances_id')
-            ->join('messages_expressions', 'messages_expressions.id','=','performances.messages_expressions_id')
+            'group_pensum_performances.id', 'messages_expressions.name', 'group_pensum_performances.performances_id'
+        )
+            ->join('performances', 'performances.id', '=', 'group_pensum_performances.performances_id')
+            ->join('messages_expressions', 'messages_expressions.id', '=', 'performances.messages_expressions_id')
             ->where('group_pensum_performances.periods_id', '=', $periods_id)
             ->where('group_pensum_performances.group_pensum_id', '=', $group_pensum_id)
-            ->get();
+            ->get()
+            ->first();
         return $performancesRelation;
     }
 
-    public static function deleteRelationPerformances($group_performances_id){
-        $performancesRelation =  GroupPensumPerformances::where('id', '=', $group_performances_id)->delete();
+    public static function deleteRelationPerformances($group_performances_id)
+    {
+        $performancesRelation = GroupPensumPerformances::where('id', '=', $group_performances_id)->delete();
         return $performancesRelation;
     }
 

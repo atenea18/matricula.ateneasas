@@ -179,7 +179,7 @@ class Group extends Model
 
     public static function getGroupsByGrade($institution_id, $grade_id)
     {
-        return $groups = Group::
+        return Group::
         select('group.id', 'group.name',
             DB::raw("UPPER(headquarter.name) as headquarter_name"), 'grade.name as grade_name',
             'group.grade_id', 'group.working_day_id',
@@ -192,13 +192,13 @@ class Group extends Model
             ->leftJoin('managers', 'managers.id', '=', 'teachers.manager_id')
             ->join('institution', 'institution.id', '=', 'headquarter.institution_id')
             ->join('working_day', 'working_day.id', '=', 'group.working_day_id')
-            ->join('grade','grade.id','=','group.grade_id')
+            ->join('grade', 'grade.id', '=', 'group.grade_id')
             ->where('institution.id', '=', $institution_id)
             ->where('group.grade_id', '=', $grade_id)
             ->get();
     }
 
-    public static function getGroupsById($institution_id, $group_id)
+    public static function getGroupsById($group_id)
     {
         return $groups = Group::
         select('group.id', 'group.name',
@@ -213,9 +213,67 @@ class Group extends Model
             ->leftJoin('managers', 'managers.id', '=', 'teachers.manager_id')
             ->join('institution', 'institution.id', '=', 'headquarter.institution_id')
             ->join('working_day', 'working_day.id', '=', 'group.working_day_id')
-            ->join('grade','grade.id','=','group.grade_id')
-            ->where('institution.id', '=', $institution_id)
+            ->join('grade', 'grade.id', '=', 'group.grade_id')
             ->where('group.id', '=', $group_id)
+            ->get()
+            ->first();
+    }
+
+    public static function getGroupsByTeacherInstitution($teacher_id)
+    {
+        return $groups = Group::select('group.id as group_id', 'group.name as group_name',
+            DB::raw("UPPER(headquarter.name) as headquarter_name"),
+            'grade.name as grade_name', 'group.grade_id', 'group.working_day_id',
+            DB::raw("UPPER(working_day.name) as working_day_name"), 'group.working_day_id',
+            DB::raw("UPPER(CONCAT(managers.name,' ',managers.last_name)) as director_name")
+        )
+            ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
+            ->leftJoin('group_directors', 'group_directors.group_id', '=', 'group.id')
+            ->leftJoin('teachers', 'teachers.id', '=', 'group_directors.teacher_id')
+            ->leftJoin('managers', 'managers.id', '=', 'teachers.manager_id')
+            ->join('group_pensum', 'group_pensum.group_id', '=', 'group.id')
+            ->join('institution', 'institution.id', '=', 'headquarter.institution_id')
+            ->join('working_day', 'working_day.id', '=', 'group.working_day_id')
+            ->join('grade', 'grade.id', '=', 'group.grade_id')
+            ->where('group_pensum.teacher_id', '=', $teacher_id)
+            ->groupBy('group_pensum.group_id')
+            ->orderBy('grade.id')
+            ->get();
+    }
+
+    public static function getGroupsByInstitution($institution_id)
+    {
+        return $groups = Group::select('group.id as group_id', 'group.name as group_name',
+            DB::raw("UPPER(headquarter.name) as headquarter_name"),
+            'grade.name as grade_name', 'group.grade_id', 'group.working_day_id',
+            DB::raw("UPPER(working_day.name) as working_day_name"), 'group.working_day_id',
+            DB::raw("UPPER(CONCAT(managers.name,' ',managers.last_name)) as director_name")
+        )
+            ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
+            ->leftJoin('group_directors', 'group_directors.group_id', '=', 'group.id')
+            ->leftJoin('teachers', 'teachers.id', '=', 'group_directors.teacher_id')
+            ->leftJoin('managers', 'managers.id', '=', 'teachers.manager_id')
+            ->join('group_pensum', 'group_pensum.group_id', '=', 'group.id')
+            ->join('institution', 'institution.id', '=', 'headquarter.institution_id')
+            ->join('working_day', 'working_day.id', '=', 'group.working_day_id')
+            ->join('grade', 'grade.id', '=', 'group.grade_id')
+            ->where('institution.id', '=', $institution_id)
+            ->groupBy('group_pensum.group_id')
+            ->orderBy('grade.id')
+            ->get();
+    }
+
+    public static function getGradeByTeacher($teacher_id)
+    {
+        return $groups = Group::select('grade.id', 'grade.name')
+            ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
+            ->join('group_pensum', 'group_pensum.group_id', '=', 'group.id')
+            ->join('institution', 'institution.id', '=', 'headquarter.institution_id')
+            ->join('working_day', 'working_day.id', '=', 'group.working_day_id')
+            ->join('grade', 'grade.id', '=', 'group.grade_id')
+            ->where('group_pensum.teacher_id', '=', $teacher_id)
+            ->groupBy('group.grade_id')
+            ->orderBy('grade.id')
             ->get();
     }
 

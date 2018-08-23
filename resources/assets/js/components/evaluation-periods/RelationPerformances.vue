@@ -119,8 +119,8 @@
                 axios.get('/ajax/relation-performances/get', {params}).then(res => {
                     let data = res.data
                     if (data.length != 0) {
-                        this.mainComponentObject.notes_performances_id = data[0].id
-                        this.mainComponentObject.performances_id = data[0].performances_id
+                        this.mainComponentObject.notes_performances_id = data.id
+                        this.mainComponentObject.performances_id = data.performances_id
                         this.mainComponentObject.state = true
                     }
                 })
