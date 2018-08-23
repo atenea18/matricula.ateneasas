@@ -127,8 +127,6 @@
                 'parameters',
                 'isTypeGroup'
             ]),
-
-
         },
         methods: {
 

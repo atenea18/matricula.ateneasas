@@ -33,9 +33,14 @@
                                         </button>
                                         <ul class='dropdown-menu'>
                                             <li>
+                                                <a href="{{route('evaluation.index', [$pensum->group_id,$pensum->asignature->id])}}">
+                                                    Evaluar Periodo
+                                                </a>
+                                                {{--
                                                 <a href="{{route('teacher.evaluation.periods', [$pensum->group_id,'group',$pensum->asignature->id])}}">Evaluar
                                                     Periodo
                                                 </a>
+                                                 --}}
                                             </li>
                                             <li>
                                                 <a href="{{route('group.recovery', [$pensum->group_id, $pensum->asignatures_id])}}">Superaciones
