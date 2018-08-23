@@ -6,6 +6,51 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
 
+        stateEvaluation: {
+            rol:'',
+            parameters_selected: [],
+            parameter_selected_id:0,
+            grade_selected: {
+                id:0,
+                info:null
+            },
+            group_selected: {
+                id:0,
+                info:null
+            },
+            period_selected: {
+                id:0,
+                info:null
+            },
+            area_selected: {
+                id:0,
+                info:null
+            },
+            asignature_selected: {
+                id:0,
+                info:null
+            },
+            collectionNotes:[],
+            displacement:{
+                counter_input:1,
+                total_notes_parameters:0,
+                total_inputs:0,
+                more_one:1,
+                num_rows_enrollment:0
+            },
+            disabled: false
+
+        },
+        configInstitution: [],
+        stateScale:{
+            scales:[],
+            max_scale: 0,
+            min_scale: 1000,
+        },
+        stateInformation:{
+            is_conexion: true,
+            date_current: null,
+        },
         counter: 0,
         totalInput: 0,
         counterInput: 1,
@@ -27,12 +72,11 @@ const store = new Vuex.Store({
         groupPensum: Object,
         periodsworkingday: Object,
         isTypeGroup: true,
-        scaleEvaluation:[],
-        configInstitution:[],
-        periodObjectSelected:null,
-        dateNow:null,
-        maxScale:0,
-        minScale:200
+        scaleEvaluation: [],
+        periodObjectSelected: null,
+        dateNow: null,
+        maxScale: 0,
+        minScale: 200,
 
 
     },
@@ -49,14 +93,25 @@ const store = new Vuex.Store({
         decrement(state) {
             state.counter--
         },
-        setConfigInstitution(state, payload){
-          state.configInstitution  = payload.configInstitution || []
+        setConfigInstitution(state, payload) {
+            state.configInstitution = payload.configInstitution || []
         },
         setInstitutionOfTeacher(state, payload) {
             state.institutionOfTeacher = payload.institutionOfTeacher || []
         },
-        setScaleEvaluation(state, payload){
-          state.scaleEvaluation = payload.scaleEvaluation || []
+        setScaleEvaluation(state, payload) {
+            state.scaleEvaluation = payload.scaleEvaluation || []
+        },
+        setScales(state, payload) {
+            payload.scales.forEach(element => {
+                if (state.stateScale.max_scale < element.rank_end) {
+                    state.stateScale.max_scale = element.rank_end
+                }
+                if (state.stateScale.min_scale > element.rank_start) {
+                    state.stateScale.min_scale = element.rank_start
+                }
+            })
+            state.stateScale.scales = payload.scales || []
         },
         setGrades(state, payload) {
             state.grades = payload.grades || []
@@ -84,9 +139,12 @@ const store = new Vuex.Store({
         },
         setParameters(state, payload) {
             let parameters = []
-            if(state.asignature.subjects_type_id == 3 || state.asignature.grade_id == 4){
+
+
+            if (state.asignature.subjects_type_id == 3 || state.asignature.grade_id == 4) {
                 payload.group_type = "basic"
             }
+
             if (payload.parameters.length > 0) {
                 parameters = payload.parameters.filter(element => {
                     return element.group_type == payload.group_type
@@ -94,13 +152,30 @@ const store = new Vuex.Store({
             }
             state.parameters = parameters || []
         },
+
+        setParametersX(state, payload) {
+            let parameters = []
+
+
+            if (payload.asignature.subjects_type_id == 3 ||
+                payload.asignature.grade_id == 4) {
+                payload.group_type = "basic"
+            }
+
+            if (payload.parameters.length > 0) {
+                parameters = payload.parameters.filter(element => {
+                    return element.group_type == payload.group_type
+                })
+            }
+            state.stateEvaluation.parameters_selected = parameters || []
+        },
+
         setPeriodsWD(state, payload) {
             state.periodsworkingday = payload.periodsWD || []
         },
         setCollectionNotes(state, payload) {
             state.collectionNotes = payload.collectionNotes || []
         }
-
 
 
     },
@@ -142,6 +217,17 @@ const store = new Vuex.Store({
 
                 payload.scaleEvaluation = res.data;
                 context.commit('setScaleEvaluation', payload)
+            })
+
+        },
+        scaleValoration(context, payload = {}) {
+
+            let url = "/ajax/getScaleEvaluation"
+
+            axios.get(url, ).then(res => {
+
+                payload.scales = res.data;
+                context.commit('setScales', payload)
             })
 
         },
@@ -196,6 +282,7 @@ const store = new Vuex.Store({
                 context.commit('setTeachers', payload)
             });
         },
+
         parameters(context, payload = {}) {
             axios.get('/teacher/evaluation/evaluationParameter').then(res => {
                 payload.parameters = res.data;
@@ -203,6 +290,15 @@ const store = new Vuex.Store({
 
             });
         },
+
+        parametersX(context, payload = {}) {
+            axios.get('/ajax/evaluation-parameter').then(res => {
+                payload.parameters = res.data;
+                context.commit('setParametersX', payload)
+
+            });
+        },
+
 
         periodsByWorkingDay(context, payload = {}) {
             let params = payload
@@ -214,7 +310,7 @@ const store = new Vuex.Store({
         },
         periodsByWorkingDayIns(context, payload = {}) {
             let params = payload
-            axios.get('/ajax/getPeriodsByWorkingDay/'+params.workingdayid,).then(res => {
+            axios.get('/ajax/getPeriodsByWorkingDay/' + params.workingdayid,).then(res => {
                 payload.periodsWD = res.data;
                 context.commit('setPeriodsWD', payload)
 
@@ -245,6 +341,13 @@ const store = new Vuex.Store({
                 this.state.isConexion = false
             }
             //console.log(window.navigator)
+        },
+        verifyConexionX(context, payload) {
+            if (navigator.onLine) {
+                this.state.stateInformation.is_conexion = true
+            } else {
+                this.state.stateInformation.is_conexion = false
+            }
         },
 
     }
