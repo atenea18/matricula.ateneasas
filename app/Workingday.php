@@ -44,6 +44,7 @@ class Workingday extends Model
             ->join('periods', 'periods.id', '=', 'working_day_periods.periods_id')
             ->where('working_day_periods.working_day_id', '=', $working_day_id)
             ->where('working_day_periods.institution_id', '=', $institution_id)
+            ->orderBy('periods.name')
             ->get();
     }
 
