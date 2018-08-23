@@ -8,6 +8,20 @@ class GroupPensumPerformances extends Model
 {
     protected $table = 'group_pensum_performances';
 
+    protected $fillable = [
+        'code', 'performances_id', 'group_pensum_id', 'periods_id'       
+    ]; 
+    
+    public function groupPensum()
+    {
+        return $this->belongsTo(GroupPensum::class, 'group_pensum_id');
+    }
+
+    public function performance()
+    {
+        return $this->belongsTo(Performances::class, 'performances_id');
+    }
+
     public static function insertRelationPerformances($performances_id, $periods_id, $group_pensum_id)
     {
         $performancesRelation = new GroupPensumPerformances();

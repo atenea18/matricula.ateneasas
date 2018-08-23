@@ -18,10 +18,12 @@ class EvaluationSheet extends Fpdf
 	use utf8Helper;
 
 	public $institution;
+	public $scale_evaluation = 3;
 	public $parameters;
 	public $group;
 	public $pensum;
 	public $periods;
+	public $current_period;
 	public $title = "PLANILLA DE EVALUACIÓN";
  	public $asignatureName;
 
@@ -393,9 +395,9 @@ class EvaluationSheet extends Fpdf
 			}
 
 			// 
-			$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false);
-	  		$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false);
-			$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false);
+			$this->Cell($this->_width_VG_VRA, 4, $this->getVG($student['periods']), 1,0, 'C', false); //VG
+	  		$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false); //VRA
+			$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false); // VAL
 
 			$this->Ln(4);
 		}
@@ -431,6 +433,55 @@ class EvaluationSheet extends Fpdf
 		}
 
 		return false;
+	}
+
+	private function getVG($periods=array())
+	{
+		$vg = 0;
+		
+		foreach($periods as $key => $period):
+			if($period['period_id'] <= $this->current_period):
+				$nota = round($period['note'],1);
+				$vg += $nota * ($period['percent']/100);
+			endif;
+		endforeach;
+
+		return $vg;
+	}
+
+	private function getVRA($periods = array())
+	{
+		$vra = 0;
+		// PERIODOS A EVALUAR
+		$period_tobe_evaluated = ( count($periods) - $this->current_period );
+
+		$min_basic = $this->scale_evaluation;
+
+		// RECORREMOS LOS PERIODOS
+		foreach($periods as $key => $period)
+		{
+			if($this->current_period == 1)
+			{
+				$vra = ( ($min_basic / $period_tobe_evaluated) / ($period['percent'] / 100) );
+
+				break;
+			}else if($this->current_period == $period['period_id']){
+
+				$previous_period_note = $periods[$key -1]['note'];
+
+				$vg_period_previous = round($periods, 1);
+
+				if( $previous_period_note > 0 && $previous_period_note != '' ):
+					$vra = ( ($min_basic - $vg_period_previous) / $period_tobe_evaluated) / ($period['percent'] / 100);
+				endif;
+			}
+		}
+
+		if($vra > 0 || $vra != ''):
+			return round($vra,1);
+		else:
+			return $vra;
+		endif;	
 	}
 
 	public function Footer()
