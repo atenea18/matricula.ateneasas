@@ -569,7 +569,7 @@ class Notebook
 		return $response;
 	}
 
-	private function resolveIndicatorsCustom($asignature_id, $period_id, $pensum_id, $noteAsig, ScaleEvaluation $valoration)
+	private function resolveIndicatorsCustom($asignature_id, $period_id, $pensum_id, $noteAsig, $valoration = null)
 	{
 
 		$pPerformances = GroupPensum::with('performances.performance.message')
@@ -587,10 +587,12 @@ class Notebook
 		{
 			if($performance->periods_id == $period_id)
 			{
-				$message = $performance->performance->message;
-				$message->name = $valoration->wordExpresion->name.", ".$message->name;
+				if(!is_null($valoration)){
+					$message = $performance->performance->message;
+					$message->name = $valoration->wordExpresion->name.", ".$message->name;
 
-				array_push($response, $message);
+					array_push($response, $message);
+				}
 			}
 		}
 
