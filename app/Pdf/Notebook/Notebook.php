@@ -608,7 +608,8 @@ class Notebook extends Fpdf
 								'period_id'		=>	$period['periods_id'],
 								'percent'		=>	$period['percent'],
 								'asignature_id' => 	$asignaturee['asignature_id'],
-								'note'			=>	$note
+								'note'			=>	$note,
+								'overcoming'	=>	$recovery_note,
 							]);
 
 						endif;
@@ -634,7 +635,7 @@ class Notebook extends Fpdf
 		endif;
 
 		$this->Cell(7, $this->_h_c, $this->getVG($dataVg), 1, 0,'C');
-		$this->Cell(7, $this->_h_c, "", 1, 0,'C');
+		$this->Cell(7, $this->_h_c, $this->getVRA($dataVg), 1, 0,'C');
 
 	}
 
@@ -661,18 +662,20 @@ class Notebook extends Fpdf
 		// PERIODOS A EVALUAR
 		$period_tobe_evaluated = ( count($this->data['periods']) - ($this->data['current_period']->periods_id) );
 
-		$min_basic = 6;
+		$min_basic = ($this->data['valueScale']->where('abbreviation', 'BJ')->first()->rank_end + 0.1);
 
 		// RECORREMOS LOS PERIODOS
 		foreach($periods as $key => $period)
 		{
 			if($this->data['current_period']->periods_id == 1)
 			{
-				$vra = ( ( ($min_basic - 0) / count($this->data['periods']) ) / ($period['percent'] / 100) );
+				$vg_period_previous = round($this->getVG($periods), 2);
+
+				$vra = ( ( ($min_basic - $vg_period_previous) / $period_tobe_evaluated ) / ($period['percent'] / 100) );
 
 				break;
 			}
-			else if($this->data['current_period']->periods_id == $period['period_id']){
+			else if($period['period_id'] <= $this->data['current_period']->periods_id){
 
 				$previous_period_note = $periods[$key -1]['note'];
 
@@ -684,12 +687,8 @@ class Notebook extends Fpdf
 			}
 		}
 
-		if($vra > 0 || $vra != ''):
-			return round($vra, 2);
-			// return $vra;
-		else:
-			return $vra;
-		endif;	
+		// return $vra;
+		return round($vra, 1);
 	}
 	// 
 	/**
