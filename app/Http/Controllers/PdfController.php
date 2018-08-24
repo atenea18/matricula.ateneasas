@@ -263,7 +263,7 @@ class PdfController extends Controller
                     $evaluationSheet->periods = $periods->pluck('period')->unique()->values()->pluck('name','id');
                     $evaluationSheet->current_period = $pensums['current_period'];
                     $evaluationSheet->create();
-                    $evaluationSheet->Output($path.$groupArray[0].$key.".pdf", "D");
+                    $evaluationSheet->Output($path.$groupArray[0].$key.".pdf", "F");
                 }
             }
         }
