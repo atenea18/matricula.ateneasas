@@ -78,9 +78,8 @@ class NotebookController extends Controller
             $notebook->setEvaluationParameters($eval_parameter);
             $notebook->setEnrollment($enrollment);
             $data = $notebook->create();
-            // $data = $notebook->resolvePerformancesCustom(1, 2, $enrollment, 41970);
 
-            // return response()->json($data['periods'][1]['areas'][0]['asignatures'][0]);
+            // return response()->json($data);
             // return response()->json($data);
             // exit();
             // dd($data);
