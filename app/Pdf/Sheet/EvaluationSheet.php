@@ -18,7 +18,7 @@ class EvaluationSheet extends Fpdf
 	use utf8Helper;
 
 	public $institution;
-	public $scale_evaluation = 3;
+	public $min_basic;
 	public $parameters;
 	public $group;
 	public $pensum;
@@ -361,9 +361,12 @@ class EvaluationSheet extends Fpdf
 			// Show Utils
 			foreach($this->periods as $period)
 			{
+				$note = '';
 				foreach($student['periods'] as $periodS)
-					if($period == $periodS['period_id'])
-						$this->Cell($this->_with_CP, 4, "{$periodS['note']}", 1,0, 'C', false);
+					if($period == $periodS['period_id'] && $periodS['period_id'] <= $this->current_period)
+						$note = $periodS['note'];				
+
+				$this->Cell($this->_with_CP, 4, $note, 1,0, 'C', false);
 			}
 
 			// show field Criteria note
@@ -396,8 +399,8 @@ class EvaluationSheet extends Fpdf
 
 			// 
 			$this->Cell($this->_width_VG_VRA, 4, $this->getVG($student['periods']), 1,0, 'C', false); //VG
-	  		$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false); //VRA
-			$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false); // VAL
+	  		$this->Cell($this->_width_VG_VRA, 4, $this->getVRA($student['periods']), 1,0, 'C', false); //VRA
+			$this->Cell($this->_width_VG_VRA, 4, '', 1,0, 'C', false); 
 
 			$this->Ln(4);
 		}
@@ -446,30 +449,32 @@ class EvaluationSheet extends Fpdf
 			endif;
 		endforeach;
 
-		return $vg;
+		return round($vg, 2);
 	}
 
 	private function getVRA($periods = array())
 	{
 		$vra = 0;
 		// PERIODOS A EVALUAR
-		$period_tobe_evaluated = ( count($periods) - $this->current_period );
+		$period_tobe_evaluated = ( count($periods) - ($this->current_period - 1) );
 
-		$min_basic = $this->scale_evaluation;
+		$min_basic = $this->min_basic->rank_start;
 
 		// RECORREMOS LOS PERIODOS
 		foreach($periods as $key => $period)
 		{
 			if($this->current_period == 1)
 			{
-				$vra = ( ($min_basic / $period_tobe_evaluated) / ($period['percent'] / 100) );
+				$vra = ( ( ($min_basic - 0) / count($periods) ) / ($period['percent'] / 100) );
 
 				break;
-			}else if($this->current_period == $period['period_id']){
+			}
+			else if($this->current_period == $period['period_id']){
 
 				$previous_period_note = $periods[$key -1]['note'];
+				// $vra = $periods[$key -1]['note'];
 
-				$vg_period_previous = round($periods, 1);
+				$vg_period_previous = round($this->getVG($periods), 2);
 
 				if( $previous_period_note > 0 && $previous_period_note != '' ):
 					$vra = ( ($min_basic - $vg_period_previous) / $period_tobe_evaluated) / ($period['percent'] / 100);
@@ -478,7 +483,8 @@ class EvaluationSheet extends Fpdf
 		}
 
 		if($vra > 0 || $vra != ''):
-			return round($vra,1);
+			return round($vra, 2);
+			// return $vra;
 		else:
 			return $vra;
 		endif;	

@@ -255,6 +255,7 @@ class PdfController extends Controller
                     // dd($pensum);
                     $evaluationSheet = new EvaluationSheet($request->orientation, 'mm', $request->papper);
                     $evaluationSheet->institution = $institution;
+                    $evaluationSheet->min_basic = $institution->scaleEvaluations()->where('abbreviation', 'BS')->first();
                     $evaluationSheet->group = $pensums['group'];
                     $evaluationSheet->parameters = $parameters;
                     $evaluationSheet->asignatureName = $pensum['asignature'];
@@ -262,8 +263,7 @@ class PdfController extends Controller
                     $evaluationSheet->periods = $periods->pluck('period')->unique()->values()->pluck('name','id');
                     $evaluationSheet->current_period = $pensums['current_period'];
                     $evaluationSheet->create();
-                    $evaluationSheet->Output($path.$groupArray[0].$key.".pdf", "F");
-                    // exit();
+                    $evaluationSheet->Output($path.$groupArray[0].$key.".pdf", "D");
                 }
             }
         }
