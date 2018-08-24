@@ -476,9 +476,9 @@ class EvaluationSheet extends Fpdf
 
 				$vg_period_previous = round($this->getVG($periods), 2);
 
-				if( $previous_period_note > 0 && $previous_period_note != '' ):
+				// if( $previous_period_note > 0 && $previous_period_note != '' ):
 					$vra = ( ($min_basic - $vg_period_previous) / $period_tobe_evaluated) / ($period['percent'] / 100);
-				endif;
+				// endif;
 			}
 		}
 
