@@ -20,15 +20,15 @@
             <th></th>
             <th></th>
             -->
+
             <template v-for="parameter in stateEvaluation.parameters_selected">
                 <template v-for="note_parameter in parameter.notes_parameter">
-                    <relation-performances v-if="note_parameter.notes_type_id == 1" :ref="'parameter'+parameter.id"
-                                           :props-data="{note_parameter:note_parameter}">
-                    </relation-performances>
+                    <relation-performances v-if="note_parameter.notes_type_id == 1" :ref="'relation_performances_'+parameter.id"
+                                           :props-data="{parameter:parameter, note_parameter:note_parameter}"/>
+
                     <relation-criterias v-if="note_parameter.notes_type_id != 1"
-                                        :props-data="{note_parameter:note_parameter}">
-                    </relation-criterias>
-                    <!-- style="width: 44px !important; font-size: 10px !important;"-->
+                                        :props-data="{note_parameter:note_parameter}"/>
+
                 </template>
                 <th></th>
             </template>
@@ -74,9 +74,32 @@
             }
         },
         created() {
+
             this.clearStateDataDisplacement()
         },
         mounted() {
+            this.parameters_selected.forEach(parameter => {
+
+                this.$bus.$on(`EventChoosePerformances:${parameter.id}@TablePerformances`, performance => {
+
+                    let columns_relation_performances = this.$refs[`relation_performances_${parameter.id}`];
+
+                    if (columns_relation_performances) {
+                        let columns_state_false = columns_relation_performances.filter(column => {
+                            if (!column.mainComponentObject.state) {
+                                return column
+                            }
+                        })
+                        //console.log(columns_state_false)
+
+                        if (columns_state_false.length != 0) {
+                            this.$bus.$emit(`EventShowPerformancesSelected:${parameter.id}${columns_state_false[0].note_parameter.id}@TableEvaluation`, performance);
+                        }
+                    }
+
+
+                })
+            })
             this.initStateDataDisplacement()
         },
         methods: {
