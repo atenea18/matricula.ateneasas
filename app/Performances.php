@@ -21,4 +21,9 @@ class Performances extends Model
     {
     	return $this->belongsTo(MessagesExpressions::class, 'messages_expressions_id');
     }
+
+    public function groupPensum()
+    {
+        return $this->hasMany(GroupPensumPerformances::class, 'performances_id');
+    }
 }

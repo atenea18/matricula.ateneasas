@@ -20,6 +20,7 @@ class EvaluationSheetHelper
 	public $group_id;
 	public $group;
 	public $periods;
+	public $current_period;
 	public $enrollments;
 
 	public $pensums;
@@ -28,6 +29,7 @@ class EvaluationSheetHelper
 	{
 		$this->request = $request;
 		$this->periods = $periods;
+		$this->current_period = $request->period_id;
 		$this->group = ($request->group_type == "group") ? Group::findOrFail($group_id) : Subgroup::findOrFail($group_id) ;
 
 		$this->enrollments = $this->group->enrollments()
@@ -57,6 +59,7 @@ class EvaluationSheetHelper
 	public function getPensums()
 	{
 		return array(
+			'current_period'=>	$this->current_period,
 			'group'			=>	$this->group,
 			'headquarter'	=>	$this->group->headquarter,
 			'director'		=>	$this->getDirector(),
@@ -67,6 +70,7 @@ class EvaluationSheetHelper
 	public function getByAsignature($asignature_id)
 	{
 		return array(
+			'current_period'=>	$this->current_period,
 			'group'			=>	$this->group,
 			'headquarter'	=>	$this->group->headquarter,
 			'director'		=>	$this->getDirector(),
@@ -92,6 +96,7 @@ class EvaluationSheetHelper
 				if($asignature_id == $pensum->asignatures_id )
 				{
 					array_push($response, [
+						'id'		=>	$pensum->id,
 						'asignature_id'	=>	$pensum->asignatures_id,
 						'asignature'	=>	$pensum->asignature->name,
 						'teacher'		=>	(!is_null($pensum->teacher)) ? $pensum->teacher->manager : '',
@@ -106,6 +111,7 @@ class EvaluationSheetHelper
 			{
 				$asignatureId = ($asignature_id == 0) ? $pensum->asignatures_id : $asignature_id ;
 				array_push($response, [
+					'id'		=>	$pensum->id,
 					'asignature_id'	=>	$pensum->asignatures_id,
 					'asignature'	=>	$pensum->asignature->name,
 					'teacher'		=>	(!is_null($pensum->teacher)) ? $pensum->teacher->manager : '',
@@ -138,13 +144,14 @@ class EvaluationSheetHelper
 	{
 		// try {
 			$response = array();
+			$periods_used = array();
 
 			foreach($this->periods as $period)
 			{
 				$evalP = EvaluationPeriod::with('noteFinal')
 				->where([
 					'enrollment_id'		=>	$enrollment_id, 
-					'periods_id'		=>	$period, 
+					'periods_id'		=>	$period->periods_id, 
 					'asignatures_id'	=>	$asignature_id
 				])
 				->first();
@@ -160,12 +167,17 @@ class EvaluationSheetHelper
 					} catch (\Exception $e) {
 					}
 				}
+				if(!in_array($period->periods_id, $periods_used)){
+					
+					array_push($periods_used, $period->periods_id);
 
-				array_push($response, [
-					'period_id'		=>	$period,
-					'note'			=>	($note == 0) ? '' : $this->determineRound($note, 1, true),
-					'overcoming'	=>	$overcoming,
-				]);
+					array_push($response, [
+						'period_id'		=>	$period->periods_id,
+						'percent'		=>	$period->percent,
+						'note'			=>	($note == 0) ? '' : $this->determineRound($note, 1, true),
+						'overcoming'	=>	$overcoming,
+					]);
+				}
 			}
 
 			return $response;	

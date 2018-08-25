@@ -230,9 +230,10 @@ class PdfController extends Controller
             ['school_year_id', '=', '1'],['group_type', '=', $request->group_type]
         ])->get();
         $periods = $institution->periods()
-        ->with('period')->orderBy('periods_id')->get()->pluck('period')->unique()->values()->pluck('name','id');
+        ->with('period')->orderBy('periods_id')->get();
+        // ->pluck('period')->unique()->values()->pluck('name','id');
 
-        // dd(count($parameters));
+        // dd(($periods));
         if(!file_exists($path))
         {   
             mkdir($path);
@@ -246,6 +247,7 @@ class PdfController extends Controller
 
             $pensums = (isset ($request->evaluationType) && $request->evaluationType == 'asignature') ? $helper->getByAsignature($groupArray[1]) : $helper->getPensums();
 
+            // dd($pensums);
             if(count($pensums) > 0)
             {
                 foreach($pensums['pensums'] as $key => $pensum) { 
@@ -253,11 +255,13 @@ class PdfController extends Controller
                     // dd($pensum);
                     $evaluationSheet = new EvaluationSheet($request->orientation, 'mm', $request->papper);
                     $evaluationSheet->institution = $institution;
+                    $evaluationSheet->min_basic = $institution->scaleEvaluations()->where('abbreviation', 'BS')->first();
                     $evaluationSheet->group = $pensums['group'];
                     $evaluationSheet->parameters = $parameters;
                     $evaluationSheet->asignatureName = $pensum['asignature'];
                     $evaluationSheet->pensum = $pensum;
-                    $evaluationSheet->periods = $periods;
+                    $evaluationSheet->periods = $periods->pluck('period')->unique()->values()->pluck('name','id');
+                    $evaluationSheet->current_period = $pensums['current_period'];
                     $evaluationSheet->create();
                     $evaluationSheet->Output($path.$groupArray[0].$key.".pdf", "F");
                 }

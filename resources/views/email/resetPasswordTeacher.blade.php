@@ -1,7 +1,7 @@
 @component('mail::message')
 Hola! **{{$manager->fullName}}**
 
-Hemos recivio una notificación para cambiar tu contraseña
+Hemos recibido una notificación para cambiar tu contraseña
 
 <a href="{{route('teacher.showResetForm', [$token])}}" class="button button-blue">
 	Cambiar Contraseña

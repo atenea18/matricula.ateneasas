@@ -69,6 +69,11 @@ class GroupPensum extends Model
         return $this->hasMany(NotesParametersPerformances::class, 'group_pensum_id');
     }
 
+    public function performances()
+    {
+        return $this->hasMany(GroupPensumPerformances::class, 'group_pensum_id');
+    }
+
     public static function getByGroup($group_id)
     {
 

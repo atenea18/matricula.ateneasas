@@ -53,6 +53,7 @@ class NotebookController extends Controller
     public function create(Request $request)
     {
         
+        // dd($request->all());   
         // 
         $path = 'pdf/'.time().'-'.$this->institution->id.'-boletin/';
 
@@ -79,6 +80,8 @@ class NotebookController extends Controller
             $data = $notebook->create();
 
             // return response()->json($data);
+            // return response()->json($data);
+            // exit();
             // dd($data);
 
             $fileName = str_replace(' ', '', $data['student']->fullNameInverse);
