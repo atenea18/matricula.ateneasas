@@ -28,7 +28,30 @@ use Illuminate\Support\Facades\DB;
 
 class EvaluationController extends Controller
 {
-
+    public function index()
+    {
+        $teacher = Auth::guard('teachers')->user()->teachers()->first();
+        $pemsun = $teacher->pensums()
+            ->where('schoolyear_id', '=', 1)
+            ->with('asignature')
+            ->with('area')
+            ->with('group')
+            ->with('subjectType')
+            ->with('schoolYear')
+            ->get();
+        $sub_pemsun = $teacher->sub_pensums()
+            ->where('schoolyear_id', '=', 1)
+            ->with('asignature')
+            ->with('area')
+            ->with('subgroup')
+            ->with('subjectType')
+            ->with('schoolYear')
+            ->get();
+        return View('teacher.partials.evaluation.index')
+            ->with('teacher', $teacher)
+            ->with('pemsun', $pemsun)
+            ->with('sub_pensum', $sub_pemsun);
+    }
 
     public function getAsignatureById(Request $request)
     {
