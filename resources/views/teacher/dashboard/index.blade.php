@@ -51,7 +51,7 @@
 
         <!-- Scripts -->
         
-        <script src="{{asset('js/app.js')}}"></script>
+        <script src="{{asset('js/app.js?v=1.1')}}"></script>
         <script src="{{asset('plugin/DataTables/datatables.min.js')}}"></script>
         <script src="{{asset('plugin/DataTables/dataTables.bootstrap.min.js')}}"></script>
         <script src="{{asset('plugin/multiSelect/multiselect.js')}}"></script>
