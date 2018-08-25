@@ -19,14 +19,14 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-               <selects-performances></selects-performances>
+                <selects-performances/>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <hr>
-                <br>
-               <table-performances></table-performances>
+                <table-performances v-show="!is_active"/>
+                <create-performances v-show="is_active"/>
             </div>
         </div>
     </div>
@@ -35,9 +35,12 @@
 <script>
     import SelectsPerformances from '../GroupSelect/SelectsPerformances'
     import TablePerformances from "./Table/TablePerformances";
+    import CreatePerformances from "./Create/CreatePerformances";
+
     export default {
         name: "content-performances",
         components: {
+            CreatePerformances,
             TablePerformances,
             SelectsPerformances,
         },
@@ -46,10 +49,8 @@
                 is_active: false,
             }
         },
-        created(){
-            this.$bus.$on('eventElementsSelected@SelectsPerformances', data =>{
-                console.log(data)
-            })
+        created() {
+
         },
         methods: {
             clickLinkActions() {
