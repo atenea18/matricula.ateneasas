@@ -603,14 +603,19 @@ class Notebook extends Fpdf
                                 }
 
 							endif;
-
-							array_push($dataVg, [
-								'period_id'		=>	$period['periods_id'],
-								'percent'		=>	$period['percent'],
-								'asignature_id' => 	$asignaturee['asignature_id'],
-								'note'			=>	$note,
-								'overcoming'	=>	$recovery_note,
-							]);
+                            
+                            
+                            if(!$this->checkVG($dataVg, $asignaturee['asignature_id'], $period['periods_id']))
+                            {
+                                array_push($dataVg, [
+    								'period_id'		=>	$period['periods_id'],
+    								'percent'		=>	$period['percent'],
+    								'asignature_id' => 	$asignaturee['asignature_id'],
+    								'note'			=>	$note,
+    								'overcoming'	=>	$recovery_note,
+    							]);
+                            }   
+							
 
 						endif;
 
@@ -636,14 +641,27 @@ class Notebook extends Fpdf
 
 		$this->Cell(7, $this->_h_c, $this->getVG($dataVg), 1, 0,'C');
 		$this->Cell(7, $this->_h_c, $this->getVRA($dataVg), 1, 0,'C');
-
+        
+        $dataVg = array();
 	}
 
-
+    
+    private function checkVG($array = array(), $id, $period)
+    {
+        foreach($array as $key => $value)
+        {
+            if($value['asignature_id'] == $id && $value['period_id'] == $period)
+                return true;
+        }
+        
+        return false;
+    }
+    
 	private function getVG($asignatures = array())
 	{
 		$vg = 0;
 		$nota = 0;
+		$response = '';
 
 		foreach($asignatures as $key => $asignature)
 		{
@@ -652,7 +670,8 @@ class Notebook extends Fpdf
 				$vg += round($note, 1) * ($asignature['percent'] / 100);
 			}
 		}
-
+    
+        //return  $response;
 		return round($vg, 1);
 	}
 
@@ -675,19 +694,19 @@ class Notebook extends Fpdf
 
 				break;
 			}
-			else if($period['period_id'] <= $this->data['current_period']->periods_id){
-
-				$previous_period_note = $periods[$key -1]['note'];
+			else if($period['period_id'] == $this->data['current_period']->periods_id){
+                
+				$previous_period_note = (isset($periods[$key -1])) ? $periods[$key -1]['note'] : 0;
 
 				$vg_period_previous = round($this->getVG($periods), 2);
 
-				if( $previous_period_note > 0 && $previous_period_note != '' ):
+				//if( $previous_period_note > 0 && $previous_period_note != '' ):
 					$vra = ( ($min_basic - $vg_period_previous) / $period_tobe_evaluated) / ($period['percent'] / 100);
-				endif;
+				//endif;
 			}
 		}
 
-		// return $vra;
+		//return $vra;
 		return round($vra, 1);
 	}
 	// 
