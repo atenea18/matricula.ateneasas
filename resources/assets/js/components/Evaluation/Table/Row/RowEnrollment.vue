@@ -3,7 +3,7 @@
         <td style="width:30px"> {{index+1}}</td>
         <td> {{getName}}</td>
         <td style="width:44px">
-            <input-no-attendance/>
+            <input-no-attendance :props-data="{enrollment:enrollment}"/>
         </td>
         <template v-for="parameter in stateEvaluation.parameters_selected">
             <td v-for="note_parameter in parameter.notes_parameter">

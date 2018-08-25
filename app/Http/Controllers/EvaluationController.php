@@ -7,6 +7,7 @@ use App\Grade;
 use App\Group;
 use App\GroupPensum;
 use App\Helpers\Utils\Utils;
+use App\NoAttendance;
 use App\Note;
 use App\NotesFinal;
 use App\Pensum;
@@ -299,6 +300,37 @@ class EvaluationController extends Controller
 
         return $notes;
 
+    }
+
+    public function storeNoAttendance(request $request)
+    {
+        $data = $request->data;
+        $noAttendance = null;
+
+        $noAttendance = NoAttendance::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+            ->first();
+
+        if (!$noAttendance) {
+            try {
+                $noAttendance = new NoAttendance();
+                $noAttendance->evaluation_periods_id = $data['evaluation_periods_id'];
+                $noAttendance->quantity = $data['quantity'];
+                $noAttendance->save();
+
+            } catch (\Exception $e) {
+
+            }
+        } else {
+            NoAttendance::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+                ->update([
+                    'quantity' => $data['quantity'],
+                ]);
+        }
+
+        $noAttendance = NoAttendance::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+            ->first();
+
+        return $noAttendance;
     }
 
     private function merge($grades, $groups, $areas, $asignatures)

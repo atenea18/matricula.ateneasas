@@ -63,6 +63,11 @@ Route::group(['prefix' => 'ajax'], function () {
     Route::get('/getInstitutionOfTeacher', 'StatisticsController@getInstitutionOfTeacher');
     Route::get('/getPositionStudents', 'StatisticsController@getPositionStudents');
 
+    // Relation Performances
+    Route::post('/relation-performances/store', 'RelationPerformancesController@store');
+    Route::post('/relation-performances/delete', 'RelationPerformancesController@delete');
+    Route::get('/relation-performances/get', 'RelationPerformancesController@get');
+
     //Configuración
     Route::get('/getConfigInstitution', 'ConfigController@getConfigInstitution');
 
@@ -88,17 +93,21 @@ Route::group(['prefix' => 'ajax'], function () {
 
     Route::get('/evaluation-collections-notes', 'EvaluationController@getCollectionsNotes');
 
+    //Performances
+    Route::get('/evaluation-search-performances', 'PerformancesController@searchPerformances');
+    Route::post('/evaluation-performances/store', 'PerformancesController@store');
 
-    // Relation Performances
-    Route::get('/relation-performances/get', 'RelationPerformancesController@get');
-    Route::post('/relation-performances/store', 'RelationPerformancesController@store');
-    Route::post('/relation-performances/delete', 'RelationPerformancesController@delete');
+
 
     //Parameters
     Route::get('/evaluation-parameter', 'ParameterController@getEvaluationParameter');
 
     //ScaleValoration
     Route::get('/getScaleEvaluation', 'ScaleEvaluationController@getScaleEvaluation');
+
+    //NoAttendance
+    Route::post('/evaluation-noattendance/store', 'EvaluationController@storeNoAttendance');
+
 
     //Store Vue.js
     Route::get('/allgrades', 'GradeController@getAllGrades');
@@ -332,7 +341,6 @@ Route::group(['prefix' => 'teacher', 'middleware' => 'teacher_auth'], function (
     Route::get('evaluation', 'Teacher\EvaluationController@index')->name('teacher.evaluation');
     Route::get('statistics', 'StatisticsController@index')->name('teacher.statistics');
 
-    Route::get('evaluation/periods/{group_id}/{type}/{asignatures_id}', 'Teacher\EvaluationController@evaluationPeriods')->name('teacher.evaluation.periods');
 
     Route::get('evaluation/evaluationParameter', 'Teacher\EvaluationController@evaluationParameter');
 
@@ -342,17 +350,13 @@ Route::group(['prefix' => 'teacher', 'middleware' => 'teacher_auth'], function (
 
     Route::get('evaluation/getCollectionsNotes', 'Teacher\EvaluationController@getCollectionsNotes');
 
-    Route::get('evaluation/searchPerformances', 'Teacher\EvaluationController@searchPerformances');
+
     Route::get('evaluation/getGroupPensum', 'Teacher\EvaluationController@getGroupPensum');
 
 
     Route::get('evaluation/getNotesFinalByAsignature', 'Teacher\EvaluationController@getNotesFinalByAsignature');
 
-    Route::post('evaluation/storeEvaluationPeriods', 'Teacher\EvaluationController@storeEvaluationPeriods');
-    Route::post('evaluation/storeFinalNotes', 'Teacher\EvaluationController@storeFinalNotes');
-    Route::post('evaluation/storeNotes', 'Teacher\EvaluationController@storeNotes');
-    Route::post('evaluation/storePerformances', 'Teacher\EvaluationController@storePerformances');
-    Route::post('evaluation/storeNoAttendance', 'Teacher\EvaluationController@storeNoAttendance');
+
 
 
     // Rutas para el Informe General de Periodo

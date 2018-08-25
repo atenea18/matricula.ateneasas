@@ -46,8 +46,7 @@ class GroupPensumPerformances extends Model
             ->join('messages_expressions', 'messages_expressions.id', '=', 'performances.messages_expressions_id')
             ->where('group_pensum_performances.periods_id', '=', $periods_id)
             ->where('group_pensum_performances.group_pensum_id', '=', $group_pensum_id)
-            ->get()
-            ->first();
+            ->get();
         return $performancesRelation;
     }
 
