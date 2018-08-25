@@ -696,7 +696,7 @@ class Notebook extends Fpdf
 			}
 			else if($period['period_id'] == $this->data['current_period']->periods_id){
                 
-				$previous_period_note = $periods[$key -1]['note'];
+				$previous_period_note = (isset($periods[$key -1])) ? $periods[$key -1]['note'] : 0;
 
 				$vg_period_previous = round($this->getVG($periods), 2);
 
