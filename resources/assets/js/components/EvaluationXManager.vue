@@ -1,16 +1,22 @@
 <template>
     <div class="row">
         <div class="col-md-12">
-            <selects-evaluation :props-data="propsData"></selects-evaluation>
+            <selects-evaluation :props-data="propsData"/>
         </div>
 
         <div class="col-md-12">
             <br>
-            <manager-performances></manager-performances>
+            <manager-performances/>
         </div>
         <div class="col-md-12">
             <template v-if="state_table_evaluation">
-                <table-evaluation></table-evaluation>
+                <relation-pensum-performances/>
+            </template>
+            <br>
+        </div>
+        <div class="col-md-12">
+            <template v-if="state_table_evaluation">
+                <table-evaluation/>
             </template>
         </div>
     </div>
@@ -21,6 +27,7 @@
     import SelectsEvaluation from './Evaluation/GroupSelect/SelectsEvaluation';
     import ManagerPerformances from './Evaluation/Performances/ManagerPerformances';
     import TableEvaluation from "./Evaluation/Table/TableEvaluation";
+    import RelationPensumPerformances from "./Evaluation/Table/Relation/RelationPensumPerformances"
 
     export default {
 
@@ -30,6 +37,7 @@
             TableEvaluation,
             SelectsEvaluation,
             ManagerPerformances,
+            RelationPensumPerformances,
         },
         data() {
             return {
