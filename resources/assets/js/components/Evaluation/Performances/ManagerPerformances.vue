@@ -3,11 +3,9 @@
         <div class="col-md-3">
             <div class="form-group">
                 <!-- Button Configurar Desempños-->
-                <!--
                 <button v-if="state_button"  type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
                     Configurar Desempeños
                 </button>
-                -->
             </div>
             <!-- Modal -->
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -21,7 +19,7 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                           <!-- <content-performances></content-performances>-->
+                           <content-performances></content-performances>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
