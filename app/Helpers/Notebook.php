@@ -228,7 +228,7 @@ class Notebook
 			'tittle_if' 			=> 	'INFORME DE EVALUACIÓN FINAL DEL PROCESO FORMATIVO',
 			'tittle_general_report'	=>	'INFORME GENERAL DE PERIODO',
 			'current_period' 		=> 	$this->current_period,
-			'date' 					=> 	date('Y-m-d'),
+			'date' 					=> 	(isset($this->request['fecha'])) ? $this->request['fecha'] : date('Y-m-d'),
 			'student' 				=> 	$this->enrollment->student,
 			'group'					=>	$this->group,
 			'director'				=>	$this->manager,
