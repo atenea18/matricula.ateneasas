@@ -143,7 +143,6 @@
                             // y puede ser tomado para realizar los cálculos, para el promedio de nota correpondiente
                             // al parametro
                             this.$bus.$emit(`EventTyped:${this.name_input_note}@InputNote`, this.name_label_average)
-                            //Por el momento-- esto se va a quitar luego
                         }
                     } else {
                         this.note.value = this.note.before_value

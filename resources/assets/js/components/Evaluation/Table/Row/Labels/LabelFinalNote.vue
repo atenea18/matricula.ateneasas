@@ -14,10 +14,10 @@
         data() {
             return {
                 enrollment: {
-                    id:0,
-                    evaluation_periods_id:0,
-                    notes_final:{
-                        value:0
+                    id: 0,
+                    evaluation_periods_id: 0,
+                    notes_final: {
+                        value: 0
                     }
                 },
                 label_final: {
@@ -31,13 +31,14 @@
         created() {
 
         },
-        mounted(){
+        mounted() {
             this.enrollment.id = this.propsData.enrollment.id
             this.enrollment.evaluation_periods_id = this.propsData.enrollment.evaluation_periods_id
-            if(this.propsData.enrollment.hasOwnProperty('notes_final')){
+            if (this.propsData.enrollment.hasOwnProperty('notes_final')) {
                 this.enrollment.notes_final.value = this.propsData.enrollment.notes_final.value
             }
             this.subscribeEventByRowEnrollment()
+            this.subscribeEventByNoAttendance()
         },
         computed: {
             ...mapState([
@@ -63,7 +64,44 @@
                     this.verifyPropertyEnrollmentNoteFinal()
                 })
             },
+            subscribeEventByNoAttendance() {
+                this.$bus.$off(`EventTyped:${this.name_label_final}@InputNoAttendance`)
+                this.$bus.$on(`EventTyped:${this.name_label_final}@InputNoAttendance`, attendance => {
+                    if (this.enrollment.evaluation_periods_id !== undefined) {
+                        this.saveNoAttendance(this.enrollment.evaluation_periods_id, attendance.value)
+                    } else {
+                        if (this.is_first) {
+                            this.saveEvaluationPeriod((data) => {
+                                if (data != null) {
+                                    this.enrollment.evaluation_periods_id = data.id
+                                    this.saveNoAttendance(this.enrollment.evaluation_periods_id, attendance.value)
+                                }
+                                else {
+                                    console.log('hubo un error en subscribeEventByNoAttendance')
+                                }
+                            })
+                        }
+                    }
 
+                })
+
+            },
+            saveNoAttendance(evaluation_period_id, attendance_value) {
+                let data = {
+                    quantity: attendance_value,
+                    evaluation_periods_id: evaluation_period_id,
+                }
+                let _this = this
+                axios.post('/ajax/evaluation-noattendance/store', {data})
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            _this.$bus.$emit(`EventSaveNoAttendance:${_this.name_label_final}@LabelFinalNote`);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
             verifyPropertyEnrollmentNoteFinal() {
                 // Si ya esta guardado evaluation period
                 if (this.enrollment.evaluation_periods_id !== undefined) {
@@ -84,7 +122,11 @@
                     }
                 } else {
                     if (this.is_first) {
-                        this.saveEvaluationPeriod()
+                        this.saveEvaluationPeriod(data => {
+                            this.enrollment.evaluation_periods_id = data.id
+                            this.emitToNoteInput()
+                            this.saveNoteFinal(data.id)
+                        })
                     }
                 }
                 this.is_first = true
@@ -98,8 +140,7 @@
                     //console.log('Nota calculada diferente, procede hacer petición para guardar')
                 }
             },
-            saveEvaluationPeriod() {
-                let _this = this
+            saveEvaluationPeriod(callBack) {
 
                 let data = {
                     enrollment_id: this.enrollment.id,
@@ -109,16 +150,14 @@
                 axios.post('/ajax/evaluation-period/store', {data})
                     .then(function (response) {
                         if (response.status == 200) {
-                            _this.enrollment.evaluation_periods_id = response.data.id
-                            _this.emitToNoteInput()
-                            _this.saveNoteFinal(response.data.id)
+
+                            if (callBack != null)
+                                callBack(response.data)
                         }
                     })
                     .catch(function (error) {
-                        console.log('period'+error);
+                        callBack(null)
                     });
-
-                console.log('Guarda Evaluatioon Period')
             },
 
             saveNoteFinal(evaluation_periods_id) {
@@ -137,7 +176,7 @@
                         }
                     })
                     .catch(function (error) {
-                        console.log('final'+error);
+                        console.log('final' + error);
                     });
             },
             emitToNoteInput() {
