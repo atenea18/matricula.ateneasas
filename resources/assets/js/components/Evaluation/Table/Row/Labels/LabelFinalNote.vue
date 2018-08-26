@@ -25,7 +25,7 @@
                     is_send: true,
                     name_input_note_action: ''
                 },
-                is_first: false
+                is_first: true
             }
         },
         created() {
@@ -37,8 +37,10 @@
             if (this.propsData.enrollment.hasOwnProperty('notes_final')) {
                 this.enrollment.notes_final.value = this.propsData.enrollment.notes_final.value
             }
+
             this.subscribeEventByRowEnrollment()
             this.subscribeEventByNoAttendance()
+
         },
         computed: {
             ...mapState([
@@ -61,7 +63,22 @@
 
                     this.label_final.value = info.sum
                     this.label_final.name_input_note_action = info.name_input_note
-                    this.verifyPropertyEnrollmentNoteFinal()
+
+                    let date = this.$store.state.stateInformation.date_current.getTime()
+                    let start_date = new Date(this.$store.state.stateEvaluation.period_selected.info.start_date).getTime()
+                    let end_date = new Date(this.$store.state.stateEvaluation.period_selected.info.end_date).getTime()
+
+                    if (start_date < date && date < end_date) {
+                        this.verifyPropertyEnrollmentNoteFinal()
+                    } else {
+                        if (this.label_final.name_input_note_action != '') {
+                            this.verifyPropertyEnrollmentNoteFinal()
+                        }
+                        if (this.is_first) {
+                            this.label_final.value = this.enrollment.notes_final.value
+                        }
+                    }
+
                 })
             },
             subscribeEventByNoAttendance() {
@@ -70,7 +87,7 @@
                     if (this.enrollment.evaluation_periods_id !== undefined) {
                         this.saveNoAttendance(this.enrollment.evaluation_periods_id, attendance.value)
                     } else {
-                        if (this.is_first) {
+                        if (!this.is_first) {
                             this.saveEvaluationPeriod((data) => {
                                 if (data != null) {
                                     this.enrollment.evaluation_periods_id = data.id
@@ -121,7 +138,7 @@
                         }
                     }
                 } else {
-                    if (this.is_first) {
+                    if (!this.is_first) {
                         this.saveEvaluationPeriod(data => {
                             this.enrollment.evaluation_periods_id = data.id
                             this.emitToNoteInput()
@@ -129,7 +146,7 @@
                         })
                     }
                 }
-                this.is_first = true
+                this.is_first = false
             },
 
             compareToValues() {
