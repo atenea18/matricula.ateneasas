@@ -11,7 +11,7 @@
         <title>@yield('title')</title>
 
         <!-- Styles -->
-        <link href="{{asset('css/app.css')}}" rel="stylesheet">
+        <link href="{{asset('css/app.css?v=1.2')}}" rel="stylesheet">
         <link rel="stylesheet" href="{{asset('plugin/DataTables/datatables.css')}}">
         <link rel="stylesheet" href="{{asset('plugin/DataTables/dataTables.bootstrap.min.css')}}">
         @yield('css')
@@ -51,7 +51,7 @@
 
         <!-- Scripts -->
         
-        <script src="{{asset('js/app.js?v=1.1')}}"></script>
+        <script src="{{asset('js/app.js?v=1.2')}}"></script>
         <script src="{{asset('plugin/DataTables/datatables.min.js')}}"></script>
         <script src="{{asset('plugin/DataTables/dataTables.bootstrap.min.js')}}"></script>
         <script src="{{asset('plugin/multiSelect/multiselect.js')}}"></script>
