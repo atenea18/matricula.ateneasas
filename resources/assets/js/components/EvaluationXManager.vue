@@ -99,6 +99,9 @@
                     if (asignature.subjects_type_id == 3 || asignature.grade_id == 4) {
                         group_type = 'basic'
                     }
+                    if (asignature.subjects_type_id == 2) {
+                        group_type = 'subgroup'
+                    }
 
                     if (parameters.length > 0) {
                         parameters = parameters.filter(element => {

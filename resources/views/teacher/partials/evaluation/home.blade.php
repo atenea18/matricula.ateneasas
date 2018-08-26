@@ -61,7 +61,7 @@
                     </table>
                 @endif
 
-                @if(count($sub_pensum) > 0)
+                {{-- @if(count($sub_pensum) > 0)
                     <table class="table">
                         <thead>
                         <tr>
@@ -91,9 +91,11 @@
                                         </button>
                                         <ul class='dropdown-menu'>
                                             <li>
+
                                                 <a href="{{route('teacher.evaluation.periods', [$pensum->subgroup->id,'subgroup',$pensum->asignature->id])}}">Evaluar
                                                     Periodo
                                                 </a>
+
                                             </li>
 
 
@@ -106,7 +108,7 @@
                         @endforeach
                         </tbody>
                     </table>
-                @endif
+                @endif --}}
             </div>
         </div>
     </div>
