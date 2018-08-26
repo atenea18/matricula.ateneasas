@@ -72,7 +72,9 @@ class ExportPdf extends Fpdi
         $this->Cell($this->page_width - $this->w_margin, 5.6, $this->transformMay($this->params->institution_object->name), 'LTR', 1, 'C');
         $this->SetFont('Arial', 'B', 8);
         $this->Cell($this->page_width - $this->w_margin, 4, $this->transformMay($this->enrollmentByGroup->headquarter_name), 'LR', 1, 'C');
-        $this->Cell($this->page_width - $this->w_margin, 4, $this->transformMay('Consolidado'), 'LR', 1, 'C');
+        
+        $title_consolidate = $this->params->is_accumulated == "true"?"CONSOLIDADOS CON PERIODOS ACUMULADOS":"CONSOLIDADOS";
+        $this->Cell($this->page_width - $this->w_margin, 4, $this->transformMay($title_consolidate), 'LR', 1, 'C');
         $this->Cell($this->page_width - $this->w_margin, 0, '', 'T', 1);
     }
 
@@ -163,7 +165,7 @@ class ExportPdf extends Fpdi
             
             //requiredValuation
             $this->SetX(15);
-            $this->Cell(78, $this->h_cell, $this->transformMay('Valoraci¨®n Requerida'), 1, 0, 'L', true);
+            $this->Cell(78, $this->h_cell, $this->transformMay('ValoraciÃ³n Requerida'), 1, 0, 'L', true); 
             $this->searchRequiredNotes($enrollment, $enrollmentByGroup);
         }
     }
@@ -330,7 +332,7 @@ class ExportPdf extends Fpdi
         // Select Arial italic 8
         $this->SetFont('Arial', 'I', 8);
         // Print centered page number
-        $this->Cell(0, 4, utf8_decode('Atenea - PÃ¡gina ' . $this->PageNo()), 0, 0, 'C');
+        $this->Cell(0, 4, utf8_decode('Atenea - Pçºgina ' . $this->PageNo()), 0, 0, 'C');
     }
 
 
