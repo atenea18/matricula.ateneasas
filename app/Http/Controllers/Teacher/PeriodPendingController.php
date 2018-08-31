@@ -30,6 +30,8 @@ class PeriodPendingController extends ApiController
 
         $students = $group->enrollments()
             ->with('student')
+            ->join('student', 'enrollment.student_id', '=', 'student.id')
+            ->orderBy('student.last_name', 'ASC')
             ->with(['evaluationPeriod' => function ($eval) use ($asignature, $period) {
                 return $eval->with('noteFinal')
                     ->where([
