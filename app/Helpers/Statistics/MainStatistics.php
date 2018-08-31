@@ -11,8 +11,9 @@ namespace App\Helpers\Statistics;
 
 use App\Helpers\Statistics\Consolidated\DispatcherConsolidated;
 use App\Helpers\Statistics\Consolidated\JsonConsolidated;
+use App\Helpers\Statistics\Percentage\DispatcherPercentage;
 
-class MainConsolidated
+class MainStatistics
 {
     private $params = null;
     private $response = null;
@@ -23,9 +24,17 @@ class MainConsolidated
     }
 
 
-    public function create()
+    public function createConsolidate()
     {
         $dispatcher = new DispatcherConsolidated($this->params);
+        $this->response = $dispatcher->getDispatcher();
+
+        return $this->response;
+    }
+
+    public function createPercentage()
+    {
+        $dispatcher = new DispatcherPercentage($this->params);
         $this->response = $dispatcher->getDispatcher();
 
         return $this->response;

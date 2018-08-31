@@ -11,6 +11,8 @@ namespace App\Helpers\Statistics;
 
 use App\Group;
 use App\Institution;
+use App\ScaleEvaluation;
+use App\Workingday;
 use http\Env\Request;
 
 class ParamsStatistics
@@ -36,6 +38,7 @@ class ParamsStatistics
     public $vectorPeriods = [];
     public $vectorSubjects = [];
     public $vectorEnrollments = [];
+    public $vectorScales = [];
 
 
     public function __construct($request)
@@ -50,43 +53,37 @@ class ParamsStatistics
         $this->is_filter_subjects = $request->is_filter_areas;
         $this->group_object = (object) Group::getGroupsById($request->group_id);
         $this->is_filter_all_groups = $request->is_filter_all_groups;
-        $this->institution_object = Institution::findOrfail($request->institution_id);
+        $this->institution_object = $request->institution;
+
+        $this->vectorScales =  ScaleEvaluation::getScaleByInstitution($request->institution->id);;
 
     }
 
     public function initConsolidated()
     {
 
-        /*
-         * Dependencias...
-         */
-
-        $this->vectorPeriods = \Utils::get_periods_by_group(
-            $this->institution_object->id,
-            $this->group_object->working_day_id
-        );
-
+        //Notas de todos los periodos, por áreas o asignaturas, segun el filtro
         $this->vectorNotes = \Utils::query_get_notes_final(
             $this->institution_object->id,
             $this->group_object->id,
             $this->is_filter_subjects
         );
 
+        //Asignaturas o Áreas segun el filtro
         $this->vectorSubjects = \Utils::query_get_subjects(
             $this->group_object->id,
             $this->is_filter_subjects
         );
-        $this->minimum_scale_object = \Utils::get_min_scale(
-            $this->institution_object
-        );
 
-        $this->vectorEnrollments = \Utils::get_enrollments_by_group(
-            $this->institution_object->id,
-            $this->group_object->id
-        );
-
+        //Escala de valoración
+        $this->minimum_scale_object = ScaleEvaluation::getMinScale($this->institution_object);
         $this->middle_point = $this->minimum_scale_object->rank_end += 0.1;
 
+        //Estudiantes
+        $this->vectorEnrollments = Group::enrollmentsByGroup($this->institution_object->id,$this->group_object->id);
+
+        //Periodos
+        $this->vectorPeriods = Workingday::getPeriodsByGroup($this->institution_object->id,$this->group_object->working_day_id);
         $this->num_of_periods = count($this->vectorPeriods);
 
     }

@@ -31,6 +31,7 @@
         created() {
 
         },
+
         mounted() {
             this.enrollment.id = this.propsData.enrollment.id
             this.enrollment.evaluation_periods_id = this.propsData.enrollment.evaluation_periods_id
@@ -61,24 +62,19 @@
                 this.$bus.$off(`EventSumLabelsAverage:${this.name_label_final}@RowEnrollment`)
                 this.$bus.$on(`EventSumLabelsAverage:${this.name_label_final}@RowEnrollment`, info => {
 
-                    this.label_final.value = info.sum
-                    this.label_final.name_input_note_action = info.name_input_note
+                    if (this.is_first) {
+                        this.label_final.value = this.enrollment.notes_final.value
+                    }
 
-                    let date = this.$store.state.stateInformation.date_current.getTime()
-                    let start_date = new Date(this.$store.state.stateEvaluation.period_selected.info.start_date).getTime()
-                    let end_date = new Date(this.$store.state.stateEvaluation.period_selected.info.end_date).getTime()
+                    if(info.sum > 0 || !this.is_first){
+                        this.label_final.value = info.sum
+                        this.label_final.name_input_note_action = info.name_input_note
 
-                    if (start_date < date && date < end_date) {
-                        this.verifyPropertyEnrollmentNoteFinal()
-                    } else {
                         if (this.label_final.name_input_note_action != '') {
                             this.verifyPropertyEnrollmentNoteFinal()
                         }
-                        if (this.is_first) {
-                            this.label_final.value = this.enrollment.notes_final.value
-                        }
                     }
-
+                    this.is_first = false
                 })
             },
             subscribeEventByNoAttendance() {
@@ -126,7 +122,6 @@
                     // Si ya tiene una nota final
                     if (this.enrollment.hasOwnProperty('notes_final')) {
                         //comparo nota final calculada con la que ya se tiene
-
                         this.compareToValues()
                     }
                     //Guardar nota final
@@ -146,7 +141,7 @@
                         })
                     }
                 }
-                this.is_first = false
+
             },
 
             compareToValues() {

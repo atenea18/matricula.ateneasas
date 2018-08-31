@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Group;
 use App\GroupPensum;
+use App\Helpers\Statistics\Percentage\Dispatchers\JsonPercentage;
+use App\ScaleEvaluation;
 use Auth;
 use App\Institution;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Helpers\Utils\GenerateRating;
-use App\Helpers\Statistics\MainConsolidated;
+
+use App\Helpers\Statistics\MainStatistics;
 use App\Helpers\Statistics\ParamsStatistics;
 
 
@@ -39,13 +41,24 @@ class StatisticsController extends Controller
      */
     public function getConsolidated(Request $request)
     {
+        $request->institution = $this->institution;
         $this->params = new ParamsStatistics($request);
         $this->params->initConsolidated();
-        $mainConsolidated = new MainConsolidated($this->params);
-        $response = $mainConsolidated->create();
+        $mainStatistics = new MainStatistics($this->params);
+        $response = $mainStatistics->createConsolidate();
 
         return $response;
 
+    }
+
+    public function getPercentage(Request $request){
+        $request->institution = $this->institution;
+        $this->params = new ParamsStatistics($request);
+        $this->params->initConsolidated();
+        $mainStatistics = new MainStatistics($this->params);
+        $response = $mainStatistics->createPercentage();
+        //return
+        return $response;
     }
 
     /**
@@ -67,24 +80,6 @@ class StatisticsController extends Controller
             ->get();
 
         return $periodsWorkingDay;
-    }
-
-    public function getPeriodsBySection(Request $request)
-    {
-
-        $periodsWorkingDay = DB::table('section_periods')
-            ->select(
-                'periods.name as periods_name', 'periods.id as periods_id',
-                'section_periods.start_date', 'section_periods.end_date', 'section_periods.percent', 'section_periods.id as working_day_periods_id',
-                'periods_state.name as periods_state_name', 'periods_state.id as periods_state_id'
-            )
-            ->join('periods_state', 'periods_state.id', '=', 'section_periods.periods_state_id')
-            ->join('periods', 'periods.id', '=', 'section_periods.periods_id')
-            ->where('section_periods.section_id', '=', $request->section_id)
-            ->get();
-
-        return $periodsWorkingDay;
-
     }
 
     public function getInstitutionOfTeacher(Request $request)
@@ -110,58 +105,6 @@ class StatisticsController extends Controller
         $groups = Group::getGroupsByGrade($this->institution->id,$request->grade_id);
 
         return $groups;
-    }
-
-    public function getPositionStudents(Request $request)
-    {
-
-        $enrollments = DB::table('notes_final')
-            ->select('enrollment.id', 'student.last_name', 'student.name',
-                DB::raw('ROUND(SUM(notes_final.value)/SUM(notes_final.value>0), 2) average'),
-                DB::raw('SUM(notes_final.`value`>0) tav'))
-            ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
-            ->join('enrollment', 'enrollment.id', '=', 'evaluation_periods.enrollment_id')
-            ->join('student', 'student.id', '=', 'enrollment.student_id')
-            ->join('institution', 'institution.id', '=', 'enrollment.institution_id')
-            ->join('schoolyears', 'schoolyears.id', '=', 'enrollment.school_year_id')
-            ->join('group_assignment', 'group_assignment.enrollment_id', '=', 'enrollment.id')
-            ->join('group', 'group.id', '=', 'group_assignment.group_id')
-            ->join('headquarter', 'headquarter.id', '=', 'group.headquarter_id')
-            ->join('group_pensum', 'group_pensum.group_id', '=', 'group.id')
-            ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
-            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
-            ->whereColumn(
-                [
-                    ['headquarter.institution_id', '=', 'institution.id'],
-                    ['group_pensum.asignatures_id', '=', 'evaluation_periods.asignatures_id']
-                ]
-            )
-            ->where('group.id', '=', $request->group_id)
-            ->where('institution.id', '=', $this->institution->id)
-            ->where('schoolyears.id', '=', '1')
-            ->where('evaluation_periods.periods_id', '=', $request->periods_id)
-            ->groupBy('enrollment.id')
-            ->orderBy('average', 'DESC')
-            ->get();
-
-        $positions = GenerateRating::createVectorRating($enrollments);
-
-        return $positions;
-    }
-
-    public function getAsignaturesGroupPensum(Request $request)
-    {
-
-        $asignatures = DB::table('group_pensum')
-            ->select(
-                'asignatures.abbreviation', 'asignatures.name',
-                'group_pensum.asignatures_id', 'group_pensum.ihs', 'group_pensum.order', 'group_pensum.percent')
-            ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
-            ->where('group_pensum.group_id', '=', $request->group_id)
-            ->get();
-
-        return $asignatures;
-
     }
 
     public function getAreasGroupPensum(Request $request)
