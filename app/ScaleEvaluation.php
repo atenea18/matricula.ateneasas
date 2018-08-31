@@ -44,4 +44,14 @@ class ScaleEvaluation extends Model
         ])
         ->first();
     }
+
+    public static function getScaleByInstitution($institution_id){
+        return self::select('scale_evaluations.id', 'scale_evaluations.name', 'scale_evaluations.abbreviation',
+            'scale_evaluations.rank_start', 'scale_evaluations.rank_end', 'scale_evaluations.name_recommendation',
+            'words_expressions.name as words_expressions_name', 'words_expressions.id as words_expressions_id')
+            ->where('scale_evaluations.institution_id', '=', $institution_id)
+            ->join('words_expressions', 'words_expressions.id', '=', 'scale_evaluations.words_expressions_id')
+            ->get();
+
+    }
 }
