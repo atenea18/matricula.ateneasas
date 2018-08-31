@@ -15,6 +15,7 @@
     import {mapState} from 'vuex'
     import MenuStatistics from "./Statistics/MenuStatistics";
     import MainConsolidated from './Statistics/Consolidated/MainConsolidated'
+    import MainPercentage from  './Statistics/Percentage/MainPercentage'
     import StatsRating from './Statistics/Rating/StatsRating'
     import StatsTeachers from './Statistics/Teachers/StatsTeachers'
     import { VueGoodTable } from 'vue-good-table';
@@ -24,6 +25,7 @@
         components: {
             MenuStatistics,
             MainConsolidated,
+            MainPercentage,
             StatsRating,
             StatsTeachers,
             VueGoodTable,

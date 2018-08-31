@@ -136,12 +136,6 @@ class EvaluationController extends Controller
                 }
             }
 
-            /*
-            if (count($no_attendance) < 1) {
-                $enrollment->no_attendance = '';
-                $enrollment->evaluation_periods_id = 0;
-            }
-            */
             if (count($no_attendance) >= 1) {
                 foreach ($no_attendance as $keyNoAtt => $item) {
                     if ($enrollment->id == $item->enrollment_id) {
@@ -424,6 +418,4 @@ class EvaluationController extends Controller
             return null;
         }
     }
-
-
 }

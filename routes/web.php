@@ -48,11 +48,12 @@ Route::group(['prefix' => 'ajax'], function () {
     Route::get('/getSubgroupsByGrade', 'AcademicAssignmentController@getSubgroupsByGrade');
 
 
+    // Statistics
+    Route::get('/getTableConsolidated', 'StatisticsController@getConsolidated');
+    Route::get('/getTablePercentage', 'StatisticsController@getPercentage');
 
     Route::get('/getGroupsByGrade', 'StatisticsController@getGroupsByGrade');
 
-    Route::get('/getTableConsolidated', 'StatisticsController@getConsolidated');
-    Route::get('/getAsignaturesGroupPensum', 'StatisticsController@getAsignaturesGroupPensum');
     Route::get('/getAreasGroupPensum', 'StatisticsController@getAreasGroupPensum');
 
 
@@ -75,10 +76,9 @@ Route::group(['prefix' => 'ajax'], function () {
 
     // Pensum Controller
     Route::get('/getAreasByGrade', 'PensumController@getAreasByGrade');
-    //Route::get('/getAreaByAsignatureOfPensum', 'PensumController@getAreaByAsignatureOfPensum');
     Route::get('/getAsignaturesByAreaPensum', 'PensumController@getAsignaturesByAreaPensum');
+
     //Subjects
-    Route::get('/getSubjectsByTeacher', 'PensumController@getSubjectsByTeacher');
     Route::get('/getSubjects', 'StatisticsController@getQueryGetSubjects');
 
 
@@ -107,7 +107,6 @@ Route::group(['prefix' => 'ajax'], function () {
 
     //NoAttendance
     Route::post('/evaluation-noattendance/store', 'EvaluationController@storeNoAttendance');
-
 
     //Store Vue.js
     Route::get('/allgrades', 'GradeController@getAllGrades');

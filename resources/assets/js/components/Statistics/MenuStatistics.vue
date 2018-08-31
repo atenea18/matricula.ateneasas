@@ -22,6 +22,13 @@
                                 <span class="sr-only">(current)</span>
                             </a>
                         </li>
+                        <!--
+                        <li :class="currentView=='main-percentage'?'active':''">
+                            <a href="#rating" @click="setCurrentView('main-percentage')">PORCENTUALES
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        -->
                         <li :class="currentView=='stats-rating'?'active':''">
                             <a href="#rating" @click="setCurrentView('stats-rating')">PUESTOS
                                 <span class="sr-only">(current)</span>
@@ -206,7 +213,18 @@
                 this.$store.state.currentView = view
                 // Se emite un nuevo evento con la misma finalidad de pasar los valores seleccionados en
                 // manager-group-select, pero este se ejecuta cuando el usuario cambia de sección.
-                this.$bus.$emit("SelectedCurrentVIew@MenuStatistics", view)
+                let eventProperties = {
+                    type: "selected",
+                    name: "SelectedFieldsEvent@MenuStatistics",
+                    whoTriggered: "componentManagerGroupSelect",
+                }
+                this.mainComponentObject.typeViewSection = view
+
+                this.initObjectComponentMain(eventProperties)
+                setTimeout(()=>{
+                    this.$bus.$emit("SelectedCurrentView@MenuStatistics", this.mainComponentObject)
+                },500)
+
             },
 
         },
