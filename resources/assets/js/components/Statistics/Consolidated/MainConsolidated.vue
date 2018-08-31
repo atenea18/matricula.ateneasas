@@ -78,16 +78,15 @@
                 this.$bus.$on('SelectedFieldsEvent@MenuStatistics', objectMenuStatistics => {
 
                     this.objectToTableConsolidated.params = objectMenuStatistics
-
                     this.managerSelectedFieldsEvent(objectMenuStatistics)
 
                 })
 
                 // Se subscribe al evento generado por menu-statistics, para generar una nueva consulta de consolidados
                 // si algún select de manager-group-select fue modificado
-                this.$bus.$off('SelectedCurrentVIew@MenuStatistics')
-                this.$bus.$on('SelectedCurrentVIew@MenuStatistics', object => {
-                    this.objectToTableConsolidated.params.eventInformation.whoTriggered = 'json'
+
+                this.$bus.$on('SelectedCurrentView@MenuStatistics', objectMenuStatistics => {
+                    this.objectToTableConsolidated.params = objectMenuStatistics
                     this.managerSelectedFieldsEvent(this.objectToTableConsolidated.params)
                 })
             },
@@ -176,6 +175,9 @@
                     this.state = true
                 })
             },
+        },
+        destroyed(){
+            this.$bus.$off('SelectedCurrentView@MenuStatistics')
         }
 
     }
