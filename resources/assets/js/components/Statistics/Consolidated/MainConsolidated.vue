@@ -113,7 +113,6 @@
             managerQueryForFilterConsolidated(objectMenuStatistics) {
 
                 let params = {
-                    institution_id: this.$store.state.institutionOfTeacher.id,
                     grade_id: objectMenuStatistics.objectValuesManagerGroupSelect.grade_id,
                     group_id: objectMenuStatistics.objectValuesManagerGroupSelect.group_id,
                     periods_id: objectMenuStatistics.objectValuesManagerGroupSelect.periods_id,

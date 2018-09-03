@@ -3,7 +3,7 @@
         <template style="text-align: center;">
             <div data-toggle="tooltip" data-placement="top" :title="objectInput.asignature.name">
                 <span style="text-align: center;" v-html="compareTo(objectInput.objectNote.value)"></span>
-                <span style="text-align: center;"  v-show="objectInput.objectNote.overcoming">/</span>
+                <span style="text-align: center;"  v-show="0<objectInput.objectNote.overcoming">/</span>
                 <span style="text-align: center;" v-html="compareTo(objectInput.objectNote.overcoming)"></span>
             </div>
         </template>
