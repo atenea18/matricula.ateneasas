@@ -22,13 +22,13 @@
                                 <span class="sr-only">(current)</span>
                             </a>
                         </li>
-                        <!--
+
                         <li :class="currentView=='main-percentage'?'active':''">
                             <a href="#rating" @click="setCurrentView('main-percentage')">PORCENTUALES
                                 <span class="sr-only">(current)</span>
                             </a>
                         </li>
-                        -->
+
                         <li :class="currentView=='stats-rating'?'active':''">
                             <a href="#rating" @click="setCurrentView('stats-rating')">PUESTOS
                                 <span class="sr-only">(current)</span>

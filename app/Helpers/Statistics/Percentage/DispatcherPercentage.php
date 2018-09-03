@@ -25,8 +25,8 @@ class DispatcherPercentage
             switch ($params->type_response) {
 
                 case 'pdf':
-                    //$pdf = new PdfPercentage($params);
-                    //$this->response = $pdf->getProcessedRequest();
+                    $pdf = new PdfPercentage($params);
+                    $this->response = $pdf->getProcessedRequest();
 
                     break;
 

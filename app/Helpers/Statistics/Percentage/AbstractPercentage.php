@@ -10,10 +10,11 @@ namespace App\Helpers\Statistics\Percentage;
 
 use App\Helpers\Statistics\Consolidated\AbstractConsolidated;
 use App\Helpers\Statistics\ParamsStatistics;
+use App\Helpers\Utils\Utils;
 
 abstract class AbstractPercentage extends AbstractConsolidated
 {
-    private $vectorScales = null;
+    protected $vectorScales = null;
 
     public function __construct(ParamsStatistics $params)
     {
@@ -25,7 +26,7 @@ abstract class AbstractPercentage extends AbstractConsolidated
     {
         parent::getProcessedRequest();
 
-
+        $num_enrollment = count($this->vectorEnrollments);
         foreach ($this->vectorSubjects as &$subjects) {
             $vectorPeriods = [];
 
@@ -46,6 +47,8 @@ abstract class AbstractPercentage extends AbstractConsolidated
                     'name' => $period->periods_name,
                     'period_id' => $period->periods_id,
                     'percent' => $period->percent,
+                    'num_enrollment' => 0,
+                    'sum_value' => 0,
                     'vectorScales' => $vectorScales
                 );
 
@@ -54,21 +57,30 @@ abstract class AbstractPercentage extends AbstractConsolidated
             $subjects->vectorPeriods = $vectorPeriods;
         }
 
-        $num_enrollment = count($this->vectorEnrollments);
+
         foreach ($this->vectorEnrollments as $enrollment) {
 
             foreach ($enrollment->evaluatedPeriods as $evaluatedPeriod) {
                 foreach ($evaluatedPeriod['notes'] as $note) {
+                    $value_note = Utils::process_note($note->value, $note->overcoming);
                     foreach ($this->vectorSubjects as $subj) {
                         if ($note->asignatures_id == $subj->asignatures_id) {
                             foreach ($subj->vectorPeriods as $pp) {
                                 if ($evaluatedPeriod['period_id'] == $pp->period_id) {
+
                                     foreach ($pp->vectorScales as $scc) {
-                                        if ($scc->rank_start <= $note->value && $scc->rank_end >= $note->value) {
+                                        if ($scc->rank_start <= $value_note && $scc->rank_end >= $value_note) {
+
+                                            $pp->num_enrollment += 1;
+                                            $pp->sum_value += $value_note;
+
                                             $scc->counter += 1;
-                                            $scc->percent_counter += (1 / $num_enrollment) * 100;
+                                            break;
+                                            //$scc->percent_counter = round(($scc->counter / $num_enrollment) * 100,0);
                                         }
                                     }
+
+
                                 }
                             }
                         }
@@ -79,14 +91,5 @@ abstract class AbstractPercentage extends AbstractConsolidated
 
         return $this->vectorSubjects;
 
-
     }
-
-    private
-    function getPercentageSubjects()
-    {
-
-
-    }
-
 }
