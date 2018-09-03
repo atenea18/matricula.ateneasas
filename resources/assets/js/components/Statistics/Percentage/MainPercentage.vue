@@ -2,10 +2,12 @@
     <div>
         <div class="row">
             <div class="col-md-12">
-                loremp sss
                 <template v-if="state">
-                    <br>fffffffffffffffffffffffffffffffffff
-                    <pre>{{mainComponent.enrollments}}</pre>
+                    <table-percentage :props-data="{
+                    titles_percentages: stateScale.scales,
+                    content_percentages: mainComponent.percentages,
+                    options_selected: mainComponent.params
+                    }"/>
                     <!--
                     <table-consolidated id="table-consolidated"
                                         :objectInput="objectToTableConsolidated">
@@ -19,31 +21,32 @@
 
 <script>
     import {mapState} from 'vuex'
+    import TablePercentage from "./Table/TablePercentage";
 
     export default {
-        name: "mian-percentage",
+        components: {TablePercentage},
+        name: "main-percentage",
         computed: {
             ...mapState([
-                'currentView'
+                'currentView',
+                'stateScale',
             ]),
         },
-        data(){
-            return{
+        data() {
+            return {
                 state: false,
-                params:{
-
-                },
-                mainComponent:{
+                params: {},
+                mainComponent: {
                     params: {},
                     asignatures: [],
-                    enrollments: [],
+                    percentages: [],
                 }
             }
         },
-        created(){
+        created() {
             this.managerEvents()
         },
-        methods:{
+        methods: {
             managerEvents() {
                 //Se subscribe al evento generado por menu-statistics, este le permite saber si se debe
                 //mostrar la sección de consolidado con su respectiva consulta, ya que este evento devuelve
@@ -68,7 +71,7 @@
             },
             managerSelectedFieldsEvent(objectMenuStatistics) {
 
-                if (this.$store.state.currentView =='main-percentage') {
+                if (this.$store.state.currentView == 'main-percentage') {
 
                     this.getWhoTriggered(objectMenuStatistics)
                 }
@@ -123,7 +126,7 @@
 
                 switch (params.type_response) {
                     case 'pdf':
-                        //this.executePDF(params)
+                        this.executePDF(params)
                         break;
                     case 'excel':
                         toastr.success('En desarrollo...')
@@ -132,16 +135,24 @@
                         this.executeDefault(params)
                 }
             },
+            executePDF(params) {
+                var esc = encodeURIComponent;
+                var query = Object.keys(params)
+                    .map(k => esc(k) + '=' + esc(params[k]))
+                    .join('&');
+                let url = params.url_consolidated + '?' + query;
+                window.open(url);
+            },
             executeDefault(params) {
                 axios.get(params.url_consolidated, {params}).then(res => {
                     // Cuando la variable local tiene la información, le asignamos valor true a la variable
                     // state, para que renderice el componente table-consolidated
-                    this.mainComponent.enrollments = res.data
+                    this.mainComponent.percentages = res.data
                     this.state = true
                 })
             },
         },
-        destroyed(){
+        destroyed() {
             this.$bus.$off('SelectedCurrentView@MenuStatistics')
         }
     }

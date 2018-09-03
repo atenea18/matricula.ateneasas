@@ -41,7 +41,8 @@
         },
         created() {
             this.getGrades()
-            this.getInstitutionOfTeacher()
+            this.stateScaleValoration()
+
         },
 
         updated() {
@@ -50,7 +51,7 @@
         computed: {
             ...mapState([
                 'currentView',
-                'scaleEvaluation'
+                'stateScale',
             ]),
 
         },
@@ -58,8 +59,8 @@
             getGrades() {
                 this.$store.dispatch('grades')
             },
-            getInstitutionOfTeacher() {
-                this.$store.dispatch('institutionOfTeacher')
+            stateScaleValoration() {
+                this.$store.dispatch('scaleValoration')
             },
 
         }

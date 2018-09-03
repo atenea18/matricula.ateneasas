@@ -95,5 +95,26 @@ class Utils
 
     }
 
+    // Process Note and Overcomming
+    /**
+     * Determina que nota regresar, si se ha hecho recuperación.
+     */
+    public static function process_note($note, $overcoming)
+    {
+        $noteAux = 0;
+        $overcomingAux = 0;
+        if ($note > 0) {
+            if ($overcoming != null && $overcoming > 0) {
+                $overcomingAux = $overcoming;
+            }
+            $noteAux = $note;
+        }
+
+        if ($noteAux > $overcomingAux)
+            return round($noteAux,1);
+        else
+            return round($overcomingAux,1);
+    }
+
 
 }

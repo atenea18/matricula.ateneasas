@@ -82,7 +82,7 @@
         },
 
         created() {
-            this.$store.state.scaleEvaluation.forEach(element => {
+            this.$store.state.stateScale.scales.forEach(element => {
                 if (element.words_expressions_id == 4) {
                     this.$store.state.minScale = element.rank_end
                 }
@@ -91,7 +91,7 @@
         computed: {
             ...mapState([
                 'periodsworkingday',
-                'scaleEvaluation',
+                'stateScale',
                 'minScale'
             ]),
 
