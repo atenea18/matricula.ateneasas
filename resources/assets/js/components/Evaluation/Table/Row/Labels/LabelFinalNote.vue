@@ -35,8 +35,10 @@
         mounted() {
             this.enrollment.id = this.propsData.enrollment.id
             this.enrollment.evaluation_periods_id = this.propsData.enrollment.evaluation_periods_id
+
             if (this.propsData.enrollment.hasOwnProperty('notes_final')) {
                 this.enrollment.notes_final.value = this.propsData.enrollment.notes_final.value
+                console.log(this.enrollment.notes_final.value)
             }
 
             this.subscribeEventByRowEnrollment()
@@ -59,7 +61,6 @@
         },
         methods: {
             subscribeEventByRowEnrollment() {
-                this.$bus.$off(`EventSumLabelsAverage:${this.name_label_final}@RowEnrollment`)
                 this.$bus.$on(`EventSumLabelsAverage:${this.name_label_final}@RowEnrollment`, info => {
 
                     if (this.is_first) {
@@ -69,10 +70,12 @@
                     if(info.sum > 0 || !this.is_first){
                         this.label_final.value = info.sum
                         this.label_final.name_input_note_action = info.name_input_note
-
+                        this.verifyPropertyEnrollmentNoteFinal()
+                        /*
                         if (this.label_final.name_input_note_action != '') {
-                            this.verifyPropertyEnrollmentNoteFinal()
+
                         }
+                        */
                     }
                     this.is_first = false
                 })
@@ -196,8 +199,13 @@
                     this.$bus.$emit(`EventNoteCanSave:${this.label_final.name_input_note_action}@LabelFinalNote`,
                         this.enrollment.evaluation_periods_id)
                 }
-            }
+            },
+
         },
+        destroyed(){
+            this.$bus.$off(`EventSumLabelsAverage:${this.name_label_final}@RowEnrollment`)
+        }
+
     }
 </script>
 
