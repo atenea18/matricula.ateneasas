@@ -96,7 +96,7 @@
                     let parameters = res.data;
                     let group_type = 'group'
 
-                    if (asignature.subjects_type_id == 3 || asignature.grade_id == 4) {
+                    if (asignature.subjects_type_id == 3 || asignature.grade_id < 5 ) {
                         group_type = 'basic'
                     }
                     if (asignature.subjects_type_id == 2) {
