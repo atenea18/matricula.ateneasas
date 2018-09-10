@@ -12,6 +12,7 @@ namespace App\Helpers\Statistics;
 use App\Helpers\Statistics\Consolidated\DispatcherConsolidated;
 use App\Helpers\Statistics\Consolidated\JsonConsolidated;
 use App\Helpers\Statistics\Percentage\DispatcherPercentage;
+use App\Helpers\Statistics\Reprobated\DispatcherReprobated;
 
 class MainStatistics
 {
@@ -35,6 +36,14 @@ class MainStatistics
     public function createPercentage()
     {
         $dispatcher = new DispatcherPercentage($this->params);
+        $this->response = $dispatcher->getDispatcher();
+
+        return $this->response;
+    }
+
+    public function createReprobated()
+    {
+        $dispatcher = new DispatcherReprobated($this->params);
         $this->response = $dispatcher->getDispatcher();
 
         return $this->response;

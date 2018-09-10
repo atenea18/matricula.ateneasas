@@ -16,6 +16,7 @@
     import MenuStatistics from "./Statistics/MenuStatistics";
     import MainConsolidated from './Statistics/Consolidated/MainConsolidated'
     import MainPercentage from  './Statistics/Percentage/MainPercentage'
+    import MainReprobated from  './Statistics/Reprobated/MainReprobated'
     import StatsRating from './Statistics/Rating/StatsRating'
     import StatsTeachers from './Statistics/Teachers/StatsTeachers'
     import { VueGoodTable } from 'vue-good-table';
@@ -26,6 +27,7 @@
             MenuStatistics,
             MainConsolidated,
             MainPercentage,
+            MainReprobated,
             StatsRating,
             StatsTeachers,
             VueGoodTable,

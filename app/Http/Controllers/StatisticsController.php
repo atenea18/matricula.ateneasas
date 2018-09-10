@@ -61,6 +61,16 @@ class StatisticsController extends Controller
         return $response;
     }
 
+    public function getReprobated(Request $request){
+
+        $request->institution = $this->institution;
+        $this->params = new ParamsStatistics($request);
+        $this->params->initConsolidated();
+        $mainStatistics = new MainStatistics($this->params);
+        $response = $mainStatistics->createReprobated();
+        return $response;
+    }
+
     /**
      * Obtiene periodos académico de acuerdo a la jornada de cada grupo
      */

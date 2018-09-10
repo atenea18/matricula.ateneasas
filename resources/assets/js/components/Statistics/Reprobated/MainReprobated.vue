@@ -11,11 +11,46 @@
                     Cargando...
                 </div>
                 <template v-if="state">
-                    <br>
-                    <table-consolidated id="table-consolidated"
-                                        :objectInput="objectToTableConsolidated">
-                    </table-consolidated>
+                    <div v-for="period in mainComponent.reprobated_periods">
+                        <table class="table table-sm table-bordered"
+                               v-show="period.periods_id == mainComponent.params.objectValuesManagerGroupSelect.periods_id">
+                            <thead>
+                            <tr>
+                                <th style="text-align: left !important;">No.</th>
+                                <th style="text-align: left !important;">Nombre de Estudiante</th>
+                                <th style="text-align: left !important;">Asignaturas</th>
+                                <th>Valoracion</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <template v-for="(enrollment,i) in period.enrollments">
+
+                                <tr v-for="(asignature,j) in enrollment.asignatures">
+                                    <td style="text-align: left !important;" v-if="j==0" :rowspan="enrollment.asignatures.length">
+                                        {{i+1}}
+                                    </td>
+                                    <td style="text-align: left !important;" v-if="j==0" :rowspan="enrollment.asignatures.length">
+                                        {{enrollment.student_last_name+' '+enrollment.student_name}}
+                                    </td>
+
+                                    <td style="text-align: left !important;">{{asignature.name_subjects}}</td>
+                                    <td>{{asignature.value}}</td>
+                                </tr>
+                            </template>
+
+                            </tbody>
+                        </table>
+                    </div>
                 </template>
+                <!--
+                <template v-if="state">
+                    <table-percentage :props-data="{
+                    titles_reprobated_periods: stateScale.scales,
+                    content_reprobated_periods: mainComponent.reprobated_periods,
+                    options_selected: mainComponent.params
+                    }"/>
+                </template>
+                -->
             </div>
         </div>
     </div>
@@ -23,70 +58,42 @@
 
 <script>
     import {mapState} from 'vuex'
-    import { HalfCircleSpinner } from 'epic-spinners'
-    import ManagerGroupSelect from "../../partials/Form/GroupSelect/ManagerGroupSelect";
-    import TableConsolidated from "./Table/TableConsolidated";
+    import {HalfCircleSpinner} from 'epic-spinners'
 
     export default {
+        name: "main-reprobated",
         components: {
-            TableConsolidated,
-            ManagerGroupSelect,
             HalfCircleSpinner
         },
-        name: "main-consolidated",
+        computed: {
+            ...mapState([
+                'currentView',
+                'stateScale',
+            ]),
+        },
         data() {
             return {
                 state: false,
                 is_first: true,
-                objectToTableConsolidated: {
+                params: {},
+                mainComponent: {
                     params: {},
                     asignatures: [],
-                    enrollments: [],
-                },
-                objectToManagerGroupSelect: {
-                    isSubGroup: false,
-                    referenceId: "statistics",
-                    referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.referenceId + '.managerGroupSelect',
-                },
+                    reprobated_periods: [],
+                }
             }
         },
         created() {
             this.managerEvents()
-            this.initToast()
-        },
-        computed: {
-            ...mapState([
-                'institutionOfTeacher',
-                'periodsworkingday'
-            ]),
         },
         methods: {
-            initToast() {
-                toastr.options = {
-                    "closeButton": false,
-                    "debug": false,
-                    "newestOnTop": true,
-                    "progressBar": true,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "onclick": null,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                }
-            },
-
             managerEvents() {
                 //Se subscribe al evento generado por menu-statistics, este le permite saber si se debe
                 //mostrar la sección de consolidado con su respectiva consulta, ya que este evento devuelve
                 //un objeto con los datos seleccionados de manager-group-select
                 this.$bus.$on('SelectedFieldsEvent@MenuStatistics', objectMenuStatistics => {
-                    this.objectToTableConsolidated.params = objectMenuStatistics
+
+                    this.mainComponent.params = objectMenuStatistics
                     this.managerSelectedFieldsEvent(objectMenuStatistics)
 
                 })
@@ -95,14 +102,14 @@
                 // si algún select de manager-group-select fue modificado
 
                 this.$bus.$on('SelectedCurrentView@MenuStatistics', objectMenuStatistics => {
-                    this.objectToTableConsolidated.params = objectMenuStatistics
-                    this.managerSelectedFieldsEvent(this.objectToTableConsolidated.params)
+
+                    this.mainComponent.params = objectMenuStatistics
+                    this.managerSelectedFieldsEvent(this.mainComponent.params)
                 })
             },
-
             managerSelectedFieldsEvent(objectMenuStatistics) {
 
-                if (this.$store.state.currentView =='main-consolidated') {
+                if (this.$store.state.currentView == 'main-reprobated') {
                     this.getWhoTriggered(objectMenuStatistics)
                 }
             },
@@ -115,13 +122,13 @@
                     whoTriggered == 'areas' ||
                     whoTriggered == 'excel' ||
                     whoTriggered == 'componentManagerGroupSelect') {
-                    this.managerQueryForFilterConsolidated(objectMenuStatistics)
+                    this.managerQueryForFilter(objectMenuStatistics)
                 }
             },
-
-            managerQueryForFilterConsolidated(objectMenuStatistics) {
+            managerQueryForFilter(objectMenuStatistics) {
 
                 let params = {
+                    institution_id: this.$store.state.institutionOfTeacher.id,
                     grade_id: objectMenuStatistics.objectValuesManagerGroupSelect.grade_id,
                     group_id: objectMenuStatistics.objectValuesManagerGroupSelect.group_id,
                     periods_id: objectMenuStatistics.objectValuesManagerGroupSelect.periods_id,
@@ -137,22 +144,23 @@
                 }
 
                 params.url_subjects = '/ajax/getSubjects'
-                params.url_consolidated = '/ajax/getTableConsolidated'
+                params.url_consolidated = '/ajax/getTableReprobated'
 
-                this.getContentConsolidated(params)
+                //this.getContent(params)
+                this.dispatcher(params)
             },
 
-            getContentConsolidated(params) {
+            getContent(params) {
                 // Petición para obetener la cabecera de la tabla (areas o asignaturas)
                 axios.get(params.url_subjects, {params}).then(res => {
-                    this.objectToTableConsolidated.asignatures = res.data
+                    this.mainComponent.asignatures = res.data
                     //Si petición anterior es ok
-                    this.dispatcherConsolidated(params)
+                    //this.dispatcher(params)
                 })
             },
 
             // Método que trae todos los datos sobre el consolidado a consultar
-            dispatcherConsolidated(params) {
+            dispatcher(params) {
 
                 switch (params.type_response) {
                     case 'pdf':
@@ -165,7 +173,6 @@
                         this.executeDefault(params)
                 }
             },
-
             executePDF(params) {
                 var esc = encodeURIComponent;
                 var query = Object.keys(params)
@@ -174,15 +181,14 @@
                 let url = params.url_consolidated + '?' + query;
                 window.open(url);
             },
-
             executeDefault(params) {
                 this.state = false
                 this.is_first = false
                 axios.get(params.url_consolidated, {params}).then(res => {
                     // Cuando la variable local tiene la información, le asignamos valor true a la variable
                     // state, para que renderice el componente table-consolidated
-                    if(res.status == 200){
-                        this.objectToTableConsolidated.enrollments = res.data
+                    if (res.status == 200) {
+                        this.mainComponent.reprobated_periods = res.data
                         this.state = true
                     }
                 }).catch(error => {
@@ -194,10 +200,16 @@
             this.$bus.$off('SelectedCurrentView@MenuStatistics')
             this.$bus.$off('SelectedFieldsEvent@MenuStatistics')
         }
-
     }
 </script>
 
-<style scoped>
-
+<style>
+    .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+        padding: 3px;
+        line-height: 1.42857143;
+        vertical-align: middle;
+        text-align: center;
+        font-size: 12px !important;
+        border-top: 1px solid #ddd;
+    }
 </style>

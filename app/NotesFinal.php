@@ -252,7 +252,7 @@ class NotesFinal extends Model
     {
 
         $data = DB::select(DB::raw(
-            "SELECT result.enrollment_id, result.last_name, result.name, result.name_areas,
+            "SELECT result.enrollment_id, result.last_name, result.name, result.name_subjects,
 								SUM(result.percent) percent,
                 IF(result.value>= result.overcoming,
 								ROUND(IF((SUM(result.percent) = 100),
@@ -271,7 +271,7 @@ class NotesFinal extends Model
                 enrollment.id as 'enrollment_id', notes_final.value as 'value', 
 								IFNULL(notes_final.overcoming,0) AS overcoming,
                 notes_final.id as 'notes_final_id', areas.id as 'areas_id', evaluation_periods.periods_id, 
-                student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_areas',                
+                student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_subjects',                
                 evaluation_periods.id as 'evaluation_periods_id',
                 group_pensum.percent as 'percent', 
                 (notes_final.value>0) as 'tav'
@@ -308,7 +308,7 @@ class NotesFinal extends Model
         $data = DB::table('notes_final')
             ->select('enrollment.id as enrollment_id', 'notes_final.value', 'notes_final.overcoming',
                 'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id',
-                'asignatures.name as asignature_name',
+                'asignatures.name as name_subjects',
                 'evaluation_periods.periods_id',
                 'evaluation_periods.id as evaluation_periods_id')
             ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')

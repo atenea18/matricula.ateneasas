@@ -2,6 +2,14 @@
     <div>
         <div class="row">
             <div class="col-md-12">
+                <div v-if="!state && !is_first" style="padding:30px 45%!important; display:inline-block !important;">
+                    <half-circle-spinner
+                            :animation-duration="1000"
+                            :size="60"
+                            :color="'#657fff'"
+                    />
+                    Cargando...
+                </div>
                 <template v-if="state">
                     <table-percentage :props-data="{
                     titles_percentages: stateScale.scales,
@@ -21,10 +29,11 @@
 
 <script>
     import {mapState} from 'vuex'
-    import TablePercentage from "./Table/TablePercentage";
+    import { HalfCircleSpinner } from 'epic-spinners'
+    import TablePercentage from "./Table/TablePercentage"
 
     export default {
-        components: {TablePercentage},
+        components: {TablePercentage, HalfCircleSpinner},
         name: "main-percentage",
         computed: {
             ...mapState([
@@ -35,6 +44,7 @@
         data() {
             return {
                 state: false,
+                is_first:true,
                 params: {},
                 mainComponent: {
                     params: {},
@@ -51,20 +61,15 @@
                 //Se subscribe al evento generado por menu-statistics, este le permite saber si se debe
                 //mostrar la sección de consolidado con su respectiva consulta, ya que este evento devuelve
                 //un objeto con los datos seleccionados de manager-group-select
-                this.$bus.$off('SelectedFieldsEvent@MenuStatistics')
                 this.$bus.$on('SelectedFieldsEvent@MenuStatistics', objectMenuStatistics => {
-
                     this.mainComponent.params = objectMenuStatistics
-
                     this.managerSelectedFieldsEvent(objectMenuStatistics)
-
                 })
 
                 // Se subscribe al evento generado por menu-statistics, para generar una nueva consulta de consolidados
                 // si algún select de manager-group-select fue modificado
 
                 this.$bus.$on('SelectedCurrentView@MenuStatistics', objectMenuStatistics => {
-                    console.log(objectMenuStatistics)
                     this.mainComponent.params = objectMenuStatistics
                     this.managerSelectedFieldsEvent(this.mainComponent.params)
                 })
@@ -72,7 +77,6 @@
             managerSelectedFieldsEvent(objectMenuStatistics) {
 
                 if (this.$store.state.currentView == 'main-percentage') {
-
                     this.getWhoTriggered(objectMenuStatistics)
                 }
             },
@@ -113,6 +117,7 @@
             },
 
             getContent(params) {
+
                 // Petición para obetener la cabecera de la tabla (areas o asignaturas)
                 axios.get(params.url_subjects, {params}).then(res => {
                     this.mainComponent.asignatures = res.data
@@ -144,16 +149,25 @@
                 window.open(url);
             },
             executeDefault(params) {
+                this.state = false
+                this.is_first = false
+
                 axios.get(params.url_consolidated, {params}).then(res => {
                     // Cuando la variable local tiene la información, le asignamos valor true a la variable
                     // state, para que renderice el componente table-consolidated
-                    this.mainComponent.percentages = res.data
-                    this.state = true
+                    if(res.status == 200){
+                        this.mainComponent.percentages = res.data
+                        this.state = true
+                    }
+                }).catch(error => {
+                    this.is_first = true
                 })
+
             },
         },
         destroyed() {
             this.$bus.$off('SelectedCurrentView@MenuStatistics')
+            this.$bus.$off('SelectedFieldsEvent@MenuStatistics')
         }
     }
 </script>
