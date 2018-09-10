@@ -15,8 +15,7 @@
                 asignatures:objectInput.asignatures,
                 isAcumulatedPeriod: objectInput.params.filter.isAcumulatedPeriod,
                 periodSelected: objectInput.params.objectValuesManagerGroupSelect.periods_id,
-                }">
-                </body-table-consolidated>
+                }"/>
             </template>
 
             <!-- Periodo Acumulado -->
@@ -32,8 +31,7 @@
                     asignatures:objectInput.asignatures,
                     periodSelected: objectPeriod.periods_id,
                     isAcumulatedPeriod: objectInput.params.filter.isAcumulatedPeriod,
-                    }">
-                    </body-table-consolidated>
+                    }"/>
                 </template>
 
                 <!-- Acumulados -->

@@ -2,6 +2,14 @@
     <div>
         <div class="row">
             <div class="col-md-12">
+                <div v-if="!state && !is_first" style="padding:30px 45%!important; display:inline-block !important;">
+                    <half-circle-spinner
+                            :animation-duration="1000"
+                            :size="60"
+                            :color="'#657fff'"
+                    />
+                    Cargando...
+                </div>
                 <template v-if="state">
                     <br>
                     <table-consolidated id="table-consolidated"
@@ -15,18 +23,21 @@
 
 <script>
     import {mapState} from 'vuex'
+    import { HalfCircleSpinner } from 'epic-spinners'
     import ManagerGroupSelect from "../../partials/Form/GroupSelect/ManagerGroupSelect";
     import TableConsolidated from "./Table/TableConsolidated";
 
     export default {
         components: {
             TableConsolidated,
-            ManagerGroupSelect
+            ManagerGroupSelect,
+            HalfCircleSpinner
         },
         name: "main-consolidated",
         data() {
             return {
                 state: false,
+                is_first: true,
                 objectToTableConsolidated: {
                     params: {},
                     asignatures: [],
@@ -74,9 +85,7 @@
                 //Se subscribe al evento generado por menu-statistics, este le permite saber si se debe
                 //mostrar la sección de consolidado con su respectiva consulta, ya que este evento devuelve
                 //un objeto con los datos seleccionados de manager-group-select
-                this.$bus.$off('SelectedFieldsEvent@MenuStatistics')
                 this.$bus.$on('SelectedFieldsEvent@MenuStatistics', objectMenuStatistics => {
-
                     this.objectToTableConsolidated.params = objectMenuStatistics
                     this.managerSelectedFieldsEvent(objectMenuStatistics)
 
@@ -167,16 +176,23 @@
             },
 
             executeDefault(params) {
+                this.state = false
+                this.is_first = false
                 axios.get(params.url_consolidated, {params}).then(res => {
                     // Cuando la variable local tiene la información, le asignamos valor true a la variable
                     // state, para que renderice el componente table-consolidated
-                    this.objectToTableConsolidated.enrollments = res.data
-                    this.state = true
+                    if(res.status == 200){
+                        this.objectToTableConsolidated.enrollments = res.data
+                        this.state = true
+                    }
+                }).catch(error => {
+                    this.is_first = true
                 })
             },
         },
-        destroyed(){
+        destroyed() {
             this.$bus.$off('SelectedCurrentView@MenuStatistics')
+            this.$bus.$off('SelectedFieldsEvent@MenuStatistics')
         }
 
     }
