@@ -51,6 +51,7 @@ Route::group(['prefix' => 'ajax'], function () {
     // Statistics
     Route::get('/getTableConsolidated', 'StatisticsController@getConsolidated');
     Route::get('/getTablePercentage', 'StatisticsController@getPercentage');
+    Route::get('/getTableReprobated', 'StatisticsController@getReprobated');
 
     Route::get('/getGroupsByGrade', 'StatisticsController@getGroupsByGrade');
 
