@@ -29,6 +29,12 @@
                             </a>
                         </li>
 
+                        <li :class="currentView=='main-reprobated'?'active':''">
+                            <a href="#rating" @click="setCurrentView('main-reprobated')">REPROBADOS
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+
                         <li :class="currentView=='stats-rating'?'active':''">
                             <a href="#rating" @click="setCurrentView('stats-rating')">PUESTOS
                                 <span class="sr-only">(current)</span>
