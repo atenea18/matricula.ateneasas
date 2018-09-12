@@ -37,7 +37,11 @@
             this.managerEvents()
         },
 
-        computed: {},
+        computed: {
+            ...mapState([
+                'stateInformation',
+            ]),
+        },
 
         methods: {
             managerEvents() {

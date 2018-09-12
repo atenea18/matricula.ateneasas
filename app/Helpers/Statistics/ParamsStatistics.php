@@ -27,12 +27,14 @@ class ParamsStatistics
     public $is_accumulated = false;
 
     public $middle_point = 0;
+    public $final_point = 0;
     public $num_of_periods = 0;
     public $period_selected_id = 1;
 
     public $group_object = null;
     public $institution_object = null;
     public $minimum_scale_object = null;
+    public $maximum_scale_object = null;
 
     public $vectorNotes = [];
     public $vectorPeriods = [];
@@ -76,8 +78,13 @@ class ParamsStatistics
         );
 
         //Escala de valoración
-        $this->minimum_scale_object = ScaleEvaluation::getMinScale($this->institution_object);
-        $this->middle_point = $this->minimum_scale_object->rank_end += 0.1;
+        //$this->minimum_scale_object = ScaleEvaluation::getMinScale($this->institution_object);
+        //$this->middle_point = $this->minimum_scale_object->rank_start += 0.1;
+        $this->minimum_scale_object = ScaleEvaluation::getBasicScale($this->institution_object);
+        $this->middle_point = $this->minimum_scale_object->rank_start;
+
+        $this->maximum_scale_object = ScaleEvaluation::getHighScale($this->institution_object);
+        $this->final_point = $this->maximum_scale_object->rank_end;
 
         //Estudiantes
         $this->vectorEnrollments = Group::enrollmentsByGroup($this->institution_object->id,$this->group_object->id);

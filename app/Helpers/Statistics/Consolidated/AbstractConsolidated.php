@@ -18,6 +18,7 @@ abstract class AbstractConsolidated
     protected $minimum_scale_object = null;
 
     protected $middle_point = 0;
+    protected $final_point = 0;
     protected $num_of_periods = 0;
     protected $period_selected_id = 1;
 
@@ -34,6 +35,7 @@ abstract class AbstractConsolidated
          * Variables
          */
         $this->middle_point = $params->middle_point;
+        $this->final_point = $params->final_point;
         $this->num_of_periods = $params->num_of_periods;
         $this->period_selected_id = $params->period_selected_id;
 
@@ -364,6 +366,11 @@ abstract class AbstractConsolidated
                 }
 
             }
+            if($valueRequired>$this->final_point)
+                $valueRequired = 0;
+
+            if($valueRequired<0)
+                $valueRequired = 0;
 
             $data = (object)array(
                 'required' => $valueRequired,

@@ -107,7 +107,7 @@
                     }
                 })
 
-                return average;
+                return average!=0?average:'';
             },
             getRequired(enrollment, asignature) {
                 let average = 0;
@@ -117,7 +117,7 @@
                     }
                 })
 
-                return average;
+                return average!=0?average:'';
             },
         }
     }
