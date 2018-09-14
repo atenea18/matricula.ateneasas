@@ -26,7 +26,6 @@ abstract class AbstractPercentage extends AbstractConsolidated
     {
         parent::getProcessedRequest();
 
-        $num_enrollment = count($this->vectorEnrollments);
         foreach ($this->vectorSubjects as &$subjects) {
             $vectorPeriods = [];
 
@@ -76,7 +75,6 @@ abstract class AbstractPercentage extends AbstractConsolidated
 
                                             $scc->counter += 1;
                                             break;
-                                            //$scc->percent_counter = round(($scc->counter / $num_enrollment) * 100,0);
                                         }
                                     }
 
