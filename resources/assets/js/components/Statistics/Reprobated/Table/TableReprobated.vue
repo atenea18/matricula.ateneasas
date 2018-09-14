@@ -11,7 +11,7 @@
         </thead>
         <tbody>
         <template v-for="period in propsData.reprobated_periods">
-            <!--
+
             <template v-for="(enrollment,i) in period.enrollments"
                       v-if="!propsData.is_accumulated">
                 <tr v-for="(asignature,j) in enrollment.asignatures" v-if="propsData.period_id_selected==period.periods_id">
@@ -48,7 +48,7 @@
                     <td>{{asignature.value}}</td>
                 </tr>
             </template>
-            -->
+
         </template>
         </tbody>
     </table>
