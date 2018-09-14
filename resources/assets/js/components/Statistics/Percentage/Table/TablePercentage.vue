@@ -16,41 +16,46 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-for="subject in propsData.content_percentages">
-                <td style="text-align: left !important;"> {{subject.name}}</td>
-                <td> {{propsData.options_selected.objectValuesManagerGroupSelect.periods_id}}</td>
-                <template v-for="period in subject.vectorPeriods"
-                          v-if="period.period_id==propsData.options_selected.objectValuesManagerGroupSelect.periods_id">
-                    <td> {{period.num_enrollment}}</td>
-                    <td> {{period.num_enrollment>0?(period.sum_value/period.num_enrollment).toFixed(1):''}}</td>
-                    <td>
-                        <template v-for="scale in propsData.titles_percentages">
-                            <div v-if="(period.sum_value/period.num_enrollment).toFixed(1)>=scale.rank_start && (period.sum_value/period.num_enrollment).toFixed(1)<= scale.rank_end">
-                                {{scale.name}}
-                            </div>
-                        </template>
-                    </td>
-                    <template v-for="scale in period.vectorScales">
-                        <td style="width: 50px !important;">
-                            {{scale.counter>0?scale.counter:''}}
-                        </td>
-                        <td style="background-color: #f8f8f8;width: 60px !important;">
-                            <strong>{{scale.counter>0?((scale.counter/period.num_enrollment)*100).toFixed(1)+'%':''}}</strong>
-                            <!--
-                            <strong>{{scale.counter>0?scale.percent_counter+'%':''}}</strong>
-                            -->
-                        </td>
-                    </template>
-                </template>
 
-            </tr>
+            <template v-for="subject in propsData.content_percentages">
+
+                <template v-for="(period_subject, index) in subject.vectorPeriods">
+                    <row-percentage
+                            v-if="!propsData.options_selected.filter.isAcumulatedPeriod && period_subject.period_id==propsData.options_selected.objectValuesManagerGroupSelect.periods_id"
+                            :props-data="{
+                                subject:subject,
+                                period_subject: period_subject,
+                                titles_percentages: propsData.titles_percentages,
+                                period_id_selected: propsData.options_selected.objectValuesManagerGroupSelect.periods_id,
+                                period_id_subject: period_subject.period_id,
+                                is_accumulated: propsData.options_selected.filter.isAcumulatedPeriod,
+                                index: 0
+                            }"/>
+
+                    <row-percentage
+                            v-if="propsData.options_selected.filter.isAcumulatedPeriod"
+                            :props-data="{
+                                subject:subject,
+                                period_subject: period_subject,
+                                titles_percentages: propsData.titles_percentages,
+                                period_id_selected: period_subject.period_id,
+                                period_id_subject: period_subject.period_id,
+                                is_accumulated: propsData.options_selected.filter.isAcumulatedPeriod,
+                                index: index
+                            }"/>
+                </template>
+            </template>
+
             </tbody>
         </table>
     </div>
 </template>
 
 <script>
+    import RowPercentage from "./RowPercentage";
+
     export default {
+        components: {RowPercentage},
         name: "table-percentage",
         props: ['props-data'],
 
@@ -68,3 +73,4 @@
         border-top: 1px solid #ddd;
     }
 </style>
+

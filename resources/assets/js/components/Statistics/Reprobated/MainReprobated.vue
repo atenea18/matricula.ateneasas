@@ -11,46 +11,13 @@
                     Cargando...
                 </div>
                 <template v-if="state">
-                    <div v-for="period in mainComponent.reprobated_periods">
-                        <table class="table table-sm table-bordered"
-                               v-show="period.periods_id == mainComponent.params.objectValuesManagerGroupSelect.periods_id">
-                            <thead>
-                            <tr>
-                                <th style="text-align: left !important;">No.</th>
-                                <th style="text-align: left !important;">Nombre de Estudiante</th>
-                                <th style="text-align: left !important;">Asignaturas</th>
-                                <th>Valoracion</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <template v-for="(enrollment,i) in period.enrollments">
+                        <table-reprobated :props-data="{
+                            reprobated_periods: mainComponent.reprobated_periods,
+                            period_id_selected: mainComponent.params.objectValuesManagerGroupSelect.periods_id,
+                            is_accumulated: mainComponent.params.filter.isAcumulatedPeriod,
 
-                                <tr v-for="(asignature,j) in enrollment.asignatures">
-                                    <td style="text-align: left !important;" v-if="j==0" :rowspan="enrollment.asignatures.length">
-                                        {{i+1}}
-                                    </td>
-                                    <td style="text-align: left !important;" v-if="j==0" :rowspan="enrollment.asignatures.length">
-                                        {{enrollment.student_last_name+' '+enrollment.student_name}}
-                                    </td>
-
-                                    <td style="text-align: left !important;">{{asignature.name_subjects}}</td>
-                                    <td>{{asignature.value}}</td>
-                                </tr>
-                            </template>
-
-                            </tbody>
-                        </table>
-                    </div>
+                        }" />
                 </template>
-                <!--
-                <template v-if="state">
-                    <table-percentage :props-data="{
-                    titles_reprobated_periods: stateScale.scales,
-                    content_reprobated_periods: mainComponent.reprobated_periods,
-                    options_selected: mainComponent.params
-                    }"/>
-                </template>
-                -->
             </div>
         </div>
     </div>
@@ -59,10 +26,12 @@
 <script>
     import {mapState} from 'vuex'
     import {HalfCircleSpinner} from 'epic-spinners'
+    import TableReprobated from "./Table/TableReprobated";
 
     export default {
         name: "main-reprobated",
         components: {
+            TableReprobated,
             HalfCircleSpinner
         },
         computed: {

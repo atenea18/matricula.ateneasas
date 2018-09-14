@@ -162,7 +162,6 @@
                 }).catch(error => {
                     this.is_first = true
                 })
-
             },
         },
         destroyed() {

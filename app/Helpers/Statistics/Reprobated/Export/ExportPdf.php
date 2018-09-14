@@ -72,7 +72,7 @@ class ExportPdf extends Fpdi
         $this->Cell($this->page_width - $this->w_margin, 4, $this->transformMay($this->data_row_current->headquarter_name), 'LR', 1, 'C');
 
         $title_consolidate = $this->params->is_accumulated == "true" ? "REPROBADOS CON PERIODOS ACUMULADOS" : "REPROBADOS";
-        $this->Cell($this->page_width - $this->w_margin, 4, $this->transformMay('REPROBADOS'), 'LR', 1, 'C');
+        $this->Cell($this->page_width - $this->w_margin, 4, $this->transformMay($title_consolidate), 'LR', 1, 'C');
         $this->Cell($this->page_width - $this->w_margin, 0, '', 'T', 1);
     }
 
@@ -141,14 +141,15 @@ class ExportPdf extends Fpdi
 
     private function columnsBodyTable($data, $count)
     {
-        if($this->params->period_selected_id == $data->periods_id){
+        $period_id = $this->params->is_accumulated == "true"?$data->periods_id:$this->params->period_selected_id;
+        if($period_id == $data->periods_id){
             if(isset($data->enrollments)){
                 foreach ($data->enrollments as $key_enroll => $enrollment){
                     $count_asignatures = count($enrollment->asignatures);
                     $this->Cell($this->w_num, $this->getHeightColumnNum() * $count_asignatures, $key_enroll+1, 1, 0, 'C');
                     $this->Cell($this->w_name_enroll, $this->getHeightColumnName() * $count_asignatures,
                         substr(self::transformMay($enrollment->student_last_name.' '.$enrollment->student_name),0, 64), 1, 0, 'L');
-                    $this->Cell($this->w_period, $this->getHeightColumnNum() * $count_asignatures, $this->params->period_selected_id, 1, 0, 'C');
+                    $this->Cell($this->w_period, $this->getHeightColumnNum() * $count_asignatures, $data->periods_id, 1, 0, 'C');
                     foreach ($enrollment->asignatures as $asignature){
                         $this->SetX($this->w_num+$this->w_name_enroll+$this->w_period+($this->w_margin/2));
                         $this->Cell($this->w_name_asignature, $this->getHeightColumnNum(), self::transformMay($asignature->name_subjects), 1, 0, 'C');

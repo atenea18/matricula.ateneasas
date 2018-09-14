@@ -28,17 +28,25 @@ class ScaleEvaluation extends Model
     public static function getMinScale(Institution $institution)
     {
         return ScaleEvaluation::where([
-            ['abbreviation', '=', 'bj'],
+            ['words_expressions_id', '=', 4],
             ['school_year_id', '=', 1],
             ['institution_id', '=', $institution->id]
-        ])
-        ->first();
+        ])->first();
+    }
+
+    public static function getBasicScale(Institution $institution)
+    {
+        return ScaleEvaluation::where([
+            ['words_expressions_id', '=', 3],
+            ['school_year_id', '=', 1],
+            ['institution_id', '=', $institution->id]
+        ])->first();
     }
 
     public static function getHighScale(Institution $institution)
     {
         return ScaleEvaluation::where([
-            ['abbreviation', '=', 's'],
+            ['words_expressions_id', '=', 1],
             ['school_year_id', '=', 1],
             ['institution_id', '=', $institution->id]
         ])

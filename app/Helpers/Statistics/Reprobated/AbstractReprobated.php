@@ -63,4 +63,33 @@ class AbstractReprobated extends AbstractConsolidated
         return $this->vectorPeriods;
 
     }
+
+
+    /*
+    public function getProcessedRequest()
+    {
+        parent::getProcessedRequest();
+
+        foreach ($this->vectorEnrollments as $enrollment) {
+            foreach ($this->vectorPeriods as &$vectorPeriod) {
+                foreach ($enrollment->evaluatedPeriods as &$period) {
+                    if ($vectorPeriod->periods_id == $period['period_id']) {
+                        $asignatures = [];
+                        foreach ($period['notes'] as $key_note => $note) {
+                            $value_note = Utils::process_note($note->value, $note->overcoming);
+                            if ($value_note >= $this->middle_point || $value_note == 0) {
+                                unset($period['notes'][$key_note]);
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+        return $this->vectorEnrollments;
+
+    }
+    */
 }

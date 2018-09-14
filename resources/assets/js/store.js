@@ -48,6 +48,7 @@ const store = new Vuex.Store({
             min_scale: 1000,
         },
         stateInformation:{
+            vector_periods: [],
             is_conexion: true,
             date_current: null,
         },
