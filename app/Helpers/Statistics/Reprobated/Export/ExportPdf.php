@@ -30,7 +30,7 @@ class ExportPdf extends Fpdi
     private $w_period = 6;
     private $w_margin = 20;
     private $w_name_enroll = 96;
-    private $w_name_asignature = 120;
+    private $w_name_asignature = 130;
 
     // Se define el height de todas las celdas
     private $h_cell = 3.109;
