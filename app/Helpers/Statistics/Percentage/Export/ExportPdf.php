@@ -28,9 +28,9 @@ class ExportPdf extends Fpdi
     // Se define el width de cada celda
     private $w_num = 5;
     private $w_per = 6;
-    private $w_tav = 7;
+    private $w_tev = 7;
+    private $w_desem = 18;
     private $w_pgg = 18;
-    private $w_rat = 18;
     private $w_name = 96;
     private $w_margin = 20;
 
@@ -73,8 +73,8 @@ class ExportPdf extends Fpdi
         $this->SetFont('Arial', 'B', 8);
         $this->Cell($this->page_width - $this->w_margin, 4, $this->transformMay($this->subjectByGroup->headquarter_name), 'LR', 1, 'C');
 
-        $title_consolidate = $this->params->is_accumulated == "true" ? "PORCENTUAL CON PERIODOS ACUMULADOS" : "PORCENTUAL";
-        $this->Cell($this->page_width - $this->w_margin, 4, $this->transformMay('PORCENTUAL'), 'LR', 1, 'C');
+        $title_table = $this->params->is_accumulated == "true" ? "PORCENTUAL CON PERIODOS ACUMULADOS" : "PORCENTUAL";
+        $this->Cell($this->page_width - $this->w_margin, 4, $this->transformMay($title_table), 'LR', 1, 'C');
         $this->Cell($this->page_width - $this->w_margin, 0, '', 'T', 1);
     }
 
@@ -101,9 +101,9 @@ class ExportPdf extends Fpdi
         $this->Cell($this->w_num, $this->h_cell, 'No.', 1, 0, 'C', true);
         $this->Cell($this->w_name, $this->h_cell, self::transformMay('NOMBRE DE ÁREAS/ASIGNATURAS'), 1, 0, 'C', true);
         $this->Cell($this->w_per, $this->h_cell, 'PER', 1, 0, 'C', true);
-        $this->Cell($this->w_tav, $this->h_cell, 'TEV', 1, 0, 'C', true);
-        $this->Cell($this->w_rat, $this->h_cell, 'PROMEDIO', 1, 0, 'C', true);
-        $this->Cell($this->w_pgg, $this->h_cell, self::transformMay('DESEMPEÑO'), 1, 0, 'C', true);
+        $this->Cell($this->w_tev, $this->h_cell, 'TEV', 1, 0, 'C', true);
+        $this->Cell($this->w_pgg, $this->h_cell, 'PROMEDIO', 1, 0, 'C', true);
+        $this->Cell($this->w_desem, $this->h_cell, self::transformMay('DESEMPEÑO'), 1, 0, 'C', true);
 
         //Encabezado de asignaturas
         foreach ($subjectByGroup->scales as $scale) {
@@ -156,20 +156,22 @@ class ExportPdf extends Fpdi
     private function ColumnsValoration($subject)
     {
         foreach ($subject->vectorPeriods as $period) {
+            $period_selected = $this->params->is_accumulated=="true"?$period->period_id:$this->params->period_selected_id;
 
-            if ($period->period_id == $this->params->period_selected_id) {
+            if ($period->period_id == $period_selected) {
+                $this->SetX($this->w_num+ $this->w_name + ($this->w_margin/2));
                 $this->Cell($this->w_per, $this->h_cell, $period->period_id, 1, 0, 'C');
-                $this->Cell($this->w_tav, $this->h_cell, $period->num_enrollment, 1, 0, 'C');
+                $this->Cell($this->w_tev, $this->h_cell, $period->num_enrollment, 1, 0, 'C');
                 $average = $period->num_enrollment>0?round(($period->sum_value/$period->num_enrollment),1):0;
                 $this->setDanger($average, $this->params->middle_point);
-                $this->Cell($this->w_rat, $this->h_cell, $average, 1, 0, 'C');
+                $this->Cell($this->w_pgg, $this->h_cell, $average, 1, 0, 'C');
                 $name_performance = '';
                 foreach ($this->params->vectorScales as $scale){
                     if($average >= $scale->rank_start && $average <= $scale->rank_end){
                         $name_performance = self::transformMay($scale->name);
                     }
                 }
-                $this->Cell($this->w_pgg, $this->h_cell,$name_performance, 1, 0, 'C');
+                $this->Cell($this->w_desem, $this->h_cell,$name_performance, 1, 0, 'C');
                 $this->setTextBlack();
 
                 foreach ($period->vectorScales as $scale) {
@@ -189,8 +191,7 @@ class ExportPdf extends Fpdi
     private function getHeightColumnNum()
     {
         if ($this->params->is_accumulated == "true")
-            return $this->h_cell;
-        //return $this->h_cell * ($this->params->num_of_periods + $this->num_is_accumulated);
+            return $this->h_cell * $this->params->num_of_periods;
         else
             return $this->h_cell;
     }
@@ -198,8 +199,7 @@ class ExportPdf extends Fpdi
     private function getHeightColumnName()
     {
         if ($this->params->is_accumulated == "true")
-            return $this->h_cell;
-        //return $this->h_cell * $this->params->num_of_periods;
+            return $this->h_cell * $this->params->num_of_periods;
         else
             return $this->h_cell;
     }
@@ -216,7 +216,6 @@ class ExportPdf extends Fpdi
     private function setTextBlack()
     {
         $this->SetTextColor(0, 0, 0);
-
     }
 
 
@@ -231,7 +230,7 @@ class ExportPdf extends Fpdi
     private function getSizeMaxColumnFixed()
     {
         $this->size_column_fixed =
-            $this->w_num + $this->w_per + $this->w_tav + $this->w_pgg + $this->w_rat + $this->w_name + $this->w_margin;
+            $this->w_num + $this->w_per + $this->w_tev + $this->w_desem + $this->w_pgg + $this->w_name + $this->w_margin;
     }
 
     private function transformMay($string)
@@ -246,7 +245,7 @@ class ExportPdf extends Fpdi
         // Select Arial italic 8
         $this->SetFont('Arial', 'I', 8);
         // Print centered page number
-        $this->Cell(0, 4, utf8_decode('Atenea - P獺gina ' . $this->PageNo()), 0, 0, 'C');
+        $this->Cell(0, 4, utf8_decode('Atenea - Página ' . $this->PageNo()), 0, 0, 'C');
     }
 
 
