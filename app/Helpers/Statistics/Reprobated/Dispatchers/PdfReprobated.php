@@ -52,7 +52,7 @@ class PdfReprobated extends AbstractReprobated
         $this->params->initConsolidated();
         parent::__construct($this->params);
         $information = (object)array(
-            'vector_data' => parent::getProcessedRequest(),
+            'vector_enrollments' => parent::getProcessedRequest(),
             'name' => $this->params->group_object->name,
             'group_id' => $this->params->group_object->id,
             'grade_name' => $this->params->group_object->grade_name,

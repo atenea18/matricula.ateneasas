@@ -13,6 +13,7 @@
                 <template v-if="state">
                         <table-reprobated :props-data="{
                             reprobated_periods: mainComponent.reprobated_periods,
+                            reprobated_enrollments: mainComponent.reprobated_enrollments,
                             period_id_selected: mainComponent.params.objectValuesManagerGroupSelect.periods_id,
                             is_accumulated: mainComponent.params.filter.isAcumulatedPeriod,
 
@@ -49,6 +50,7 @@
                     params: {},
                     asignatures: [],
                     reprobated_periods: [],
+                    reprobated_enrollments:[],
                 }
             }
         },
@@ -158,6 +160,7 @@
                     // state, para que renderice el componente table-consolidated
                     if (res.status == 200) {
                         this.mainComponent.reprobated_periods = res.data
+                        this.mainComponent.reprobated_enrollments = res.data
                         this.state = true
                     }
                 }).catch(error => {
