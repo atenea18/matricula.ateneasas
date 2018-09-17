@@ -23,6 +23,7 @@ class AbstractReprobated extends AbstractConsolidated
 
     }
 
+    /*
     public function getProcessedRequest()
     {
         parent::getProcessedRequest();
@@ -63,27 +64,47 @@ class AbstractReprobated extends AbstractConsolidated
         return $this->vectorPeriods;
 
     }
+    */
 
 
-    /*
     public function getProcessedRequest()
     {
         parent::getProcessedRequest();
 
-        foreach ($this->vectorEnrollments as $enrollment) {
+        foreach ($this->vectorEnrollments as $key_enroll => &$enrollment) {
+            $sum = 0;
             foreach ($this->vectorPeriods as &$vectorPeriod) {
+                $num_asignatures_reprobated = 0;
+
                 foreach ($enrollment->evaluatedPeriods as &$period) {
+
                     if ($vectorPeriod->periods_id == $period['period_id']) {
-                        $asignatures = [];
+
                         foreach ($period['notes'] as $key_note => $note) {
                             $value_note = Utils::process_note($note->value, $note->overcoming);
-                            if ($value_note >= $this->middle_point || $value_note == 0) {
+                            if ($value_note < $this->middle_point && $value_note > 0) {
+                                $num_asignatures_reprobated++;
+                                if (!isset($period['num_asignatures_reprobated']))
+                                    $period['num_asignatures_reprobated'] = 0;
+                                $period['num_asignatures_reprobated'] = $num_asignatures_reprobated;
+                            } else {
                                 unset($period['notes'][$key_note]);
                             }
                         }
-
                     }
                 }
+
+                if ($num_asignatures_reprobated > 0) {
+                    $sum += $num_asignatures_reprobated;
+                }
+
+
+            }
+
+            if ($sum>0) {
+                $enrollment->total_asignatures_reprobated = $sum;
+            } else {
+                unset($this->vectorEnrollments[$key_enroll]);
             }
 
         }
@@ -91,5 +112,5 @@ class AbstractReprobated extends AbstractConsolidated
         return $this->vectorEnrollments;
 
     }
-    */
+
 }
