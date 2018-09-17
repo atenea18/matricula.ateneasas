@@ -107,8 +107,9 @@ class ExportPdf extends Fpdi
 
     public function create($name_pdf)
     {
+
         foreach ($this->row_by_groups as $row_current) {
-            if (count($row_current->vector_data))
+            if (count($row_current->vector_enrollments))
                 $this->BodyTable($row_current);
         }
         $this->Output('D', $name_pdf . '.pdf', true);
@@ -118,9 +119,9 @@ class ExportPdf extends Fpdi
     {
         $this->setConfig($row_current);
 
-
-        foreach ($row_current->vector_data as $key => $data) {
-            $this->columnsBodyTable($data, $key + 1);
+        $count = 1;
+        foreach ($row_current->vector_enrollments as $key => $enrollment) {
+            $this->columnsBodyTable($enrollment, $count);
         }
 
 
@@ -139,8 +140,48 @@ class ExportPdf extends Fpdi
         $this->AddPage();
     }
 
-    private function columnsBodyTable($data, $count)
+    private function columnsBodyTable($enrollment, &$count)
     {
+        $this->SetFillColor(228, 229, 230);
+        $is_fill = $count%2==0?true:false;
+        $num_asignatures_reprobated = $enrollment->total_asignatures_reprobated;
+        if ($this->params->is_accumulated == "true") {
+            $this->Cell($this->w_num, $this->getHeightColumnNum($num_asignatures_reprobated), $count, 1, 0, 'C', $is_fill);
+            $this->Cell($this->w_name_enroll, $this->getHeightColumnNum($num_asignatures_reprobated), self::transformFullName($enrollment), 1, 0, 'L', $is_fill);
+            $count++;
+        }
+
+        foreach ($enrollment->evaluatedPeriods as $key_eva => $rowEvaluatePeriod) {
+
+            if (isset($rowEvaluatePeriod['num_asignatures_reprobated'])) {
+                if ($this->params->is_accumulated == "true") {
+                    $period_id = $rowEvaluatePeriod['period_id'];
+                } else {
+                    $period_id = $this->params->period_selected_id;
+
+                }
+
+                if ($rowEvaluatePeriod['period_id'] == $period_id) {
+                    $num_asignatures_reprobated = $rowEvaluatePeriod['num_asignatures_reprobated'];
+                    if ($this->params->is_accumulated != "true") {
+                        $this->Cell($this->w_num, $this->getHeightColumnNum($num_asignatures_reprobated), $count, 1, 0, 'C',$is_fill);
+                        $this->Cell($this->w_name_enroll, $this->getHeightColumnNum($num_asignatures_reprobated), self::transformFullName($enrollment), 1, 0, 'L',$is_fill);
+                        $count++;
+                    }
+                    $this->SetX($this->w_num + $this->w_name_enroll + ($this->w_margin / 2));
+                    $this->Cell($this->w_period, $this->getHeightColumn($num_asignatures_reprobated), $period_id, 1, 0, 'C',$is_fill);
+                    foreach ($rowEvaluatePeriod['notes'] as $note) {
+                        $this->SetX($this->w_num + $this->w_name_enroll + $this->w_period + ($this->w_margin / 2));
+                        $this->Cell($this->w_name_asignature, $this->h_cell, self::transformMay($note->name_subjects), 1, 0, 'C',$is_fill);
+                        $this->Cell($this->w_dinamic_column, $this->h_cell, $note->value, 1, 0, 'C',$is_fill);
+                        $this->ln();
+                    }
+                }
+            }
+
+        }
+
+        /*
         $period_id = $this->params->is_accumulated == "true"?$data->periods_id:$this->params->period_selected_id;
         if($period_id == $data->periods_id){
             if(isset($data->enrollments)){
@@ -160,11 +201,16 @@ class ExportPdf extends Fpdi
                 }
             }
 
-        }
-
+    }
+        */
 
 
         //$this->ColumnsValoration($subject);
+    }
+
+    private static function transformFullName($enrollment)
+    {
+        return substr(utf8_decode($enrollment->student_last_name . ' ' . $enrollment->student_name), 0, 29);
     }
 
     private function ColumnsValoration($subject)
@@ -199,13 +245,14 @@ class ExportPdf extends Fpdi
     }
 
 
-    private function getHeightColumnNum()
+    private function getHeightColumnNum($num_asignatures_reprobated)
     {
-        if ($this->params->is_accumulated == "true")
-            return $this->h_cell;
-        //return $this->h_cell * ($this->params->num_of_periods + $this->num_is_accumulated);
-        else
-            return $this->h_cell;
+        return $this->h_cell * $num_asignatures_reprobated;
+    }
+
+    private function getHeightColumn($num_asignatures_reprobated)
+    {
+        return $this->h_cell * $num_asignatures_reprobated;
     }
 
     private function getHeightColumnName()
@@ -252,7 +299,8 @@ class ExportPdf extends Fpdi
         return strtoupper($this->hideTilde($string));
     }
 
-    public function Footer()
+    public
+    function Footer()
     {
         // Go to 1.5 cm from bottom
         $this->SetY(-15);
