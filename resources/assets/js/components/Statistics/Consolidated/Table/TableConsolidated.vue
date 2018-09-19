@@ -1,5 +1,6 @@
 <template>
     <div>
+
         <table class="table table-sm table-bordered">
             <head-table-consolidated :objectInput="objectInput.asignatures"></head-table-consolidated>
             <tbody>
@@ -14,6 +15,7 @@
                 options: objectInput.params,
                 asignatures:objectInput.asignatures,
                 isAcumulatedPeriod: objectInput.params.filter.isAcumulatedPeriod,
+                isReprobated: objectInput.params.filter.isReprobated,
                 periodSelected: objectInput.params.objectValuesManagerGroupSelect.periods_id,
                 }"/>
             </template>
@@ -31,6 +33,7 @@
                     asignatures:objectInput.asignatures,
                     periodSelected: objectPeriod.periods_id,
                     isAcumulatedPeriod: objectInput.params.filter.isAcumulatedPeriod,
+                    isReprobated: objectInput.params.filter.isReprobated,
                     }"/>
                 </template>
 

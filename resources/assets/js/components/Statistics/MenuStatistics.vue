@@ -68,6 +68,16 @@
                     </label>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"
+                               v-model="SearchFilterObject.isReprobated"
+                               @change="setEventProperties('reprobated','check')"/>
+                        Ver Reprobados
+                    </label>
+                </div>
+            </div>
             <div class="clearfix"></div>
             <!-- Selects: Grado, Grupo, Periodo -->
             <manager-group-select :objectInput="componentManagerGroupSelect"></manager-group-select>
@@ -120,6 +130,7 @@
                     isAreas: false,
                     isAllGroups: false,
                     isAcumulatedPeriod: false,
+                    isReprobated: false,
                 },
                 mainComponentObject: {
                     filter: {
@@ -159,7 +170,8 @@
                 let filter = {
                     isAreas: this.SearchFilterObject.isAreas,
                     isAllGroups: this.SearchFilterObject.isAllGroups,
-                    isAcumulatedPeriod: this.SearchFilterObject.isAcumulatedPeriod
+                    isAcumulatedPeriod: this.SearchFilterObject.isAcumulatedPeriod,
+                    isReprobated: this.SearchFilterObject.isReprobated
                 }
 
                 this.mainComponentObject.filter = filter

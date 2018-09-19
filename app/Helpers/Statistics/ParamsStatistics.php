@@ -25,6 +25,7 @@ class ParamsStatistics
     public $is_filter_subjects = false;
     public $is_filter_all_groups = false;
     public $is_accumulated = false;
+    public $is_reprobated = false;
 
     public $middle_point = 0;
     public $final_point = 0;
@@ -56,6 +57,9 @@ class ParamsStatistics
         $this->group_object = (object) Group::getGroupsById($request->group_id);
         $this->is_filter_all_groups = $request->is_filter_all_groups;
         $this->institution_object = $request->institution;
+
+        if(isset($request->is_reprobated))
+            $this->is_reprobated = $request->is_reprobated;
 
         $this->vectorScales =  ScaleEvaluation::getScaleByInstitution($request->institution->id);;
 

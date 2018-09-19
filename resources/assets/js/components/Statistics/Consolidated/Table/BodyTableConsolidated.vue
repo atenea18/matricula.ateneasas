@@ -25,7 +25,8 @@
         <td v-for="asignature in objectInput.asignatures">
             <cell-notes :objectInput="{
             asignature: asignature,
-            objectNote: asignmentNotes(asignature)
+            objectNote: asignmentNotes(asignature),
+            isReprobated: objectInput.isReprobated,
             }">
             </cell-notes>
         </td>

@@ -30,7 +30,9 @@ class ExportPdf extends Fpdi
     private $w_period = 6;
     private $w_margin = 20;
     private $w_name_enroll = 96;
-    private $w_name_asignature = 130;
+    private $w_accum = 10;
+    private $w_required = 10;
+    private $w_name_asignature = 120;
 
     // Se define el height de todas las celdas
     private $h_cell = 3.109;
@@ -100,7 +102,9 @@ class ExportPdf extends Fpdi
         $this->Cell($this->w_name_enroll, $this->h_cell, self::transformMay('NOMBRE DE ESTUDIANTES'), 1, 0, 'C', true);
         $this->Cell($this->w_period, $this->h_cell, 'PER', 1, 0, 'C', true);
         $this->Cell($this->w_name_asignature, $this->h_cell, self::transformMay('ASIGNATURA/ÁREA'), 1, 0, 'C', true);
-        $this->Cell($this->w_dinamic_column, $this->h_cell, self::transformMay('VALORACIÓN'), 1, 0, 'C', true);
+        $this->Cell($this->w_dinamic_column, $this->h_cell, self::transformMay('VAL'), 1, 0, 'C', true);
+        $this->Cell($this->w_accum, $this->h_cell, self::transformMay('ACUM.'), 1, 0, 'C', true);
+        $this->Cell($this->w_required, $this->h_cell, self::transformMay('REQ.'), 1, 0, 'C', true);
         $this->ln();
     }
 
@@ -174,6 +178,21 @@ class ExportPdf extends Fpdi
                         $this->SetX($this->w_num + $this->w_name_enroll + $this->w_period + ($this->w_margin / 2));
                         $this->Cell($this->w_name_asignature, $this->h_cell, self::transformMay($note->name_subjects), 1, 0, 'C',$is_fill);
                         $this->Cell($this->w_dinamic_column, $this->h_cell, $note->value, 1, 0, 'C',$is_fill);
+                        $accumulated = '';
+                        $required = '';
+                        foreach ($enrollment->accumulatedSubjects as $subject){
+                            if($note->asignatures_id == $subject->asignatures_id)
+                                $accumulated = ROUND($subject->average, 1) ;
+                        }
+
+                        foreach ($enrollment->requiredValuation as $subject){
+                            if($note->asignatures_id == $subject->asignatures_id)
+                                $required = ROUND($subject->required, 1) ;
+                        }
+
+
+                        $this->Cell($this->w_accum, $this->h_cell, $accumulated, 1, 0, 'C',$is_fill);
+                        $this->Cell($this->w_required, $this->h_cell, $required, 1, 0, 'C',$is_fill);
                         $this->ln();
                     }
                 }
@@ -181,67 +200,11 @@ class ExportPdf extends Fpdi
 
         }
 
-        /*
-        $period_id = $this->params->is_accumulated == "true"?$data->periods_id:$this->params->period_selected_id;
-        if($period_id == $data->periods_id){
-            if(isset($data->enrollments)){
-                foreach ($data->enrollments as $key_enroll => $enrollment){
-                    $count_asignatures = count($enrollment->asignatures);
-                    $this->Cell($this->w_num, $this->getHeightColumnNum() * $count_asignatures, $key_enroll+1, 1, 0, 'C');
-                    $this->Cell($this->w_name_enroll, $this->getHeightColumnName() * $count_asignatures,
-                        substr(self::transformMay($enrollment->student_last_name.' '.$enrollment->student_name),0, 64), 1, 0, 'L');
-                    $this->Cell($this->w_period, $this->getHeightColumnNum() * $count_asignatures, $data->periods_id, 1, 0, 'C');
-                    foreach ($enrollment->asignatures as $asignature){
-                        $this->SetX($this->w_num+$this->w_name_enroll+$this->w_period+($this->w_margin/2));
-                        $this->Cell($this->w_name_asignature, $this->getHeightColumnNum(), self::transformMay($asignature->name_subjects), 1, 0, 'C');
-                        $this->Cell($this->w_dinamic_column, $this->getHeightColumnNum(), $asignature->value, 1, 0, 'C');
-                        $this->ln();
-                    }
-
-                }
-            }
-
-    }
-        */
-
-
-        //$this->ColumnsValoration($subject);
     }
 
     private static function transformFullName($enrollment)
     {
         return substr(utf8_decode($enrollment->student_last_name . ' ' . $enrollment->student_name), 0, 29);
-    }
-
-    private function ColumnsValoration($subject)
-    {
-        foreach ($subject->vectorPeriods as $period) {
-
-            if ($period->period_id == $this->params->period_selected_id) {
-                $this->Cell($this->w_per, $this->h_cell, $period->period_id, 1, 0, 'C');
-                $this->Cell($this->w_tav, $this->h_cell, $period->num_enrollment, 1, 0, 'C');
-                $average = $period->num_enrollment > 0 ? round(($period->sum_value / $period->num_enrollment), 1) : 0;
-                $this->setDanger($average, $this->params->middle_point);
-                $this->Cell($this->w_rat, $this->h_cell, $average, 1, 0, 'C');
-                $name_performance = '';
-                foreach ($this->params->vectorScales as $scale) {
-                    if ($average >= $scale->rank_start && $average <= $scale->rank_end) {
-                        $name_performance = self::transformMay($scale->name);
-                    }
-                }
-                $this->Cell($this->w_pgg, $this->h_cell, $name_performance, 1, 0, 'C');
-                $this->setTextBlack();
-
-                foreach ($period->vectorScales as $scale) {
-                    $this->Cell($this->w_dinamic_column / 2, $this->h_cell, $scale->counter ? $scale->counter : '', 1, 0, 'C');
-                    if ($period->num_enrollment > 0 && $scale->counter > 0)
-                        $this->Cell($this->w_dinamic_column / 2, $this->h_cell, round((($scale->counter / $period->num_enrollment) * 100), 1) . '%', 1, 0, 'C');
-                    else
-                        $this->Cell($this->w_dinamic_column / 2, $this->h_cell, '', 1, 0, 'C');
-                }
-                $this->ln();
-            }
-        }
     }
 
 
@@ -291,7 +254,7 @@ class ExportPdf extends Fpdi
     private function getWeightTotalFixedColumn()
     {
         $this->size_fixed_column =
-            $this->w_num + $this->w_period + $this->w_name_asignature + $this->w_name_enroll + $this->w_margin;
+            $this->w_num + $this->w_period + $this->w_name_asignature + $this->w_name_enroll+ $this->w_accum + $this->w_required + $this->w_margin;
     }
 
     private function transformMay($string)
@@ -307,7 +270,7 @@ class ExportPdf extends Fpdi
         // Select Arial italic 8
         $this->SetFont('Arial', 'I', 8);
         // Print centered page number
-        $this->Cell(0, 4, utf8_decode('Atenea - P獺gina ' . $this->PageNo()), 0, 0, 'C');
+        $this->Cell(0, 4, utf8_decode('Atenea - Página ' . $this->PageNo()), 0, 0, 'C');
     }
 
 
