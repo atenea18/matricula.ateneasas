@@ -129,6 +129,7 @@
                     is_filter_areas: objectMenuStatistics.filter.isAreas,
                     is_filter_all_groups: objectMenuStatistics.filter.isAllGroups,
                     is_accumulated: objectMenuStatistics.filter.isAcumulatedPeriod,
+                    is_reprobated:  objectMenuStatistics.filter.isReprobated,
                     is_subgroup: objectMenuStatistics.objectValuesManagerGroupSelect.isSubGroup,
 
                     url_subjects: '',
