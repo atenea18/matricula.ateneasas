@@ -106,7 +106,7 @@
                 let average = 0;
                 enrollment.accumulatedSubjects.forEach(subjects => {
                     if (subjects.asignatures_id == asignature.asignatures_id) {
-                        average = subjects.average.toFixed(2);
+                        average = subjects.average.toFixed(1);
                     }
                 })
 
@@ -116,7 +116,7 @@
                 let average = 0;
                 enrollment.requiredValuation.forEach(subjects => {
                     if (subjects.asignatures_id == asignature.asignatures_id) {
-                        average = subjects.required.toFixed(2);
+                        average = subjects.required.toFixed(1);
                     }
                 })
 
