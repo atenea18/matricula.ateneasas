@@ -7,6 +7,8 @@
             <th style="text-align: left !important;">Periodo</th>
             <th style="text-align: left !important;">Asignaturas</th>
             <th>Valoracion</th>
+            <th>Acumulado</th>
+            <th>Requerido</th>
         </tr>
         </thead>
         <tbody>
@@ -25,7 +27,13 @@
                         {{note.name_subjects}}
                     </td>
                     <td>
-                        {{note.value}}
+                        {{note.value.toFixed(1)}}
+                    </td>
+                    <td v-for="subject of enrollment.accumulatedSubjects" v-if="subject.asignatures_id==note.asignatures_id">
+                        {{subject.average.toFixed(1)}}
+                    </td>
+                    <td v-for="subject of enrollment.requiredValuation" v-if="subject.asignatures_id==note.asignatures_id">
+                        {{subject.required.toFixed(1)}}
                     </td>
                 </tr>
                 <!--
@@ -60,31 +68,16 @@
                         {{note.name_subjects}}
                     </td>
                     <td>
-                        {{note.value}}
+                        {{note.value.toFixed(1)}}
                     </td>
+                    <td v-for="subject of enrollment.accumulatedSubjects" v-if="subject.asignatures_id==note.asignatures_id">
+                        {{subject.average.toFixed(1)}}
+                    </td>
+                    <td v-for="subject of enrollment.requiredValuation" v-if="subject.asignatures_id==note.asignatures_id">
+                        {{subject.required.toFixed(1)}}
+                    </td>
+
                 </tr>
-                <!--
-                v-if="(index__==0 || key__==0)&& key_==0" :rowspan="enrollment.total_asignatures_reprobated"
-
-                :rowspan="enrollment.total_asignatures_reprobated"
-                v-if="index__==0 || key__==0" :rowspan="period.num_asignatures_reprobated"
-
-                v-if="key_==0" :rowspan="enrollment.evaluatedPeriods.length"
-                <tr v-for="note of period.notes" v-if="period.period_id == propsData.period_id_selected">
-                    <td style="text-align: left !important;" v-if="getIsFirstRow(enrollment.id)"
-                        :rowspan="period.num_asignatures_reprobated">
-
-                        {{enrollment.student_last_name+' '+enrollment.student_name}}
-                    </td>
-                    <td style="text-align: left !important;">{{period.period_id}}</td>
-                    <td style="text-align: left !important;">
-                        {{note.name_subjects}}
-                    </td>
-                    <td>
-                        {{note.value}}
-                    </td>
-                </tr>
-                -->
             </template>
         </template>
         </tbody>
