@@ -31,7 +31,7 @@
             }
         },
         created() {
-            this.compareTo()
+
         },
         computed: {
             ...mapState([

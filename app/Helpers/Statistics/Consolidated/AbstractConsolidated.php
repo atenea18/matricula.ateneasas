@@ -306,7 +306,7 @@ abstract class AbstractConsolidated
                 }
             }
             $data = (object)array(
-                'average' => $sum,
+                'average' => round($sum,1),
                 'name' => $subject->name,
                 'tav' => $countTavAsignatures,
                 'periods' => $periodsEvaluated,
@@ -373,7 +373,7 @@ abstract class AbstractConsolidated
                 $valueRequired = 0;
 
             $data = (object)array(
-                'required' => $valueRequired,
+                'required' => round($valueRequired,1),
                 'name' => $subject->name,
                 'asignatures_id' => $subject->asignatures_id,
             );
