@@ -270,7 +270,7 @@ class ExportPdf extends Fpdi
         // Select Arial italic 8
         $this->SetFont('Arial', 'I', 8);
         // Print centered page number
-        $this->Cell(0, 4, utf8_decode('Atenea - P獺gina ' . $this->PageNo()), 0, 0, 'C');
+        $this->Cell(0, 4, utf8_decode('Atenea - Página ' . $this->PageNo()), 0, 0, 'C');
     }
 
 
