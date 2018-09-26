@@ -31,13 +31,6 @@ class NotesFinal extends Model
 
     	if($this->overcoming >= $minScale->rank_start && $this->overcoming <= $hihgScale->rank_end)
     	{
-    		if($this->overcoming > $this->value){
-
-    			$noteAux = $this->overcoming;
-    			$this->overcoming = $this->value;
-    			$this->value = $noteAux;
-    		}
-
     		$this->update();
 
     		return [
@@ -253,23 +246,20 @@ class NotesFinal extends Model
 
         $data = DB::select(DB::raw(
             "SELECT result.enrollment_id, result.last_name, result.name, result.name_subjects,
-								SUM(result.percent) percent,
-                IF(result.value>= result.overcoming,
-								ROUND(IF((SUM(result.percent) = 100),
+				SUM(result.percent) percent,                
+				ROUND(IF((SUM(result.percent) = 100),
                 SUM((result.percent/100) * result.value),
                 SUM(result.value)/SUM((result.value>0))), 2)
-								,
-								ROUND(IF((SUM(result.percent) = 100),
-                SUM((result.percent/100) * result.overcoming),
-                SUM(result.overcoming)/SUM((result.overcoming>0))), 2)
-								) 'value',
-                SUM(result.tav) tav, result.areas_id as 'asignatures_id', result.overcoming,
+								 'value',
+				0 'overcoming',
+                SUM(result.tav) tav, result.areas_id as 'asignatures_id',
                 result.evaluation_periods_id, result.periods_id, result.notes_final_id
                 from
                 (
                 SELECT
-                enrollment.id as 'enrollment_id', notes_final.value as 'value', 
-								IFNULL(notes_final.overcoming,0) AS overcoming,
+                enrollment.id as 'enrollment_id', 
+								IF( notes_final.value>= IFNULL(notes_final.overcoming,0),notes_final.value,notes_final.overcoming) AS 'value',
+								notes_final.value AS overcoming,
                 notes_final.id as 'notes_final_id', areas.id as 'areas_id', evaluation_periods.periods_id, 
                 student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_subjects',                
                 evaluation_periods.id as 'evaluation_periods_id',
