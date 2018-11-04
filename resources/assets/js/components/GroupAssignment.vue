@@ -35,11 +35,11 @@
 
         <div class="row">
             <list-enrollments v-show="!isLook" v-if="isRender" :enrollments="enrollments" :groups="groups" :title="titleOne"
-                              :nameOption="option1" :typeQuery="'UPDATE'">
+                              :nameOption="option1" :typeQuery="'UPDATE'" :news="news">
             </list-enrollments>
 
             <list-enrollments v-show="isLook" v-if="isRender" :enrollments="enrollmentsWithOut" :groups="groups" :title="titleTwo"
-                              :nameOption="option2" :typeQuery="'INSERT'">
+                              :nameOption="option2" :typeQuery="'INSERT'" :news="news">
             </list-enrollments>
 
             <div class="col-md-12" v-else="isRender">
@@ -72,7 +72,8 @@
                 enrollmentsWithOut: null,
                 lookEnrollment: "Ver estudiante SIN grupos",
                 isLook:false,
-                lookClass:"btn-primary"
+                lookClass:"btn-primary",
+                news: []
             }
         },
         methods: {
@@ -87,6 +88,11 @@
                     this.enrollmentsWithOut = res.data;
                     this.isRender = true;
                 });
+
+                axios.get('/ajax/news').then(res => {
+                    this.news = res.data;
+                });
+
 
             },
 
@@ -108,10 +114,7 @@
                     this.lookClass = "btn-primary";
                     this.lookEnrollment = "Ver estudiante SIN grupos";
                 }
-
-
-            }
-
+            },
 
         },
         created() {
