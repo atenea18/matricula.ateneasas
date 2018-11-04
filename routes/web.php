@@ -109,6 +109,10 @@ Route::group(['prefix' => 'ajax'], function () {
     //NoAttendance
     Route::post('/evaluation-noattendance/store', 'EvaluationController@storeNoAttendance');
 
+    //News
+    Route::get('/news', 'NewsController@get');
+    Route::post('/addNoveltyStudents', 'NewsController@registerNewsEnrollments');
+
     //Store Vue.js
     Route::get('/allgrades', 'GradeController@getAllGrades');
 
@@ -283,6 +287,7 @@ Route::group(['prefix' => 'institution', 'middleware' => 'institution_auth'], fu
     Route::post('copyPensumByGrade', 'AreasAndAsignatureController@copyPensumByGrade');
 
     Route::get('statistics', 'StatisticsController@indexInstitution')->name('institution.statistics');
+    Route::get('news', 'NewsController@index')->name('institution.news');
 
 
     //Asignación Académica
