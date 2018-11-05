@@ -82,7 +82,7 @@
             </a>
         </li>
 
-        <!-- Novedades -->
+        <!-- Novedades
         <li class="">
             <a href="{{route('institution.news')}}">
                 <span class="fa-stack fa-lg pull-left"><i class="far fa-chart-bar fa-stack-1x "></i>
@@ -90,6 +90,7 @@
                 Novedades
             </a>
         </li>
+         -->
 
         <!-- Asignación Académica -->
         <li class="">

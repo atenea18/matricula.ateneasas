@@ -38,7 +38,7 @@ class NewsController extends Controller
         return News::all();
     }
 
-    public function registerNewsEnrollments(Request $request){
+    public function registerEnrollments(Request $request){
         $data = $request->data;
         $enrollment_news = null;
 
@@ -59,5 +59,11 @@ class NewsController extends Controller
                     ]);
             }
         }
+    }
+
+    public function deleteEnrollment(Request $request){
+        $data = $request->data;
+
+        EnrollmentNews::findOrFail($data['enrollment_news_id'])->delete();
     }
 }

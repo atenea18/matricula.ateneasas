@@ -156,8 +156,14 @@ class Group extends Model
                 'group.id as group_id',
                 'group_assignment.id as a_id',
                 'institution.id as institution_id',
-                'schoolyears.id as schoolyears_id'
+                'schoolyears.id as schoolyears_id',
+                'news.id as news_id',
+                'news.name as news_name',
+                'enrollment_news.id as enrollment_news_id',
+                'enrollment_news.date'
             )
+            ->leftJoin('enrollment_news', 'enrollment_news.enrollment_id', '=', 'enrollment.id')
+            ->leftJoin('news', 'news.id', '=', 'enrollment_news.news_id')
             ->join('grade', 'enrollment.grade_id', '=', 'grade.id')
             ->join('group_assignment', 'enrollment.id', '=', 'group_assignment.enrollment_id')
             ->join('group', 'group_assignment.group_id', '=', 'group.id')
