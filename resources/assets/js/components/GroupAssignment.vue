@@ -35,11 +35,11 @@
 
         <div class="row">
             <list-enrollments v-show="!isLook" v-if="isRender" :enrollments="enrollments" :groups="groups" :title="titleOne"
-                              :nameOption="option1" :typeQuery="'UPDATE'" :news="news">
+                              :nameOption="option1" :typeQuery="'UPDATE'" :news="news" :group_id="idGroup">
             </list-enrollments>
 
             <list-enrollments v-show="isLook" v-if="isRender" :enrollments="enrollmentsWithOut" :groups="groups" :title="titleTwo"
-                              :nameOption="option2" :typeQuery="'INSERT'" :news="news">
+                              :nameOption="option2" :typeQuery="'INSERT'" :news="news" :group_id="idGroup">
             </list-enrollments>
 
             <div class="col-md-12" v-else="isRender">
