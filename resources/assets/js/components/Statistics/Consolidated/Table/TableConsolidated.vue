@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <table class="table table-sm table-bordered">
             <head-table-consolidated :objectInput="objectInput.asignatures"></head-table-consolidated>
             <tbody>

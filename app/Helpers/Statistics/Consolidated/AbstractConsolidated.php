@@ -73,6 +73,7 @@ abstract class AbstractConsolidated
         $this->addPropertiesToEnrollments();
         $this->addPropertyToEnrollmentsAccumulatedAsignatures();
         $this->addPropertyToEnrollmentsRequiredValuation();
+        $this->addPropertyToEnrollmentsFinalReport();
     }
 
     /**
@@ -124,7 +125,6 @@ abstract class AbstractConsolidated
     }
 
 
-
     /**
      * Guarda información del periodo evaluado por estudiante
      */
@@ -162,7 +162,6 @@ abstract class AbstractConsolidated
     }
 
 
-
     /**
      * Crea un vector con los periodos evaluados, y cada periodo tiene un objeto
      * con información básica, como lo es el id del periodo, su porcentaje y los
@@ -196,9 +195,9 @@ abstract class AbstractConsolidated
                     (
                         'id' => $enrollment->id,
                         'tav' => $enrollPeriodEvaluated['tav'],
-                        'name' => $enrollment->student_name,
+                        'student_name' => $enrollment->student_name,
                         'average' => $enrollPeriodEvaluated['average'],
-                        'last_name' => $enrollment->student_last_name,
+                        'student_last_name' => $enrollment->student_last_name,
                     );
                     array_push($vectorDataBasicPeriodEvaluated, $dataEnrollment);
                 }
@@ -249,6 +248,10 @@ abstract class AbstractConsolidated
         if (!isset($enrollment->accumulatedAverage)) {
             $enrollment->accumulatedAverage = 0;
         }
+        if (!isset($enrollment->average)) {
+            $enrollment->average = 0;
+        }
+        $enrollment->average += ($enrollPeriodEvaluated['average'] * ($rowDataBasicPeriodEvaluated->percent / 100));
         $enrollment->accumulatedAverage += ($enrollPeriodEvaluated['average'] * ($rowDataBasicPeriodEvaluated->percent / 100));
     }
 
@@ -280,7 +283,11 @@ abstract class AbstractConsolidated
             if (!isset($enrollment->accumulatedSubjects)) {
                 $enrollment->accumulatedSubjects = [];
             }
+            if (!isset($enrollment->tav)) {
+                $enrollment->tav = 0;
+            }
             $enrollment->accumulatedSubjects = $accumulated;
+            $enrollment->tav = count($accumulated);
         }
     }
 
@@ -294,7 +301,7 @@ abstract class AbstractConsolidated
             foreach ($enrollment->evaluatedPeriods as $rowEvaluatedPeriod) {
                 foreach ($rowEvaluatedPeriod['notes'] as $note) {
                     if ($subject->asignatures_id == $note->asignatures_id) {
-                        if($note->value > 0){
+                        if ($note->value > 0) {
                             $info = (object)array(
                                 'period_id' => $rowEvaluatedPeriod['period_id'],
                                 'percent' => $rowEvaluatedPeriod['percent']
@@ -306,7 +313,7 @@ abstract class AbstractConsolidated
                 }
             }
             $data = (object)array(
-                'average' => round($sum,1),
+                'average' => round($sum, 1),
                 'name' => $subject->name,
                 'tav' => $countTavAsignatures,
                 'periods' => $periodsEvaluated,
@@ -327,6 +334,7 @@ abstract class AbstractConsolidated
 
     private function addPropertyToEnrollmentsRequiredValuation()
     {
+
         foreach ($this->vectorEnrollments as $enrollment) {
             $required = [];
 
@@ -366,14 +374,14 @@ abstract class AbstractConsolidated
                 }
 
             }
-            if($valueRequired>$this->final_point)
+            if ($valueRequired > $this->final_point)
                 $valueRequired = 0;
 
-            if($valueRequired<0)
+            if ($valueRequired < 0)
                 $valueRequired = 0;
 
             $data = (object)array(
-                'required' => round($valueRequired,1),
+                'required' => round($valueRequired, 1),
                 'name' => $subject->name,
                 'asignatures_id' => $subject->asignatures_id,
             );
@@ -383,8 +391,76 @@ abstract class AbstractConsolidated
     }
 
 
+    private function addPropertyToEnrollmentsFinalReport()
+    {
+        $vectorRating = GenerateRating::createVectorRating($this->vectorEnrollments);
 
+        foreach ($this->vectorEnrollments as &$enrollment) {
+            $this->calculateRatingGeneral($enrollment, $vectorRating);
 
+            $report = [];
+            $failed_subjcts = [];
+
+            $this->calculateFinalReport($enrollment, $report, $failed_subjcts);
+
+            if (!isset($enrollment->finalReport)) {
+                $enrollment->finalReport = [];
+            }
+            if (!isset($enrollment->failedSubjects)) {
+                $enrollment->failedSubjects = [];
+            }
+            $enrollment->finalReport = $report;
+            $enrollment->failedSubjects = (object)array(
+                'number' => count($failed_subjcts),
+                'subjects' => $failed_subjcts,
+            );
+        }
+    }
+
+    private  function calculateRatingGeneral(&$enrollment, $vectorRating){
+        foreach ($vectorRating as $rowEnrollmentRating) {
+
+            if ($enrollment->id == $rowEnrollmentRating['id']) {
+                $enrollment->rating = $rowEnrollmentRating['rating'];
+            }
+        }
+    }
+
+    private function calculateFinalReport($enrollment, &$report, &$failed_subjcts)
+    {
+        foreach ($this->vectorSubjects as $subject) {
+            $result = "";
+            $value = "";
+            $failed = null;
+            foreach ($enrollment->accumulatedSubjects as $rowAccumulated) {
+                if ($subject->asignatures_id == $rowAccumulated->asignatures_id) {
+                    if ($rowAccumulated->average < $this->middle_point) {
+                        $result = "REP";
+                        $failed = (object)array(
+                            'asignatures_id' => $rowAccumulated->asignatures_id,
+                            'average' => $rowAccumulated->average,
+                            'name' => $rowAccumulated->name,
+                        );
+                    } else {
+                        $result = "APRO";
+                    }
+                    $value = $rowAccumulated->average;
+                }
+            }
+
+            $data = (object)array(
+                'name' => $subject->name,
+                'asignatures_id' => $subject->asignatures_id,
+                'value' => $value,
+                'report' => $result,
+            );
+
+            array_push($report, $data);
+
+            if ($failed != null)
+                array_push($failed_subjcts, $failed);
+        }
+    }
 
     /*
      *  Métodos Auxiliares // Métodos Auxiliares \\ Métodos Auxiliares

@@ -36,23 +36,6 @@
                         {{subject.required.toFixed(1)}}
                     </td>
                 </tr>
-                <!--
-                v-if="key_==0" :rowspan="enrollment.evaluatedPeriods.length"
-                <tr v-for="note of period.notes" v-if="period.period_id == propsData.period_id_selected">
-                    <td style="text-align: left !important;" v-if="getIsFirstRow(enrollment.id)"
-                        :rowspan="period.num_asignatures_reprobated">
-
-                        {{enrollment.student_last_name+' '+enrollment.student_name}}
-                    </td>
-                    <td style="text-align: left !important;">{{period.period_id}}</td>
-                    <td style="text-align: left !important;">
-                        {{note.name_subjects}}
-                    </td>
-                    <td>
-                        {{note.value}}
-                    </td>
-                </tr>
-                -->
             </template>
         </template>
         <template v-for="(enrollment,key,index) of propsData.reprobated_enrollments" v-if="propsData.is_accumulated">

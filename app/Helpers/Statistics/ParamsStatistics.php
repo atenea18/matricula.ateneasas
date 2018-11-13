@@ -26,6 +26,10 @@ class ParamsStatistics
     public $is_filter_all_groups = false;
     public $is_accumulated = false;
     public $is_reprobated = false;
+    public $is_report = false;
+    public $is_filter_report = false;
+    public $condition = 0;
+    public $condition_number = 0;
 
     public $middle_point = 0;
     public $final_point = 0;
@@ -57,6 +61,10 @@ class ParamsStatistics
         $this->group_object = (object) Group::getGroupsById($request->group_id);
         $this->is_filter_all_groups = $request->is_filter_all_groups;
         $this->institution_object = $request->institution;
+        $this->is_filter_report = $request->is_filter_report;
+        $this->is_report = $request->is_report;
+        $this->condition = $request->condition;
+        $this->condition_number = $request->condition_number;
 
         if(isset($request->is_reprobated))
             $this->is_reprobated = $request->is_reprobated;

@@ -12,7 +12,6 @@
                         <span class="icon-bar"></span>
                     </button>
                 </div>
-
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
@@ -35,55 +34,84 @@
                             </a>
                         </li>
 
-                        <li :class="currentView=='stats-rating'?'active':''">
-                            <a href="#rating" @click="setCurrentView('stats-rating')">PUESTOS
-                                <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
                     </ul>
 
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
         <!-- selects, check, buttons-->
+
+
         <div class="row" v-show="currentView">
-            <!-- Filtros: Acumulado, Por Áreas -->
-            <div class="col-md-3">
+            <!-- *** Filtros: Acumulado, Por Áreas *********************************************************-->
+            <div class="col-md-2">
                 <div class="checkbox">
-                    <label>
+                    <label v-if="currentView !='main-consolidated' || (!SearchFilterObject.isReport && !SearchFilterObject.isFilterReport )">
                         <input type="checkbox"
                                v-model="SearchFilterObject.isAcumulatedPeriod"
                                @change="setEventProperties('accumulatedPeriod','check')"/>
-                        Periodos Acumulados
+                        Periodos ácumulados
                     </label>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="checkbox">
                     <label>
                         <input type="checkbox"
                                v-model="SearchFilterObject.isAreas"
                                @change="setEventProperties('areas','check')"/>
-                        Por Áreas
+                        Por áreas
                     </label>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="checkbox">
-                    <label>
+                    <label v-if="currentView !='main-consolidated' || (!SearchFilterObject.isReport && !SearchFilterObject.isFilterReport )">
                         <input type="checkbox"
                                v-model="SearchFilterObject.isReprobated"
                                @change="setEventProperties('reprobated','check')"/>
-                        Ver Reprobados
+                        Reprobados
                     </label>
                 </div>
             </div>
+            <div class="col-md-2">
+                <div class="checkbox">
+                    <label
+                            v-if="
+                            currentView=='main-consolidated' &&
+                            !SearchFilterObject.isFilterReport &&
+                            !SearchFilterObject.isAcumulatedPeriod &&
+                            !SearchFilterObject.isReprobated">
+                        <input type="checkbox"
+                               v-model="SearchFilterObject.isReport"
+                               @change="setEventProperties('report','check')"/>
+                        Informe final
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-3" v-if="
+                            currentView=='main-consolidated' &&
+                            !SearchFilterObject.isReport &&
+                            !SearchFilterObject.isAcumulatedPeriod &&
+                            !SearchFilterObject.isReprobated">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"
+                               v-model="SearchFilterObject.isFilterReport"
+                               @change="setEventProperties('check-filter-report','check')"/>
+                        Filtrar informe por reprobados
+                    </label>
+                </div>
+            </div>
+
+
             <div class="clearfix"></div>
-            <!-- Selects: Grado, Grupo, Periodo -->
-            <manager-group-select :objectInput="componentManagerGroupSelect"></manager-group-select>
+            <!-- Selects: Grado, Grupo, Periodo ********************************************* -->
+            <manager-group-select :objectInput="componentManagerGroupSelect" :params="SearchFilterObject"/>
+
 
             <!-- Buttons: PDF, Excel -->
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <!-- PDF -->
                 <a href="#" class="btn btn-primary btn-sm"
                    @click="setEventProperties('pdf','click')">
@@ -96,6 +124,13 @@
                     <i class="far fa-file-excel fa-lg fa-2x"></i>
                     EXCEL
                 </a>
+                <!-- Reprobar Filtrados -->
+                <a href="#" class="btn btn-danger btn-sm"
+                   v-if="currentView=='main-consolidated' && SearchFilterObject.isFilterReport"
+                   @click="setEventProperties('filter-report','click')">
+                    <i class="far fa-file-excel fa-lg fa-2x"></i>
+                    REPROBAR FILTRADOS
+                </a>
                 <!-- ¿Todos los grupos? -->
                 <div class="checkbox">
                     <label>
@@ -107,7 +142,7 @@
                 </div>
             </div>
         </div>
-        <!-- //selects, check, buttons-->
+
     </div>
 </template>
 
@@ -131,6 +166,8 @@
                     isAllGroups: false,
                     isAcumulatedPeriod: false,
                     isReprobated: false,
+                    isReport: false,
+                    isFilterReport: false,
                 },
                 mainComponentObject: {
                     filter: {
@@ -171,7 +208,9 @@
                     isAreas: this.SearchFilterObject.isAreas,
                     isAllGroups: this.SearchFilterObject.isAllGroups,
                     isAcumulatedPeriod: this.SearchFilterObject.isAcumulatedPeriod,
-                    isReprobated: this.SearchFilterObject.isReprobated
+                    isReprobated: this.SearchFilterObject.isReprobated,
+                    isReport: this.SearchFilterObject.isReport,
+                    isFilterReport: this.SearchFilterObject.isFilterReport,
                 }
 
                 this.mainComponentObject.filter = filter
@@ -201,8 +240,8 @@
                         whoTriggered: "componentManagerGroupSelect",
                     }
 
-                    if (objectManagerGroup.whoTriggered == "period") {
-                        eventProperties.whoTriggered = "PeriodComponentManagerGroupSelect"
+                    if (objectManagerGroup.whoTriggered == "period" || objectManagerGroup.whoTriggered == "reprobated-final") {
+                        eventProperties.whoTriggered = "defalult"
                     }
 
                     this.initObjectComponentMain(eventProperties)
@@ -239,9 +278,9 @@
                 this.mainComponentObject.typeViewSection = view
 
                 this.initObjectComponentMain(eventProperties)
-                setTimeout(()=>{
+                setTimeout(() => {
                     this.$bus.$emit("SelectedCurrentView@MenuStatistics", this.mainComponentObject)
-                },500)
+                }, 500)
 
             },
 
