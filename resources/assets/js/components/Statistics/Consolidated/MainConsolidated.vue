@@ -13,8 +13,14 @@
                 <template v-if="state">
                     <br>
                     <table-consolidated id="table-consolidated"
-                                        :objectInput="objectToTableConsolidated">
-                    </table-consolidated>
+                                        v-show="!objectToTableConsolidated.params.filter.isReport && !objectToTableConsolidated.params.filter.isFilterReport"
+                                        :objectInput="objectToTableConsolidated"/>
+                    <table-report
+                            v-show="objectToTableConsolidated.params.filter.isReport"
+                            :prop-data="objectToTableConsolidated"/>
+                    <table-filter-report
+                            v-show="objectToTableConsolidated.params.filter.isFilterReport"
+                            :prop-data="objectToTableConsolidated"/>
                 </template>
             </div>
         </div>
@@ -23,12 +29,16 @@
 
 <script>
     import {mapState} from 'vuex'
-    import { HalfCircleSpinner } from 'epic-spinners'
+    import {HalfCircleSpinner} from 'epic-spinners'
     import ManagerGroupSelect from "../../partials/Form/GroupSelect/ManagerGroupSelect";
     import TableConsolidated from "./Table/TableConsolidated";
+    import TableReport from "./TableReport/TableReport";
+    import TableFilterReport from "./TableFilterReport/TableFilterReport";
 
     export default {
         components: {
+            TableFilterReport,
+            TableReport,
             TableConsolidated,
             ManagerGroupSelect,
             HalfCircleSpinner
@@ -101,8 +111,7 @@
             },
 
             managerSelectedFieldsEvent(objectMenuStatistics) {
-
-                if (this.$store.state.currentView =='main-consolidated') {
+                if (this.$store.state.currentView == 'main-consolidated') {
                     this.getWhoTriggered(objectMenuStatistics)
                 }
             },
@@ -114,9 +123,12 @@
                     whoTriggered == 'pdf' ||
                     whoTriggered == 'areas' ||
                     whoTriggered == 'excel' ||
-                    whoTriggered == 'componentManagerGroupSelect') {
+                    whoTriggered == 'componentManagerGroupSelect' ||
+                    whoTriggered == 'filter-report') {
                     this.managerQueryForFilterConsolidated(objectMenuStatistics)
                 }
+                console.log(objectMenuStatistics)
+                console.log(this.objectToTableConsolidated)
             },
 
             managerQueryForFilterConsolidated(objectMenuStatistics) {
@@ -125,18 +137,21 @@
                     grade_id: objectMenuStatistics.objectValuesManagerGroupSelect.grade_id,
                     group_id: objectMenuStatistics.objectValuesManagerGroupSelect.group_id,
                     periods_id: objectMenuStatistics.objectValuesManagerGroupSelect.periods_id,
+                    condition: objectMenuStatistics.objectValuesManagerGroupSelect.condition,
+                    condition_number: objectMenuStatistics.objectValuesManagerGroupSelect.condition_number,
+
 
                     is_filter_areas: objectMenuStatistics.filter.isAreas,
                     is_filter_all_groups: objectMenuStatistics.filter.isAllGroups,
                     is_accumulated: objectMenuStatistics.filter.isAcumulatedPeriod,
-                    is_reprobated:  objectMenuStatistics.filter.isReprobated,
-                    is_subgroup: objectMenuStatistics.objectValuesManagerGroupSelect.isSubGroup,
+                    is_reprobated: objectMenuStatistics.filter.isReprobated,
+                    is_filter_report:  objectMenuStatistics.filter.isFilterReport,
+                    is_report: objectMenuStatistics.filter.isReport,
 
                     url_subjects: '',
                     url_consolidated: '',
                     type_response: objectMenuStatistics.eventInformation.whoTriggered,
                 }
-
                 params.url_subjects = '/ajax/getSubjects'
                 params.url_consolidated = '/ajax/getTableConsolidated'
 
@@ -162,6 +177,9 @@
                     case 'excel':
                         toastr.success('En desarrollo...')
                         break;
+                    case 'filter-report':
+                        this.executeFilterReport(params)
+                        break;
                     default:
                         this.executeDefault(params)
                 }
@@ -182,8 +200,22 @@
                 axios.get(params.url_consolidated, {params}).then(res => {
                     // Cuando la variable local tiene la información, le asignamos valor true a la variable
                     // state, para que renderice el componente table-consolidated
-                    if(res.status == 200){
+                    if (res.status == 200) {
                         this.objectToTableConsolidated.enrollments = res.data
+                        this.state = true
+                    }
+                }).catch(error => {
+                    this.is_first = true
+                })
+            },
+            executeFilterReport(params) {
+                this.state = false
+                this.is_first = false
+                axios.get(params.url_consolidated, {params}).then(res => {
+                    // Cuando la variable local tiene la información, le asignamos valor true a la variable
+                    // state, para que renderice el componente table-consolidated
+                    if (res.status == 200) {
+                        console.log(res.data)
                         this.state = true
                     }
                 }).catch(error => {

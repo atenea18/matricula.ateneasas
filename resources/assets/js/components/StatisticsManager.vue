@@ -15,11 +15,11 @@
     import {mapState} from 'vuex'
     import MenuStatistics from "./Statistics/MenuStatistics";
     import MainConsolidated from './Statistics/Consolidated/MainConsolidated'
-    import MainPercentage from  './Statistics/Percentage/MainPercentage'
-    import MainReprobated from  './Statistics/Reprobated/MainReprobated'
+    import MainPercentage from './Statistics/Percentage/MainPercentage'
+    import MainReprobated from './Statistics/Reprobated/MainReprobated'
     import StatsRating from './Statistics/Rating/StatsRating'
     import StatsTeachers from './Statistics/Teachers/StatsTeachers'
-    import { VueGoodTable } from 'vue-good-table';
+    import {VueGoodTable} from 'vue-good-table';
 
     export default {
         name: "statistics-manager",
@@ -31,7 +31,6 @@
             StatsRating,
             StatsTeachers,
             VueGoodTable,
-
         },
         data() {
             return {

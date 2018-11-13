@@ -9,270 +9,316 @@
 namespace App\Helpers\Statistics\Consolidated\Export;
 
 
+use App\Helpers\Statistics\Consolidated\AbstractPDF;
 use App\Helpers\Statistics\ParamsStatistics;
 use App\Traits\utf8Helper;
 use setasign\Fpdi\Fpdi;
 
 
-class ExportPdf extends Fpdi
+class ExportPdf extends AbstractPDF
 {
     use utf8Helper;
+    private $enrollments_by_groups = null;
+    private $table_consolidated = [
+        'rows_pan' => 1,
+        'rows_pan_accumulated' => 2
+    ];
 
-    private $params = null;
-    private $page_width = null;
-    private $size_column = null;
-    private $size_column_fixed = null;
-    private $enrollments_by_groups = [];
-    private $num_is_accumulated = 2;
-
-    // Se define el width de cada celda
-    private $w_num = 5;
-    private $w_per = 6;
-    private $w_tav = 7;
-    private $w_pgg = 8;
-    private $w_rat = 10;
-    private $w_name = 47;
-    private $w_margin = 20;
-
-    // Se define el height de todas las celdas
-    private $h_cell = 3.109;
-
-    private $enrollmentByGroup = null;
+    private static $number = 0;
 
     public function __construct(string $orientation = 'Landscape', string $size = 'Letter', $enrollments_by_groups, ParamsStatistics $params)
     {
+        parent::__construct($orientation, $size);
+        $this->start($enrollments_by_groups, $params);
+    }
+
+    private function start($enrollments_by_groups, ParamsStatistics $params)
+    {
         $this->params = $params;
         $this->enrollments_by_groups = $enrollments_by_groups;
-
-        $this->getSizeMaxColumnFixed();
-        parent::__construct($orientation, 'mm', $size);
-
     }
 
-
-    public function Header()
+    protected function drawTableTitlesDynamic()
     {
-        if ($this->enrollmentByGroup) {
-            $this->SetLineWidth(0.001);
-            $this->SetDrawColor(76, 76, 76);
+        if($this->params->is_report != "true" && $this->params->is_filter_report != "true" )
+            $this->consolidatedTitle();
+        if($this->params->is_report == "true")
+            $this->reportFinalTitle();
+        if($this->params->is_filter_report == "true" )
+            $this->reportFilterTitle();
+    }
 
-            $this->TitleInstitutionHeader();
-            $this->TitleInformationGroupHeader();
+    public function create($name)
+    {
+        foreach ($this->enrollments_by_groups as $enrollmentByGroup) {
+            $this->enrollmentByGroup = $enrollmentByGroup;
 
-            $this->HeaderTableConsolidated($this->enrollmentByGroup);
+            if($this->params->is_report != "true" && $this->params->is_filter_report != "true" )
+                $this->consolidatedBody();
+            if($this->params->is_report == "true")
+                $this->reportFinalBody();
+            if($this->params->is_filter_report == "true" )
+                $this->reportFilterBody();
+
         }
+        $this->Output('D', $name . '.pdf', true);
     }
 
 
-    private function TitleInstitutionHeader()
+    # CONSOLIDATED *********************************** CONSOLIDATED ******************************
+    protected function initConsolidated()
     {
-        $this->SetY(4);
-        // Select Arial bold 15
-        $this->SetFont('Arial', 'B', 10);
-        $this->Cell($this->page_width - $this->w_margin, 5.6, $this->transformMay($this->params->institution_object->name), 'LTR', 1, 'C');
-        $this->SetFont('Arial', 'B', 8);
-        $this->Cell($this->page_width - $this->w_margin, 4, $this->transformMay($this->enrollmentByGroup->headquarter_name), 'LR', 1, 'C');
-
-        $title_consolidate = $this->params->is_accumulated == "true" ? "CONSOLIDADOS CON PERIODOS ACUMULADOS" : "CONSOLIDADOS";
-        $this->Cell($this->page_width - $this->w_margin, 4, $this->transformMay($title_consolidate), 'LR', 1, 'C');
-        $this->Cell($this->page_width - $this->w_margin, 0, '', 'T', 1);
+        $cells = array(
+            (object)array('title' => 'No.', 'width' => 5),
+            (object)array('title' => 'Nombres y Apellidos.', 'width' => 47),
+            (object)array('title' => 'PER.', 'width' => 7),
+            (object)array('title' => 'TAV.', 'width' => 8),
+            (object)array('title' => 'PUESTO.', 'width' => 10),
+            (object)array('title' => 'PGG.', 'width' => 8),
+        );
+        $this->setTableCells($cells);
     }
 
-    private function TitleInformationGroupHeader()
+    # Table Consolidated Title
+    private function consolidatedTitle()
     {
-        $this->SetFillColor(228, 229, 230);
-        $this->SetFont('Arial', '', 7);
-        $this->Cell(45, 4, $this->transformMay('Grupo: ' . $this->enrollmentByGroup->name), 'L', 0, 'C', true);
-        $this->Cell(50, 4, $this->transformMay('Jornada: ' . $this->enrollmentByGroup->working_day_name), '', 0, 'C', true);
-        $this->Cell(110, 4, $this->transformMay('Director: ' . $this->enrollmentByGroup->director_name), '', 0, 'C', true);
-        $this->Cell(54.4, 4, $this->transformMay('Fecha: ' . date("Y-m-d")), 'R', 1, 'C', true);
-    }
-
-    private function HeaderTableConsolidated($enrollmentByGroup)
-    {
-        $this->SetFillColor(208, 233, 251);
-        $this->SetFont('Arial', 'B', 6.6);
-        $this->columnHeaderTitles($enrollmentByGroup);
-
-    }
-
-    private function columnHeaderTitles($enrollmentByGroup)
-    {
-        $this->Cell($this->w_num, $this->h_cell, 'No.', 1, 0, 'C', true);
-        $this->Cell($this->w_name, $this->h_cell, 'APELLIDOS Y NOMBRES', 1, 0, 'C', true);
-        $this->Cell($this->w_per, $this->h_cell, 'PER', 1, 0, 'C', true);
-        $this->Cell($this->w_tav, $this->h_cell, 'TAV', 1, 0, 'C', true);
-        $this->Cell($this->w_rat, $this->h_cell, 'PUESTO', 1, 0, 'C', true);
-        $this->Cell($this->w_pgg, $this->h_cell, 'PGG', 1, 0, 'C', true);
-
+        $this->setNumberDynamicTitles(count($this->enrollmentByGroup->subjects));
         //Encabezado de asignaturas
-        foreach ($enrollmentByGroup->subjects as $subject) {
-            $this->Cell($this->size_column, $this->h_cell, utf8_decode($subject->abbreviation), 1, 0, 'C', true);
+        foreach ($this->enrollmentByGroup->subjects as $subject) {
+            $this->drawCellWithDynamic($subject->abbreviation);
         }
         $this->ln();
     }
 
-
-    public function create($name_pdf)
+    # Table Consolidated Body
+    private function consolidatedBody()
     {
-        foreach ($this->enrollments_by_groups as $enrollmentByGroup) {
-            if (count($enrollmentByGroup->subjects))
-                $this->BodyTableConsolidated($enrollmentByGroup);
-        }
-        $this->Output('D', $name_pdf . '.pdf', true);
-    }
-
-    private function BodyTableConsolidated($enrollmentByGroup)
-    {
-        $this->setConfig($enrollmentByGroup);
-
-        foreach ($enrollmentByGroup->enrollments as $key => $enrollment) {
-            $this->columnsBodyTableConsolidated($enrollment, $enrollmentByGroup, $key + 1);
+        $this->initConsolidated();
+        $this->setStatisticalTitle("CONSOLIDADOS", "CONSOLIDADOS CON PERIODOS ACUMULADOS");
+        if (count($this->enrollmentByGroup->subjects)) {
+            $this->setConfig();
+            $this->consolidatedContent();
         }
     }
 
-    private function setConfig($enrollmentByGroup)
+    private function consolidatedContent()
     {
-        $this->enrollmentByGroup = $enrollmentByGroup;
-        $this->page_width = $this->GetPageWidth();
-        $this->size_column = $this->getSizeColumn($enrollmentByGroup);
+        self::$number = $this->table_consolidated['rows_pan_accumulated'];
 
-        $this->SetTextColor(0, 0, 0);
-        $this->SetDrawColor(76, 76, 76);
-        $this->SetFont('Arial', '', 7.4);
-
-        $this->AddPage();
-    }
-
-    private function columnsBodyTableConsolidated($enrollment, $enrollmentByGroup, $count)
-    {
-        $this->Cell($this->w_num, $this->getHeightColumnNum(), $count, 1, 0, 'C');
-        $this->CellEnrollmentName($enrollment);
-        $this->ColumnsValoration($enrollment, $enrollmentByGroup);
-        $this->RowsPeriodsAccumulated($enrollment, $enrollmentByGroup);
-    }
-
-    private function RowsPeriodsAccumulated($enrollment, $enrollmentByGroup)
-    {
-        if ($this->params->is_accumulated == "true") {
-            //Accumulated
-            $average = $enrollment->accumulatedAverage;
-            $this->SetFillColor(247, 251, 254);
-            $this->SetX(15);
-            $this->Cell(70, $this->h_cell, $this->transformMay('Acumulados'), 1, 0, 'L', true);
-            $this->Cell(8, $this->h_cell, ROUND($average, 1), 1, 0, 'C', true);
-            $this->searchAccumulatedNotes($enrollment, $enrollmentByGroup);
-
-            //requiredValuation
-            $this->SetX(15);
-            $this->Cell(78, $this->h_cell, $this->transformMay('Valoración Requerida'), 1, 0, 'L', true);
-            $this->searchRequiredNotes($enrollment, $enrollmentByGroup);
+        foreach ($this->enrollmentByGroup->enrollments as $key => $enrollment) {
+            $this->drawCellWithIndex($key + 1, 0, $this->getRowNumber(self::$number));
+            $this->drawCellWithIndex(self::fullNameEnrollment($enrollment), 1, $this->getRowNumber(0));
+            $this->dispatcherConsolidated($enrollment);
+            $this->rowsAccRequ($enrollment);
         }
     }
 
-    private function ColumnsValoration($enrollment, $enrollmentByGroup)
+    # CHOOSE BETWEEN ACCUMULATED OR NOT
+    private function dispatcherConsolidated($enrollment)
     {
-        foreach ($enrollment->evaluatedPeriods as $rowEvaluatePeriod) {
-            if ($this->params->is_accumulated == "false") {
-                if ($rowEvaluatePeriod['period_id'] == $this->params->period_selected_id)
-                    $this->getRowValoration($enrollmentByGroup, $rowEvaluatePeriod);
-            } else {
-                $this->SetX(62);
-                $this->getRowValoration($enrollmentByGroup, $rowEvaluatePeriod);
+        foreach ($enrollment->evaluatedPeriods as $rowEvaluation) {
+            switch ($this->params->is_accumulated) {
+                case "false":
+                    if ($rowEvaluation['period_id'] == $this->params->period_selected_id)
+                        $this->getOtherColumnsConsolidated($rowEvaluation);
+                    break;
+                default:
+                    $this->SetX(62);
+                    $this->getOtherColumnsConsolidated($rowEvaluation);
             }
         }
     }
 
-    private function getRowValoration($enrollmentByGroup, $rowEvaluatePeriod)
+    private function rowsAccRequ($enrollment)
     {
-        $this->Cell($this->w_per, $this->h_cell, $rowEvaluatePeriod['period_id'], 1, 0, 'C');
-        $this->Cell($this->w_tav, $this->h_cell, $rowEvaluatePeriod['tav'], 1, 0, 'C');
-        $this->Cell($this->w_rat, $this->h_cell, $rowEvaluatePeriod['rating'], 1, 0, 'C');
-        $this->Cell($this->w_pgg, $this->h_cell, $rowEvaluatePeriod['average'], 1, 0, 'C');
-        $this->searchNotes($enrollmentByGroup, $rowEvaluatePeriod['notes']);
+        if ($this->params->is_accumulated == "true") {
+            $average = $enrollment->accumulatedAverage;
+            $this->SetFillColor(247, 251, 254);
+            $this->SetX(15);
+            $this->drawCell('Acumulados', 54);
+            $this->drawCellWithIndex($enrollment->tav, 3);
+            $this->drawCellWithIndex($enrollment->rating, 4);
+            $this->drawCell(ROUND($average, 1),8);
+            $this->searchAccumulatedNotes($enrollment);
+
+            //requiredValuation
+            $this->SetX(15);
+            $this->drawCell('Valoración Requerida',80);
+            $this->searchRequiredNotes($enrollment);
+        }
     }
 
-    private function searchNotes($enrollmentByGroup, $notes)
+    private function getOtherColumnsConsolidated($rowEvaluation)
     {
-        foreach ($enrollmentByGroup->subjects as $subject) {
+        $this->drawCellWithIndex($rowEvaluation['period_id'], 2);
+        $this->drawCellWithIndex($rowEvaluation['tav'], 3);
+        $this->drawCellWithIndex($rowEvaluation['rating'], 4);
+        $this->drawCellWithIndex($rowEvaluation['average'], 5);
+        $this->searchNotes($rowEvaluation['notes']);
+
+    }
+
+    private function searchNotes($notes)
+    {
+        foreach ($this->enrollmentByGroup->subjects as $subject) {
             $state = false;
             foreach ($notes as $note) {
                 if ($subject->asignatures_id == $note->asignatures_id) {
                     $value = self::processNote($note->value, $note->overcoming);
                     $this->setDanger($value, $this->params->middle_point);
                     if ($this->params->is_reprobated == "true") {
-                        if($value < $this->params->middle_point && $value > 0)
-                            $this->Cell($this->size_column, $this->h_cell, ROUND($value, 1), 1, 0, 'C');
+                        if ($value < $this->params->middle_point && $value > 0)
+                            $this->drawCellWithDynamic(ROUND($value, 1));
                         else
-                            $this->Cell($this->size_column, $this->h_cell, '', 1, 0, 'C');
-                    }else{
-                        $this->Cell($this->size_column, $this->h_cell, ROUND($value, 1), 1, 0, 'C');
+                            $this->drawCellWithDynamic('');
+                    } else {
+                        $this->drawCellWithDynamic(ROUND($value, 1));
                     }
                     $this->setTextBlack();
                     $state = true;
                 }
             }
             if (!$state)
-                $this->Cell($this->size_column, $this->h_cell, '', 1, 0, 'C');
+                $this->drawCellWithDynamic('');
         }
         $this->ln();
     }
 
-    private function getHeightColumnNum()
+    private function searchAccumulatedNotes($enrollment)
     {
-        if ($this->params->is_accumulated == "true")
-            return $this->h_cell * ($this->params->num_of_periods + $this->num_is_accumulated);
-        else
-            return $this->h_cell;
-    }
-
-    private function getHeightColumnName()
-    {
-        if ($this->params->is_accumulated == "true")
-            return $this->h_cell * $this->params->num_of_periods;
-        else
-            return $this->h_cell;
-    }
-
-    private function searchAccumulatedNotes($enrollment, $enrollmentByGroup)
-    {
-        foreach ($enrollmentByGroup->subjects as $key => $subject) {
+        foreach ($this->enrollmentByGroup->subjects as $key => $subject) {
             $state = false;
             foreach ($enrollment->accumulatedSubjects as $accumulated) {
                 if ($subject->asignatures_id == $accumulated->asignatures_id) {
                     $value = self::processNote($accumulated->average, 0);
                     $this->setDanger($value, $this->params->middle_point);
                     $valueCell = ROUND($value, 1) == 0 ? '' : ROUND($value, 1);
-                    $this->Cell($this->size_column, $this->h_cell, $valueCell, 1, 0, 'C', true);
+                    $this->drawCellWithDynamic($valueCell);
                     $this->setTextBlack();
                     $state = true;
                 }
             }
             if (!$state)
-                $this->Cell($this->size_column, $this->h_cell, '', 1, 0, 'C', true);
+                $this->drawCellWithDynamic('');
 
         }
         $this->ln();
     }
 
-    private function searchRequiredNotes($enrollment, $enrollmentByGroup)
+    private function searchRequiredNotes($enrollment)
     {
-        foreach ($enrollmentByGroup->subjects as $key => $subject) {
+        foreach ($this->enrollmentByGroup->subjects as $key => $subject) {
             $state = false;
             foreach ($enrollment->requiredValuation as $required) {
                 if ($subject->asignatures_id == $required->asignatures_id) {
                     $value = self::processNote($required->required, 0);
                     $valueCell = ROUND($value, 1) == 0 ? '' : ROUND($value, 1);
-                    $this->Cell($this->size_column, $this->h_cell, $valueCell, 1, 0, 'C', true);
+                    $this->drawCellWithDynamic($valueCell);
                     $state = true;
                 }
             }
             if (!$state)
-                $this->Cell($this->size_column, $this->h_cell, '', 1, 0, 'C', true);
+                $this->drawCellWithDynamic('');
 
         }
         $this->ln();
     }
+
+    # HELPERS *********************
+    private static function fullNameEnrollment($enrollment)
+    {
+        return substr($enrollment->student_last_name . ' ' . $enrollment->student_name, 0, 29);
+    }
+
+    private function getRowNumber($number)
+    {
+        //
+        if ($this->params->is_accumulated == "true")
+            return $this->params->num_of_periods + $number;
+        else
+            return 1;
+    } // END CONSOLIDATED -----------------------------------------------------
+
+
+
+
+
+
+    # REPORT FINAL *********************************** REPORT FINAL ******************************
+    protected function initReportFinal()
+    {
+        $cells = array(
+            (object)array('title' => 'No.', 'width' => 5),
+            (object)array('title' => 'Nombres y Apellidos.', 'width' => 47),
+            (object)array('title' => 'TAV.', 'width' => 8),
+            (object)array('title' => 'PUESTO.', 'width' => 10),
+            (object)array('title' => 'PGG.', 'width' => 8),
+        );
+        $this->setTableCells($cells);
+    }
+
+    private function reportFinalTitle()
+    {
+        $this->setNumberDynamicTitles(count($this->enrollmentByGroup->subjects));
+        //Encabezado de asignaturas
+        foreach ($this->enrollmentByGroup->subjects as $subject) {
+            $this->drawCellWithDynamic($subject->abbreviation);
+        }
+        $this->ln();
+    }
+
+    # Table REPORT FINAL BODY
+    private function reportFinalBody()
+    {
+        $this->initReportFinal();
+        $this->setStatisticalTitle("REPORTE FINAL", "");
+        if (count($this->enrollmentByGroup->subjects)) {
+            $this->setConfig();
+            $this->reportFinalContent();
+        }
+    }
+
+    private function reportFinalContent()
+    {
+        self::$number = 2;
+
+        foreach ($this->enrollmentByGroup->enrollments as $key => $enrollment) {
+            $this->drawCellWithIndex($key + 1, 0, self::$number);
+            $this->drawCellWithIndex(self::fullNameEnrollment($enrollment), 1, self::$number);
+            $this->drawCellWithIndex($enrollment->tav, 2, self::$number);
+            $this->drawCellWithIndex($enrollment->rating, 3, self::$number);
+            $average = $enrollment->accumulatedAverage;
+            $this->drawCellWithIndex(ROUND($average, 1),4, self::$number);
+            $this->searchAccumulatedNotes($enrollment);
+            $this->searchFinalReport($enrollment);
+
+
+        }
+    }
+
+    private function searchFinalReport($enrollment)
+    {
+        $this->SetX(88);
+        foreach ($this->enrollmentByGroup->subjects as $key => $subject) {
+            $state = false;
+            foreach ($enrollment->finalReport as $final) {
+                if ($subject->asignatures_id == $final->asignatures_id) {
+                    $value = self::processNote($final->value, 0);
+                    $this->setDanger($value, $this->params->middle_point);
+                    $this->drawCellWithDynamic($final->report);
+                    $this->setTextBlack();
+                    $state = true;
+                }
+            }
+            if (!$state)
+                $this->drawCellWithDynamic('');
+
+        }
+        $this->ln();
+    }
+
+
+    # HELPERS **********************************
 
     private static function processNote($note, $overcoming)
     {
@@ -305,44 +351,85 @@ class ExportPdf extends Fpdi
 
     }
 
-    private function CellEnrollmentName($enrollment)
+
+
+
+
+
+
+
+    # REPORT FILTER *********************************** REPORT FILTER ******************************
+    protected function initReportFilter()
     {
-        $this->Cell($this->w_name, $this->getHeightColumnName(), self::transformFullName($enrollment), 1, 0, 'L');
+        $cells = array(
+            (object)array('title' => 'No.', 'width' => 5),
+            (object)array('title' => 'Nombres y Apellidos.', 'width' => 56),
+            (object)array('title' => 'TAV.', 'width' => 14),
+            (object)array('title' => 'PUESTO.', 'width' => 14),
+            (object)array('title' => 'PGG.', 'width' => 14),
+            (object)array('title' => 'ASIGNATURAS.', 'width' => 130),
+        );
+        $this->setTableCells($cells);
     }
 
-    private static function transformFullName($enrollment)
+    private function reportFilterTitle()
     {
-        return substr(utf8_decode($enrollment->student_last_name . ' ' . $enrollment->student_name), 0, 29);
+        $this->setNumberDynamicTitles(1);
+        $this->drawCellWithDynamic("VALORACIÓN");
+        $this->ln();
     }
 
-    private function getSizeColumn($enrollmentByGroup)
-    {
-        if (count($enrollmentByGroup->subjects))
-            return ($this->page_width - $this->size_column_fixed) / count($enrollmentByGroup->subjects);
-        else
-            return ($this->page_width - $this->size_column_fixed);
+    private function reportFilterBody(){
+        $this->initReportFilter();
+        $result= ['0'=>'IGUAL A', '1' => 'MYOR/IGUAL A', '2' => 'MEN/IGUAL A'];
+        $condition = $result[$this->params->condition];
+        $condition_number = $this->params->condition_number;
+
+        $this->setStatisticalTitle("INFORME FINAL REPROBADOS | ".$condition." ".$condition_number, "");
+        if (count($this->enrollmentByGroup->subjects)) {
+            $this->setConfig();
+            $this->reportFilterContent();
+        }
     }
 
-    private function getSizeMaxColumnFixed()
+    private function reportFilterContent()
     {
-        $this->size_column_fixed =
-            $this->w_num + $this->w_per + $this->w_tav + $this->w_pgg + $this->w_rat + $this->w_name + $this->w_margin;
+
+
+        foreach ($this->enrollmentByGroup->enrollments as $key => $enrollment) {
+
+            switch ($this->params->condition){
+                case "0":
+                    if($enrollment->failedSubjects->number == $this->params->condition_number)
+                        $this->contentFiltered($enrollment, $key);
+                    break;
+                case "1":
+                    if($enrollment->failedSubjects->number >= $this->params->condition_number)
+                        $this->contentFiltered($enrollment, $key);
+                    break;
+                default:
+                    if($enrollment->failedSubjects->number <= $this->params->condition_number && $enrollment->failedSubjects->number >0 )
+                        $this->contentFiltered($enrollment, $key);
+            }
+        }
     }
 
-    private function transformMay($string)
-    {
-        return strtoupper($this->hideTilde($string));
+    private function contentFiltered($enrollment, $key){
+        self::$number = $enrollment->failedSubjects->number;
+        $this->drawCellWithIndex($key + 1, 0, self::$number);
+        $this->drawCellWithIndex(self::fullNameEnrollment($enrollment), 1, self::$number);
+        $this->drawCellWithIndex($enrollment->failedSubjects->number, 2, self::$number);
+        $this->drawCellWithIndex($enrollment->rating, 3, self::$number);
+        $average = $enrollment->accumulatedAverage;
+        $this->drawCellWithIndex(ROUND($average, 1),4, self::$number);
+        foreach ($enrollment->failedSubjects->subjects as $key_ => $subject){
+            if($key_ != 0){
+                $this->SetX(113);
+            }
+            $this->drawCellWithIndex($subject->name,5);
+            $this->drawCellWithDynamic(ROUND($subject->average, 1));
+            $this->ln();
+        }
     }
-
-    public function Footer()
-    {
-        // Go to 1.5 cm from bottom
-        $this->SetY(-15);
-        // Select Arial italic 8
-        $this->SetFont('Arial', 'I', 8);
-        // Print centered page number
-        $this->Cell(0, 4, utf8_decode('Atenea - Página ' . $this->PageNo()), 0, 0, 'C');
-    }
-
 
 }

@@ -31,8 +31,8 @@ class GenerateRating
         foreach ($arrayStudentAverage as $key => $value) {
             $vectorStudent = array(
                 'id' => $value->id,
-                'last_name' => $value->last_name,
-                'name' => $value->name,
+                'last_name' => $value->student_last_name,
+                'name' => $value->student_name,
                 'average' => $value->average,
                 'tav' => $value->tav
             );

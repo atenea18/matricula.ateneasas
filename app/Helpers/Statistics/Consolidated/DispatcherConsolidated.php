@@ -31,6 +31,10 @@ class DispatcherConsolidated
                 case 'excel':
                     $this->response = 'excel';
                     break;
+                case 'filter-report':
+                    $filter = new FilReportConsolidated($params);
+                    $this->response = $filter->getProcessedRequest();
+                    break;
 
                 default:
                     $json = new JsonConsolidated($params);

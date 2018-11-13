@@ -12,8 +12,7 @@ namespace App\Helpers\Statistics\Consolidated;
 use App\Group;
 use App\Helpers\Statistics\Consolidated\Export\ExportPdf;
 use App\Helpers\Statistics\ParamsStatistics;
-use Illuminate\Support\Facades\App;
-use setasign\Fpdi\Fpdi;
+
 
 class PdfConsolidated extends AbstractConsolidated
 {
