@@ -431,33 +431,5 @@ class ExportPdf extends AbstractPDF
             $this->ln();
         }
     }
-
-
-    /*
-     public function __construct(string $orientation = 'Landscape', string $size = 'Letter', $enrollments_by_groups, ParamsStatistics $params)
-    {
-        $this->params = $params;
-        $this->enrollments_by_groups = $enrollments_by_groups;
-
-        $this->getSizeMaxColumnFixed();
-        parent::__construct($orientation, 'mm', $size);
-
-    }
-
-    private static function transformFullName($enrollment)
-    {
-        return substr(utf8_decode($enrollment->student_last_name . ' ' . $enrollment->student_name), 0, 29);
-    }
-
-    private function getSizeColumn($enrollmentByGroup)
-    {
-        if (count($enrollmentByGroup->subjects))
-            return ($this->page_width - $this->size_column_fixed) / count($enrollmentByGroup->subjects);
-        else
-            return ($this->page_width - $this->size_column_fixed);
-    }
-
-    */
-
-
+    
 }
