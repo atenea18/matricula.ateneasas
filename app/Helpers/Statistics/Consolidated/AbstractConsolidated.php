@@ -374,11 +374,13 @@ abstract class AbstractConsolidated
                 }
 
             }
+            /*
             if ($valueRequired > $this->final_point)
                 $valueRequired = 0;
 
             if ($valueRequired < 0)
                 $valueRequired = 0;
+            */
 
             $data = (object)array(
                 'required' => round($valueRequired, 1),

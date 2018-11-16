@@ -23,50 +23,6 @@ class AbstractReprobated extends AbstractConsolidated
 
     }
 
-    /*
-    public function getProcessedRequest()
-    {
-        parent::getProcessedRequest();
-
-        foreach ($this->vectorEnrollments as $enrollment) {
-            foreach ($this->vectorPeriods as &$vectorPeriod) {
-                foreach ($enrollment->evaluatedPeriods as $period) {
-                    if ($vectorPeriod->periods_id == $period['period_id']) {
-                        $asignatures = [];
-                        foreach ($period['notes'] as $note) {
-                            $value_note = Utils::process_note($note->value, $note->overcoming);
-                            if ( $value_note > 0 && $value_note < $this->middle_point) {
-                                array_push($asignatures, $note);
-                            }
-                        }
-
-                    }
-                }
-                $enrollment_repro = (object)array(
-                    'enrollment_id' => $enrollment->id,
-                    'student_name' => $enrollment->student_name,
-                    'student_last_name' => $enrollment->student_last_name,
-                    'accumulatedAverage' => $enrollment->accumulatedAverage,
-                    'accumulatedSubjects' => $enrollment->accumulatedSubjects,
-                    'requiredValuation' => $enrollment->requiredValuation,
-                    'asignatures' => $asignatures
-                );
-                if (count($asignatures) > 0) {
-                    if (!isset($vectorPeriod->enrollments)) {
-                        $vectorPeriod->enrollments = [];
-                    }
-                    array_push($vectorPeriod->enrollments, $enrollment_repro);
-                }
-            }
-
-        }
-
-        return $this->vectorPeriods;
-
-    }
-    */
-
-
     public function getProcessedRequest()
     {
         parent::getProcessedRequest();

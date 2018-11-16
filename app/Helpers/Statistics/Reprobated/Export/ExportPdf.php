@@ -186,8 +186,18 @@ class ExportPdf extends Fpdi
                         }
 
                         foreach ($enrollment->requiredValuation as $subject){
-                            if($note->asignatures_id == $subject->asignatures_id)
-                                $required = ROUND($subject->required, 1) ;
+                            if($note->asignatures_id == $subject->asignatures_id){
+                                if($subject->required < $this->params->low_point)
+                                    $required = 'APR';
+                                if($subject->required > $this->params->final_point)
+                                    $required = 'REP';
+                                if($subject->required >= $this->params->low_point && $subject->required <= $this->params->final_point){
+
+                                    $required = ROUND($subject->required, 1) ;
+                                }
+                                $this->setDanger($this->params->final_point, $subject->required);
+                            }
+
                         }
 
 

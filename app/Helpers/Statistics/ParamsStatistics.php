@@ -33,6 +33,7 @@ class ParamsStatistics
 
     public $middle_point = 0;
     public $final_point = 0;
+    public $low_point = 0;
     public $num_of_periods = 0;
     public $period_selected_id = 1;
 
@@ -90,8 +91,9 @@ class ParamsStatistics
         );
 
         //Escala de valoración
-        //$this->minimum_scale_object = ScaleEvaluation::getMinScale($this->institution_object);
-        //$this->middle_point = $this->minimum_scale_object->rank_start += 0.1;
+        $this->minimum_scale_object = ScaleEvaluation::getMinScale($this->institution_object);
+        $this->low_point = $this->minimum_scale_object->rank_start;
+
         $this->minimum_scale_object = ScaleEvaluation::getBasicScale($this->institution_object);
         $this->middle_point = $this->minimum_scale_object->rank_start;
 

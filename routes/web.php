@@ -114,6 +114,10 @@ Route::group(['prefix' => 'ajax'], function () {
     Route::post('/NoveltyStudents/add', 'NewsController@registerEnrollments');
     Route::post('/NoveltyStudents/delete', 'NewsController@deleteEnrollment');
 
+    //Final Report -------------
+    Route::post('/FinalReport/dispatchers', 'FinalReportController@dispatchers');
+    //Route::post('/FinalReport/asignatures', 'FinalReportController@asignatures');
+
     //Store Vue.js
     Route::get('/allgrades', 'GradeController@getAllGrades');
 

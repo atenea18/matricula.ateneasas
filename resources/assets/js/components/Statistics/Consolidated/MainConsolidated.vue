@@ -124,7 +124,7 @@
                     whoTriggered == 'areas' ||
                     whoTriggered == 'excel' ||
                     whoTriggered == 'componentManagerGroupSelect' ||
-                    whoTriggered == 'filter-report') {
+                    whoTriggered == 'save-report-final') {
                     this.managerQueryForFilterConsolidated(objectMenuStatistics)
                 }
                 console.log(objectMenuStatistics)
@@ -145,7 +145,7 @@
                     is_filter_all_groups: objectMenuStatistics.filter.isAllGroups,
                     is_accumulated: objectMenuStatistics.filter.isAcumulatedPeriod,
                     is_reprobated: objectMenuStatistics.filter.isReprobated,
-                    is_filter_report:  objectMenuStatistics.filter.isFilterReport,
+                    is_filter_report: objectMenuStatistics.filter.isFilterReport,
                     is_report: objectMenuStatistics.filter.isReport,
 
                     url_subjects: '',
@@ -169,7 +169,6 @@
 
             // Método que trae todos los datos sobre el consolidado a consultar
             dispatcherConsolidated(params) {
-
                 switch (params.type_response) {
                     case 'pdf':
                         this.executePDF(params)
@@ -177,8 +176,12 @@
                     case 'excel':
                         toastr.success('En desarrollo...')
                         break;
-                    case 'filter-report':
-                        this.executeFilterReport(params)
+                    case 'save-report-final':
+                        this.executeReport(params)
+                        break;
+                    case 'report-final':
+                        console.log('hi')
+                        this.executeReport(params)
                         break;
                     default:
                         this.executeDefault(params)
@@ -208,19 +211,33 @@
                     this.is_first = true
                 })
             },
-            executeFilterReport(params) {
+            executeReport(params) {
                 this.state = false
                 this.is_first = false
-                axios.get(params.url_consolidated, {params}).then(res => {
-                    // Cuando la variable local tiene la información, le asignamos valor true a la variable
-                    // state, para que renderice el componente table-consolidated
-                    if (res.status == 200) {
-                        console.log(res.data)
-                        this.state = true
-                    }
-                }).catch(error => {
-                    this.is_first = true
-                })
+
+                let data = {
+                    'areas': params.is_filter_areas,
+                    'condition': params.condition,
+                    'trigger': params.type_response,
+                    'condition_number': params.condition_number,
+                    'is_report_final': params.is_filter_report,
+                    'is_report_asignatures': params.is_report,
+                    'asignatures': this.objectToTableConsolidated.asignatures,
+                    'enrollments': this.objectToTableConsolidated.enrollments,
+                }
+
+                let _this = this
+                axios.post('/ajax/FinalReport/dispatchers', {data})
+                    .then(response => {
+                        if (response.status == 200) {
+                            _this.state = true
+                            toastr.success('Operación exitosa..!')
+                            console.log(response.data)
+                        }
+                    })
+                    .catch(function (error) {
+                        _this.is_first = true
+                    });
             },
         },
         destroyed() {
