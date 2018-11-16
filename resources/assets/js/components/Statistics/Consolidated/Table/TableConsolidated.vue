@@ -85,6 +85,11 @@
             this.$store.state.stateScale.scales.forEach(element => {
                 if (element.words_expressions_id == 4) {
                     this.$store.state.minScale = element.rank_end
+                    this.$store.state.stateScale.min_scale = element.rank_start
+                }
+
+                if (element.words_expressions_id == 1) {
+                    this.$store.state.stateScale.max_scale = element.rank_end
                 }
             })
         },
@@ -108,8 +113,11 @@
                         average = subjects.average.toFixed(1);
                     }
                 })
+                if (average <= this.$store.state.minScale) {
+                    return '<span style="color:red;">' + average + '</span>'
+                }
 
-                return average!=0?average:'';
+                return average != 0 ? average : '';
             },
             getRequired(enrollment, asignature) {
                 let average = 0;
@@ -118,8 +126,13 @@
                         average = subjects.required.toFixed(1);
                     }
                 })
-
-                return average!=0?average:'';
+                if (average > this.$store.state.stateScale.max_scale) {
+                    return '<span style="color:red;">REP</span>'
+                }
+                if (average < this.$store.state.stateScale.min_scale) {
+                    return "APR"
+                }
+                return average != 0 ? average : '';
             },
         }
     }

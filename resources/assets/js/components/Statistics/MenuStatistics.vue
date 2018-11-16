@@ -84,7 +84,7 @@
                             !SearchFilterObject.isReprobated">
                         <input type="checkbox"
                                v-model="SearchFilterObject.isReport"
-                               @change="setEventProperties('report','check')"/>
+                               @change="setEventProperties('report-asignatures','check')"/>
                         Informe final
                     </label>
                 </div>
@@ -127,7 +127,7 @@
                 <!-- Reprobar Filtrados -->
                 <a href="#" class="btn btn-danger btn-sm"
                    v-if="currentView=='main-consolidated' && SearchFilterObject.isFilterReport"
-                   @click="setEventProperties('filter-report','click')">
+                   @click="setEventProperties('save-report-final','click')">
                     <i class="far fa-file-excel fa-lg fa-2x"></i>
                     REPROBAR FILTRADOS
                 </a>
@@ -240,8 +240,12 @@
                         whoTriggered: "componentManagerGroupSelect",
                     }
 
-                    if (objectManagerGroup.whoTriggered == "period" || objectManagerGroup.whoTriggered == "reprobated-final") {
+                    if (objectManagerGroup.whoTriggered == "period" || objectManagerGroup.whoTriggered == "default") {
                         eventProperties.whoTriggered = "defalult"
+                    }
+
+                    if (objectManagerGroup.whoTriggered == "save-report-asignatures") {
+                        eventProperties.whoTriggered = "save-report-final"
                     }
 
                     this.initObjectComponentMain(eventProperties)

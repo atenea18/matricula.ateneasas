@@ -211,8 +211,16 @@ class ExportPdf extends AbstractPDF
             $state = false;
             foreach ($enrollment->requiredValuation as $required) {
                 if ($subject->asignatures_id == $required->asignatures_id) {
-                    $value = self::processNote($required->required, 0);
-                    $valueCell = ROUND($value, 1) == 0 ? '' : ROUND($value, 1);
+                    $valueCell = 0;
+                    if($required->required < $this->params->low_point)
+                        $valueCell = 'APR';
+                    if($required->required > $this->params->final_point)
+                        $valueCell = 'REP';
+                    if($required->required >= $this->params->low_point && $required->required <= $this->params->final_point){
+                        $value = self::processNote($required->required, 0);
+                        $valueCell = ROUND($value, 1) == 0 ? '' : ROUND($value, 1);
+                    }
+                    $this->setDanger($this->params->final_point, $required->required);
                     $this->drawCellWithDynamic($valueCell);
                     $state = true;
                 }

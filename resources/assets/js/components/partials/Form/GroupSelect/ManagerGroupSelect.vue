@@ -14,7 +14,7 @@
         </div>
         <div class="col-md-4" v-show="currentView =='main-consolidated' && params.isReport && !params.isAreas">
             <div class="form-group" style="padding-top:24px;">
-                <a href="#" class="btn btn-success btn-sm btn-block">
+                <a href="#" @click="emitEvent('save-report-asignatures')" class="btn btn-success btn-sm btn-block">
                     GUARDAR INFORME DE ASIGNATURAS
                 </a>
             </div>
@@ -23,7 +23,7 @@
         <div class="col-md-2" v-show="currentView =='main-consolidated' && params.isFilterReport">
             <div class="form-group padding-at">
                 <label for="condition">Condición</label>
-                <select @change="emitEvent" id="condition" class="form-control" v-model="objectToManagerGroupSelect.condition">
+                <select @change="emitEvent('default')" id="condition" class="form-control" v-model="objectToManagerGroupSelect.condition">
                     <option value="0"> A =  </option>
                     <option value="1"> A >= </option>
                     <option value="2"> A <= </option>
@@ -34,7 +34,7 @@
         <div class="col-md-2" v-show="currentView =='main-consolidated' && params.isFilterReport">
             <div class="form-group padding-at">
                 <label for="condition_number">Cantidad</label>
-                <select @change="emitEvent" id="condition_number" class="form-control" v-model="objectToManagerGroupSelect.condition_number">
+                <select @change="emitEvent('default')" id="condition_number" class="form-control" v-model="objectToManagerGroupSelect.condition_number">
                     <option v-for="num in 6" :value="num">{{num}}</option>
                 </select>
             </div>
@@ -137,8 +137,8 @@
                     this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
                 })
             },
-            emitEvent(){
-                this.objectToManagerGroupSelect.whoTriggered = "reprobated-final"
+            emitEvent(text){
+                this.objectToManagerGroupSelect.whoTriggered = text
                 this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
             }
         },
