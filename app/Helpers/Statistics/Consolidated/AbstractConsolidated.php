@@ -361,13 +361,17 @@ abstract class AbstractConsolidated
                     $missingPeriod = $this->num_of_periods - count($rowAccumulated->periods);
                     $divide = 0;
 
-
                     if ($missingPeriod > 0 && $missingPeriod < $this->num_of_periods) {
                         $divide = $rest / $missingPeriod;
                         $index = count($rowAccumulated->periods);
 
                         $percent = $this->vectorPeriods[$index]->percent / 100;
                         $valueRequired = $divide / $percent;
+                    }
+
+                    if($missingPeriod == 0){
+                        if($rowAccumulated->average >= $this->middle_point)
+                            $valueRequired = -1000;
                     }
 
 
