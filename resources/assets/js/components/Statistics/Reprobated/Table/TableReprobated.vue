@@ -122,7 +122,7 @@
                 if (average > this.$store.state.stateScale.max_scale) {
                     return '<span style="color:red;">REP</span>'
                 }
-                if (average < this.$store.state.stateScale.min_scale) {
+                if (average < 0) {
                     return "APR"
                 }
                 return average != 0 ? average.toFixed(1) : '';

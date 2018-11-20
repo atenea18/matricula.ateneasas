@@ -120,7 +120,7 @@
                 return average != 0 ? average : '';
             },
             getRequired(enrollment, asignature) {
-                let average = 0;
+                let average = 1000;
                 enrollment.requiredValuation.forEach(subjects => {
                     if (subjects.asignatures_id == asignature.asignatures_id) {
                         average = subjects.required.toFixed(1);
@@ -129,7 +129,7 @@
                 if (average > this.$store.state.stateScale.max_scale) {
                     return '<span style="color:red;">REP</span>'
                 }
-                if (average < this.$store.state.stateScale.min_scale) {
+                if (average < 0) {
                     return "APR"
                 }
                 return average != 0 ? average : '';

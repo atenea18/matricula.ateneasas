@@ -197,10 +197,7 @@ class ExportPdf extends Fpdi
                                 }
                                 $this->setDanger($this->params->final_point, $subject->required);
                             }
-
                         }
-
-
                         $this->Cell($this->w_accum, $this->h_cell, $accumulated, 1, 0, 'C',$is_fill);
                         $this->Cell($this->w_required, $this->h_cell, $required, 1, 0, 'C',$is_fill);
                         $this->ln();
