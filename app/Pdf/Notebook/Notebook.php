@@ -688,8 +688,10 @@ class Notebook extends Fpdf
             } else if ($period['period_id'] == $this->data['current_period']->periods_id) {
 
                 $vg_period_previous = $this->getVG($periods);
-                if ($vg_period_previous > 0)
+                if ($vg_period_previous > 0 && $period_tobe_evaluated > 0){
                     $vra = (($min_basic - $vg_period_previous) / $period_tobe_evaluated) / ($period['percent'] / 100);
+                }
+                    
 
             }
         }
@@ -707,6 +709,13 @@ class Notebook extends Fpdf
 
         if ($vra > $max_super || $vra < 0)
             return '';
+            
+        if ($period_tobe_evaluated == 0){
+            if($vg_period_previous >= $min_basic)
+                return 'APR';
+            else
+                return 'REP';
+        }
 
 
         return round($vra, 1);
