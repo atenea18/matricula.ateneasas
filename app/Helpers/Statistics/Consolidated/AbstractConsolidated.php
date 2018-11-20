@@ -351,7 +351,7 @@ abstract class AbstractConsolidated
     private function calculateRequiredValuation($enrollment, &$required)
     {
         foreach ($this->vectorSubjects as $subject) {
-            $valueRequired = 0;
+            $valueRequired = 1000;
 
 
             foreach ($enrollment->accumulatedSubjects as $rowAccumulated) {
@@ -374,13 +374,6 @@ abstract class AbstractConsolidated
                 }
 
             }
-            /*
-            if ($valueRequired > $this->final_point)
-                $valueRequired = 0;
-
-            if ($valueRequired < 0)
-                $valueRequired = 0;
-            */
 
             $data = (object)array(
                 'required' => round($valueRequired, 1),

@@ -40,11 +40,11 @@ class ExportPdf extends AbstractPDF
 
     protected function drawTableTitlesDynamic()
     {
-        if($this->params->is_report != "true" && $this->params->is_filter_report != "true" )
+        if ($this->params->is_report != "true" && $this->params->is_filter_report != "true")
             $this->consolidatedTitle();
-        if($this->params->is_report == "true")
+        if ($this->params->is_report == "true")
             $this->reportFinalTitle();
-        if($this->params->is_filter_report == "true" )
+        if ($this->params->is_filter_report == "true")
             $this->reportFilterTitle();
     }
 
@@ -53,11 +53,11 @@ class ExportPdf extends AbstractPDF
         foreach ($this->enrollments_by_groups as $enrollmentByGroup) {
             $this->enrollmentByGroup = $enrollmentByGroup;
 
-            if($this->params->is_report != "true" && $this->params->is_filter_report != "true" )
+            if ($this->params->is_report != "true" && $this->params->is_filter_report != "true")
                 $this->consolidatedBody();
-            if($this->params->is_report == "true")
+            if ($this->params->is_report == "true")
                 $this->reportFinalBody();
-            if($this->params->is_filter_report == "true" )
+            if ($this->params->is_filter_report == "true")
                 $this->reportFilterBody();
 
         }
@@ -138,12 +138,12 @@ class ExportPdf extends AbstractPDF
             $this->drawCell('Acumulados', 54);
             $this->drawCellWithIndex($enrollment->tav, 3);
             $this->drawCellWithIndex($enrollment->rating, 4);
-            $this->drawCell(ROUND($average, 1),8);
+            $this->drawCell(ROUND($average, 1), 8);
             $this->searchAccumulatedNotes($enrollment);
 
             //requiredValuation
             $this->SetX(15);
-            $this->drawCell('Valoración Requerida',80);
+            $this->drawCell('Valoración Requerida', 80);
             $this->searchRequiredNotes($enrollment);
         }
     }
@@ -211,17 +211,19 @@ class ExportPdf extends AbstractPDF
             $state = false;
             foreach ($enrollment->requiredValuation as $required) {
                 if ($subject->asignatures_id == $required->asignatures_id) {
-                    $valueCell = 0;
-                    if($required->required < $this->params->low_point)
-                        $valueCell = 'APR';
-                    if($required->required > $this->params->final_point)
+
+                    $valueCell = $required->required;
+                    if ($required->required > $this->params->final_point)
                         $valueCell = 'REP';
-                    if($required->required >= $this->params->low_point && $required->required <= $this->params->final_point){
+                    if ($required->required < 0)
+                        $valueCell = 'APR';
+                    if ($required->required >= $this->params->low_point && $required->required <= $this->params->final_point) {
                         $value = self::processNote($required->required, 0);
                         $valueCell = ROUND($value, 1) == 0 ? '' : ROUND($value, 1);
                     }
                     $this->setDanger($this->params->final_point, $required->required);
                     $this->drawCellWithDynamic($valueCell);
+                    $this->setTextBlack();
                     $state = true;
                 }
             }
@@ -246,10 +248,6 @@ class ExportPdf extends AbstractPDF
         else
             return 1;
     } // END CONSOLIDATED -----------------------------------------------------
-
-
-
-
 
 
     # REPORT FINAL *********************************** REPORT FINAL ******************************
@@ -296,7 +294,7 @@ class ExportPdf extends AbstractPDF
             $this->drawCellWithIndex($enrollment->tav, 2, self::$number);
             $this->drawCellWithIndex($enrollment->rating, 3, self::$number);
             $average = $enrollment->accumulatedAverage;
-            $this->drawCellWithIndex(ROUND($average, 1),4, self::$number);
+            $this->drawCellWithIndex(ROUND($average, 1), 4, self::$number);
             $this->searchAccumulatedNotes($enrollment);
             $this->searchFinalReport($enrollment);
 
@@ -360,12 +358,6 @@ class ExportPdf extends AbstractPDF
     }
 
 
-
-
-
-
-
-
     # REPORT FILTER *********************************** REPORT FILTER ******************************
     protected function initReportFilter()
     {
@@ -387,13 +379,14 @@ class ExportPdf extends AbstractPDF
         $this->ln();
     }
 
-    private function reportFilterBody(){
+    private function reportFilterBody()
+    {
         $this->initReportFilter();
-        $result= ['0'=>'IGUAL A', '1' => 'MYOR/IGUAL A', '2' => 'MEN/IGUAL A'];
+        $result = ['0' => 'IGUAL A', '1' => 'MYOR/IGUAL A', '2' => 'MEN/IGUAL A'];
         $condition = $result[$this->params->condition];
         $condition_number = $this->params->condition_number;
 
-        $this->setStatisticalTitle("INFORME FINAL REPROBADOS | ".$condition." ".$condition_number, "");
+        $this->setStatisticalTitle("INFORME FINAL REPROBADOS | " . $condition . " " . $condition_number, "");
         if (count($this->enrollmentByGroup->subjects)) {
             $this->setConfig();
             $this->reportFilterContent();
@@ -406,35 +399,36 @@ class ExportPdf extends AbstractPDF
 
         foreach ($this->enrollmentByGroup->enrollments as $key => $enrollment) {
 
-            switch ($this->params->condition){
+            switch ($this->params->condition) {
                 case "0":
-                    if($enrollment->failedSubjects->number == $this->params->condition_number)
+                    if ($enrollment->failedSubjects->number == $this->params->condition_number)
                         $this->contentFiltered($enrollment, $key);
                     break;
                 case "1":
-                    if($enrollment->failedSubjects->number >= $this->params->condition_number)
+                    if ($enrollment->failedSubjects->number >= $this->params->condition_number)
                         $this->contentFiltered($enrollment, $key);
                     break;
                 default:
-                    if($enrollment->failedSubjects->number <= $this->params->condition_number && $enrollment->failedSubjects->number >0 )
+                    if ($enrollment->failedSubjects->number <= $this->params->condition_number && $enrollment->failedSubjects->number > 0)
                         $this->contentFiltered($enrollment, $key);
             }
         }
     }
 
-    private function contentFiltered($enrollment, $key){
+    private function contentFiltered($enrollment, $key)
+    {
         self::$number = $enrollment->failedSubjects->number;
         $this->drawCellWithIndex($key + 1, 0, self::$number);
         $this->drawCellWithIndex(self::fullNameEnrollment($enrollment), 1, self::$number);
         $this->drawCellWithIndex($enrollment->failedSubjects->number, 2, self::$number);
         $this->drawCellWithIndex($enrollment->rating, 3, self::$number);
         $average = $enrollment->accumulatedAverage;
-        $this->drawCellWithIndex(ROUND($average, 1),4, self::$number);
-        foreach ($enrollment->failedSubjects->subjects as $key_ => $subject){
-            if($key_ != 0){
+        $this->drawCellWithIndex(ROUND($average, 1), 4, self::$number);
+        foreach ($enrollment->failedSubjects->subjects as $key_ => $subject) {
+            if ($key_ != 0) {
                 $this->SetX(113);
             }
-            $this->drawCellWithIndex($subject->name,5);
+            $this->drawCellWithIndex($subject->name, 5);
             $this->drawCellWithDynamic(ROUND($subject->average, 1));
             $this->ln();
         }
