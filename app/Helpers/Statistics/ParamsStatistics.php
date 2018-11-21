@@ -9,6 +9,7 @@
 namespace App\Helpers\Statistics;
 
 
+use App\FinalReportAsignature;
 use App\Group;
 use App\Institution;
 use App\ScaleEvaluation;
@@ -47,6 +48,7 @@ class ParamsStatistics
     public $vectorSubjects = [];
     public $vectorEnrollments = [];
     public $vectorScales = [];
+    public $report_asignatures = [];
 
 
     public function __construct($request)
@@ -106,6 +108,9 @@ class ParamsStatistics
         //Periodos
         $this->vectorPeriods = Workingday::getPeriodsByGroup($this->institution_object->id,$this->group_object->working_day_id);
         $this->num_of_periods = count($this->vectorPeriods);
+
+        //Reporte Asignaturas
+        $this->report_asignatures = FinalReportAsignature::getEnrollmentsByGroup($this->group_object->id);
 
     }
 

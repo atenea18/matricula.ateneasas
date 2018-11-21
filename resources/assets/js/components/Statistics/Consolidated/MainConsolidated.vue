@@ -124,7 +124,8 @@
                     whoTriggered == 'areas' ||
                     whoTriggered == 'excel' ||
                     whoTriggered == 'componentManagerGroupSelect' ||
-                    whoTriggered == 'save-report-final') {
+                    whoTriggered == 'save-report-final' ||
+                    whoTriggered == 'check-filter-report') {
                     this.managerQueryForFilterConsolidated(objectMenuStatistics)
                 }
                 console.log(objectMenuStatistics)

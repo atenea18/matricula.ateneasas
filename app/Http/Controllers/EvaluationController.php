@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Asignature;
+use App\FinalReportAsignature;
 use App\Grade;
 use App\Group;
 use App\GroupPensum;
@@ -44,7 +45,7 @@ class EvaluationController extends Controller
     public function getCollectionsNotes(Request $request)
     {
         $enrollments = Group::enrollmentsByGroup($this->institution->id, $request->group_id);
-
+        //dd($report_asignatures);
         $notes = DB::table('notes')
             ->select('enrollment.id as enrollment_id', 'notes.value', 'notes.overcoming', 'notes.id as notes_id',
                 'notes.notes_parameters_id', 'notes_parameters.evaluation_parameter_id')
@@ -121,7 +122,7 @@ class EvaluationController extends Controller
             ->where('evaluation_periods.periods_id', '=', $request->period_id)
             ->get();
 
-        //dd($no_attendance);
+
 
         #representa una lista de estudiantes con sus notas existente
         $collection = [];
@@ -146,6 +147,14 @@ class EvaluationController extends Controller
                 }
             }
 
+            if (count($report_asignatures) >= 1) {
+                foreach ($report_asignatures as $key_report => $report) {
+                    if ($enrollment->id == $report->enrollment_id) {
+                        $enrollment->report_asignature = $report;
+                        unset($report_asignatures[$key_report]);
+                    }
+                }
+            }
 
             foreach ($notes_final as $keyNotes => $note) {
                 if ($enrollment->id == $note->enrollment_id) {
