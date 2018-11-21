@@ -52,12 +52,18 @@
             },
             getAccumulated(enrollment, asignature) {
                 let average = 0;
-                enrollment.accumulatedSubjects.forEach(subjects => {
-                    if (subjects.asignatures_id == asignature.asignatures_id) {
-                        average = subjects.average.toFixed(1);
+                enrollment.finalReport.forEach(report_subject => {
+                    if (report_subject.asignatures_id == asignature.asignatures_id) {
+                        let average_ = report_subject.value.toFixed(1);
+                        let overcoming = report_subject.overcoming;
+                        if (typeof overcoming == "number" && overcoming > 0) {
+                            average = '<span>'+average_+" / "+overcoming.toFixed(1)+'</span>'
+                        }else{
+                            average = average_;
+                        }
                     }
                 })
-                return average != 0 ? average : '';
+                return average;
             },
             getReport(enrollment, asignature) {
                 let report = "";

@@ -164,15 +164,19 @@ class ExportPdf extends AbstractPDF
             $state = false;
             foreach ($notes as $note) {
                 if ($subject->asignatures_id == $note->asignatures_id) {
-                    $value = self::processNote($note->value, $note->overcoming);
+                    $value = ROUND(self::processNote($note->value, $note->overcoming),1);
+
                     $this->setDanger($value, $this->params->middle_point);
+                    if($note->overcoming){
+                        $value = ROUND($note->overcoming,1) ."/".$value;
+                    }
                     if ($this->params->is_reprobated == "true") {
                         if ($value < $this->params->middle_point && $value > 0)
-                            $this->drawCellWithDynamic(ROUND($value, 1));
+                            $this->drawCellWithDynamic($value);
                         else
                             $this->drawCellWithDynamic('');
                     } else {
-                        $this->drawCellWithDynamic(ROUND($value, 1));
+                        $this->drawCellWithDynamic($value);
                     }
                     $this->setTextBlack();
                     $state = true;
@@ -295,7 +299,7 @@ class ExportPdf extends AbstractPDF
             $this->drawCellWithIndex($enrollment->rating, 3, self::$number);
             $average = $enrollment->accumulatedAverage;
             $this->drawCellWithIndex(ROUND($average, 1), 4, self::$number);
-            $this->searchAccumulatedNotes($enrollment);
+            $this->searchReportNotes($enrollment);
             $this->searchFinalReport($enrollment);
 
 
@@ -309,9 +313,31 @@ class ExportPdf extends AbstractPDF
             $state = false;
             foreach ($enrollment->finalReport as $final) {
                 if ($subject->asignatures_id == $final->asignatures_id) {
-                    $value = self::processNote($final->value, 0);
+                    $value = self::processNote($final->value, $final->overcoming);
                     $this->setDanger($value, $this->params->middle_point);
                     $this->drawCellWithDynamic($final->report);
+                    $this->setTextBlack();
+                    $state = true;
+                }
+            }
+            if (!$state)
+                $this->drawCellWithDynamic('');
+
+        }
+        $this->ln();
+    }
+
+    private function searchReportNotes($enrollment)
+    {
+        $this->SetX(88);
+        foreach ($this->enrollmentByGroup->subjects as $key => $subject) {
+            $state = false;
+            foreach ($enrollment->finalReport as $final) {
+                if ($subject->asignatures_id == $final->asignatures_id) {
+                    $value = self::processNote($final->value, $final->overcoming);
+                    $this->setDanger($value, $this->params->middle_point);
+                    $value_text = $final->overcoming?$final->value."/".$final->overcoming:$value;
+                    $this->drawCellWithDynamic($value_text);
                     $this->setTextBlack();
                     $state = true;
                 }

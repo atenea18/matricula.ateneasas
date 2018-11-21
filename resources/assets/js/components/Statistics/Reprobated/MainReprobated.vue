@@ -92,7 +92,8 @@
                     whoTriggered == 'pdf' ||
                     whoTriggered == 'areas' ||
                     whoTriggered == 'excel' ||
-                    whoTriggered == 'componentManagerGroupSelect') {
+                    whoTriggered == 'componentManagerGroupSelect'
+                    ) {
                     this.managerQueryForFilter(objectMenuStatistics)
                 }
             },

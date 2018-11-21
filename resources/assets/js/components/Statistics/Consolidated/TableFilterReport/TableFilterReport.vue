@@ -9,7 +9,7 @@
                 <th>PUESTO</th>
                 <th>PGG</th>
                 <th>ASIGNATURAS</th>
-                <th>VAL</th>
+                <th>VAL. GUARDADA</th>
             </tr>
             </thead>
             <tbody>
@@ -35,7 +35,9 @@
                             </td>
                         </template>
                         <td>{{failedSubject.name}}</td>
-                        <td>{{failedSubject.average}}</td>
+                        <td>
+                            <span v-html="getValue(failedSubject.average, failedSubject.overcoming)"></span>
+                        </td>
                     </tr>
                 </template>
             </template>
@@ -96,6 +98,13 @@
                         }
                 }
                 return visible
+            },
+            getValue(average, overcoming) {
+                if (overcoming) {
+                    return '<span>' + average + " / " + overcoming + '</span>'
+                }
+                else
+                    return '<span>' + average + '</span>'
             }
 
         }
