@@ -25,11 +25,19 @@
         <td style="width:15px !important;" v-show="!propsData.is_overcoming_report">
             <label-final-note :props-data="{enrollment:enrollment}"/>
         </td>
-        <td v-show="propsData.is_overcoming_report">
-            {{enrollment.report_asignature?enrollment.report_asignature.value:""}}
+
+        <td v-show="propsData.is_overcoming_report" style="">
+            <div style="padding-top:6px !important;padding-left: 3px;padding-right: 2px; text-align: center;">
+                <label>{{enrollment.report_asignature?enrollment.report_asignature.report:""}}</label>
+            </div>
+        </td>
+        <td v-show="propsData.is_overcoming_report" style="">
+            <div style="padding-top:6px !important;padding-left: 3px;padding-right: 2px; text-align: center;">
+                <label>{{enrollment.report_asignature?enrollment.report_asignature.value:""}}</label>
+            </div>
         </td>
         <td v-show="propsData.is_overcoming_report">
-            .
+            <input-overcoming-report :props-data="{enrollment:enrollment}"></input-overcoming-report>
         </td>
         <!--
         <td style="padding-top:9px;width:15px" :class="isFinal?'good':'bad'">
@@ -45,11 +53,13 @@
     import InputNoAttendance from "./Inputs/InputNoAttendance";
     import LabelAverageNote from "./Labels/LabelAverageNote";
     import LabelFinalNote from "./Labels/LabelFinalNote";
+    import InputOvercomingReport from "./Inputs/InputOvercomingReport";
 
     export default {
         name: "row-enrollment",
         props: ['props-data'],
         components: {
+            InputOvercomingReport,
             LabelFinalNote,
             LabelAverageNote,
             InputNoAttendance,
@@ -64,7 +74,9 @@
             }
         },
         created() {
-
+            this.$bus.$on(`EventSaveOverReport:${this.getNameLabelFinal()}@LabelFinalNote`, report => {
+                this.enrollment.report_asignature.report = report.report
+            });
         },
         mounted() {
             this.flowEventsByTypingInput()

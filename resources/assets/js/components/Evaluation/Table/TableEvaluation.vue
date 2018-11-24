@@ -36,9 +36,10 @@
                         {{parameter.parameter}}
                     </th>
                 </template>
-                <th rowspan="2" v-show="!is_overcoming_report"> VAL</th>
-                <th rowspan="2" v-show="is_overcoming_report"> VAL DEF</th>
-                <th rowspan="2" v-show="is_overcoming_report"> VAL REC</th>
+                <th rowspan="2" v-show="!is_overcoming_report" style="text-align: center"> VAL</th>
+                <th rowspan="2" v-show="is_overcoming_report" style="text-align: center"> REPORTE</th>
+                <th rowspan="2" v-show="is_overcoming_report" style="text-align: center"> VAL DEF</th>
+                <th rowspan="2" v-show="is_overcoming_report" style="text-align: center"> VAL REC</th>
             </tr>
             <tr>
                 <!--

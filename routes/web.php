@@ -116,6 +116,7 @@ Route::group(['prefix' => 'ajax'], function () {
 
     //Final Report -------------
     Route::post('/FinalReport/dispatchers', 'FinalReportController@dispatchers');
+    Route::post('/FinalReport/asignatures/overcoming/update', 'FinalReportController@updateOvercomingAsignatures');
     //Route::post('/FinalReport/asignatures', 'FinalReportController@asignatures');
 
     //Store Vue.js
