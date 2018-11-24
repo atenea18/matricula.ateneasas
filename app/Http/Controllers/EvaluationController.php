@@ -146,7 +146,8 @@ class EvaluationController extends Controller
                     }
                 }
             }
-
+            
+            /*
             if (count($report_asignatures) >= 1) {
                 foreach ($report_asignatures as $key_report => $report) {
                     if ($enrollment->id == $report->enrollment_id) {
@@ -155,6 +156,7 @@ class EvaluationController extends Controller
                     }
                 }
             }
+            */
 
             foreach ($notes_final as $keyNotes => $note) {
                 if ($enrollment->id == $note->enrollment_id) {
