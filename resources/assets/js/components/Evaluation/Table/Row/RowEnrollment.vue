@@ -2,11 +2,11 @@
     <tr>
         <td style="width:30px"> {{index+1}}</td>
         <td> {{getName}}</td>
-        <td style="width:44px">
+        <td style="width:44px" v-show="!propsData.is_overcoming_report">
             <input-no-attendance :props-data="{enrollment:enrollment}"/>
         </td>
         <template v-for="parameter in stateEvaluation.parameters_selected">
-            <td v-for="note_parameter in parameter.notes_parameter">
+            <td v-for="note_parameter in parameter.notes_parameter" v-show="!propsData.is_overcoming_report">
                 <input-note
                         :props-data="{
                         enrollment:enrollment,
@@ -14,7 +14,7 @@
                         parameter:parameter}"
                         :ref="getNameLabelAverage(parameter)"/>
             </td>
-            <td style="width:41px !important;">
+            <td style="width:41px !important;" v-show="!propsData.is_overcoming_report">
                 <label-average-note
                         :props-data="{
                         enrollment:enrollment,
@@ -22,8 +22,14 @@
                         :ref="getNameLabelFinal()"/>
             </td>
         </template>
-        <td style="width:15px !important;">
+        <td style="width:15px !important;" v-show="!propsData.is_overcoming_report">
             <label-final-note :props-data="{enrollment:enrollment}"/>
+        </td>
+        <td v-show="propsData.is_overcoming_report">
+            {{enrollment.report_asignature?enrollment.report_asignature.value:""}}
+        </td>
+        <td v-show="propsData.is_overcoming_report">
+            .
         </td>
         <!--
         <td style="padding-top:9px;width:15px" :class="isFinal?'good':'bad'">
@@ -108,7 +114,7 @@
             emitNotes(name_label_average) {
                 let inputs_notes_by_label_average = this.$refs[name_label_average];
                 this.$bus.$emit(`EventListInputsNotes:${name_label_average}@RowEnrollment`, inputs_notes_by_label_average);
-                
+
             },
 
             // Busca todos los LabelAverageNotes, aquel que calcula el promedio de las notas digitada,
