@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\FinalReport;
 use App\FinalReportAsignature;
+use App\ScaleEvaluation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Auth;
@@ -161,5 +162,31 @@ class FinalReportController extends Controller
     static public function getSubject($is_subject)
     {
         return $is_subject == "true" ? "ÁREAS" : "ASIGNATURAS";
+    }
+
+
+    public function updateOvercomingAsignatures(Request $request)
+    {
+        $data = $request->data;
+
+        $report = null;
+        $report = FinalReportAsignature::where('id', '=', $data['final_report_asignature_id'])->first();
+        $scale = ScaleEvaluation::getBasicScale($this->institution);
+
+        $sameReport = FinalReportAsignature::find($report->id);
+        try {
+            $sameReport->overcoming = $data['value'];
+            if ($sameReport->overcoming < $scale->rank_start)
+                $sameReport->report = "REP";
+            if ($sameReport->overcoming >= $scale->rank_start)
+                $sameReport->report = "APR";
+
+            $sameReport->update();
+        } catch (\Exception $e) {
+
+        }
+
+
+        return $sameReport;
     }
 }

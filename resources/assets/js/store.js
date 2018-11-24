@@ -36,7 +36,8 @@ const store = new Vuex.Store({
                 total_notes_parameters:0,
                 total_inputs:0,
                 more_one:1,
-                num_rows_enrollment:0
+                num_rows_enrollment:0,
+                counter_input_over:1,
             },
             disabled: false
 

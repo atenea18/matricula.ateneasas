@@ -2,11 +2,11 @@
     <tr>
         <td style="width:30px"> {{index+1}}</td>
         <td> {{getName}}</td>
-        <td style="width:44px">
+        <td style="width:44px" v-show="!propsData.is_overcoming_report">
             <input-no-attendance :props-data="{enrollment:enrollment}"/>
         </td>
         <template v-for="parameter in stateEvaluation.parameters_selected">
-            <td v-for="note_parameter in parameter.notes_parameter">
+            <td v-for="note_parameter in parameter.notes_parameter" v-show="!propsData.is_overcoming_report">
                 <input-note
                         :props-data="{
                         enrollment:enrollment,
@@ -14,7 +14,7 @@
                         parameter:parameter}"
                         :ref="getNameLabelAverage(parameter)"/>
             </td>
-            <td style="width:41px !important;">
+            <td style="width:41px !important;" v-show="!propsData.is_overcoming_report">
                 <label-average-note
                         :props-data="{
                         enrollment:enrollment,
@@ -22,8 +22,22 @@
                         :ref="getNameLabelFinal()"/>
             </td>
         </template>
-        <td style="width:15px !important;">
+        <td style="width:15px !important;" v-show="!propsData.is_overcoming_report">
             <label-final-note :props-data="{enrollment:enrollment}"/>
+        </td>
+
+        <td v-show="propsData.is_overcoming_report" style="">
+            <div style="padding-top:6px !important;padding-left: 3px;padding-right: 2px; text-align: center;">
+                <label>{{enrollment.report_asignature?enrollment.report_asignature.report:""}}</label>
+            </div>
+        </td>
+        <td v-show="propsData.is_overcoming_report" style="">
+            <div style="padding-top:6px !important;padding-left: 3px;padding-right: 2px; text-align: center;">
+                <label>{{enrollment.report_asignature?enrollment.report_asignature.value:""}}</label>
+            </div>
+        </td>
+        <td v-show="propsData.is_overcoming_report">
+            <input-overcoming-report :props-data="{enrollment:enrollment}"></input-overcoming-report>
         </td>
         <!--
         <td style="padding-top:9px;width:15px" :class="isFinal?'good':'bad'">
@@ -39,11 +53,13 @@
     import InputNoAttendance from "./Inputs/InputNoAttendance";
     import LabelAverageNote from "./Labels/LabelAverageNote";
     import LabelFinalNote from "./Labels/LabelFinalNote";
+    import InputOvercomingReport from "./Inputs/InputOvercomingReport";
 
     export default {
         name: "row-enrollment",
         props: ['props-data'],
         components: {
+            InputOvercomingReport,
             LabelFinalNote,
             LabelAverageNote,
             InputNoAttendance,
@@ -58,7 +74,9 @@
             }
         },
         created() {
-
+            this.$bus.$on(`EventSaveOverReport:${this.getNameLabelFinal()}@LabelFinalNote`, report => {
+                this.enrollment.report_asignature.report = report.report
+            });
         },
         mounted() {
             this.flowEventsByTypingInput()
@@ -108,7 +126,7 @@
             emitNotes(name_label_average) {
                 let inputs_notes_by_label_average = this.$refs[name_label_average];
                 this.$bus.$emit(`EventListInputsNotes:${name_label_average}@RowEnrollment`, inputs_notes_by_label_average);
-                
+
             },
 
             // Busca todos los LabelAverageNotes, aquel que calcula el promedio de las notas digitada,

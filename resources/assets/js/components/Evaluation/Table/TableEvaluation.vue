@@ -1,50 +1,80 @@
 <template>
-    <table class="table table-bordered">
+    <div>
+        <!--
+        <table v-show="is_overcoming_report" class="table table-bordered">
+            <thead>
+                <tr style="font-size: 11px">
+                    <th> No.</th>
+                    <th> NOMBRES Y APELLIDOS</th>
+                    <th> VAL. GUARDADA</th>
+                    <th> VAL. RECUPERACIÓN</th>
+                    <th> REPORTE</th>
+                </tr>
+            </thead>
 
-        <!-- Fila de titulos -->
-        <thead>
-        <tr style="font-size: 11px">
-            <th rowspan="2"> No.</th>
-            <th rowspan="2"> NOMBRES Y APELLIDOS</th>
-            <th rowspan="2"> FAA</th>
-            <template v-for="parameter in stateEvaluation.parameters_selected">
-                <th :colspan="parameter.notes_parameter.length+1" style="text-align: center">
-                    {{parameter.parameter}}
-                </th>
-            </template>
-            <th rowspan="2"> VAL</th>
-        </tr>
-        <tr>
-            <!--
-            <th></th>
-            <th></th>
-            <th></th>
-            -->
+            <tbody >
+                <tr  v-for="(enrollment, index) in stateEvaluation.collectionNotes" style="font-size: 13px">
+                    <td>{{index+1}}</td>
+                    <td>{{enrollment.student_last_name}} {{enrollment.student_name}}</td>
+                    <td>{{enrollment.report_asignature.value}}</td>
+                    <td>{{enrollment.report_asignature.overcoming}}</td>
+                    <td>{{enrollment.report_asignature.report}}</td>
+                </tr>
+            </tbody>
+        </table>
+        -->
+        <table  class="table table-bordered">
 
-            <template v-for="parameter in stateEvaluation.parameters_selected">
-                <template v-for="note_parameter in parameter.notes_parameter">
-                    <relation-performances v-if="note_parameter.notes_type_id == 1" :ref="'relation_performances_'+parameter.id"
-                                           :props-data="{parameter:parameter, note_parameter:note_parameter}"/>
-
-                    <relation-criterias v-if="note_parameter.notes_type_id != 1"
-                                        :props-data="{note_parameter:note_parameter}"/>
-
+            <!-- Fila de titulos -->
+            <thead>
+            <tr style="font-size: 11px">
+                <th rowspan="2"> No.</th>
+                <th rowspan="2"> NOMBRES Y APELLIDOS</th>
+                <th rowspan="2" v-show="!is_overcoming_report"> FAA</th>
+                <template v-for="parameter in stateEvaluation.parameters_selected">
+                    <th :colspan="parameter.notes_parameter.length+1" style="text-align: center" v-show="!is_overcoming_report">
+                        {{parameter.parameter}}
+                    </th>
                 </template>
+                <th rowspan="2" v-show="!is_overcoming_report" style="text-align: center"> VAL</th>
+                <th rowspan="2" v-show="is_overcoming_report" style="text-align: center"> REPORTE</th>
+                <th rowspan="2" v-show="is_overcoming_report" style="text-align: center"> VAL DEF</th>
+                <th rowspan="2" v-show="is_overcoming_report" style="text-align: center"> VAL REC</th>
+            </tr>
+            <tr>
+                <!--
                 <th></th>
-            </template>
-            <!--
-            <th> VAL </th>
-            -->
-        </tr>
-        </thead>
-        <!-- Se crea una fila por un estudiante con sus respectivas casillas de calificaciones -->
-        <tbody>
-        <template style="font-size: 11px" v-for="(enrollment, index) in stateEvaluation.collectionNotes">
-            <row-enrollment :ref="index" :propsData="{index:index, enrollment:enrollment}"/>
-        </template>
-        </tbody>
+                <th></th>
+                <th></th>
+                -->
+                <template v-for="parameter in stateEvaluation.parameters_selected">
+                    <template v-for="note_parameter in parameter.notes_parameter">
+                        <relation-performances v-if="note_parameter.notes_type_id == 1"
+                                               :ref="'relation_performances_'+parameter.id"
+                                               v-show="!is_overcoming_report"
+                                               :props-data="{parameter:parameter, note_parameter:note_parameter}"/>
 
-    </table>
+                        <relation-criterias v-if="note_parameter.notes_type_id != 1"
+                                            v-show="!is_overcoming_report"
+                                            :props-data="{note_parameter:note_parameter}"/>
+
+                    </template>
+                    <th v-show="!is_overcoming_report"></th>
+                </template>
+                <!--
+                <th> VAL </th>
+                -->
+            </tr>
+            </thead>
+            <!-- Se crea una fila por un estudiante con sus respectivas casillas de calificaciones -->
+            <tbody>
+            <template style="font-size: 11px" v-for="(enrollment, index) in stateEvaluation.collectionNotes">
+                <row-enrollment :ref="index" :propsData="{index:index, enrollment:enrollment, is_overcoming_report:is_overcoming_report}"/>
+            </template>
+            </tbody>
+
+        </table>
+    </div>
 </template>
 
 <script>
@@ -71,9 +101,13 @@
             return {
                 parameters_selected: this.$store.state.stateEvaluation.parameters_selected,
                 num_rows: this.$store.state.stateEvaluation.collectionNotes.length,
+                is_overcoming_report: false,
             }
         },
         created() {
+            this.$bus.$on('eventShowOvercomingReport@ManagerPerformances', obj => {
+                this.is_overcoming_report = obj
+            })
 
             this.clearStateDataDisplacement()
         },
@@ -90,7 +124,6 @@
                                 return column
                             }
                         })
-                        //console.log(columns_state_false)
 
                         if (columns_state_false.length != 0) {
                             this.$bus.$emit(`EventShowPerformancesSelected:${parameter.id}${columns_state_false[0].note_parameter.id}@TableEvaluation`, performance);
@@ -124,7 +157,7 @@
             },
             // Se limpia los datos anteriormente asignado por la función initStateDataDisplacement
             // a estas variables globales
-            clearStateDataDisplacement(){
+            clearStateDataDisplacement() {
                 this.$store.state.stateEvaluation.displacement.total_inputs = 0
                 this.$store.state.stateEvaluation.displacement.counter_input = 1
                 this.$store.state.stateEvaluation.displacement.total_notes_parameters = 0

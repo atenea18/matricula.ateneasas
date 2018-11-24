@@ -45,7 +45,9 @@ class EvaluationController extends Controller
     public function getCollectionsNotes(Request $request)
     {
         $enrollments = Group::enrollmentsByGroup($this->institution->id, $request->group_id);
-        //dd($report_asignatures);
+
+        $report_asignatures = FinalReportAsignature::getEnrollmentsByGroupAsignatures($request->group_id, $request->asignature_id);
+
         $notes = DB::table('notes')
             ->select('enrollment.id as enrollment_id', 'notes.value', 'notes.overcoming', 'notes.id as notes_id',
                 'notes.notes_parameters_id', 'notes_parameters.evaluation_parameter_id')
@@ -147,7 +149,7 @@ class EvaluationController extends Controller
                 }
             }
             
-            /*
+
             if (count($report_asignatures) >= 1) {
                 foreach ($report_asignatures as $key_report => $report) {
                     if ($enrollment->id == $report->enrollment_id) {
@@ -156,7 +158,6 @@ class EvaluationController extends Controller
                     }
                 }
             }
-            */
 
             foreach ($notes_final as $keyNotes => $note) {
                 if ($enrollment->id == $note->enrollment_id) {
