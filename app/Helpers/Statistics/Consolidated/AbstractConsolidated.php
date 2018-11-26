@@ -16,6 +16,7 @@ abstract class AbstractConsolidated
     protected $group_object = null;
     protected $institution_object = null;
     protected $minimum_scale_object = null;
+    private $is_areaX = null;
 
     protected $middle_point = 0;
     protected $final_point = 0;
@@ -39,6 +40,7 @@ abstract class AbstractConsolidated
         $this->final_point = $params->final_point;
         $this->num_of_periods = $params->num_of_periods;
         $this->period_selected_id = $params->period_selected_id;
+        $this->is_areaX = $params->is_filter_subjects;
 
         /*
          * Objetos
@@ -459,7 +461,13 @@ abstract class AbstractConsolidated
                             array_push($failed_subjcts, $failed);
 
                     } else {
+                        if($report_asignature->overcoming)
+                            $overcoming = $report_asignature->overcoming;
+
                         $result = "APR";
+                    }
+                    if($this->is_areaX){
+                       $result = null;
                     }
                 }
             }
@@ -484,6 +492,7 @@ abstract class AbstractConsolidated
                     if ($data != null)
                         array_push($report, $data);
                     $overcoming = null;
+                    $result = "";
                 }
             }
         }
