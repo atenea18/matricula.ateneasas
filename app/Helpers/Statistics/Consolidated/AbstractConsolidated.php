@@ -459,6 +459,8 @@ abstract class AbstractConsolidated
                             array_push($failed_subjcts, $failed);
 
                     } else {
+                        if($report_asignature->overcoming)
+                            $overcoming = $report_asignature->overcoming;
                         $result = "APR";
                     }
                 }

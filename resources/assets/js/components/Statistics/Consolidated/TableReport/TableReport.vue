@@ -56,6 +56,8 @@
                     if (report_subject.asignatures_id == asignature.asignatures_id) {
                         let average_ = report_subject.value.toFixed(1);
                         let overcoming = report_subject.overcoming;
+                        console.log(overcoming)
+                        console.log(typeof overcoming)
                         if (typeof overcoming == "number" && overcoming > 0) {
                             average = '<span>'+average_+" / "+overcoming.toFixed(1)+'</span>'
                         }else{

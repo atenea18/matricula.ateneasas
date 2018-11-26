@@ -129,6 +129,8 @@ class Notebook extends Fpdf
 
         endforeach;
 
+        dd($this->data['config']);
+
         if ($this->data['config']['combinedEvaluation']):
             // MOSTRAMOS EL CUADRO ACUMULATIVO
             $this->showCombineEvaluation();
@@ -226,16 +228,18 @@ class Notebook extends Fpdf
             if ($this->determineShowValoration($asignature)):
 
                 $asigFinalNote = (isset($asignature['final_note']['value'])) ? $asignature['final_note']['value'] : 0;
+
                 if ($asigFinalNote > 0):
 
                     if ($this->data['config']['periodIF']):
-                        // foreach($this->finalReportList as $report):
-                        // 	if($this->gradeBook['student']['id']==$report['id_student'] && $report['id_asignature'] == $asignature['asignature_id']):
-                        // 		$def = $report['nota'];
+                        dd($this->data);
+                        foreach($this->finalReportList as $report):
+                         	if($this->gradeBook['student']['id']==$report['id_student'] && $report['id_asignature'] == $asignature['asignature_id']):
+                         		$def = $report['nota'];
 
-                        // 		$this->showValoration($report, $asignature['ihs'], true);
-                        // 	endif;
-                        // endforeach;
+                         		$this->showValoration($report, $asignature['ihs'], true);
+                         	endif;
+                         endforeach;
                     else:
                         // MOSTRAMOS LA VALORACIÓN
                         $this->showValoration($asignature, $asignature['ihs'], false);
@@ -382,6 +386,7 @@ class Notebook extends Fpdf
 
         // SI EL PERIODO A IMPRIMIR EL EL ULTIMO SE MUESTRA LA COLUMNA IF
         if ($hasIF && $this->data['config']['includeIF']) {
+            dd($this->data);
             $this->Cell(7, $this->_h_c, 'IF', 'LRT', 0, 'C');
         }
 
