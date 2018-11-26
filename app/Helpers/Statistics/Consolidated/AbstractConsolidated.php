@@ -432,7 +432,7 @@ abstract class AbstractConsolidated
     {
 
         $result = null;
-        $overcoming = 0;
+        $overcoming = null;
         $value = "";
         $failed = null;
 
@@ -485,6 +485,7 @@ abstract class AbstractConsolidated
 
                     if ($data != null)
                         array_push($report, $data);
+                    $overcoming = null;
                 }
             }
         }
