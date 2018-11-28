@@ -9,6 +9,7 @@
 namespace App\Helpers\Statistics;
 
 
+use App\FinalReport;
 use App\FinalReportAsignature;
 use App\Group;
 use App\Institution;
@@ -29,6 +30,7 @@ class ParamsStatistics
     public $is_reprobated = false;
     public $is_report = false;
     public $is_filter_report = false;
+    public $is_areas_final = false;
     public $condition = 0;
     public $condition_number = 0;
 
@@ -49,7 +51,7 @@ class ParamsStatistics
     public $vectorEnrollments = [];
     public $vectorScales = [];
     public $report_asignatures = [];
-
+    public $report_final = [];
 
     public function __construct($request)
     {
@@ -68,6 +70,7 @@ class ParamsStatistics
         $this->is_report = $request->is_report;
         $this->condition = $request->condition;
         $this->condition_number = $request->condition_number;
+        $this->is_areas_final = $request->is_areas_final;
 
         if(isset($request->is_reprobated))
             $this->is_reprobated = $request->is_reprobated;
@@ -111,7 +114,7 @@ class ParamsStatistics
 
         //Reporte Asignaturas
         $this->report_asignatures = FinalReportAsignature::getEnrollmentsByGroup($this->group_object->id);
-
+        $this->report_final = FinalReportAsignature::getEnrollmentsAreasByGroup($this->group_object->id);
     }
 
 

@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use App\FinalReport;
+use App\FinalReportAsignature;
 use Illuminate\Http\Request;
 
 use App\Traits\ConvertFormant;
@@ -39,7 +41,9 @@ class Notebook
 	private $general_report = array();
 	private $average_areas = array();
 	private $enrollment = array();
-
+    public $report_asignatures = [];
+    public $report_areas = [];
+    public $report_final = [];
 
 	// 
 	public $noteBook;
@@ -60,6 +64,11 @@ class Notebook
 	{
 
 		$this->group = Group::findOrFail($this->request->group);
+
+        //Reporte Asignaturas
+        $this->report_asignatures = FinalReportAsignature::getEnrollmentsByGroup($this->group->id);
+        $this->report_areas = FinalReportAsignature::getEnrollmentsAreasByGroup($this->group->id);
+        $this->report_final = FinalReport::getEnrollmentsByGroup($this->group->id);
 
 		$this->manager = (!is_null($this->group->director()->first())) ? $this->group->director()->first()->manager : null ;
 
@@ -230,6 +239,7 @@ class Notebook
 			'current_period' 		=> 	$this->current_period,
 			'date' 					=> 	(isset($this->request['fecha'])) ? $this->request['fecha'] : date('Y-m-d'),
 			'student' 				=> 	$this->enrollment->student,
+			'report_asignatures'    =>  $this->enrollment->report_asignatures,
 			'group'					=>	$this->group,
 			'director'				=>	$this->manager,
 			'grade' 				=> 	$this->group->grade,
