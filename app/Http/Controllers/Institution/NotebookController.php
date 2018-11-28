@@ -76,8 +76,43 @@ class NotebookController extends Controller
             $notebook = new Notebook($request, $this->institution);
             $notebook->setScaleEvaluation($scale);
             $notebook->setEvaluationParameters($eval_parameter);
+
+            $reports_= [];
+            if (count($notebook->report_asignatures) >= 1) {
+                foreach ($notebook->report_asignatures as $key_report => $report) {
+                    if ($enrollment->id == $report->enrollment_id) {
+                        array_push($reports_, $report);
+                        unset($notebook->report_asignatures[$key_report]);
+                    }
+                }
+            }
+
+            $reports_areas= [];
+            if (count($notebook->report_areas) >= 1) {
+                foreach ($notebook->report_areas as $key_report => $report) {
+                    if ($enrollment->id == $report->enrollment_id) {
+                        array_push($reports_areas, $report);
+                        unset($notebook->report_areas[$key_report]);
+                    }
+                }
+            }
+
+
             $notebook->setEnrollment($enrollment);
             $data = $notebook->create();
+            $data['report_asignatures'] = $reports_;
+            $data['report_areas'] = $reports_areas;
+
+            if (count($notebook->report_final) >= 1) {
+                foreach ($notebook->report_final as $key_report => $report_f) {
+                    if ($enrollment->id == $report_f->enrollment_id) {
+                        $data['report_final'] = $report_f;
+                        unset($notebook->report_final[$key_report]);
+                    }
+                }
+            }
+
+
 
             // return response()->json($data);
             // return response()->json($data);

@@ -125,7 +125,8 @@
                     whoTriggered == 'excel' ||
                     whoTriggered == 'componentManagerGroupSelect' ||
                     whoTriggered == 'save-report-final' ||
-                    whoTriggered == 'check-filter-report') {
+                    whoTriggered == 'check-filter-report' ||
+                    whoTriggered == 'areas-final') {
                     this.managerQueryForFilterConsolidated(objectMenuStatistics)
                 }
                 console.log(objectMenuStatistics)
@@ -148,6 +149,7 @@
                     is_reprobated: objectMenuStatistics.filter.isReprobated,
                     is_filter_report: objectMenuStatistics.filter.isFilterReport,
                     is_report: objectMenuStatistics.filter.isReport,
+                    is_areas_final: objectMenuStatistics.filter.isAreasFinal,
 
                     url_subjects: '',
                     url_consolidated: '',

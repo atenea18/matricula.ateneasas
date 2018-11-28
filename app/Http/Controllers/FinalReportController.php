@@ -55,6 +55,7 @@ class FinalReportController extends Controller
                     $report->average = round($enrollment['average'], 1);
                     $report->keep_going = "SI";
                     $report->enrollment_id = $enrollment['id'];
+                    $report->rating = $enrollment['rating'];
                     $this->getDescriptionEnrollment($report, $enrollment, $data);
                     $report->save();
                 } catch (\Exception $e) {
@@ -64,6 +65,7 @@ class FinalReportController extends Controller
                 $sameReport = FinalReport::find($report->id);
                 $sameReport->average = round($enrollment['average'], 1);
                 $sameReport->keep_going = "SI";
+                $sameReport->rating = $enrollment['rating'];
                 $this->getDescriptionEnrollment($sameReport, $enrollment, $data);
                 $sameReport->update();
             }

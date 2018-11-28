@@ -12,8 +12,8 @@
 
         <!-- Styles -->
 
-        <link href="{{asset('css/style.css?v=1.19')}}" rel="stylesheet">
-        <link href="{{asset('css/app.css?v=1.19')}}" rel="stylesheet">
+        <link href="{{asset('css/style.css?v=1.20')}}" rel="stylesheet">
+        <link href="{{asset('css/app.css?v=1.20')}}" rel="stylesheet">
 
         <link rel="stylesheet" href="{{asset('plugin/DataTables/datatables.css')}}">
         <link rel="stylesheet" href="{{asset('plugin/DataTables/dataTables.bootstrap.min.css')}}">
@@ -53,7 +53,7 @@
         <!-- Scripts -->
 
 
-        <script src="{{asset('js/app.js?v=1.19')}}"></script>
+        <script src="{{asset('js/app.js?v=1.20')}}"></script>
         <script src="{{asset('plugin/DataTables/datatables.min.js')}}"></script>
         <script src="{{asset('plugin/DataTables/dataTables.bootstrap.min.js')}}"></script>
         <script src="{{asset('plugin/multiSelect/multiselect.js')}}"></script>

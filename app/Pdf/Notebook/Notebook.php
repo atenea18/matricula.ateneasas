@@ -87,11 +87,11 @@ class Notebook extends Fpdf
     {
 
 
-        // if($this->data['config']['periodIF']):
-        // 	$this->Cell(140, $this->_h_c, $this->hideTilde($this->gradeBook['tittle_if']), 1,0, 'L');
-        // else:
-        $this->Cell(140, $this->_h_c, $this->data['tittle'] . $this->hideTilde(' PERIODO ' . $this->data["current_period"]->periods_id . ' - AÑO LECTIVO ') . date('Y'), 1, 0, 'L');
-        // endif;
+        if ($this->data['config']['periodIF']):
+            $this->Cell(140, $this->_h_c, $this->hideTilde($this->data['tittle_if']), 1, 0, 'L');
+        else:
+            $this->Cell(140, $this->_h_c, $this->data['tittle'] . $this->hideTilde(' PERIODO ' . $this->data["current_period"]->periods_id . ' - AÑO LECTIVO ') . date('Y'), 1, 0, 'L');
+        endif;
 
 
         $this->Cell(10, $this->_h_c, 'IHS', 1, 0, 'C');
@@ -114,6 +114,7 @@ class Notebook extends Fpdf
     public function create()
     {
         // AÑADIMOS UNA PAGINA EN BLANCO
+
         $this->addPage();
 
         // RECOREMOS LOS PERIODOS
@@ -129,9 +130,8 @@ class Notebook extends Fpdf
 
         endforeach;
 
-        dd($this->data['config']);
-
         if ($this->data['config']['combinedEvaluation']):
+
             // MOSTRAMOS EL CUADRO ACUMULATIVO
             $this->showCombineEvaluation();
 
@@ -143,11 +143,9 @@ class Notebook extends Fpdf
         endif;
 
         // Detallado de notas
-        // if($this->gradeBook['config'][0]['tableDetail']):
-
+        //if($this->data['config'][0]['tableDetail']):
         // 	$this->showTableDetail($period);
-
-        // endif;
+        //endif;
 
         // MOSTRAR ESCALA VALORATIVA
         if ($this->data['config']['valorationScale']):
@@ -198,9 +196,9 @@ class Notebook extends Fpdf
                     $this->Ln();
                 else:
                     // foreach($this->averageAreaFinalReport as $report):
-                    // 	if($area['id_area'] == $report['id_area'] && $report['id_student'] == $this->gradeBook['student']['id']):
+                    // 	if($area['id_area'] == $report['id_area'] && $report['id_student'] == $this->data['student']['id']):
                     // 		// PREGUNTAMOS SI LAS AREAS NO SE DESACTIVAN
-                    // 		if(!$this->gradeBook['config']['areasDisabled']):
+                    // 		if(!$this->data['config']['areasDisabled']):
                     // 			$this->Cell(150, $this->_h_c, ($report['area'])." ".$report['type'], 'TBL',0, 'L', true);
                     // 			$this->Cell(17, $this->_h_c, $report['note'], 'TB',0, 'C', true);
                     // 			$this->Cell(0, $this->_h_c, strtoupper($report['valoration']), 'TBR', 0, 'C', true);
@@ -232,14 +230,14 @@ class Notebook extends Fpdf
                 if ($asigFinalNote > 0):
 
                     if ($this->data['config']['periodIF']):
-                        dd($this->data);
-                        foreach($this->finalReportList as $report):
-                         	if($this->gradeBook['student']['id']==$report['id_student'] && $report['id_asignature'] == $asignature['asignature_id']):
-                         		$def = $report['nota'];
+                        //dd($this->data);
+                        foreach ($this->finalReportList as $report):
+                            if ($this->data['student']['id'] == $report['id_student'] && $report['id_asignature'] == $asignature['asignature_id']):
+                                $def = $report['nota'];
 
-                         		$this->showValoration($report, $asignature['ihs'], true);
-                         	endif;
-                         endforeach;
+                                $this->showValoration($report, $asignature['ihs'], true);
+                            endif;
+                        endforeach;
                     else:
                         // MOSTRAMOS LA VALORACIÓN
                         $this->showValoration($asignature, $asignature['ihs'], false);
@@ -364,6 +362,7 @@ class Notebook extends Fpdf
         $this->Ln($this->_h_c * 2);
 
         $hasIF = count($this->data['periods']) == $this->data['current_period']->periods_id;
+        //$hasIF = 3 == $this->data['current_period']->periods_id;
         $withHeader = /*(!empty($this->finalReportList)) ? (95 + (22 * count($this->data['periods']))+8) :*/
             (96 + (22 * count($this->data['periods'])));
 
@@ -386,12 +385,9 @@ class Notebook extends Fpdf
 
         // SI EL PERIODO A IMPRIMIR EL EL ULTIMO SE MUESTRA LA COLUMNA IF
         if ($hasIF && $this->data['config']['includeIF']) {
-            dd($this->data);
-            $this->Cell(7, $this->_h_c, 'IF', 'LRT', 0, 'C');
+            //dd($this->data);
+            $this->Cell(14, $this->_h_c, 'IF', 'LRT', 0, 'C');
         }
-
-        $this->Cell(7, ($this->_h_c), 'VG', 1, 0, 'C');
-        $this->Cell(7, ($this->_h_c), 'VRA', 1, 0, 'C');
 
         $this->Ln();
 
@@ -409,7 +405,10 @@ class Notebook extends Fpdf
 
         if ($hasIF && $this->data['config']['includeIF']) {
             $this->Cell(7, $this->_h_c, 'VAL', 1, 0, 'C');
-            // $this->Cell(7, $this->_h_c, 'SUP', 1, 0,'C');
+            $this->Cell(7, $this->_h_c, 'RES', 1, 0, 'C');
+        } else {
+            $this->Cell(7, ($this->_h_c), 'VG', 1, 0, 'C');
+            $this->Cell(7, ($this->_h_c), 'VRA', 1, 0, 'C');
         }
 
         $this->Ln();
@@ -453,10 +452,34 @@ class Notebook extends Fpdf
             $this->Cell(8, $this->_h_c, '', 1, 0, 'C', true);
 
         endforeach;
+        $hasIF = count($this->data['periods']) == $this->data['current_period']->periods_id;
 
-        if (!empty($this->finalReportList) && $this->data['config']['includeIF']):
-            // $this->showAreaFinalReport($area);
+        if ($hasIF && $this->data['config']['includeIF']):
+            $this->showAreaFinalReport($area['area_id']);
+        else:
+            $this->Cell(7, $this->_h_c, '', 1, 0, 'C', true);
+            $this->Cell(7, $this->_h_c, '', 1, 0, 'C', true);
         endif;
+
+
+    }
+
+    public function showAreaFinalReport($area_id)
+    {
+
+        if (isset($this->data['report_areas'])) {
+            foreach ($this->data['report_areas'] as $report_area) {
+                if ($report_area->asignatures_id == $area_id) {
+                    $value = self::processNote($report_area->value, 0);
+                    $this->Cell(7, $this->_h_c, $value, 1, 0, 'C');
+                    $min_basic = ($this->data['valueScale']->where('abbreviation', 'BS')->first()->rank_start);
+
+                    $report_result = $value>=$min_basic?'APR':'REP';
+                    $this->Cell(7, $this->_h_c, $report_result, 1, 0, 'C');
+                    return 0;
+                }
+            }
+        }
 
         $this->Cell(7, $this->_h_c, '', 1, 0, 'C', true);
         $this->Cell(7, $this->_h_c, '', 1, 0, 'C', true);
@@ -622,26 +645,56 @@ class Notebook extends Fpdf
             endif;
 
             $this->Cell(6, $this->_h_c, $noAttendace, 1, 0, 'C');
-
             $this->Cell(8, $this->_h_c, ($note == 0) ? '' : $note, 1, 0, 'C');
-
             $this->Cell(8, $this->_h_c, $recovery_note, 1, 0, 'C');
 
         endforeach;
 
-        if (!empty($this->finalReportList) && $this->gradeBook['config'][0]['includeIF']):
-            $maxPeriod = count($this->gradeBook['periods']) - 1;
-            $finalPeriod = $this->gradeBook['periods'][$maxPeriod];
-            $this->showAsignatureFinalReport($finalPeriod, $asignature);
-        endif;
+        $hasIF = count($this->data['periods']) == $this->data['current_period']->periods_id;
 
-        $this->Cell(7, $this->_h_c, round($this->getVG($dataVg), 1), 1, 0, 'C');
-
-        $this->Cell(7, $this->_h_c, $this->getVRA($dataVg), 1, 0, 'C');
+        if ($hasIF && $this->data['config']['includeIF']) {
+            $this->showAsignatureFinalReport($asignature['asignature_id']);
+        } else {
+            $this->Cell(7, $this->_h_c, round($this->getVG($dataVg), 1), 1, 0, 'C');
+            $this->Cell(7, $this->_h_c, $this->getVRA($dataVg), 1, 0, 'C');
+        }
 
         $dataVg = array();
     }
 
+    public function showAsignatureFinalReport($asignature_id)
+    {
+        if (isset($this->data['report_asignatures'])) {
+            foreach ($this->data['report_asignatures'] as $report_asignature) {
+                if ($report_asignature->asignatures_id == $asignature_id) {
+                    $value = self::processNote($report_asignature->value, $report_asignature->overcoming);
+                    $this->Cell(7, $this->_h_c, $value, 1, 0, 'C');
+                    $this->Cell(7, $this->_h_c, $report_asignature->report, 1, 0, 'C');
+                    return 0;
+                }
+            }
+        }
+
+        $this->Cell(7, $this->_h_c, '', 1, 0, 'C');
+        $this->Cell(7, $this->_h_c, '', 1, 0, 'C');
+    }
+
+    private function processNote($note, $overcoming)
+    {
+        $noteAux = 0;
+        $overcomingAux = 0;
+        if ($note > 0) {
+            if ($overcoming != null && $overcoming > 0) {
+                $overcomingAux = $overcoming;
+            }
+            $noteAux = $note;
+        }
+
+        if ($noteAux > $overcomingAux)
+            return $noteAux;
+        else
+            return $overcomingAux;
+    }
 
     private function checkVG($array = array(), $id, $period)
     {
@@ -693,18 +746,17 @@ class Notebook extends Fpdf
             } else if ($period['period_id'] == $this->data['current_period']->periods_id) {
 
                 $vg_period_previous = $this->getVG($periods);
-                if ($vg_period_previous > 0 && $period_tobe_evaluated > 0){
+                if ($vg_period_previous > 0 && $period_tobe_evaluated > 0) {
                     $vra = (($min_basic - $vg_period_previous) / $period_tobe_evaluated) / ($period['percent'] / 100);
                 }
-                    
+
 
             }
         }
 
-        if ($vra > $max_super || $vra < 0)
-        {
+        if ($vra > $max_super || $vra < 0) {
             foreach ($periods as $key => $period) {
-                if($period['period_id'] == 1){
+                if ($period['period_id'] == 1) {
                     $vg_period_previous = $this->getVG($periods);
                     $vra = ((($min_basic - $vg_period_previous) / $period_tobe_evaluated) / ($period['percent'] / 100));
                     break;
@@ -714,9 +766,9 @@ class Notebook extends Fpdf
 
         if ($vra > $max_super || $vra < 0)
             return '';
-            
-        if ($period_tobe_evaluated == 0){
-            if($vg_period_previous >= $min_basic)
+
+        if ($period_tobe_evaluated == 0) {
+            if ($vg_period_previous >= $min_basic)
                 return 'APR';
             else
                 return 'REP';
@@ -780,19 +832,26 @@ class Notebook extends Fpdf
             endif;
         endforeach;
 
-        // PERIODO FINAL
-        // if(!empty($this->finalReportList) && $this->data['config']['includeIF']):
-        // 	$score = 0;
-        // 	foreach($this->finalReportList as $report):
-        // 		if($this->data['student']['id'] == $report['id_student']):
-        // 			$score = $report['promedio'];
-        // 			break;
-        // 		endif;
-        // 	endforeach;
-        // 	$this->Cell(7, $this->_h_c, $score, 1,0, 'C');
-        // endif;
+        $hasIF = count($this->data['periods']) == $this->data['current_period']->periods_id;
+        if ($hasIF && $this->data['config']['includeIF']):
+            $this->getAverageReport();
+        else:
+            $this->Cell(7, $this->_h_c, "", 1, 0, 'C');
+            $this->Cell(7, $this->_h_c, "", 1, 0, 'C');
+        endif;
 
         $this->Ln();
+    }
+
+    public function getAverageReport()
+    {
+        if (isset($this->data['report_final'])) {
+            $this->Cell(7, $this->_h_c, $this->data['report_final']->average, 1, 0, 'C');
+            $this->Cell(7, $this->_h_c, '', 1, 0, 'C');
+            return 0;
+
+        }
+
     }
 
     /**
@@ -833,19 +892,25 @@ class Notebook extends Fpdf
             endif;
         endforeach;
 
-        // PERIODO FINAL
-        // if(!empty($this->finalReportList) && $this->gradeBook['config']['includeIF']):
-        // 	$position = 0;
-        // 	foreach($this->finalReportList as $report):
-        // 		if($this->gradeBook['student']['id'] == $report['id_student']):
-        // 			$position = $report['puesto'];
-        // 			break;
-        // 		endif;
-        // 	endforeach;
-        // 	$this->Cell(7, $this->_h_c, $position, 1,0, 'C');
-        // endif;
 
+        $this->positionReportFinal();
         $this->Ln();
+    }
+
+    public function positionReportFinal()
+    {
+        $hasIF = count($this->data['periods']) == $this->data['current_period']->periods_id;
+        if ($hasIF && $this->data['config']['includeIF']){
+            if (isset($this->data['report_final'])) {
+                $this->Cell(7, $this->_h_c, $this->data['report_final']->rating, 1, 0, 'C');
+                $this->Cell(7, $this->_h_c, '', 1, 0, 'C');
+                return 0;
+
+            }
+        }
+
+        $this->Cell(7, $this->_h_c, "", 1, 0, 'C');
+        $this->Cell(7, $this->_h_c, "", 1, 0, 'C');
     }
 
     /**
@@ -889,6 +954,19 @@ class Notebook extends Fpdf
      */
     private function showGeneralObservation()
     {
+        $hasIF = count($this->data['periods']) == $this->data['current_period']->periods_id;
+
+        if ($hasIF && $this->data['config']['includeIF']){
+            $this->ln();
+            if(isset($this->data['report_final'])){
+                if($this->data['report_final']->news_id == 39)
+                    $message = 'ESTUDIANTE PROMOVIDO';
+                if($this->data['report_final']->news_id == 45)
+                    $message = 'ESTUDIANTE REPROBADO';
+
+                $this->Cell(0, $this->_h_c, 'INFORME: '.$message, 0, 0, 'L');
+            }
+        }
 
         $this->Ln($this->_h_c * 2);
 

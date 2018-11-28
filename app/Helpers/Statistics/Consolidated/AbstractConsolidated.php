@@ -16,7 +16,8 @@ abstract class AbstractConsolidated
     protected $group_object = null;
     protected $institution_object = null;
     protected $minimum_scale_object = null;
-    private $is_areaX = null;
+    protected $is_areaX = null;
+
 
     protected $middle_point = 0;
     protected $final_point = 0;
@@ -29,6 +30,7 @@ abstract class AbstractConsolidated
     protected $vectorSubjects = [];
     protected $vectorEnrollments = [];
     protected $report_asignatures = [];
+    protected $report_final = [];
 
     public function __construct(ParamsStatistics $params)
     {
@@ -57,6 +59,7 @@ abstract class AbstractConsolidated
         $this->vectorSubjects = $params->vectorSubjects;
         $this->vectorEnrollments = $params->vectorEnrollments;
         $this->report_asignatures = $params->report_asignatures;
+        $this->report_final = $params->report_final;
     }
 
     protected function getProcessedRequest()
@@ -433,43 +436,17 @@ abstract class AbstractConsolidated
     private function calculateFinalReport($enrollment, &$report, &$failed_subjcts)
     {
 
-        $result = null;
-        $overcoming = null;
-        $value = "";
-        $failed = null;
+        $content = array('result' => '', 'overcoming' => 0);
+
 
         foreach ($this->vectorSubjects as $subject) {
 
-            foreach ($this->report_asignatures as $report_asignature) {
-                if ($enrollment->id == $report_asignature->enrollment_id && $report_asignature->asignatures_id == $subject->asignatures_id) {
-                    if ($report_asignature->value < $this->middle_point) {
-                        $result = "REP";
-                        $failed = (object)array(
-                            'asignatures_id' => $report_asignature->asignatures_id,
-                            'average' => $report_asignature->value,
-                            'overcoming' => $report_asignature->overcoming,
-                            'name' => $report_asignature->name,
-                        );
-                        $overcoming = $report_asignature->overcoming;
-
-                        if ($report_asignature->overcoming >= $this->middle_point) {
-                            $failed = null;
-                            $result = "APR";
-                        }
-
-                        if ($failed != null)
-                            array_push($failed_subjcts, $failed);
-
-                    } else {
-                        if($report_asignature->overcoming)
-                            $overcoming = $report_asignature->overcoming;
-                        $result = "APR";
-                    }
-                    if($this->is_areaX){
-                       $result = null;
-                    }
-                }
+            if ($this->is_areaX == "false") {
+                $content = $this->getAsignaturesFinal($enrollment, $subject, $failed_subjcts);
+            } else {
+                $content = $this->getAreasFinal($enrollment, $subject, $failed_subjcts);
             }
+
 
             foreach ($enrollment->accumulatedSubjects as $accumulated) {
                 if ($accumulated->asignatures_id == $subject->asignatures_id) {
@@ -477,24 +454,103 @@ abstract class AbstractConsolidated
                         'name' => $accumulated->name,
                         'asignatures_id' => $accumulated->asignatures_id,
                         'value' => $accumulated->average,
-                        'overcoming' => $overcoming,
-                        'report' => $result,
+                        'overcoming' => $content['overcoming'],
+                        'report' => $content['result'],
                     );
 
-                    if($result == null ){
-                        if($accumulated->average < $this->middle_point)
+                    if ($content['result'] == null) {
+                        if ($accumulated->average < $this->middle_point)
                             $data->report = "REP";
                         else
                             $data->report = "APR";
                     }
+                    if($data->value == $data->overcoming){
+                        $data->overcoming = 0;
+                    }
 
                     if ($data != null)
                         array_push($report, $data);
-                    $overcoming = null;
-                    $result = "";
+                    $content['overcoming'] = null;
+                    $content['result'] = null;
                 }
             }
         }
+    }
+
+    private function getAsignaturesFinal($enrollment, $subject, &$failed_subjcts)
+    {
+        $result = null;
+        $overcoming = null;
+        $failed = null;
+
+        foreach ($this->report_asignatures as $report_asignature) {
+            if ($enrollment->id == $report_asignature->enrollment_id && $report_asignature->asignatures_id == $subject->asignatures_id) {
+                if ($report_asignature->value < $this->middle_point) {
+
+                    $failed = (object)array(
+                        'asignatures_id' => $report_asignature->asignatures_id,
+                        'average' => $report_asignature->value,
+                        'overcoming' => $report_asignature->overcoming,
+                        'name' => $report_asignature->name,
+                    );
+                    $result = "REP";
+
+                } else {
+                    $failed = null;
+                    $result = "APR";
+                }
+
+                $overcoming = $report_asignature->overcoming;
+                if ($overcoming >= $this->middle_point) {
+                    $failed = null;
+                    $result = "APR";
+                }
+
+                if ($failed != null) {
+                    array_push($failed_subjcts, $failed);
+                }
+
+
+            }
+        }
+        $data = array('result' => $result, 'overcoming' => $overcoming);
+        return $data;
+    }
+
+    private function getAreasFinal($enrollment, $subject, &$failed_subjcts)
+    {
+        $result = null;
+        $overcoming = null;
+        $failed = null;
+
+        foreach ($this->report_final as $report_asignature) {
+            if ($enrollment->id == $report_asignature->enrollment_id && $report_asignature->asignatures_id == $subject->asignatures_id) {
+
+                $overcoming = $report_asignature->value;
+
+                if ($report_asignature->value < $this->middle_point) {
+
+                    $failed = (object)array(
+                        'asignatures_id' => $report_asignature->asignatures_id,
+                        'average' => $report_asignature->value,
+                        'overcoming' => $report_asignature->overcoming,
+                        'name' => $report_asignature->name_subjects,
+                    );
+                    $result = "REP";
+
+                } else {
+                    $failed = null;
+                    $result = "APR";
+
+                }
+
+                if ($failed != null) {
+                    array_push($failed_subjcts, $failed);
+                }
+            }
+        }
+        $data = array('result' => $result, 'overcoming' => round($overcoming,1));
+        return $data;
     }
 
     /*

@@ -62,6 +62,13 @@
                                @change="setEventProperties('areas','check')"/>
                         Por áreas
                     </label>
+                    <!-- currentView =='main-consolidated' && (SearchFilterObject.isReport || SearchFilterObject.isFilterReport )-->
+                    <label v-if="false">
+                        <input type="checkbox"
+                               v-model="SearchFilterObject.isAreasFinal"
+                               @change="setEventProperties('areas-final','check')"/>
+                        Por áreas .
+                    </label>
                 </div>
             </div>
             <div class="col-md-2">
@@ -168,6 +175,7 @@
                     isReprobated: false,
                     isReport: false,
                     isFilterReport: false,
+                    isAreasFinal: false,
                 },
                 mainComponentObject: {
                     filter: {
