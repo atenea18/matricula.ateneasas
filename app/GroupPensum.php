@@ -132,7 +132,8 @@ class GroupPensum extends Model
     {
         return $asignatures = self::select(
             'asignatures.abbreviation', 'asignatures.name',
-            'group_pensum.asignatures_id', 'group_pensum.ihs', 'group_pensum.order', 'group_pensum.percent')
+            'group_pensum.asignatures_id', 'group_pensum.ihs', 'asignatures.subjects_type_id',
+            'group_pensum.order', 'group_pensum.percent')
             ->join('asignatures', 'asignatures.id', '=', 'group_pensum.asignatures_id')
             ->where('group_pensum.group_id', '=', $group_id)
             ->get();
@@ -142,7 +143,7 @@ class GroupPensum extends Model
     {
         return $asignatures = self::select(
             'areas.abbreviation', 'areas.name',
-            'group_pensum.areas_id as asignatures_id', 'group_pensum.ihs')
+            'group_pensum.areas_id as asignatures_id', 'group_pensum.ihs', 'areas.subjects_type_id')
             ->join('areas', 'areas.id', '=', 'group_pensum.areas_id')
             ->where('group_pensum.group_id', '=', $group_id)
             ->groupBy('areas.id')
