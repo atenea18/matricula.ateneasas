@@ -506,7 +506,7 @@ abstract class AbstractConsolidated
                     $result = "APR";
                 }
 
-                if ($failed != null) {
+                if ($failed != null && $subject->subjects_type_id == 1) {
                     array_push($failed_subjcts, $failed);
                 }
 
@@ -544,7 +544,7 @@ abstract class AbstractConsolidated
 
                 }
 
-                if ($failed != null) {
+                if ($failed != null && $subject->subjects_type_id == 1) {
                     array_push($failed_subjcts, $failed);
                 }
             }
