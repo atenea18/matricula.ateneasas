@@ -471,7 +471,7 @@ class Notebook extends Fpdf
             foreach ($this->data['report_areas'] as $report_area) {
                 if ($report_area->asignatures_id == $area_id) {
                     $value = self::processNote($report_area->value, 0);
-                    $this->Cell(7, $this->_h_c, $value, 1, 0, 'C');
+                    $this->Cell(7, $this->_h_c, round($value,1), 1, 0, 'C');
                     $min_basic = ($this->data['valueScale']->where('abbreviation', 'BS')->first()->rank_start);
 
                     $report_result = $value>=$min_basic?'APR':'REP';
@@ -960,11 +960,12 @@ class Notebook extends Fpdf
             $this->ln();
             if(isset($this->data['report_final'])){
                 if($this->data['report_final']->news_id == 39)
-                    $message = 'ESTUDIANTE PROMOVIDO';
+                    $message = 'SI APROBÓ EL GRADO';
                 if($this->data['report_final']->news_id == 45)
-                    $message = 'ESTUDIANTE REPROBADO';
-
-                $this->Cell(0, $this->_h_c, 'INFORME: '.$message, 0, 0, 'L');
+                    $message = 'NO APROBÓ EL GRADO';
+                $this->Cell(0, $this->_h_c, $this->hideTilde('DECISIONES DE LA COMISIÓN DE EVALUACIÓN Y PROMOCIÓN'), 0, 0, 'L');
+                $this->ln();
+                $this->Cell(0, $this->_h_c, $this->hideTilde($message), 0, 0, 'L');
             }
         }
 
