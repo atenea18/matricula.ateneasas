@@ -67,7 +67,8 @@ class Notebook
 
         //Reporte Asignaturas
         $this->report_asignatures = FinalReportAsignature::getEnrollmentsByGroup($this->group->id);
-        $this->report_areas = FinalReportAsignature::getEnrollmentsAreasByGroup($this->group->id);
+        $this->report_areas = FinalReportAsignature::getEnrollmentsAreasByGrade($this->group->grade_id);
+        //dd($this->report_areas)
         $this->report_final = FinalReport::getEnrollmentsByGroup($this->group->id);
 
         $this->manager = (!is_null($this->group->director()->first())) ? $this->group->director()->first()->manager : null;
@@ -114,6 +115,7 @@ class Notebook
                 array_push($this->pensums_areas, $pensum);
             }
         }
+        //dd($this->pensums_areas);
         return $this->pensums_areas;
     }
 
