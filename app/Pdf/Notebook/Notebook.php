@@ -21,6 +21,7 @@ class Notebook extends Fpdf
     private $data = array();
 
     private $_h_c = 4;
+    private $reprobated_tecn = false;
 
     function header()
     {
@@ -195,19 +196,7 @@ class Notebook extends Fpdf
                     endif;
                     $this->Ln();
                 else:
-                    // foreach($this->averageAreaFinalReport as $report):
-                    // 	if($area['id_area'] == $report['id_area'] && $report['id_student'] == $this->data['student']['id']):
-                    // 		// PREGUNTAMOS SI LAS AREAS NO SE DESACTIVAN
-                    // 		if(!$this->data['config']['areasDisabled']):
-                    // 			$this->Cell(150, $this->_h_c, ($report['area'])." ".$report['type'], 'TBL',0, 'L', true);
-                    // 			$this->Cell(17, $this->_h_c, $report['note'], 'TB',0, 'C', true);
-                    // 			$this->Cell(0, $this->_h_c, strtoupper($report['valoration']), 'TBR', 0, 'C', true);
-                    // 		else:
-                    // 			$this->Cell(0, $this->_h_c, $this->hideTilde($report['area']), 1,0, 'L', true);
-                    // 		endif;
-                    // 	$this->Ln();
-                    // 	endif;
-                    // endforeach;
+
                 endif;
                 // RECORREMOS LAS ASIGNATURAS
                 $this->showAsignature($area['asignatures']);
@@ -455,7 +444,7 @@ class Notebook extends Fpdf
         $hasIF = count($this->data['periods']) == $this->data['current_period']->periods_id;
 
         if ($hasIF && $this->data['config']['includeIF']):
-            $this->showAreaFinalReport($area['area_id']);
+            $this->showAreaFinalReport($area['area_id'], $area);
         else:
             $this->Cell(7, $this->_h_c, '', 1, 0, 'C', true);
             $this->Cell(7, $this->_h_c, '', 1, 0, 'C', true);
@@ -464,18 +453,20 @@ class Notebook extends Fpdf
 
     }
 
-    public function showAreaFinalReport($area_id)
+    public function showAreaFinalReport($area_id, $area)
     {
 
         if (isset($this->data['report_areas'])) {
             foreach ($this->data['report_areas'] as $report_area) {
                 if ($report_area->asignatures_id == $area_id) {
                     $value = self::processNote($report_area->value, 0);
-                    $this->Cell(7, $this->_h_c, round($value,1), 1, 0, 'C');
+                    $this->Cell(7, $this->_h_c, round($value, 1), 1, 0, 'C');
                     $min_basic = ($this->data['valueScale']->where('abbreviation', 'BS')->first()->rank_start);
 
-                    $report_result = $value>=$min_basic?'APR':'REP';
+                    $report_result = $value >= $min_basic ? 'APR' : 'REP';
                     $this->Cell(7, $this->_h_c, $report_result, 1, 0, 'C');
+                    if ($report_area->subjects_type_id == 2 && $value < $min_basic)
+                        $this->reprobated_tecn = true;
                     return 0;
                 }
             }
@@ -900,7 +891,7 @@ class Notebook extends Fpdf
     public function positionReportFinal()
     {
         $hasIF = count($this->data['periods']) == $this->data['current_period']->periods_id;
-        if ($hasIF && $this->data['config']['includeIF']){
+        if ($hasIF && $this->data['config']['includeIF']) {
             if (isset($this->data['report_final'])) {
                 $this->Cell(7, $this->_h_c, $this->data['report_final']->rating, 1, 0, 'C');
                 $this->Cell(7, $this->_h_c, '', 1, 0, 'C');
@@ -956,16 +947,21 @@ class Notebook extends Fpdf
     {
         $hasIF = count($this->data['periods']) == $this->data['current_period']->periods_id;
 
-        if ($hasIF && $this->data['config']['includeIF']){
+        if ($hasIF && $this->data['config']['includeIF']) {
             $this->ln();
-            if(isset($this->data['report_final'])){
-                if($this->data['report_final']->news_id == 39)
+            if (isset($this->data['report_final'])) {
+                if ($this->data['report_final']->news_id == 39)
                     $message = 'SI APROBÓ EL GRADO';
-                if($this->data['report_final']->news_id == 45)
+                if ($this->data['report_final']->news_id == 45)
                     $message = 'NO APROBÓ EL GRADO';
                 $this->Cell(0, $this->_h_c, $this->hideTilde('DECISIONES DE LA COMISIÓN DE EVALUACIÓN Y PROMOCIÓN'), 0, 0, 'L');
                 $this->ln();
-                $this->Cell(0, $this->_h_c, $this->hideTilde($message), 0, 0, 'L');
+                $this->Cell(0, $this->_h_c, $this->hideTilde($message), 0, 1, 'L');
+                if ($this->reprobated_tecn) {
+                    $message = 'DEBE CAMBIAR DE INSTITUCIÓN POR HABER REPROBADO EL ÁREA TÉCNICA';
+                    $this->Cell(0, $this->_h_c, $this->hideTilde($message), 0, 0, 'L');
+                    $this->reprobated_tecn = false;
+                }
             }
         }
 

@@ -253,7 +253,7 @@ class NotesFinal extends Model
 								 'value',
 				0 'overcoming',
                 SUM(result.tav) tav, result.areas_id as 'asignatures_id',
-                result.evaluation_periods_id, result.periods_id, result.notes_final_id
+                result.evaluation_periods_id, result.periods_id, result.notes_final_id, result.subjects_type_id
                 from
                 (
                 SELECT
@@ -264,7 +264,8 @@ class NotesFinal extends Model
                 student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_subjects',                
                 evaluation_periods.id as 'evaluation_periods_id',
                 group_pensum.percent as 'percent', 
-                (notes_final.value>0) as 'tav'
+                (notes_final.value>0) as 'tav',
+                areas.subjects_type_id
                 FROM notes_final
                 INNER JOIN evaluation_periods ON evaluation_periods.id = notes_final.evaluation_periods_id
                 INNER JOIN enrollment ON enrollment.id = evaluation_periods.enrollment_id
@@ -298,7 +299,7 @@ class NotesFinal extends Model
         $data = DB::table('notes_final')
             ->select('enrollment.id as enrollment_id', 'notes_final.value', 'notes_final.overcoming',
                 'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id',
-                'asignatures.name as name_subjects',
+                'asignatures.name as name_subjects', 'asignatures.subjects_type_id',
                 'evaluation_periods.periods_id',
                 'evaluation_periods.id as evaluation_periods_id')
             ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')
