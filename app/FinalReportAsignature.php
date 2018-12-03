@@ -49,7 +49,8 @@ class FinalReportAsignature extends Model
                         'value',
                         0 'overcoming',
         SUM(result.tav) tav, result.areas_id as 'asignatures_id',
-        result.final_report_asignature_id
+        result.final_report_asignature_id,
+        result.subjects_type_id
         from
 
         (SELECT
@@ -59,7 +60,7 @@ class FinalReportAsignature extends Model
 			final_report_asignature.value, final_report_asignature.overcoming) AS 'value', 
 		final_report_asignature.value AS overcoming,
 		final_report_asignature.id as 'final_report_asignature_id', 
-		areas.id as 'areas_id', student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_subjects',
+		areas.id as 'areas_id', areas.subjects_type_id, student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_subjects',
 		asignatures.`name` as 'name_a',
 		group_pensum.percent as 'percent', 
 		(final_report_asignature.value>0) as 'tav'

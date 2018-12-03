@@ -303,6 +303,7 @@ abstract class AbstractConsolidated
     {
         foreach ($this->vectorSubjects as $subject) {
             $sum = 0;
+            $average = 0;
             $periodsEvaluated = [];
             $countTavAsignatures = 0;
             foreach ($enrollment->evaluatedPeriods as $rowEvaluatedPeriod) {
@@ -315,14 +316,21 @@ abstract class AbstractConsolidated
                             );
                             array_push($periodsEvaluated, $info);
                             $sum += $this->calculateAccumulatedNotes($note, $rowEvaluatedPeriod, $countTavAsignatures);
+
                         }
                     }
                 }
             }
+
+            if ($subject->subjects_type_id == 2 && $countTavAsignatures > 0 )
+                $average = $sum / $countTavAsignatures;
+            if ($subject->subjects_type_id != 2)
+                $average = $sum;
             $data = (object)array(
-                'average' => round($sum, 1),
+                'average' => round($average, 1),
                 'name' => $subject->name,
                 'tav' => $countTavAsignatures,
+                'type' => $subject->subjects_type_id,
                 'periods' => $periodsEvaluated,
                 'asignatures_id' => $subject->asignatures_id,
             );
@@ -335,7 +343,10 @@ abstract class AbstractConsolidated
 
         $value = $this->processNote($note->value, $note->overcoming);
         $this->generateTav($countTavAsignatures, $value);
-        $percent = $rowEvaluatedPeriod['percent'] / 100;
+        if ($note->subjects_type_id == 2)
+            $percent = 1;
+        else
+            $percent = $rowEvaluatedPeriod['percent'] / 100;
         return ($value * $percent);
     }
 
@@ -458,7 +469,7 @@ abstract class AbstractConsolidated
                         'report' => $content['result'],
                     );
 
-                    if ($content['result'] == null) {
+                    if ($content['result'] == null || $content['overcoming'] < $this->middle_point) {
                         if ($accumulated->average < $this->middle_point)
                             $data->report = "REP";
                         else
