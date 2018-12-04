@@ -122,9 +122,9 @@ class GeneralReport extends Fpdf
         // $this->SetFont('Arial','',8);
 
         if (strlen($data) > 100 && strlen($data) > 0) {
-            //$this->MultiCell(0, $this->_h_c, strip_tags($data), $border, 'L');
+            $this->MultiCell(0, $this->_h_c, strip_tags($data), $border, 'L');
         } else if (strlen($data) > 0) {
-            //$this->Cell(0, $this->_h_c, strip_tags($data), $border,0, 'L');
+            $this->Cell(0, $this->_h_c, strip_tags($data), $border,0, 'L');
 
         }
 

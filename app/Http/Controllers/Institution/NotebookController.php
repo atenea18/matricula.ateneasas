@@ -121,7 +121,7 @@ class NotebookController extends Controller
 
             $fileName = str_replace(' ', '', $data['student']->fullNameInverse);
 
-            if($data['config']['generalReportPeriod'])
+            if($data['config']['generalReportPeriod'] && isset($data['general_report']))
             {
                 $report = new GeneralReportPDF('p', 'mm', 'letter');
                 $report->setData($data);
