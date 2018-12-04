@@ -89,8 +89,8 @@ class GeneralReport extends Fpdf
     public function setData($data)
     {
         $this->data = $data;
-
-        $this->content = explode('<p>', $data['general_report']->report);
+        if($data['general_report'] != null)
+            $this->content = explode('<p>', $data['general_report']->report);
 
     }
 

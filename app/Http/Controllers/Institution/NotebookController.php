@@ -114,14 +114,14 @@ class NotebookController extends Controller
 
 
 
-            // return response()->json($data);
+            //return response()->json($data);
             // return response()->json($data);
             // exit();
-            // dd($data);
+            //dd($notebook->report_final);
 
             $fileName = str_replace(' ', '', $data['student']->fullNameInverse);
 
-            if($data['config']['generalReportPeriod'] && !is_null($data['general_report']))
+            if($data['config']['generalReportPeriod'])
             {
                 $report = new GeneralReportPDF('p', 'mm', 'letter');
                 $report->setData($data);
