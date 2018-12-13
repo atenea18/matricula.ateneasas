@@ -956,7 +956,8 @@ class Notebook extends Fpdf
                     $message = 'NO APROBÓ EL GRADO';
                 $this->Cell(0, $this->_h_c, $this->hideTilde('DECISIONES DE LA COMISIÓN DE EVALUACIÓN Y PROMOCIÓN'), 0, 0, 'L');
                 $this->ln();
-                $this->Cell(0, $this->_h_c, $this->hideTilde($message), 0, 1, 'L');
+                $this->determineCell($this->hideTilde($message), 0);
+                //$this->Cell(0, $this->_h_c, $this->hideTilde($message), 0, 1, 'L');
                 /*
                 if ($this->reprobated_tecn) {
                     $message = 'DEBE CAMBIAR DE INSTITUCIÓN POR HABER REPROBADO EL ÁREA TÉCNICA';
@@ -966,7 +967,8 @@ class Notebook extends Fpdf
                 */
                 if ($this->data['report_final']->news_name != null) {
                     $message = $this->data['report_final']->news_name;
-                    $this->Cell(0, $this->_h_c, $this->hideTilde(strtoupper($message)), 0, 0, 'L');
+                    $this->determineCell($this->hideTilde(strtoupper($message)), 0);
+                    //$this->Cell(0, $this->_h_c, $this->hideTilde(strtoupper($message)), 0, 0, 'L');
                     $this->reprobated_tecn = false;
                 }
             }

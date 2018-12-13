@@ -89,6 +89,7 @@ class Notebook
         if (!is_null($groupEnrollment)) {
             $groupPensum = $groupEnrollment->pensums()
                 //->where('subjects_type_id', '!=', 2)
+                ->where('areas_id', '!=', 62)
                 ->with('area')
                 ->with('subjectType')
                 ->with('teacher.manager')
@@ -103,7 +104,7 @@ class Notebook
         }
 
         if (!is_null($subgroupEnrollment)) {
-            /*
+            
             $subgroupPensum = SubGroupPensum::where('sub_group_id', '=', $subgroupEnrollment->id)
                 ->with('area')
                 ->with('subjectType')
@@ -115,7 +116,7 @@ class Notebook
             foreach ($subgroupPensum as $key => $pensum) {
                 array_push($this->pensums_areas, $pensum);
             }
-            */
+            
         }
         //dd($this->pensums_areas);
         return $this->pensums_areas;
