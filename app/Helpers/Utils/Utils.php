@@ -19,14 +19,9 @@ use App\Workingday;
 
 class Utils
 {
-    public static function get_periods_by_group($institution_id, $working_day_id)
-    {
-        return Workingday::getPeriodsByGroup($institution_id, $working_day_id);
-    }
+    // Clase destinada solo para consultas con validaciones adicionales
 
-    /**
-     * Obtiene notas finales por asignatura o áreas
-     */
+    //Para Estadísticas
     public static function query_get_notes_final($institution_id, $group_id, $is_filter)
     {
         if ($is_filter == "true") {
@@ -36,8 +31,6 @@ class Utils
             return NotesFinal::getNotesFilterByAsignatures($institution_id, $group_id);
         }
     }
-
-
     public static function query_get_subjects($group_id, $is_filter)
     {
         if ($is_filter == "true") {
@@ -48,18 +41,7 @@ class Utils
         }
     }
 
-    public static function get_min_scale($institution_id)
-    {
-        return ScaleEvaluation::getMinScale($institution_id);
-    }
-
-    public static function get_enrollments_by_group($institution_id, $group_id)
-    {
-        return Group::enrollmentsByGroup($institution_id, $group_id);
-    }
-
-
-    // Relation Performances
+    // Relation Performances --> Para Evaluación
     public static function store_relationship_performances($notes_parameters_id, $performances_id, $periods_id, $group_pensum_id, $config_option_id)
     {
         if ($config_option_id == 1) {
@@ -80,7 +62,6 @@ class Utils
             );
         }
     }
-
     public static function get_relationship_performances($notes_parameters_id, $group_pensum_id, $periods_id, $config_option_id)
     {
 
@@ -101,7 +82,6 @@ class Utils
             );
         }
     }
-
     public static function delete_relationship_performances($notes_performances_id, $group_performances_id, $config_option_id)
     {
         if ($config_option_id == 1) {
@@ -113,6 +93,27 @@ class Utils
             return NotesParametersPerformances::deleteRelationPerformances($notes_performances_id);
         }
 
+    }
+
+    // Process Note and Overcomming
+    /**
+     * Determina que nota regresar, si se ha hecho recuperación.
+     */
+    public static function process_note($note, $overcoming)
+    {
+        $noteAux = 0;
+        $overcomingAux = 0;
+        if ($note > 0) {
+            if ($overcoming != null && $overcoming > 0) {
+                $overcomingAux = $overcoming;
+            }
+            $noteAux = $note;
+        }
+
+        if ($noteAux > $overcomingAux)
+            return round($noteAux,1);
+        else
+            return round($overcomingAux,1);
     }
 
 

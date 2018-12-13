@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Asignature;
+use App\FinalReportAsignature;
 use App\Grade;
 use App\Group;
 use App\GroupPensum;
 use App\Helpers\Utils\Utils;
+use App\NoAttendance;
 use App\Note;
 use App\NotesFinal;
 use App\Pensum;
@@ -33,6 +35,7 @@ class EvaluationController extends Controller
                 $this->teacher = Auth::guard('teachers')->user()->teachers()->first();
                 $this->institution = $this->teacher->institution;
             } elseif (Auth::guard('web_institution')->check()) {
+                $this->teacher = null;
                 $this->institution = Auth::guard('web_institution')->user();
             }
             return $next($request);
@@ -42,6 +45,8 @@ class EvaluationController extends Controller
     public function getCollectionsNotes(Request $request)
     {
         $enrollments = Group::enrollmentsByGroup($this->institution->id, $request->group_id);
+
+        $report_asignatures = FinalReportAsignature::getEnrollmentsByGroupAsignatures($request->group_id, $request->asignature_id);
 
         $notes = DB::table('notes')
             ->select('enrollment.id as enrollment_id', 'notes.value', 'notes.overcoming', 'notes.id as notes_id',
@@ -119,7 +124,7 @@ class EvaluationController extends Controller
             ->where('evaluation_periods.periods_id', '=', $request->period_id)
             ->get();
 
-        //dd($no_attendance);
+
 
         #representa una lista de estudiantes con sus notas existente
         $collection = [];
@@ -134,12 +139,6 @@ class EvaluationController extends Controller
                 }
             }
 
-            /*
-            if (count($no_attendance) < 1) {
-                $enrollment->no_attendance = '';
-                $enrollment->evaluation_periods_id = 0;
-            }
-            */
             if (count($no_attendance) >= 1) {
                 foreach ($no_attendance as $keyNoAtt => $item) {
                     if ($enrollment->id == $item->enrollment_id) {
@@ -149,7 +148,16 @@ class EvaluationController extends Controller
                     }
                 }
             }
+            
 
+            if (count($report_asignatures) >= 1) {
+                foreach ($report_asignatures as $key_report => $report) {
+                    if ($enrollment->id == $report->enrollment_id) {
+                        $enrollment->report_asignature = $report;
+                        unset($report_asignatures[$key_report]);
+                    }
+                }
+            }
 
             foreach ($notes_final as $keyNotes => $note) {
                 if ($enrollment->id == $note->enrollment_id) {
@@ -300,6 +308,37 @@ class EvaluationController extends Controller
 
     }
 
+    public function storeNoAttendance(request $request)
+    {
+        $data = $request->data;
+        $noAttendance = null;
+
+        $noAttendance = NoAttendance::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+            ->first();
+
+        if (!$noAttendance) {
+            try {
+                $noAttendance = new NoAttendance();
+                $noAttendance->evaluation_periods_id = $data['evaluation_periods_id'];
+                $noAttendance->quantity = $data['quantity'];
+                $noAttendance->save();
+
+            } catch (\Exception $e) {
+
+            }
+        } else {
+            NoAttendance::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+                ->update([
+                    'quantity' => $data['quantity'],
+                ]);
+        }
+
+        $noAttendance = NoAttendance::where('evaluation_periods_id', '=', $data['evaluation_periods_id'])
+            ->first();
+
+        return $noAttendance;
+    }
+
     private function merge($grades, $groups, $areas, $asignatures)
     {
         foreach ($grades as $grade) {
@@ -391,6 +430,4 @@ class EvaluationController extends Controller
             return null;
         }
     }
-
-
 }

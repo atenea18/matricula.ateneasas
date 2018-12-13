@@ -2,7 +2,7 @@
 
     <div>
         <hr>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="">Seleccione grupo a asignar</label>
                 <select v-on:change="" class="form-control" name="" id="" v-model="idGroupSelect">
@@ -14,7 +14,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group controls-center">
                 <label for="">Seleccione operación</label>
                 <div class="radio">
@@ -29,7 +29,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group" style="padding-top: 20px; ">
                 <button v-show="idGroupSelect" class="btn btn-primary btn-block" @click="assignment"> Asignar</button>
             </div>
@@ -98,15 +98,14 @@
                 let newArray = [];
                 if (this.picked == "1") {
                     newArray = this.checksTrue.filter(Boolean)
-                    newArray.forEach(element => {
-                        element.group_id = this.idGroupSelect;
-                    });
                 } else {
                     newArray = this.checksFalse.filter(Boolean)
-                    newArray.forEach(element => {
-                        element.group_id = this.idGroupSelect;
-                    });
                 }
+
+                newArray.forEach(element => {
+                    element.group_id = this.idGroupSelect;
+                });
+
                 if(newArray.length){
                     this.isSend = true;
                     data = JSON.stringify(newArray);
@@ -139,10 +138,9 @@
 
 
                 });
+            },
+        },
 
-            }
-
-        }
 
     }
 </script>

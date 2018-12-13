@@ -1,21 +1,21 @@
 <div id="sidebar-wrapper" style="background-color: #286090;">
-	<ul class="sidebar-nav nav-pills nav-stacked" id="menu">
+    <ul class="sidebar-nav nav-pills nav-stacked" id="menu">
         <!--<li class="" style="color: #ffffff; text-align: right ">
             &commat;tenea
         </li>-->
-		<!-- Inicio -->
-		<li>
+        <!-- Inicio -->
+        <li>
             <a href="{{route('institution.home')}}"> 
             	<span class="fa-stack fa-lg pull-left">
             		<i class="fa fa-home fa-stack-1x "></i>
             	</span>
-            	Inicio
+                Inicio
             </a>
         </li>
-    
+
         {{-- Matricula --}}
         <li class="">
-            <a  href="{{route('institution.enrollment.show')}}">
+            <a href="{{route('institution.enrollment.show')}}">
                 <span class="fa-stack fa-lg pull-left"><i class="fa fa-archive fa-stack-1x "></i>
                 </span>
                 Matricula
@@ -24,7 +24,8 @@
 
         <!-- Grupo -->
         <li class="">
-            <a data-toggle="collapse" data-parent="#menu" href="#collapse-group" aria-expanded="true" aria-controls="collapse-group">
+            <a data-toggle="collapse" data-parent="#menu" href="#collapse-group" aria-expanded="true"
+               aria-controls="collapse-group">
                 <span class="fa-stack fa-lg pull-left"><i class="fa fa-users fa-stack-1x "></i>
                 </span>
                 Grupos
@@ -36,22 +37,24 @@
             </ul>
         </li>
 
-        {{-- <li class="">
-            <a href="{{route('group.index')}}">
-                <span class="fa-stack fa-lg pull-left"><i class="fa fa-users fa-stack-1x "></i>
-                </span>
-                Grupos
-            </a>
-        </li> --}}
-		
-        <!-- Sede -->
+    {{-- <li class="">
+        <a href="{{route('group.index')}}">
+            <span class="fa-stack fa-lg pull-left"><i class="fa fa-users fa-stack-1x "></i>
+            </span>
+            Grupos
+        </a>
+    </li> --}}
+
+    <!-- Sede -->
         <li class="">
-            <a data-toggle="collapse" data-parent="#menu" href="#collapse-headquarter" aria-expanded="true" aria-controls="collapse-headquarter">
+            <a data-toggle="collapse" data-parent="#menu" href="#collapse-headquarter" aria-expanded="true"
+               aria-controls="collapse-headquarter">
                 <span class="fa-stack fa-lg pull-left"><i class="fa fa-building fa-stack-1x "></i>
-                </span> 
+                </span>
                 Sedes
             </a>
-            <ul id="collapse-headquarter" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
+            <ul id="collapse-headquarter" class="nav-pills nav-stacked collapse collapseable"
+                style="list-style-type:none;">
                 <li><a href="{{route('headquarter.create')}}">Crear</a></li>
                 <li><a href="{{route('headquarter.index')}}">Ver Sedes</a></li>
             </ul>
@@ -59,9 +62,10 @@
 
         <!-- Funcionarios -->
         <li class="">
-            <a data-toggle="collapse" data-parent="#menu" href="#collapse-manager" aria-expanded="true" aria-controls="collapse-manager">
+            <a data-toggle="collapse" data-parent="#menu" href="#collapse-manager" aria-expanded="true"
+               aria-controls="collapse-manager">
                 <span class="fa-stack fa-lg pull-left"><i class="fa fa-user-circle fa-stack-1x "></i>
-                </span> 
+                </span>
                 Funcionarios
             </a>
             <ul id="collapse-manager" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
@@ -71,21 +75,33 @@
         </li>
         <!-- Estadísticas -->
         <li class="">
-            <a  href="{{route('institution.statistics')}}">
+            <a href="{{route('institution.statistics')}}">
                 <span class="fa-stack fa-lg pull-left"><i class="far fa-chart-bar fa-stack-1x "></i>
                 </span>
                 Estadísticas
             </a>
         </li>
 
+        <!-- Novedades
+        <li class="">
+            <a href="{{route('institution.news')}}">
+                <span class="fa-stack fa-lg pull-left"><i class="far fa-chart-bar fa-stack-1x "></i>
+                </span>
+                Novedades
+            </a>
+        </li>
+         -->
+
         <!-- Asignación Académica -->
         <li class="">
-            <a data-toggle="collapse" data-parent="#menu" href="#collapse-manager2" aria-expanded="true" aria-controls="collapse-manager2">
+            <a data-toggle="collapse" data-parent="#menu" href="#collapse-manager2" aria-expanded="true"
+               aria-controls="collapse-manager2">
                 <span class="fa-stack fa-lg pull-left"><i class="fas fa-plus fa-stack-1x"></i>
                 </span>
                 Asignación Académ.
             </a>
-            <ul id="collapse-manager2" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
+            <ul id="collapse-manager2" class="nav-pills nav-stacked collapse collapseable"
+                style="list-style-type:none;">
                 <li><a href="{{route('areaasignature.index')}}">Grupos</a></li>
                 <li><a href="{{route('assignment.subgroup.index')}}">Subgrupos</a></li>
 
@@ -94,9 +110,10 @@
 
         <!-- Documentos -->
         <li class="">
-            <a data-toggle="collapse" data-parent="#menu" href="#collapse-files" aria-expanded="true" aria-controls="collapse-files">
+            <a data-toggle="collapse" data-parent="#menu" href="#collapse-files" aria-expanded="true"
+               aria-controls="collapse-files">
                 <span class="fa-stack fa-lg pull-left"><i class="fa fa-file-alt fa-stack-1x "></i>
-                </span> 
+                </span>
                 Reportes
             </a>
             <ul id="collapse-files" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
@@ -109,9 +126,10 @@
 
         <!-- Configuración -->
         <li class="">
-            <a data-toggle="collapse" data-parent="#menu" href="#collapse-config" aria-expanded="true" aria-controls="collapse-config">
+            <a data-toggle="collapse" data-parent="#menu" href="#collapse-config" aria-expanded="true"
+               aria-controls="collapse-config">
                 <span class="fa-stack fa-lg pull-left"><i class="fa fa-cog fa-stack-1x "></i>
-                </span> 
+                </span>
                 Configuración
             </a>
             <ul id="collapse-config" class="nav-pills nav-stacked collapse collapseable" style="list-style-type:none;">
@@ -121,6 +139,6 @@
             </ul>
         </li>
 
-	</ul>
+    </ul>
 
 </div>

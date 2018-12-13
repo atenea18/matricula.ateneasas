@@ -1,6 +1,6 @@
 <template>
     <th style="width: 44px !important;">
-        <a href="#" title="Eliminar">
+        <a href="#" title="Eliminar" @click="deleteRelation">
             {{ mainComponentObject.performances_id? mainComponentObject.performances_id:''}}
         </a>
     </th>
@@ -20,6 +20,7 @@
         },
         data() {
             return {
+                parameter: this.propsData.parameter,
                 note_parameter: this.propsData.note_parameter,
                 objectConfigInstitution: {
                     config_type_id: 1,
@@ -38,15 +39,19 @@
                 period_selected: {
                     id: this.$store.state.stateEvaluation.period_selected.id
                 },
-                mainComponentObject:{
-                    notes_performances_id:0,
+                mainComponentObject: {
+                    notes_performances_id: 0,
                     performances_id: 0,
-                    state:false,
+                    state: false,
                 }
             }
         },
         watch: {},
         created() {
+
+
+        },
+        mounted(){
             this.$store.state.configInstitution.forEach(rowConfig => {
                 this.compareToRelationPerformances(rowConfig)
             })
@@ -62,8 +67,7 @@
                     option_id: this.objectConfigInstitution.config_options_id,
                     option_name: this.objectConfigInstitution.config_options_name,
                 })
-                //this.onEventSelectedPerformance()
-
+                this.subscribeEventShowPerformancesSelected()
                 this.getRelation()
             }
         },
@@ -93,7 +97,54 @@
                         this.mainComponentObject.state = true
                     }
                 })
-            }
+            },
+            subscribeEventShowPerformancesSelected(){
+                this.$bus.$off(`EventShowPerformancesSelected:${this.parameter.id}${this.note_parameter.id}@TableEvaluation`)
+                this.$bus.$on(`EventShowPerformancesSelected:${this.parameter.id}${this.note_parameter.id}@TableEvaluation`, performance => {
+                    this.storeRelation(performance)
+                })
+            },
+            storeRelation(performance) {
+                let data = {
+                    config: this.configComponent,
+                    period_id: this.period_selected.id,
+                    performances_id: performance.id,
+                    group_pensum_id: this.group_pensum_selected.id,
+                    notes_parameters_id: this.note_parameter.id,
+                }
+
+                let _this = this
+                axios.post('/ajax/relation-performances/store', {data}).then(function (response) {
+                        if (response.status == 200) {
+                            _this.mainComponentObject.notes_performances_id = response.data.id
+                            _this.mainComponentObject.performances_id = response.data.performances_id
+                            _this.mainComponentObject.state = true
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+
+            deleteRelation() {
+                let data = {
+                    config: this.configComponent,
+                    notes_performances_id: this.mainComponentObject.notes_performances_id,
+                }
+
+                let _this = this
+                axios.post('/ajax/relation-performances/delete', {data})
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            _this.mainComponentObject.state = false
+                            _this.mainComponentObject.notes_performances_id = 0
+                            _this.mainComponentObject.performances_id = 0
+                        }
+                    })
+                    .catch(function (error) {
+                        //console.log(error);
+                    });
+            },
         }
 
     }

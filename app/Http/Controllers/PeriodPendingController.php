@@ -53,10 +53,6 @@ class PeriodPendingController extends Controller
             ['school_year_id', 1],
         ])->first();
 
-        return response()->json([
-            'periods'  =>  $institution->periods,
-            'group'     =>  $group
-        ]);
 
         if($period->periods_state_id == 1)
         {

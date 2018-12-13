@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "bulma": "^0.6.2",
+    "epic-spinners": "^1.0.3",
     "toastr": "^2.1.4",
     "vue-good-table": "^2.11.0",
     "vue-moment": "^3.2.0",

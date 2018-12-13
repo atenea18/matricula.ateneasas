@@ -14,10 +14,10 @@
         data() {
             return {
                 enrollment: {
-                    id:0,
-                    evaluation_periods_id:0,
-                    notes_final:{
-                        value:0
+                    id: 0,
+                    evaluation_periods_id: 0,
+                    notes_final: {
+                        value: 0
                     }
                 },
                 label_final: {
@@ -25,19 +25,26 @@
                     is_send: true,
                     name_input_note_action: ''
                 },
-                is_first: false
+                is_first: true
             }
         },
         created() {
 
         },
-        mounted(){
+
+        mounted() {
             this.enrollment.id = this.propsData.enrollment.id
             this.enrollment.evaluation_periods_id = this.propsData.enrollment.evaluation_periods_id
-            if(this.propsData.enrollment.hasOwnProperty('notes_final')){
+
+            if (this.propsData.enrollment.hasOwnProperty('notes_final')) {
                 this.enrollment.notes_final.value = this.propsData.enrollment.notes_final.value
+                //console.log(this.enrollment.notes_final.value)
             }
+
             this.subscribeEventByRowEnrollment()
+            this.subscribeEventByNoAttendance()
+            this.subscribeEventByOvercomingReport()
+
         },
         computed: {
             ...mapState([
@@ -55,13 +62,91 @@
         },
         methods: {
             subscribeEventByRowEnrollment() {
-                this.$bus.$off(`EventSumLabelsAverage:${this.name_label_final}@RowEnrollment`)
                 this.$bus.$on(`EventSumLabelsAverage:${this.name_label_final}@RowEnrollment`, info => {
 
-                    this.label_final.value = info.sum
-                    this.label_final.name_input_note_action = info.name_input_note
-                    this.verifyPropertyEnrollmentNoteFinal()
+                    if (this.is_first) {
+                        this.label_final.value = this.enrollment.notes_final.value
+                    }
+
+                    if (info.sum > 0 || !this.is_first) {
+                        this.label_final.value = info.sum
+                        this.label_final.name_input_note_action = info.name_input_note
+                        this.verifyPropertyEnrollmentNoteFinal()
+                    }
+                    this.is_first = false
                 })
+            },
+            subscribeEventByNoAttendance() {
+                this.$bus.$off(`EventTyped:${this.name_label_final}@InputNoAttendance`)
+                this.$bus.$on(`EventTyped:${this.name_label_final}@InputNoAttendance`, attendance => {
+                    if (this.enrollment.evaluation_periods_id !== undefined) {
+                        this.saveNoAttendance(this.enrollment.evaluation_periods_id, attendance.value)
+                    } else {
+                        if (!this.is_first) {
+                            this.saveEvaluationPeriod((data) => {
+                                if (data != null) {
+                                    this.enrollment.evaluation_periods_id = data.id
+                                    this.saveNoAttendance(this.enrollment.evaluation_periods_id, attendance.value)
+                                }
+                                else {
+                                    console.log('hubo un error en subscribeEventByNoAttendance')
+                                }
+                            })
+                        }
+                    }
+
+                })
+
+            },
+            saveNoAttendance(evaluation_period_id, attendance_value) {
+                let data = {
+                    quantity: attendance_value,
+                    evaluation_periods_id: evaluation_period_id,
+                }
+                let _this = this
+                axios.post('/ajax/evaluation-noattendance/store', {data})
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            _this.$bus.$emit(`EventSaveNoAttendance:${_this.name_label_final}@LabelFinalNote`);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+
+            subscribeEventByOvercomingReport() {
+                this.$bus.$off(`EventTyped:${this.name_label_final}@InputOvercomingReport`)
+                this.$bus.$on(`EventTyped:${this.name_label_final}@InputOvercomingReport`, over_report => {
+                    if (this.enrollment.evaluation_periods_id !== undefined) {
+                        this.saveOverReport(this.propsData.enrollment.report_asignature.final_report_asignature_id, over_report.value)
+                    } else {
+                        if (!this.is_first) {
+                            this.saveOverReport(this.propsData.enrollment.report_asignature.final_report_asignature_id, over_report.value)
+                        }
+                    }
+                })
+            },
+
+            saveOverReport(final_report_asignature_id, over_report) {
+                let data = {
+                    value: over_report,
+                    final_report_asignature_id: final_report_asignature_id,
+                }
+
+
+                let _this = this
+                axios.post('/ajax/FinalReport/asignatures/overcoming/update', {data})
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            console.log(response.data)
+                            _this.$bus.$emit(`EventSaveOverReport:${_this.name_label_final}@LabelFinalNote`, response.data);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
             },
 
             verifyPropertyEnrollmentNoteFinal() {
@@ -71,7 +156,6 @@
                     // Si ya tiene una nota final
                     if (this.enrollment.hasOwnProperty('notes_final')) {
                         //comparo nota final calculada con la que ya se tiene
-
                         this.compareToValues()
                     }
                     //Guardar nota final
@@ -83,11 +167,15 @@
                         }
                     }
                 } else {
-                    if (this.is_first) {
-                        this.saveEvaluationPeriod()
+                    if (!this.is_first) {
+                        this.saveEvaluationPeriod(data => {
+                            this.enrollment.evaluation_periods_id = data.id
+                            this.emitToNoteInput()
+                            this.saveNoteFinal(data.id)
+                        })
                     }
                 }
-                this.is_first = true
+
             },
 
             compareToValues() {
@@ -98,8 +186,7 @@
                     //console.log('Nota calculada diferente, procede hacer petición para guardar')
                 }
             },
-            saveEvaluationPeriod() {
-                let _this = this
+            saveEvaluationPeriod(callBack) {
 
                 let data = {
                     enrollment_id: this.enrollment.id,
@@ -109,16 +196,14 @@
                 axios.post('/ajax/evaluation-period/store', {data})
                     .then(function (response) {
                         if (response.status == 200) {
-                            _this.enrollment.evaluation_periods_id = response.data.id
-                            _this.emitToNoteInput()
-                            _this.saveNoteFinal(response.data.id)
+
+                            if (callBack != null)
+                                callBack(response.data)
                         }
                     })
                     .catch(function (error) {
-                        console.log('period'+error);
+                        callBack(null)
                     });
-
-                console.log('Guarda Evaluatioon Period')
             },
 
             saveNoteFinal(evaluation_periods_id) {
@@ -137,7 +222,7 @@
                         }
                     })
                     .catch(function (error) {
-                        console.log('final'+error);
+                        console.log('final' + error);
                     });
             },
             emitToNoteInput() {
@@ -145,8 +230,13 @@
                     this.$bus.$emit(`EventNoteCanSave:${this.label_final.name_input_note_action}@LabelFinalNote`,
                         this.enrollment.evaluation_periods_id)
                 }
-            }
+            },
+
         },
+        destroyed() {
+            this.$bus.$off(`EventSumLabelsAverage:${this.name_label_final}@RowEnrollment`)
+        }
+
     }
 </script>
 

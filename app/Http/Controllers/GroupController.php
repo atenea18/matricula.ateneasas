@@ -217,10 +217,6 @@ class GroupController extends Controller
         $groups = Group::getGroupsByGrade($institution_id, $grade_id);
         return $groups;
 
-        if (request()->ajax()) {
-
-        }
-
     }
 
     public function getEnrollmentsByGroup($group_id)
@@ -228,10 +224,6 @@ class GroupController extends Controller
         $institution_id = Auth::guard('web_institution')->user()->id;
         $enrollmentsByGroup = Group::enrollmentsByGroup($institution_id, $group_id);
         return $enrollmentsByGroup;
-
-        if (request()->ajax()) {
-
-        }
     }
 
 
@@ -274,5 +266,6 @@ class GroupController extends Controller
 
         return "ok";
     }
+
 
 }

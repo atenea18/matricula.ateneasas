@@ -3,11 +3,9 @@
         <div class="col-md-3">
             <div class="form-group">
                 <!-- Button Configurar Desempños-->
-                <!--
                 <button v-if="state_button"  type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
                     Configurar Desempeños
                 </button>
-                -->
             </div>
             <!-- Modal -->
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -21,7 +19,7 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                           <!-- <content-performances></content-performances>-->
+                           <content-performances></content-performances>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -30,7 +28,17 @@
                 </div>
             </div>
         </div>
-        <div v-if="state_button" class="col-md-9">
+        <div class="col-md-3">
+            <div class="form-group">
+                <div class="checkbox" v-if="state_button">
+                    <label>
+                        <input v-model="is_overcoming_report" type="checkbox"/>
+                        Superaciones Informe Final
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div v-if="state_button" class="col-md-3">
             <div v-if="!stateInformation.is_conexion">
                 <small style="margin-top: 10px; color: red; text-align: center;"><b>Sin internet, conectese a una red disponible</b></small>
             </div>
@@ -49,13 +57,20 @@
         },
         data(){
             return{
-                state_button: false
+                state_button: false,
+                is_overcoming_report: false,
+            }
+        },
+        watch:{
+            is_overcoming_report: function () {
+                this.$bus.$emit('eventShowOvercomingReport@ManagerPerformances', this.is_overcoming_report)
             }
         },
         created(){
             this.$bus.$on('eventReadyDataState@EvaluationXManager', data => {
                 //Se subscribe al evento para habilitar el botón configuración de desempeños
                 this.state_button = true
+                this.is_overcoming_report = false
                 this.stateGetConexion
             })
         },

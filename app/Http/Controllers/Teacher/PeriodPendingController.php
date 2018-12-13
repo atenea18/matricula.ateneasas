@@ -29,20 +29,28 @@ class PeriodPendingController extends ApiController
         $scaleEvaluations = ScaleEvaluation::getMinScale($institution);
 
         $students = $group->enrollments()
-        ->with('student')
-        ->with(['evaluationPeriod' => function($eval)use($asignature, $period){
-            return $eval->with('noteFinal')
-            ->where([
-                ['asignatures_id', $asignature->id],
-                ['periods_id', $period->id]
-            ]);
-        }])
-        ->get();
+            ->with('student')
+            ->join('student', 'enrollment.student_id', '=', 'student.id')
+            ->orderBy('student.last_name', 'ASC')
+            ->with(['evaluationPeriod' => function ($eval) use ($asignature, $period) {
+                return $eval->with('noteFinal')
+                    ->where([
+                        ['asignatures_id', $asignature->id],
+                        ['periods_id', $period->id]
+                    ]);
+            }])
+            ->get();
 
-        $filter = $students->filter(function($enrollment){
+        $filter = $students->filter(function ($enrollment) {
 
-            if(count($enrollment->evaluationPeriod) == 0)
+            if (count($enrollment->evaluationPeriod) == 0)
                 return $enrollment;
+            else {
+                if (isset($enrollment->evaluationPeriod[0]->noteFinal))
+                    if ($enrollment->evaluationPeriod[0]->noteFinal->value == 0)
+                        return $enrollment;
+            }
+
 
         });
 
@@ -62,7 +70,7 @@ class PeriodPendingController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -73,7 +81,7 @@ class PeriodPendingController extends ApiController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -84,7 +92,7 @@ class PeriodPendingController extends ApiController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -95,8 +103,8 @@ class PeriodPendingController extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -107,7 +115,7 @@ class PeriodPendingController extends ApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -120,19 +128,19 @@ class PeriodPendingController extends ApiController
         $institution = $group->headquarter->institution;
 
         $periods = $institution->periods()
-        ->with('period')
-        ->with('schoolyear')
-        ->with('state')
-        ->with('workingday')
-        ->get()
-        ->pluck('period')
-        ->unique()
-        ->values()
-        ->pluck('fullName','id');
+            ->with('period')
+            ->with('schoolyear')
+            ->with('state')
+            ->with('workingday')
+            ->get()
+            ->pluck('period')
+            ->unique()
+            ->values()
+            ->pluck('fullName', 'id');
 
         return View('teacher.partials.pendingPeriod.index')
-        ->with('group',$group)
-        ->with('asignature',$asignature)
-        ->with('periods',$periods);
+            ->with('group', $group)
+            ->with('asignature', $asignature)
+            ->with('periods', $periods);
     }
 }

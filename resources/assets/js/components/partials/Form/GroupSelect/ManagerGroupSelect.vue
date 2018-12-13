@@ -1,16 +1,48 @@
 <template>
-    <div >
+    <div>
         <div class="col-md-4">
-            <select-grade :objectInput="objectToSelectGrade"></select-grade>
+            <select-grade :objectInput="objectToSelectGrade"/>
         </div>
         <div class="col-md-4">
             <!-- Depende de grade -->
-            <select-group v-show="!objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectGroup"></select-group>
+            <select-group v-show="!objectToManagerGroupSelect.isSubGroup"
+                          :objectInput="objectToSelectGroup"/>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4" v-show="currentView !='main-consolidated' || (!params.isReport && !params.isFilterReport)">
             <!-- Depende de group-->
-            <select-period v-show="!objectToManagerGroupSelect.isSubGroup" :objectInput="objectToSelectPeriod"></select-period>
+            <select-period :objectInput="objectToSelectPeriod"/>
         </div>
+        <div class="col-md-4" v-show="currentView =='main-consolidated' && params.isReport && !params.isAreas">
+            <div class="form-group" style="padding-top:24px;">
+                <a href="#" @click="emitEvent('save-report-asignatures')" class="btn btn-success btn-sm btn-block">
+                    GUARDAR INFORME DE ASIGNATURAS
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-2" v-show="currentView =='main-consolidated' && params.isFilterReport">
+            <div class="form-group padding-at">
+                <label for="condition">Condición</label>
+                <select @change="emitEvent('default')" id="condition" class="form-control" v-model="objectToManagerGroupSelect.condition">
+                    <option value="0"> A =  </option>
+                    <option value="1"> A >= </option>
+                    <option value="2"> A <= </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-2" v-show="currentView =='main-consolidated' && params.isFilterReport">
+            <div class="form-group padding-at">
+                <label for="condition_number">Cantidad</label>
+                <select @change="emitEvent('default')" id="condition_number" class="form-control" v-model="objectToManagerGroupSelect.condition_number">
+                    <option v-for="num in 6" :value="num">{{num}}</option>
+                </select>
+            </div>
+        </div>
+
+
+        
+        <div class="clearfix"></div>
     </div>
 </template>
 
@@ -28,13 +60,7 @@
             SelectPeriod, SelectPeriodSection,
             SelectGrade, SelectGroup
         },
-        props: {
-            /*
-                referenceId:"",
-                referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.referenceId + '.identificador',
-             */
-            objectInput: {type: Object}
-        },
+        props: ["params", "object-input"],
         name: "manager-group-select",
         data() {
             return {
@@ -43,8 +69,10 @@
                     group_id: 0,
                     periods_id: 1,
                     type: "",
-                    whoTriggered:"",
-                    isSubGroup: false
+                    whoTriggered: "",
+                    isSubGroup: false,
+                    condition_number: 3,
+                    condition: "1",
                 },
                 objectToSelectGrade: {
                     referenceChangeFormSelect: 'get-event-change-of-form-select@' + this.objectInput.referenceId + '.grades',
@@ -54,18 +82,25 @@
                     referenceChangeFormSelect: 'get-event-change-of-form-select@' + this.objectInput.referenceId + '.group',
                     referenceGetObjectSelected: 'get-object-selected@' + this.objectInput.referenceId + '.group',
                     referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.objectInput.referenceId + '.group',
-                    id:0
+                    id: 0
                 },
                 objectToSelectPeriod: {
                     referenceChangeFormSelect: 'get-event-change-of-form-select@' + this.objectInput.referenceId + '.periods',
                     referenceGetObjectSelected: 'get-object-selected@' + this.objectInput.referenceId + '.periods',
                     referenceToReciveObjectSelected: 'to-receive-object-selected@' + this.objectInput.referenceId + '.periods',
-                    id:1
+                    id: 1
                 },
             }
         },
         created() {
             this.managerEvents()
+        },
+
+        computed: {
+            ...mapState([
+                'currentView',
+            ]),
+
         },
         methods: {
             getPeriodsByWorkingDay(object) {
@@ -88,7 +123,7 @@
                     this.getPeriodsByWorkingDay(object);
                     this.objectToManagerGroupSelect.whoTriggered = ""
                     this.$bus.$emit(this.objectToSelectPeriod.referenceToReciveObjectSelected, object);
-                    if (this.objectToManagerGroupSelect.periods_id != 0) {
+                    if (this.objectToManagerGroupSelect.periods_id != 0 || this.currentView=='main-reprobated-final') {
                         this.objectToManagerGroupSelect.type = "group"
 
                         this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
@@ -102,6 +137,10 @@
                     this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
                 })
             },
+            emitEvent(text){
+                this.objectToManagerGroupSelect.whoTriggered = text
+                this.$bus.$emit(this.objectInput.referenceToReciveObjectSelected, this.objectToManagerGroupSelect);
+            }
         },
 
         destroyed() {

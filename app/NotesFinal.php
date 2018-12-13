@@ -31,13 +31,6 @@ class NotesFinal extends Model
 
     	if($this->overcoming >= $minScale->rank_start && $this->overcoming <= $hihgScale->rank_end)
     	{
-    		if($this->overcoming > $this->value){
-
-    			$noteAux = $this->overcoming;
-    			$this->overcoming = $this->value;
-    			$this->value = $noteAux;
-    		}
-
     		$this->update();
 
     		return [
@@ -252,21 +245,27 @@ class NotesFinal extends Model
     {
 
         $data = DB::select(DB::raw(
-            "SELECT result.enrollment_id, result.last_name, result.name, result.name_areas, 
-                SUM(result.percent) percent, ROUND(IF((SUM(result.percent) = 100),
+            "SELECT result.enrollment_id, result.last_name, result.name, result.name_subjects,
+				SUM(result.percent) percent,                
+				ROUND(IF((SUM(result.percent) = 100),
                 SUM((result.percent/100) * result.value),
-                SUM(result.value)/SUM((result.value>0))), 2) 'value',
-                SUM(result.tav) tav, result.areas_id as 'asignatures_id', result.overcoming,
-                result.evaluation_periods_id, result.periods_id, result.notes_final_id
+                SUM(result.value)/SUM((result.value>0))), 2)
+								 'value',
+				0 'overcoming',
+                SUM(result.tav) tav, result.areas_id as 'asignatures_id',
+                result.evaluation_periods_id, result.periods_id, result.notes_final_id, result.subjects_type_id
                 from
                 (
                 SELECT
-                enrollment.id as 'enrollment_id', notes_final.value as 'value', notes_final.overcoming,
+                enrollment.id as 'enrollment_id', 
+								IF( notes_final.value>= IFNULL(notes_final.overcoming,0),notes_final.value,notes_final.overcoming) AS 'value',
+								notes_final.value AS overcoming,
                 notes_final.id as 'notes_final_id', areas.id as 'areas_id', evaluation_periods.periods_id, 
-                student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_areas',                
+                student.last_name as 'last_name', student.name as 'name', areas.`name` as 'name_subjects',                
                 evaluation_periods.id as 'evaluation_periods_id',
                 group_pensum.percent as 'percent', 
-                (notes_final.value>0) as 'tav'
+                (notes_final.value>0) as 'tav',
+                areas.subjects_type_id
                 FROM notes_final
                 INNER JOIN evaluation_periods ON evaluation_periods.id = notes_final.evaluation_periods_id
                 INNER JOIN enrollment ON enrollment.id = evaluation_periods.enrollment_id
@@ -300,7 +299,7 @@ class NotesFinal extends Model
         $data = DB::table('notes_final')
             ->select('enrollment.id as enrollment_id', 'notes_final.value', 'notes_final.overcoming',
                 'notes_final.id as notes_final_id', 'evaluation_periods.asignatures_id',
-                'asignatures.name as asignature_name',
+                'asignatures.name as name_subjects', 'asignatures.subjects_type_id',
                 'evaluation_periods.periods_id',
                 'evaluation_periods.id as evaluation_periods_id')
             ->join('evaluation_periods', 'evaluation_periods.id', '=', 'notes_final.evaluation_periods_id')

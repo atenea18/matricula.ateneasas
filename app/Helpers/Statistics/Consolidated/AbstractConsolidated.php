@@ -16,8 +16,11 @@ abstract class AbstractConsolidated
     protected $group_object = null;
     protected $institution_object = null;
     protected $minimum_scale_object = null;
+    protected $is_areaX = null;
+
 
     protected $middle_point = 0;
+    protected $final_point = 0;
     protected $num_of_periods = 0;
     protected $period_selected_id = 1;
 
@@ -26,6 +29,8 @@ abstract class AbstractConsolidated
     protected $vectorPeriods = [];
     protected $vectorSubjects = [];
     protected $vectorEnrollments = [];
+    protected $report_asignatures = [];
+    protected $report_final = [];
 
     public function __construct(ParamsStatistics $params)
     {
@@ -34,8 +39,10 @@ abstract class AbstractConsolidated
          * Variables
          */
         $this->middle_point = $params->middle_point;
+        $this->final_point = $params->final_point;
         $this->num_of_periods = $params->num_of_periods;
         $this->period_selected_id = $params->period_selected_id;
+        $this->is_areaX = $params->is_filter_subjects;
 
         /*
          * Objetos
@@ -51,6 +58,8 @@ abstract class AbstractConsolidated
         $this->vectorPeriods = $params->vectorPeriods;
         $this->vectorSubjects = $params->vectorSubjects;
         $this->vectorEnrollments = $params->vectorEnrollments;
+        $this->report_asignatures = $params->report_asignatures;
+        $this->report_final = $params->report_final;
     }
 
     protected function getProcessedRequest()
@@ -71,6 +80,7 @@ abstract class AbstractConsolidated
         $this->addPropertiesToEnrollments();
         $this->addPropertyToEnrollmentsAccumulatedAsignatures();
         $this->addPropertyToEnrollmentsRequiredValuation();
+        $this->addPropertyToEnrollmentsFinalReport();
     }
 
     /**
@@ -122,7 +132,6 @@ abstract class AbstractConsolidated
     }
 
 
-
     /**
      * Guarda información del periodo evaluado por estudiante
      */
@@ -160,7 +169,6 @@ abstract class AbstractConsolidated
     }
 
 
-
     /**
      * Crea un vector con los periodos evaluados, y cada periodo tiene un objeto
      * con información básica, como lo es el id del periodo, su porcentaje y los
@@ -194,9 +202,9 @@ abstract class AbstractConsolidated
                     (
                         'id' => $enrollment->id,
                         'tav' => $enrollPeriodEvaluated['tav'],
-                        'name' => $enrollment->student_name,
+                        'student_name' => $enrollment->student_name,
                         'average' => $enrollPeriodEvaluated['average'],
-                        'last_name' => $enrollment->student_last_name,
+                        'student_last_name' => $enrollment->student_last_name,
                     );
                     array_push($vectorDataBasicPeriodEvaluated, $dataEnrollment);
                 }
@@ -247,6 +255,10 @@ abstract class AbstractConsolidated
         if (!isset($enrollment->accumulatedAverage)) {
             $enrollment->accumulatedAverage = 0;
         }
+        if (!isset($enrollment->average)) {
+            $enrollment->average = 0;
+        }
+        $enrollment->average += ($enrollPeriodEvaluated['average'] * ($rowDataBasicPeriodEvaluated->percent / 100));
         $enrollment->accumulatedAverage += ($enrollPeriodEvaluated['average'] * ($rowDataBasicPeriodEvaluated->percent / 100));
     }
 
@@ -278,7 +290,11 @@ abstract class AbstractConsolidated
             if (!isset($enrollment->accumulatedSubjects)) {
                 $enrollment->accumulatedSubjects = [];
             }
+            if (!isset($enrollment->tav)) {
+                $enrollment->tav = 0;
+            }
             $enrollment->accumulatedSubjects = $accumulated;
+            $enrollment->tav = count($accumulated);
         }
     }
 
@@ -287,26 +303,34 @@ abstract class AbstractConsolidated
     {
         foreach ($this->vectorSubjects as $subject) {
             $sum = 0;
+            $average = 0;
             $periodsEvaluated = [];
             $countTavAsignatures = 0;
             foreach ($enrollment->evaluatedPeriods as $rowEvaluatedPeriod) {
                 foreach ($rowEvaluatedPeriod['notes'] as $note) {
                     if ($subject->asignatures_id == $note->asignatures_id) {
-                        if($note->value > 0){
+                        if ($note->value > 0) {
                             $info = (object)array(
                                 'period_id' => $rowEvaluatedPeriod['period_id'],
                                 'percent' => $rowEvaluatedPeriod['percent']
                             );
                             array_push($periodsEvaluated, $info);
                             $sum += $this->calculateAccumulatedNotes($note, $rowEvaluatedPeriod, $countTavAsignatures);
+
                         }
                     }
                 }
             }
+
+            if ($subject->subjects_type_id == 2 && $countTavAsignatures > 0 )
+                $average = $sum / $countTavAsignatures;
+            if ($subject->subjects_type_id != 2)
+                $average = $sum;
             $data = (object)array(
-                'average' => $sum,
+                'average' => round($average, 1),
                 'name' => $subject->name,
                 'tav' => $countTavAsignatures,
+                'type' => $subject->subjects_type_id,
                 'periods' => $periodsEvaluated,
                 'asignatures_id' => $subject->asignatures_id,
             );
@@ -319,12 +343,16 @@ abstract class AbstractConsolidated
 
         $value = $this->processNote($note->value, $note->overcoming);
         $this->generateTav($countTavAsignatures, $value);
-        $percent = $rowEvaluatedPeriod['percent'] / 100;
+        if ($note->subjects_type_id == 2)
+            $percent = 1;
+        else
+            $percent = $rowEvaluatedPeriod['percent'] / 100;
         return ($value * $percent);
     }
 
     private function addPropertyToEnrollmentsRequiredValuation()
     {
+
         foreach ($this->vectorEnrollments as $enrollment) {
             $required = [];
 
@@ -341,7 +369,7 @@ abstract class AbstractConsolidated
     private function calculateRequiredValuation($enrollment, &$required)
     {
         foreach ($this->vectorSubjects as $subject) {
-            $valueRequired = 0;
+            $valueRequired = 1000;
 
 
             foreach ($enrollment->accumulatedSubjects as $rowAccumulated) {
@@ -351,7 +379,6 @@ abstract class AbstractConsolidated
                     $missingPeriod = $this->num_of_periods - count($rowAccumulated->periods);
                     $divide = 0;
 
-
                     if ($missingPeriod > 0 && $missingPeriod < $this->num_of_periods) {
                         $divide = $rest / $missingPeriod;
                         $index = count($rowAccumulated->periods);
@@ -360,13 +387,18 @@ abstract class AbstractConsolidated
                         $valueRequired = $divide / $percent;
                     }
 
+                    if ($missingPeriod == 0) {
+                        if ($rowAccumulated->average >= $this->middle_point)
+                            $valueRequired = -1000;
+                    }
+
 
                 }
 
             }
 
             $data = (object)array(
-                'required' => $valueRequired,
+                'required' => round($valueRequired, 1),
                 'name' => $subject->name,
                 'asignatures_id' => $subject->asignatures_id,
             );
@@ -376,8 +408,161 @@ abstract class AbstractConsolidated
     }
 
 
+    private function addPropertyToEnrollmentsFinalReport()
+    {
+        $vectorRating = GenerateRating::createVectorRating($this->vectorEnrollments);
+
+        foreach ($this->vectorEnrollments as &$enrollment) {
+            $this->calculateRatingGeneral($enrollment, $vectorRating);
+
+            $report = [];
+            $failed_subjcts = [];
+
+            $this->calculateFinalReport($enrollment, $report, $failed_subjcts);
+
+            if (!isset($enrollment->finalReport)) {
+                $enrollment->finalReport = [];
+            }
+            if (!isset($enrollment->failedSubjects)) {
+                $enrollment->failedSubjects = [];
+            }
+            $enrollment->finalReport = $report;
+            $enrollment->failedSubjects = (object)array(
+                'number' => count($failed_subjcts),
+                'subjects' => $failed_subjcts,
+            );
+        }
+    }
+
+    private function calculateRatingGeneral(&$enrollment, $vectorRating)
+    {
+        foreach ($vectorRating as $rowEnrollmentRating) {
+
+            if ($enrollment->id == $rowEnrollmentRating['id']) {
+                $enrollment->rating = $rowEnrollmentRating['rating'];
+            }
+        }
+    }
+
+    private function calculateFinalReport($enrollment, &$report, &$failed_subjcts)
+    {
+
+        $content = array('result' => '', 'overcoming' => 0);
 
 
+        foreach ($this->vectorSubjects as $subject) {
+
+            if ($this->is_areaX == "false") {
+                $content = $this->getAsignaturesFinal($enrollment, $subject, $failed_subjcts);
+            } else {
+                $content = $this->getAreasFinal($enrollment, $subject, $failed_subjcts);
+            }
+
+
+            foreach ($enrollment->accumulatedSubjects as $accumulated) {
+                if ($accumulated->asignatures_id == $subject->asignatures_id) {
+                    $data = (object)array(
+                        'name' => $accumulated->name,
+                        'asignatures_id' => $accumulated->asignatures_id,
+                        'value' => $accumulated->average,
+                        'overcoming' => $content['overcoming'],
+                        'report' => $content['result'],
+                    );
+
+                    if ($content['result'] == null || $content['overcoming'] < $this->middle_point) {
+                        if ($accumulated->average < $this->middle_point)
+                            $data->report = "REP";
+                        else
+                            $data->report = "APR";
+                    }
+                    if($data->value == $data->overcoming){
+                        $data->overcoming = 0;
+                    }
+
+                    if ($data != null)
+                        array_push($report, $data);
+                    $content['overcoming'] = null;
+                    $content['result'] = null;
+                }
+            }
+        }
+    }
+
+    private function getAsignaturesFinal($enrollment, $subject, &$failed_subjcts)
+    {
+        $result = null;
+        $overcoming = null;
+        $failed = null;
+
+        foreach ($this->report_asignatures as $report_asignature) {
+            if ($enrollment->id == $report_asignature->enrollment_id && $report_asignature->asignatures_id == $subject->asignatures_id) {
+                if ($report_asignature->value < $this->middle_point) {
+
+                    $failed = (object)array(
+                        'asignatures_id' => $report_asignature->asignatures_id,
+                        'average' => $report_asignature->value,
+                        'overcoming' => $report_asignature->overcoming,
+                        'name' => $report_asignature->name,
+                    );
+                    $result = "REP";
+
+                } else {
+                    $failed = null;
+                    $result = "APR";
+                }
+
+                $overcoming = $report_asignature->overcoming;
+                if ($overcoming >= $this->middle_point) {
+                    $failed = null;
+                    $result = "APR";
+                }
+
+                if ($failed != null && $subject->subjects_type_id == 1) {
+                    array_push($failed_subjcts, $failed);
+                }
+
+
+            }
+        }
+        $data = array('result' => $result, 'overcoming' => $overcoming);
+        return $data;
+    }
+
+    private function getAreasFinal($enrollment, $subject, &$failed_subjcts)
+    {
+        $result = null;
+        $overcoming = null;
+        $failed = null;
+
+        foreach ($this->report_final as $report_asignature) {
+            if ($enrollment->id == $report_asignature->enrollment_id && $report_asignature->asignatures_id == $subject->asignatures_id) {
+
+                $overcoming = $report_asignature->value;
+
+                if ($report_asignature->value < $this->middle_point) {
+
+                    $failed = (object)array(
+                        'asignatures_id' => $report_asignature->asignatures_id,
+                        'average' => $report_asignature->value,
+                        'overcoming' => $report_asignature->overcoming,
+                        'name' => $report_asignature->name_subjects,
+                    );
+                    $result = "REP";
+
+                } else {
+                    $failed = null;
+                    $result = "APR";
+
+                }
+
+                if ($failed != null && $subject->subjects_type_id == 1) {
+                    array_push($failed_subjcts, $failed);
+                }
+            }
+        }
+        $data = array('result' => $result, 'overcoming' => round($overcoming,1));
+        return $data;
+    }
 
     /*
      *  Métodos Auxiliares // Métodos Auxiliares \\ Métodos Auxiliares

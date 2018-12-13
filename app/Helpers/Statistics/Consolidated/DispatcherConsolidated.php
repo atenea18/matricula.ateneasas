@@ -31,7 +31,6 @@ class DispatcherConsolidated
                 case 'excel':
                     $this->response = 'excel';
                     break;
-
                 default:
                     $json = new JsonConsolidated($params);
                     $this->response = $json->getProcessedRequest();

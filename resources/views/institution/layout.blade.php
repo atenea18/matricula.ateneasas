@@ -89,6 +89,6 @@
     <!-- Scripts -->
     <script src="{{asset('js/jquery.min.js')}}"></script>
     <script src="{{asset('js/bootstrap.js')}}"></script>
-    <script src="{{asset('js/app.js')}}"></script>
+    <script src="{{asset('js/app.js?version=1.1')}}"></script>
 </body>
 </html>

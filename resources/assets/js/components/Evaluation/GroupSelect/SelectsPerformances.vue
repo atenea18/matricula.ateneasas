@@ -92,28 +92,23 @@
                 },
                 state: false,
                 index: 0,
+
+                semaforo: true,
             }
         },
         created() {
 
-            this.$bus.$on('eventReadyDataState@EvaluationXManager', dd => {
-
-                if (this.index == 0 || this.grade_selected.id != this.$store.state.stateEvaluation.grade_selected.id) {
-                    this.grade_selected.id = this.$store.state.stateEvaluation.grade_selected.id
-                    this.getAreasByGrade()
-                    this.area_selected.id = this.$store.state.stateEvaluation.area_selected.id
-                    this.getAsignaturesByAreaPensum()
-                    this.asignature_selected.id = this.$store.state.stateEvaluation.asignature_selected.id
-                    this.period_selected.id = this.$store.state.stateEvaluation.period_selected.id
-                    this.parameter_selected.id = this.$store.state.stateEvaluation.parameter_selected_id
-                    this.emitEventAllSelected()
-                }
-
-            })
-
 
         },
-        destroyed(){
+        mounted() {
+            this.$bus.$on('eventReadyDataState@EvaluationXManager', dd => {
+                this.semaforo = true
+
+                this.grade_selected.id = this.$store.state.stateEvaluation.grade_selected.id
+                this.getAreasByGrade()
+            })
+        },
+        destroyed() {
             this.$bus.$off('eventReadyDataState@EvaluationXManager')
         },
         methods: {
@@ -124,7 +119,8 @@
                 this.selectedArea(param)
                 this.selectedAsignature(param)
 
-                this.emitEventAllSelected()
+                if (param == 'parameter' || param == 'period')
+                    this.emitEventAllSelected()
 
             },
 
@@ -158,8 +154,8 @@
                         this.asignature_selected.pensum_id = asignature_selected.pensum_id
                     } else {
                         this.asignature_selected.pensum_id = null
-
                     }
+                    this.emitEventAllSelected()
                 }
             },
 
@@ -176,9 +172,10 @@
                         asignature_selected: this.asignature_selected,
                     }
                     this.$bus.$emit("eventElementsSelected@SelectsPerformances", data)
-
                 }
+
             },
+
 
             getAreasByGrade() {
                 if (this.grade_selected.id) {
@@ -190,19 +187,22 @@
                         this.mainComponentObject.areas = res.data
 
                         //Se ejecuta en la segunda llamada a este metódo
-                        if (this.index > 0) {
-                            if (this.mainComponentObject.areas.length > 1)
-                                this.area_selected.id = null
 
-                            if (this.mainComponentObject.areas.length == 1)
-                                this.area_selected.id = this.mainComponentObject.areas[0].id
+                        if (this.mainComponentObject.areas.length > 1)
+                            this.area_selected.id = null
 
-                            this.selectedArea('area')
+                        if (this.mainComponentObject.areas.length == 1)
+                            this.area_selected.id = this.mainComponentObject.areas[0].id
+
+                        if (this.semaforo) {
+                            this.area_selected.id = this.$store.state.stateEvaluation.area_selected.id
                         }
+                        this.selectedArea('area')
                         //Se incrementa dicha variable para identificar la primera vez que
                         //se ejecuta varias funciones en create()
                         this.index++
                     })
+
                 }
             },
 
@@ -215,17 +215,24 @@
                 axios.get('/ajax/getAsignaturesByAreaPensum', {params}).then(res => {
                     this.mainComponentObject.asignatures = res.data
                     //Se ejecuta en la segunda llamada a este metódo
-                    if (this.index > 0) {
-                        if (this.mainComponentObject.asignatures.length == 1) {
-                            this.asignature_selected.id = this.mainComponentObject.asignatures[0].asignatures_id
-                            this.asignature_selected.pensum_id = this.mainComponentObject.asignatures[0].pensum_id
-                        }
 
-                        if (this.mainComponentObject.asignatures.length > 1) {
-                            this.asignature_selected.id = null
-                            this.asignature_selected.pensum_id = null
-                        }
+                    if (this.mainComponentObject.asignatures.length == 1) {
+                        this.asignature_selected.id = this.mainComponentObject.asignatures[0].asignatures_id
+                        this.asignature_selected.pensum_id = this.mainComponentObject.asignatures[0].pensum_id
                     }
+
+                    if (this.mainComponentObject.asignatures.length > 1) {
+                        this.asignature_selected.id = null
+                        this.asignature_selected.pensum_id = null
+                    }
+
+                    if (this.semaforo) {
+                        this.asignature_selected.id = this.$store.state.stateEvaluation.asignature_selected.id
+                        this.period_selected.id = this.$store.state.stateEvaluation.period_selected.id
+                        this.parameter_selected.id = this.$store.state.stateEvaluation.parameter_selected_id
+                        this.semaforo = false
+                    }
+
                     this.selectedAsignature('asignature')
                 })
             },

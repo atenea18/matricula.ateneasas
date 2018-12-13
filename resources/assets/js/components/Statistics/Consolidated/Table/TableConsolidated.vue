@@ -14,9 +14,9 @@
                 options: objectInput.params,
                 asignatures:objectInput.asignatures,
                 isAcumulatedPeriod: objectInput.params.filter.isAcumulatedPeriod,
+                isReprobated: objectInput.params.filter.isReprobated,
                 periodSelected: objectInput.params.objectValuesManagerGroupSelect.periods_id,
-                }">
-                </body-table-consolidated>
+                }"/>
             </template>
 
             <!-- Periodo Acumulado -->
@@ -32,8 +32,8 @@
                     asignatures:objectInput.asignatures,
                     periodSelected: objectPeriod.periods_id,
                     isAcumulatedPeriod: objectInput.params.filter.isAcumulatedPeriod,
-                    }">
-                    </body-table-consolidated>
+                    isReprobated: objectInput.params.filter.isReprobated,
+                    }"/>
                 </template>
 
                 <!-- Acumulados -->
@@ -82,16 +82,21 @@
         },
 
         created() {
-            this.$store.state.scaleEvaluation.forEach(element => {
+            this.$store.state.stateScale.scales.forEach(element => {
                 if (element.words_expressions_id == 4) {
                     this.$store.state.minScale = element.rank_end
+                    this.$store.state.stateScale.min_scale = element.rank_start
+                }
+
+                if (element.words_expressions_id == 1) {
+                    this.$store.state.stateScale.max_scale = element.rank_end
                 }
             })
         },
         computed: {
             ...mapState([
                 'periodsworkingday',
-                'scaleEvaluation',
+                'stateScale',
                 'minScale'
             ]),
 
@@ -105,21 +110,29 @@
                 let average = 0;
                 enrollment.accumulatedSubjects.forEach(subjects => {
                     if (subjects.asignatures_id == asignature.asignatures_id) {
-                        average = subjects.average.toFixed(2);
+                        average = subjects.average.toFixed(1);
                     }
                 })
+                if (average <= this.$store.state.minScale) {
+                    return '<span style="color:red;">' + average + '</span>'
+                }
 
-                return average;
+                return average != 0 ? average : '';
             },
             getRequired(enrollment, asignature) {
-                let average = 0;
+                let average = 1000;
                 enrollment.requiredValuation.forEach(subjects => {
                     if (subjects.asignatures_id == asignature.asignatures_id) {
-                        average = subjects.required.toFixed(2);
+                        average = subjects.required.toFixed(1);
                     }
                 })
-
-                return average;
+                if (average > this.$store.state.stateScale.max_scale) {
+                    return '<span style="color:red;">REP</span>'
+                }
+                if (average < 0) {
+                    return "APR"
+                }
+                return average != 0 ? average : '';
             },
         }
     }

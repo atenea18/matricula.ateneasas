@@ -34,7 +34,6 @@ class PensumController extends Controller
             ->join('areas', 'areas.id', '=', 'pensum.areas_id')
             ->where('pensum.grade_id', '=', $request->grade_id)
             ->where('pensum.institution_id', '=', $this->institution->id)
-            ->where('pensum.subjects_type_id', '=', 1)
             ->groupBy('areas.id')
             ->get();
         return $pensum;
