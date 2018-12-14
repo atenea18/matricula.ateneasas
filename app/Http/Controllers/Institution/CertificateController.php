@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Institution;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use setasign\Fpdi\Fpdi;
 
 use Auth;
 
@@ -44,7 +45,14 @@ class CertificateController extends Controller
 
     public function create(Request $request)
     {
-    	// dd($request->all());
+    	
+    	$path = 'pdf/'.time().'-'.$this->institution->id.'-certificados/';
+
+        if(!file_exists($path))
+        {   
+            mkdir($path);
+        }
+
     	$scale = $this->institution->scaleEvaluations()->with('wordExpresion')->get();
     	$averageAreas = FinalReportAsignature::getEnrollmentsAreasByGroup($request->group);
 
@@ -52,15 +60,51 @@ class CertificateController extends Controller
     	foreach($request->enrollments as $enrollment)
     	{
     		$certificate = new Certificate($enrollment, $averageAreas, $scale, $request);
-    		// dd($certificate->create());
+    		
+    		$fileName = str_replace(' ', '', $certificate->enrollment->student->fullNameInverse);
 
     		$pdf = new CertificatePdf('p', 'mm', 'letter');
     		$pdf->institution = $this->institution;
     		$pdf->enrollment = $certificate->enrollment;
     		$pdf->create($certificate->create());
-    		$pdf->Output();
-    		exit();
+    		$pdf->Output($path.$fileName."Certificado.pdf", "F");
+    		// exit();
     		// dd($certificate->create());
     	}
+
+    	$this->merge($path, $this->institution->id.'boletines'.time(), 'p');
+    }
+
+    private function merge($path, $fileName = 'merge' ,$orientation='p')
+    {
+        $pdi = new Fpdi();
+
+        $dir = opendir($path);
+        $files = array();
+        while ($archivo = readdir($dir)) {
+                
+            if (!is_dir($archivo)){
+                // echo $archivo."<br />";
+                array_push($files, $archivo);
+            }
+        }
+
+        asort($files);
+        
+        foreach ($files as $file) 
+        { 
+            $pageCount = $pdi->setSourceFile($path.'/'.$file); 
+
+            for ($i=1; $i <= $pageCount; $i++) { 
+                
+                $tpl = $pdi->importPage($i);
+                $pdi->addPage($orientation); 
+
+                $pdi->useTemplate($tpl); 
+            }
+        }
+
+        $pdi->Output('D',$fileName.'.pdf');
+
     }
 }
