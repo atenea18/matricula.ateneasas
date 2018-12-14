@@ -331,6 +331,7 @@ Route::group(['prefix' => 'institution', 'middleware' => 'institution_auth'], fu
 
     // Certificados
     Route::get('certificate/index', 'Institution\CertificateController@index')->name('certificate.index');
+    Route::post('certificate/create', 'Institution\CertificateController@create')->name('certificate.create');
 
     // PDF's
     // LISTAS DE ASISTENCIAS

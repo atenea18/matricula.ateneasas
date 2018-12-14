@@ -75,6 +75,11 @@ class Identification extends Model
         return $this->belongsTo(City::class, 'id_city_of_birth');
     }
 
+    public function getIdentificationFullAttribute()
+    {
+        return "{$this->identification_type->name} {$this->identification_number}";
+    }
+
     public function hasStudent()
     {
         return $this->student;

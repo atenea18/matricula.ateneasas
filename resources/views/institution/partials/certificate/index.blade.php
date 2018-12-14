@@ -15,7 +15,7 @@
 				<h4>Certificado academico</h4>
 			</div>
 			<div class="panel-body">
-				{!! Form::open(['route'=> 'notebook.create', 'method'=>'post', 'target'=>'_blank']) !!}
+				{!! Form::open(['route'=> 'certificate.create', 'method'=>'post', 'target'=>'_blank']) !!}
 					<div class="row">
 						<div class="col-md-4">
 							<div class="form-group">

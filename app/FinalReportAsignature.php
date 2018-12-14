@@ -9,6 +9,17 @@ class FinalReportAsignature extends Model
 {
     protected $table = 'final_report_asignature';
 
+    protected $fillable = [
+        'code', 'value', 'report', 'overcoming', 'enrollment_id', 'asignatures_id'
+
+    ];
+
+    public function enrollment()
+    {
+        return $this->belongsTo(Enrollment::class, 'enrollment_id');
+    }
+
+
     static public function getEnrollmentsByGroup($group_id)
     {
         return FinalReportAsignature::select(
@@ -48,7 +59,7 @@ class FinalReportAsignature extends Model
         SUM(result.value)/SUM((result.value>0))), 2)
                         'value',
                         0 'overcoming',
-        SUM(result.tav) tav, result.areas_id as 'asignatures_id',
+        SUM(result.tav) tav, result.areas_id as 'area_id',
         result.final_report_asignature_id,
         result.subjects_type_id
         from
