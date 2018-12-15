@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Schoolyear extends Model
 {
+    protected $fillable = [
+        'year'
+    ];
+
     /**
      * Obtiene la relacion que hay entre la matricula y el año lectivo
      */

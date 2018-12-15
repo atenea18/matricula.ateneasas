@@ -10,7 +10,7 @@ class Grade extends Model
 
     protected $fillable = [
         'name',
-        'academic_level',
+        'academic_level_id',
     ];
 
     /**
@@ -38,5 +38,8 @@ class Grade extends Model
         return $this->hasMany(Enrollment::class, 'grade_id');
     }
 
-
+    public function academicLevel()
+    {
+        return $this->belongsTo(AcademicLevel::class, 'academic_level_id');
+    }
 }

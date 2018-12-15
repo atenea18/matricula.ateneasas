@@ -120,6 +120,7 @@
                 <li><a href="{{route('sheet')}}">Planillas</a></li>
                 <li><a href="{{route('constancy.index')}}">Constancias</a></li>
                 <li><a href="{{route('notebook.index')}}">Informes Académicos</a></li>
+                <li><a href="{{route('certificate.index')}}">Certificados Académicos</a></li>
             </ul>
         </li>
 

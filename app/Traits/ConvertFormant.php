@@ -13,8 +13,8 @@ trait ConvertFormant
 	{
 		
 		if(!$decimals)
-			return number_format($value, 0);
+			return (int) round($value, 0);
 
-		return number_format($value, $roundNumber);
+		return round($value, $roundNumber);
 	}
 }

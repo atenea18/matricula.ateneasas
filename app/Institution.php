@@ -70,6 +70,11 @@ class Institution extends Authenticatable
         return $this->hasMany(EvaluationParameter::class, 'institution_id');
     }
 
+    public function certificate()
+    {
+      return $this->hasOne(Certificate::class, 'institution_id');
+    }
+
     /**
      * Obtiene la relacion que hay entre la escala valorativa y el año lectivo
      */

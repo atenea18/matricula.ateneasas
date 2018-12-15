@@ -8,6 +8,10 @@ class FinalReport extends Model
 {
     protected $table = 'final_report';
 
+    protected $fillable = [
+        'code', 'average', 'overcoming', 'rating', 'keep_going', 'description', 'enrollment_id', 'news_id'
+    ];
+
     static public function getEnrollmentsByGroup($group_id)
     {
         return FinalReport::select(

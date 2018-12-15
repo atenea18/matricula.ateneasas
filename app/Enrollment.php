@@ -68,6 +68,21 @@ class Enrollment extends Model
     }
 
     /**
+     *
+     *
+     */
+    public function finalReportAsignatures()
+    {
+        return $this->hasMany(FinalReportAsignature::class, 'enrollment_id');
+    }
+
+    public function finalReport()
+    {
+        return $this->hasOne(FinalReport::class, 'enrollment_id');
+    }
+
+
+    /**
     *
     */
     public function attachGroupEnrollment($group_id)

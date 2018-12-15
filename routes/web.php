@@ -329,6 +329,11 @@ Route::group(['prefix' => 'institution', 'middleware' => 'institution_auth'], fu
     Route::get('notebook/index', 'Institution\NotebookController@index')->name('notebook.index');
     Route::post('notebook/create', 'Institution\NotebookController@create')->name('notebook.create');
 
+    // Certificados
+    Route::get('certificate/index', 'Institution\CertificateController@index')->name('certificate.index');
+    Route::post('certificate/create', 'Institution\CertificateController@create')->name('certificate.create');
+    Route::post('certificate/saveFirms', 'Institution\CertificateController@saveFirms')->name('certificate.saveFirms');
+
     // PDF's
     // LISTAS DE ASISTENCIAS
     Route::get('pdf/studentAttendance/{group_id}/{year}', 'PdfController@attendance')->name('student.attendance.pdf');
