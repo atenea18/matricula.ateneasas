@@ -11,7 +11,7 @@ use Auth;
 use App\FinalReportAsignature;
 use App\Helpers\Certificate;
 
-use App\Pdf\NoteBook\Certificate as CertificatePdf;
+use App\Pdf\NoteBook\CertificatePdf;
 
 use App\Institution;
 use App\Certificate as CertificateModel;

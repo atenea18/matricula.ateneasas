@@ -13,7 +13,7 @@ use App\Traits\utf8Helper;
 /**
  *
  */
-class Certificate extends Fpdf
+class CertificatePdf extends Fpdf
 {
 
     use utf8Helper;
