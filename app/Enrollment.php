@@ -76,6 +76,11 @@ class Enrollment extends Model
         return $this->hasMany(FinalReportAsignature::class, 'enrollment_id');
     }
 
+    public function finalReport()
+    {
+        return $this->hasOne(FinalReport::class, 'enrollment_id');
+    }
+
 
     /**
     *

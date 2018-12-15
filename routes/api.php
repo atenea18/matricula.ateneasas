@@ -42,6 +42,7 @@ Route::get('headquarter/{headquarter}/{grade}/getSubgroups', 'Headquarter\Subgro
 
 // RUTA PARA LOS GRADOS DE UNA  INSTITUCION
 Route::get('institution/{institution}/grades', 'Institution\GradeController@index');
+Route::get('institution/{institution}/firms', 'Institution\CertificateController@showFirms')->name('showFirms');
 
 // RUTA PARA LOS ESTUDIANTES DE UNA GRUPO
 Route::get('group/{group}/students', 'Institution\GroupController@students');

@@ -73,14 +73,15 @@
 						</div>
 					</div>
 					<div class="form-group text-center">
-
-						<input type="submit" name="btn_p_superacion" class="btn btn-primary" value="Crear boletin">
+						<button type="button" name="btn_config_msgs" class="btn btn-default" data-toggle="modal" data-target="#mFirmas">Configurar firmas</button>
+						<input type="submit" name="btn_p_superacion" class="btn btn-primary" value="Crear certificado">
 					</div>
 				{!! Form::close() !!}
 			</div>
 		</div>
 	</div>
 </div>
+@include('institution.partials.certificate.firms')
 @endsection
 
 @section('js')
@@ -129,6 +130,7 @@
 				});
 
 				$("#selectStudent").empty().html(html);
+				$("#selectStudent_to").empty();
 
 			}, 'json');
 
@@ -149,6 +151,44 @@
 			}, 'json');
 		});
 
+		$("#mFirmas").on('show.bs.modal', function(){
+			var _that = $(this);
+			$.get("{{route('showFirms', $institution->id)}}", function(data, status, xhr){
+				
+				if(data.data != null){
+					console.log(data);
+					$.each(data.data, function(ind, item){
+						var elem = $('#'+ind);
+						if(elem.length > 0)
+						{
+							elem.val(item);
+						}
+					});
+				}else{
+					console.log('nulo');
+				}
+			}, 'json');
+		});
+
+		$("#formFirmas").submit(function(e){
+			e.preventDefault();
+			var _that = $(this);
+			$.ajax({
+				url: "{{route('certificate.saveFirms')}}",
+				method: 'POST',
+				data: _that.serialize(),
+				beforeSend: function(){
+					_that.find("#btncancelMessage").prop('disabled', true);
+					_that.find("#btnMessageSave").text('Guardando..').prop('disabled', true);
+				},
+				success: function(data){
+					
+					_that.find("#btncancelMessage").prop('disabled', false);
+					_that.find("#btnMessageSave").text('Guardar').prop('disabled', false);
+					$("#mFirmas").modal('hide');
+				}
+			});
+		});
 	});
 </script>
 @endsection

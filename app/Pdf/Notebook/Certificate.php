@@ -20,6 +20,7 @@ class Certificate extends Fpdf
 
     public $institution;
     public $enrollment;
+    public $firms;
 
     private $_h_c = 4;
 
@@ -50,7 +51,7 @@ class Certificate extends Fpdf
 				$this->Image(
 					Storage::disk('uploads')->url(
 						$this->institution->picture
-					), 20, 20, 17, 17);
+					), 15, 15, 17, 17);
 		}catch(Exception $e){}
 
 
@@ -66,9 +67,9 @@ class Certificate extends Fpdf
 
 
 	    // Título
-	    $this->Cell(0, 4, "Certificado de Estudio", 0, 0, 'C');
+	    $this->Cell(0, 4, "CERTIFICADO DE ESTUDIO", 0, 0, 'C');
 
-		$this->Ln(30);
+		$this->Ln(10);
 	}
 
 	public function create($data = array())
@@ -77,6 +78,8 @@ class Certificate extends Fpdf
 
 		$this->SetFont('Arial','',10);
 
+		$this->showHeader();
+
 		$this->showBody();
 
 		// MOSTRAMOS EL CUADRO ACUMULATIVO
@@ -84,6 +87,20 @@ class Certificate extends Fpdf
 
 		// 
 		$this->showDate();
+
+		$this->showFirms();
+	}
+
+	private function showHeader()
+	{
+		$this->SetFont('Arial','B',10);
+		if($this->firms->header != ''):
+			$this->MultiCell(0, 4, utf8_decode($this->firms->header), 0, 'C');
+			// $this->Cell(0, 6, $this->certificado[0]['encabezado'], 0, 1, 'C');
+		endif;
+		// $this->Ln(5);
+		// $this->Cell(0, 6, $name, 0, 1, 'C');
+		$this->Ln(2);
 	}
 
 	private function showBody()
@@ -106,6 +123,23 @@ class Certificate extends Fpdf
 	{
 		$msg = 'curso y ';
 
+		switch ($this->enrollment->finalReport->news_id) {
+			case 39:
+				$msg.=' APROBO';
+				break;
+			case 45:
+				$msg.=' REPROBO';
+				break;
+			case 47:
+				$msg.=' RETIRO';
+				break;
+			case 10:
+				$msg.=' DESERTO';
+				break;
+			default:
+				# code...
+				break;
+		}
 
 		return $msg;
 	}
@@ -171,8 +205,40 @@ class Certificate extends Fpdf
 		$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 		$this->SetFont('Arial','',9);
 		// $ciudad = $this->certificado[0]['ciudad_expedicion'];
-		$msg = "Dado a los ".date('d')." dias del mes de ".$meses[date('n')-1]." de ".date('Y');
+		$msg = "Dado en {$this->firms->place_expedition_document} a los ".date('d')." dias del mes de ".$meses[date('n')-1]." de ".date('Y');
 		$this->Cell(70, $this->_h_c, $msg, 0,0, 'L');
+	}
+
+	private function showFirms()
+	{
+		$this->Ln(25);
+		$this->SetFont('Arial','B',9);
+		
+		if($this->firms->rector_firm != ''):
+			$this->Cell(70, $this->_h_c, strtoupper(utf8_decode($this->firms->rector_firm)), 'T',0, 'L');
+			$this->Cell(50, $this->_h_c, "", 0, 0, 'C');
+		endif;
+		
+		if($this->firms->secretary_firm != '')
+			$this->Cell(50, $this->_h_c, strtoupper(utf8_decode($this->firms->secretary_firm)), 'T', 0, 'L');
+		$this->Ln(4);
+		$this->SetFont('Arial','',9);
+		// 
+		if($this->firms->rector_firm != '' && $this->firms->rector_number_document != ''):
+			$this->Cell(70, $this->_h_c, utf8_decode($this->firms->rector_number_document." de ".$this->firms->rector_place_expedition), 0,0, 'L');
+			$this->Cell(50, $this->_h_c, "", 0, 0, 'C');
+		endif;
+		if($this->firms->secretary_firm != '' && $this->firms->secretary_number_document != '')
+			$this->Cell(50, $this->_h_c, utf8_decode($this->firms->secretary_number_document." de ".$this->firms->secretary_place_expedition), 0, 0, 'L');
+		$this->Ln(4);
+		// 
+		if($this->firms->rector_firm != ''):
+			$this->Cell(70, $this->_h_c, 'Rector(a)', 0,0, 'L');
+			$this->Cell(50, $this->_h_c, "", 0, 0, 'C');
+		endif;
+		
+		if($this->firms->secretary_firm != '')
+			$this->Cell(50, $this->_h_c, 'Secretario(a)', 0, 1, 'L');	
 	}
 
 	function footer()
